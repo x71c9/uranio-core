@@ -1,0 +1,29 @@
+{
+	"name": "urn-core",
+	"version": "0.0.1",
+	"description": "Uranio core",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"start": "node -r source-map-support/register dist/index.js",
+		"dev": "./node_modules/.bin/tsc-watch --onSuccess \"node -r source-map-support/register ./dist/index.js\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@bitbucket.org/nbl7/urn-core.git"
+	},
+	"keywords": [
+		"uranio",
+		"urn"
+	],
+	"author": "Andrea Reni <mail@nbl7.net>",
+	"license": "ISC",
+	"homepage": "https://bitbucket.org/nbl7/urn-core#readme",
+	"devDependencies": {
+		"urn-dev": "git+ssh://git@bitbucket.org/nbl7/urn-dev.git"
+	},
+	"dependencies": {
+		"urn-lib": "file:../urn-lib/",
+		"urn-mdls": "file:../urn-mdls/"
+	}
+}
