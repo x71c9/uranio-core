@@ -20,9 +20,11 @@
 	"license": "ISC",
 	"homepage": "https://bitbucket.org/nbl7/urn-core#readme",
 	"devDependencies": {
+		"@types/mongoose": "^5.7.36",
 		"urn-dev": "git+ssh://git@bitbucket.org/nbl7/urn-dev.git"
 	},
 	"dependencies": {
+		"mongoose": "^5.10.10",
 		"urn-lib": "file:../urn-lib/",
 		"urn-mdls": "file:../urn-mdls/"
 	}
