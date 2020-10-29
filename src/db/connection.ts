@@ -12,8 +12,12 @@ import mongoose from 'mongoose';
 /*
  * Import urn_log
  */
-import {urn_log, urn_return, urn_response} from 'urn-lib';
+import {urn_log, urn_return, urn_response, urn_error} from 'urn-lib';
+// import {urn_log, urn_return, urn_response, URNError} from 'urn-lib';
 
+/*
+ * Instanciate urn_return with a log injector
+ */
 const urn_ret = urn_return.create(urn_log.return_injector);
 
 /*
@@ -76,7 +80,8 @@ class URNDBConnection {
 			this._connection.on('reconnectTries', () => { this._on_reconnect_tries(); });
 			return this;
 		}catch(err){
-			throw new URNError('Cannot connect to [' + this.get_uri() + '] - ' + err.message);
+			throw urn_error.create('Cannot connect to [' + this.get_uri() + '] - ' + err.message);
+			// throw new URNError('Cannot connect to [' + this.get_uri() + '] - ' + err.message);
 		}
 		
 	}
@@ -87,7 +92,7 @@ class URNDBConnection {
 	 * @returns the closed URNDBConnection
 	 */
 	public async close()
-			:Promise<urn_response.General<Connection>>{
+			:Promise<urn_response.General<ConnectionInstance>>{
 		if(this._connection == null)
 			return urn_ret.return_error(
 				500,
@@ -180,7 +185,8 @@ class URNDBConnection {
 	 */
 	private _on_error(e:Error)
 			:void{
-		throw new URNError(e.message, e);
+		throw urn_error.create(e.message, e);
+		// throw new URNError(e.message, e);
 	}
 	
 	/**
@@ -200,9 +206,9 @@ class URNDBConnection {
 	}
 }
 
-export type Connection = InstanceType<typeof URNDBConnection>;
+export type ConnectionInstance = InstanceType<typeof URNDBConnection>;
 
 export function create_instance(con_name:string, db_host:string, db_port:number, db_name:string)
-		:Connection{
+		:ConnectionInstance{
 	return new URNDBConnection(con_name, db_host, db_port, db_name);
 }
