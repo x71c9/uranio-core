@@ -1,0 +1,54 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ConnectionInstance	db/connection.ts	/^export type ConnectionInstance = InstanceType<typeof URNDBConnection>;$/;"	t
+DALInstance	dal/dal.ts	/^export type DALInstance = InstanceType<typeof URNDAL>;$/;"	t
+Resource	rsrc/resource.ts	/^export class Resource implements urn_mdls.Resource {$/;"	c
+ResourceInstance	rsrc/resource.ts	/^export type ResourceInstance = InstanceType<typeof Resource>;$/;"	t
+URNDAL	dal/dal.ts	/^class URNDAL<Resource> {$/;"	c
+URNDBConnection	db/connection.ts	/^class URNDBConnection {$/;"	c
+User	rsrc/user.ts	/^class User extends Resource implements urn_mdls.User {$/;"	c
+UserInstance	rsrc/user.ts	/^export type UserInstance = InstanceType<typeof User>;$/;"	t
+_connection	db/connection.ts	/^	private _connection:mongoose.Connection|null;$/;"	m
+_delete_one	dal/dal.ts	/^	private async _delete_one(){$/;"	m
+_find	dal/dal.ts	/^	private async _find()$/;"	m
+_find_by_id	dal/dal.ts	/^	private async _find_by_id(){$/;"	m
+_find_one	dal/dal.ts	/^	private async _find_one(){$/;"	m
+_insert_one	dal/dal.ts	/^	private async _insert_one(){$/;"	m
+_on_close	db/connection.ts	/^	private _on_close()$/;"	m
+_on_connected	db/connection.ts	/^	private _on_connected()$/;"	m
+_on_connecting	db/connection.ts	/^	private _on_connecting()$/;"	m
+_on_disconnected	db/connection.ts	/^	private _on_disconnected()$/;"	m
+_on_disconnecting	db/connection.ts	/^	private _on_disconnecting()$/;"	m
+_on_error	db/connection.ts	/^	private _on_error(e:Error)$/;"	m
+_on_reconnect_failed	db/connection.ts	/^	private _on_reconnect_failed()$/;"	m
+_on_reconnect_tries	db/connection.ts	/^	private _on_reconnect_tries()$/;"	m
+_on_reconnected	db/connection.ts	/^	private _on_reconnected()$/;"	m
+_update_one	dal/dal.ts	/^	private async _update_one(){$/;"	m
+close	db/connection.ts	/^	public async close()$/;"	m
+create_instance	dal/dal.ts	/^export default function create_instance(name:string)$/;"	f
+create_instance	db/connection.ts	/^export function create_instance(con_name:string, db_host:string, db_port:number, db_name:string)$/;"	f
+create_instance	rsrc/resource.ts	/^export default function create_instance()$/;"	f
+create_instance	rsrc/user.ts	/^export default function create_instance()$/;"	f
+delete_one	dal/dal.ts	/^	public async delete_one(){$/;"	m
+delete_one_with_sensitve	dal/dal.ts	/^	public async delete_one_with_sensitve(){$/;"	m
+find	dal/dal.ts	/^	public async find(){$/;"	m
+find_by_id	dal/dal.ts	/^	public async find_by_id(){$/;"	m
+find_by_id_with_sesitive	dal/dal.ts	/^	public async find_by_id_with_sesitive(){$/;"	m
+find_one	dal/dal.ts	/^	public async find_one(){$/;"	m
+find_one_with_sensitve	dal/dal.ts	/^	public async find_one_with_sensitve(){$/;"	m
+find_with_sensitive	dal/dal.ts	/^	public async find_with_sensitive(){$/;"	m
+get_uri	db/connection.ts	/^	public get_uri():string{$/;"	m
+insert_one	dal/dal.ts	/^	public async insert_one(){$/;"	m
+insert_one_with_sensitve	dal/dal.ts	/^	public async insert_one_with_sensitve(){$/;"	m
+is_valid_id	dal/dal.ts	/^	public async is_valid_id(){$/;"	m
+mongoose	db/connection.ts	/^import mongoose from 'mongoose';$/;"	I
+name	db/connection.ts	/^	public name:string;$/;"	m
+readyState	db/connection.ts	/^	public readyState:number;$/;"	m
+update_one	dal/dal.ts	/^	public async update_one(){$/;"	m
+update_one_with_sensitve	dal/dal.ts	/^	public async update_one_with_sensitve(){$/;"	m
+urn_mdls	rsrc/resource.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
+urn_mdls	rsrc/user.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
