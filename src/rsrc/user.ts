@@ -17,17 +17,42 @@ import {Resource} from './resource';
 @urn_log.decorators.debug_methods
 class User extends Resource implements urn_mdls.resources.User {
 	
-	public email:string;
-
-	public username:string;
+	public email!:string;
+	
+	public username!:string;
+	
+	public first_name!:string;
+	
+	public last_name!:string;
+	
+	public type!:string;
+	
+	public active!:boolean;
+	
+	public bio!:string;
+	
+	public password!:string;
 	
 	constructor(user:urn_mdls.resources.User){
+		
 		super(user);
-		let k:keyof urn_mdls.resources.User;
-		for(k in user){
-			console.log(user[k]);
-			this[k] = user[k];
-		}
+		
+		this.email = user.email;
+		
+		this.username = user.username;
+		
+		this.first_name = user.first_name;
+		
+		this.last_name = user.last_name;
+		
+		this.type = user.type;
+		
+		this.active = user.active;
+		
+		this.bio = user.bio;
+		
+		this.password = user.password;
+		
 	}
 	
 }
