@@ -18,9 +18,20 @@
 // }
 
 import create_instance from './rsrc/user';
-const b = {email:'a@a.com',username:'usernmae',malicious:'HDNSKJ(")/)'};
+const b = {
+	_id:'sdjhaskhdjkas',
+	email:'a@a.com',
+	username:'usernmae',
+	malicious:'HDNSKJ(")/)',
+	first_name:'',
+	last_name:'',
+	active:true,
+	password:'',
+	bio:'',
+	type:''
+};
 const a = create_instance(b);
-
+// a.vali();
 console.log(a);
 
 

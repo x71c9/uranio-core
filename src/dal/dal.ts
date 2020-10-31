@@ -6,24 +6,47 @@
 
 import {urn_log} from 'urn-lib';
 
-@urn_log.decorators.debug_constructor
+import * as urn_rsrc from '../rsrc/';
+
+import * as urn_db from '../db/';
+
+const urn_con = urn_db.connection.create(
+	'con_name',
+	process.env.urn_db_host!,
+	parseInt(process.env.urn_db_port!),
+	process.env.urn_db_name!
+);
+
 @urn_log.decorators.debug_methods
-// class URNDAL<Resource> {
-class URNDAL {
+export abstract class URNDAL<Model extends urn_rsrc.ResourceInstance> {
 	
-	constructor(public name:string){
+	protected _db_relation:urn_db.Relation;
 	
+	constructor(public relation_name:string){
+		
+		this._db_relation = urn_con.get_relation(this.relation_name, this.get_schema());
+		
 	}
 	
-	private async _find(){
-		// TODO implement
+	protected abstract get_schema_definition():urn_db.SchemaDefinition;
+	
+	private get_schema()
+			:urn_db.Schema{
+		return new urn_db.Schema(this.get_schema_definition());
 	}
 	
-	public async find(){
+	private async _find()
+		:Promise<Model[]>{
+		return await this._db_relation.find();
+	}
+	
+	public async find()
+		:Promise<Model[]>{
 		return await this._find();
 	}
 	
-	public async find_with_sensitive(){
+	public async find_with_sensitive()
+		:Promise<Model[]>{
 		return await this._find();
 	}
 	
@@ -35,7 +58,7 @@ class URNDAL {
 		return await this._find_by_id();
 	}
 	
-	public async find_by_id_with_sesitive(){
+	public async find_by_id_with_sensitive(){
 		return await this._find_by_id();
 	}
 	
@@ -47,7 +70,7 @@ class URNDAL {
 		return await this._find_one();
 	}
 	
-	public async find_one_with_sensitve(){
+	public async find_one_with_sensitive(){
 		return await this._find_one();
 	}
 	
@@ -59,7 +82,7 @@ class URNDAL {
 		return await this._insert_one();
 	}
 	
-	public async insert_one_with_sensitve(){
+	public async insert_one_with_sensitive(){
 		return await this._insert_one();
 	}
 	
@@ -71,7 +94,7 @@ class URNDAL {
 		return await this._update_one();
 	}
 	
-	public async update_one_with_sensitve(){
+	public async update_one_with_sensitive(){
 		return await this._update_one();
 	}
 	
@@ -83,23 +106,23 @@ class URNDAL {
 		return await this._delete_one();
 	}
 	
-	public async delete_one_with_sensitve(){
+	public async delete_one_with_sensitive(){
 		return await this._delete_one();
 	}
 	
 	public async is_valid_id(){
 		// TODO implement
 	}
-	
+
 }
 
-export type DALInstance = InstanceType<typeof URNDAL>;
+// export type DALInstance = InstanceType<typeof URNDAL>;
 
-export default function create_instance(name:string)
-		:DALInstance{
+// export default function create_instance(name:string)
+//     :DALInstance{
 	
-	urn_log.fn_debug('create_instance for URNDAL');
+//   urn_log.fn_debug('create_instance for URNDAL');
 
-	return new URNDAL(name);
+//   return new URNDAL(name);
 	
-}
+// }
