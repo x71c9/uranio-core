@@ -13,7 +13,7 @@ import {URNDAL} from './dal';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class URNDALUsers extends URNDAL<urn_rsrc.UserInstance>{
+class URNDALUsers extends URNDAL<urn_rsrc.UserInstance> {
 	
 	constructor(){
 		super('urn_user');
@@ -97,3 +97,8 @@ class URNDALUsers extends URNDAL<urn_rsrc.UserInstance>{
 }
 
 export type DalUsersInstance = InstanceType<typeof URNDALUsers>;
+
+
+
+
+

@@ -18,8 +18,9 @@ export class Resource implements urn_mdls.resources.Resource {
 	public _id:string;
 	
 	constructor(resource:urn_mdls.resources.Resource){
+		
 		this._id = resource._id;
-		// Object.assign(this, resource);
+		
 	}
 	
 }
