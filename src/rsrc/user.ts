@@ -15,23 +15,23 @@ import {Resource} from './resource';
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class User extends Resource implements urn_mdls.resources.User {
+class URNUser extends Resource implements urn_mdls.resources.User {
 	
-	public email!:string;
+	public email:string;
 	
-	public username!:string;
+	public username:string;
 	
-	public first_name!:string;
+	public first_name:string;
 	
-	public last_name!:string;
+	public last_name:string;
 	
-	public type!:string;
+	public type:string;
 	
-	public active!:boolean;
+	public active:boolean;
 	
-	public bio!:string;
+	public bio:string;
 	
-	public password!:string;
+	public password:string;
 	
 	constructor(user:urn_mdls.resources.User){
 		
@@ -57,9 +57,9 @@ class User extends Resource implements urn_mdls.resources.User {
 	
 }
 
-export type UserInstance = InstanceType<typeof User>;
+export type UserInstance = InstanceType<typeof URNUser>;
 
 export default function create_instance(user:urn_mdls.resources.User)
 		:UserInstance{
-	return new User(user);
+	return new URNUser(user);
 }

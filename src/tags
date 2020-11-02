@@ -5,18 +5,24 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 ConnectionInstance	db/connection.ts	/^export type ConnectionInstance = InstanceType<typeof URNDBConnection>;$/;"	t
-DALInstance	dal/dal.ts	/^export type DALInstance = InstanceType<typeof URNDAL>;$/;"	t
-Resource	rsrc/resource.ts	/^export class Resource implements urn_mdls.Resource {$/;"	c
+DalUsersInstance	dal/users.ts	/^export type DalUsersInstance = InstanceType<typeof URNDALUsers>;$/;"	t
+Relation	db/types.ts	/^export class Relation extends mongoose.Model{}$/;"	c
+Resource	rsrc/resource.ts	/^export class Resource implements urn_mdls.resources.Resource {$/;"	c
 ResourceInstance	rsrc/resource.ts	/^export type ResourceInstance = InstanceType<typeof Resource>;$/;"	t
-URNDAL	dal/dal.ts	/^class URNDAL<Resource> {$/;"	c
+Schema	db/types.ts	/^export class Schema extends mongoose.Schema{}$/;"	c
+SchemaDefinition	db/types.ts	/^export interface SchemaDefinition extends mongoose.SchemaDefinition{}$/;"	i
+URNDAL	dal/dal.ts	/^export abstract class URNDAL<Model extends urn_rsrc.ResourceInstance> {$/;"	c
+URNDALUsers	dal/users.ts	/^class URNDALUsers extends URNDAL<urn_rsrc.UserInstance>{$/;"	c
 URNDBConnection	db/connection.ts	/^class URNDBConnection {$/;"	c
-User	rsrc/user.ts	/^class User extends Resource implements urn_mdls.User {$/;"	c
+User	rsrc/user.ts	/^class User extends Resource implements urn_mdls.resources.User {$/;"	c
 UserInstance	rsrc/user.ts	/^export type UserInstance = InstanceType<typeof User>;$/;"	t
-_connection	db/connection.ts	/^	private _connection:mongoose.Connection|null;$/;"	m
+_connection	db/connection.ts	/^	private _connection:mongoose.Connection;$/;"	m
+_db_relation	dal/dal.ts	/^	protected _db_relation:urn_db.Relation;$/;"	m
 _delete_one	dal/dal.ts	/^	private async _delete_one(){$/;"	m
 _find	dal/dal.ts	/^	private async _find()$/;"	m
 _find_by_id	dal/dal.ts	/^	private async _find_by_id(){$/;"	m
 _find_one	dal/dal.ts	/^	private async _find_one(){$/;"	m
+_id	rsrc/resource.ts	/^	public _id:string;$/;"	m
 _insert_one	dal/dal.ts	/^	private async _insert_one(){$/;"	m
 _on_close	db/connection.ts	/^	private _on_close()$/;"	m
 _on_connected	db/connection.ts	/^	private _on_connected()$/;"	m
@@ -28,27 +34,40 @@ _on_reconnect_failed	db/connection.ts	/^	private _on_reconnect_failed()$/;"	m
 _on_reconnect_tries	db/connection.ts	/^	private _on_reconnect_tries()$/;"	m
 _on_reconnected	db/connection.ts	/^	private _on_reconnected()$/;"	m
 _update_one	dal/dal.ts	/^	private async _update_one(){$/;"	m
+active	rsrc/user.ts	/^	public active:boolean;$/;"	m
+bio	rsrc/user.ts	/^	public bio:string;$/;"	m
 close	db/connection.ts	/^	public async close()$/;"	m
-create_instance	dal/dal.ts	/^export default function create_instance(name:string)$/;"	f
-create_instance	db/connection.ts	/^export function create_instance(con_name:string, db_host:string, db_port:number, db_name:string)$/;"	f
-create_instance	rsrc/resource.ts	/^export default function create_instance()$/;"	f
-create_instance	rsrc/user.ts	/^export default function create_instance()$/;"	f
+create	db/connection.ts	/^export function create(con_name:string, db_host:string, db_port:number, db_name:string)$/;"	f
+create_instance	index.ts	/^import create_instance from '.\/rsrc\/user';$/;"	I
+create_instance	rsrc/resource.ts	/^export default function create_instance(resource:urn_mdls.resources.Resource)$/;"	f
+create_instance	rsrc/user.ts	/^export default function create_instance(user:urn_mdls.resources.User)$/;"	f
 delete_one	dal/dal.ts	/^	public async delete_one(){$/;"	m
-delete_one_with_sensitve	dal/dal.ts	/^	public async delete_one_with_sensitve(){$/;"	m
-find	dal/dal.ts	/^	public async find(){$/;"	m
+delete_one_with_sensitive	dal/dal.ts	/^	public async delete_one_with_sensitive(){$/;"	m
+email	rsrc/user.ts	/^	public email:string;$/;"	m
+find	dal/dal.ts	/^	public async find()$/;"	m
 find_by_id	dal/dal.ts	/^	public async find_by_id(){$/;"	m
-find_by_id_with_sesitive	dal/dal.ts	/^	public async find_by_id_with_sesitive(){$/;"	m
+find_by_id_with_sensitive	dal/dal.ts	/^	public async find_by_id_with_sensitive(){$/;"	m
 find_one	dal/dal.ts	/^	public async find_one(){$/;"	m
-find_one_with_sensitve	dal/dal.ts	/^	public async find_one_with_sensitve(){$/;"	m
-find_with_sensitive	dal/dal.ts	/^	public async find_with_sensitive(){$/;"	m
+find_one_with_sensitive	dal/dal.ts	/^	public async find_one_with_sensitive(){$/;"	m
+find_with_sensitive	dal/dal.ts	/^	public async find_with_sensitive()$/;"	m
+first_name	rsrc/user.ts	/^	public first_name:string;$/;"	m
+get_relation	db/connection.ts	/^	public get_relation(relation_name:string, schema:Schema)$/;"	m
+get_schema	dal/dal.ts	/^	private get_schema()$/;"	m
+get_schema_definition	dal/dal.ts	/^	protected abstract get_schema_definition():urn_db.SchemaDefinition;$/;"	m
+get_schema_definition	dal/users.ts	/^	protected get_schema_definition(){$/;"	m
 get_uri	db/connection.ts	/^	public get_uri():string{$/;"	m
 insert_one	dal/dal.ts	/^	public async insert_one(){$/;"	m
-insert_one_with_sensitve	dal/dal.ts	/^	public async insert_one_with_sensitve(){$/;"	m
+insert_one_with_sensitive	dal/dal.ts	/^	public async insert_one_with_sensitive(){$/;"	m
 is_valid_id	dal/dal.ts	/^	public async is_valid_id(){$/;"	m
+last_name	rsrc/user.ts	/^	public last_name:string;$/;"	m
 mongoose	db/connection.ts	/^import mongoose from 'mongoose';$/;"	I
+mongoose	db/types.ts	/^import mongoose from 'mongoose';$/;"	I
 name	db/connection.ts	/^	public name:string;$/;"	m
+password	rsrc/user.ts	/^	public password:string;$/;"	m
 readyState	db/connection.ts	/^	public readyState:number;$/;"	m
+type	rsrc/user.ts	/^	public type:string;$/;"	m
 update_one	dal/dal.ts	/^	public async update_one(){$/;"	m
-update_one_with_sensitve	dal/dal.ts	/^	public async update_one_with_sensitve(){$/;"	m
+update_one_with_sensitive	dal/dal.ts	/^	public async update_one_with_sensitive(){$/;"	m
 urn_mdls	rsrc/resource.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
 urn_mdls	rsrc/user.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
+username	rsrc/user.ts	/^	public username:string;$/;"	m

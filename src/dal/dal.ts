@@ -10,15 +10,17 @@ import * as urn_rsrc from '../rsrc/';
 
 import * as urn_db from '../db/';
 
+import {QueryOptions, QueryFilter} from './types';
+
 const urn_con = urn_db.connection.create(
-	'con_name',
+	'main',
 	process.env.urn_db_host!,
 	parseInt(process.env.urn_db_port!),
 	process.env.urn_db_name!
 );
 
 @urn_log.decorators.debug_methods
-export abstract class URNDAL<Model extends urn_rsrc.ResourceInstance> {
+export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 	
 	protected _db_relation:urn_db.Relation;
 	
@@ -35,18 +37,35 @@ export abstract class URNDAL<Model extends urn_rsrc.ResourceInstance> {
 		return new urn_db.Schema(this.get_schema_definition());
 	}
 	
-	private async _find()
-		:Promise<Model[]>{
+	/**
+	 * Private function that return a colleciton of records from a Relation
+	 *
+	 * @param filter - Filter object for query
+	 *   e.g. {field0: 'value', field1: {$gt: 77}}
+	 * @param projection [optional] - Optional fields to return
+	 *   e.g. {field0: 1, field1: 0} or '+field0 -field1'
+	 * @param options [optional] - Option object
+	 *   e.g. {sort: 'field0', limit: 10, skip: 20}
+	 * @param with_sensitve
+	 *   if set to true will return sensitive fields
+	 */
+	private async _find(
+		filter:QueryFilter<Resource>,
+		projection?:QueryFilter<Resource> | string | null,
+		options?:QueryOptions | null,
+		with_sensitive:boolean
+	):Promise<Resource[]>{
+		
 		return await this._db_relation.find();
 	}
 	
 	public async find()
-		:Promise<Model[]>{
+			:Promise<Resource[]>{
 		return await this._find();
 	}
 	
 	public async find_with_sensitive()
-		:Promise<Model[]>{
+			:Promise<Resource[]>{
 		return await this._find();
 	}
 	
