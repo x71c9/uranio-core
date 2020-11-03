@@ -33,6 +33,8 @@ class URNUser extends Resource implements urn_mdls.resources.User {
 	
 	public password:string;
 	
+	public readonly creation_date:Date;
+	
 	constructor(user:urn_mdls.resources.User){
 		
 		super(user);
@@ -52,6 +54,8 @@ class URNUser extends Resource implements urn_mdls.resources.User {
 		this.bio = user.bio;
 		
 		this.password = user.password;
+		
+		this.creation_date = user.creation_date;
 		
 	}
 	
