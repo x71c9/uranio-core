@@ -1,5 +1,9 @@
 
+import * as resource from './resource';
 
-export {ResourceInstance} from './resource';
+import * as user from './user';
 
-export * from './user';
+export {
+	resource,
+	user
+};

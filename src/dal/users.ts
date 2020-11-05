@@ -15,10 +15,14 @@ import {URNDAL} from './dal';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class URNDALUsers extends URNDAL<urn_rsrc.UserInstance> {
+class URNDALUsers extends URNDAL<urn_mdls.resources.User, urn_rsrc.user.UserInstance> {
 	
 	constructor(){
 		super('urn_user');
+	}
+	
+	protected _set_resource_create(){
+		this._resource_create = urn_rsrc.user.create;
 	}
 	
 	protected _get_approved_keys(){
@@ -104,7 +108,9 @@ class URNDALUsers extends URNDAL<urn_rsrc.UserInstance> {
 
 export type DalUsersInstance = InstanceType<typeof URNDALUsers>;
 
-
+export default function create():DalUsersInstance{
+	return new URNDALUsers();
+}
 
 
 

@@ -4,6 +4,25 @@
  * @packageDocumentation
  */
 
+// console.log(process.env.urn_env_name);
+
+import create from './dal/users';
+
+async function run(){
+	
+	console.log('Running...');
+	
+	const dal_users = create();
+	
+	// await dal_users.insert_one();
+	
+	const resp = await dal_users.find({});
+	
+	console.log(resp);
+}
+
+run();
+
 // import {urn_connection} from './db';
 
 // try{

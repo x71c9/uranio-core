@@ -89,7 +89,7 @@ class URNDBConnection {
 	}
 	
 	public get_relation(relation_name:string, schema:Schema)
-			:Relation{
+			:typeof Relation{
 		return this._connection.model(relation_name, schema);
 	}
 	
