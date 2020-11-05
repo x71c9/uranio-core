@@ -7,6 +7,8 @@
 
 import {urn_log} from 'urn-lib';
 
+import urn_mdls from 'urn-mdls';
+
 import * as urn_rsrc from '../rsrc/';
 
 import {URNDAL} from './dal';
@@ -17,6 +19,10 @@ class URNDALUsers extends URNDAL<urn_rsrc.UserInstance> {
 	
 	constructor(){
 		super('urn_user');
+	}
+	
+	protected _get_approved_keys(){
+		return urn_mdls.resources.user.keys.approved;
 	}
 	
 	protected get_schema_definition(){
