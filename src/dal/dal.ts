@@ -21,22 +21,27 @@ const urn_con = urn_db.connection.create(
 	process.env.urn_db_name!
 );
 
+const _queryop = {
+	andornor: ['$and','$or','$nor','$not'],
+	comparsion: ['$eq','$gt','$gte','$in','$lt','$lte','$ne','$nin']
+};
+
 @urn_log.decorators.debug_methods
-export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
+export abstract class URNDAL<M extends urn_mdls.resources.Resource, R extends urn_rsrc.resource.ResourceInstance> {
 	
-	protected _db_relation:urn_db.Relation;
+	protected _resource_create!:urn_rsrc.resource.CreateResourceFunction<M,R>
 	
-	protected _queryop:{andornor:string[], comparsion: string[]};
+	protected _db_relation:typeof urn_db.Relation;
 	
 	constructor(public relation_name:string){
 		
 		this._db_relation = urn_con.get_relation(this.relation_name, this.get_schema());
-		this._queryop = {
-			andornor: ['$and','$or','$nor','$not'],
-			comparsion: ['$eq','$gt','$gte','$in','$lt','$lte','$ne','$nin']
-		};
+		
+		this._set_resource_create();
 		
 	}
+	
+	protected abstract _set_resource_create():void;
 	
 	protected abstract get_schema_definition():urn_db.SchemaDefinition;
 	
@@ -57,50 +62,61 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 	 * @param with_sensitve
 	 *   if set to true will return sensitive fields
 	 */
-	public async find(
-		filter:QueryFilter<Resource>,
-		options?:QueryOptions<Resource>
-	):Promise<Resource[]>{
+	public async find(filter:QueryFilter<R>, options?:QueryOptions<R>)
+			:Promise<R[]>{
 		try{
 			this._validate_filter_options_params(filter, options);
 		}catch(err){
 			throw urn_error.create(`Invalid query paramters`, err);
 		}
-		const mon_res_find = await this._db_relation.find(filter, null, options);
-		console.log(mon_res_find);
-		return [];
+		const mon_res_find = (options) ?
+			await this._db_relation.find(filter, null, options) :
+			await this._db_relation.find(filter);
+		const resource_array = [];
+		for(const mon_res of mon_res_find){
+			resource_array.push(this._resource_create(mon_res));
+		}
+		return resource_array;
 	}
 	
 	// public async find_by_id()
-	//     :Promise<Resource>{
+	//     :Promise<R>{
 	//   // TODO
 	// }
 	
 	// public async find_one()
-	//     :Promise<Resource>{
+	//     :Promise<R>{
 	//   // TODO
 	// }
 	
-	// public async insert_one()
-	//     :Promise<Resource>{
-	//   // TODO
-	// }
+	public async insert_one()
+			:Promise<void>{
+		// :Promise<R>{
+		const mon_new = new this._db_relation({
+			first_name: 'Andrea',
+			last_name: 'Reni',
+			email: 'mail@andreareni.com',
+			username: 'trakea',
+			password: 'dskajdlksajdla'
+		});
+		return await mon_new.save();
+	}
 	
 	// public async update_one()
-	//     :Promise<Resource>{
+	//     :Promise<R>{
 	//   // TODO
 	// }
 	
 	// public async delete_one()
-	//     :Promise<Resource>{
+	//     :Promise<R>{
 	//   // TODO
 	// }
 	
-	protected abstract _get_approved_keys():urn_mdls.ModelKeys<Resource>;
+	protected abstract _get_approved_keys():urn_mdls.ModelKeys<R>;
 	
 	private _validate_filter_options_params(
-		filter:QueryFilter<Resource>,
-		options?:QueryOptions<Resource>
+		filter:QueryFilter<R>,
+		options?:QueryOptions<R>
 	):true | never{
 		try{
 			this._validate_filter(filter);
@@ -130,7 +146,7 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 				return true;
 			case 'object':{
 				for(const k in field){
-					if(this._queryop.comparsion.indexOf(k) === -1){
+					if(_queryop.comparsion.indexOf(k) === -1){
 						throw urn_error.create(`Filter value comparsion not valid [${k}]`);
 					}
 					if(typeof field[k] != 'string' && field[k] != 'number' && !Array.isArray(field[k])){
@@ -157,20 +173,20 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 	 * Validate filter object for querying Relation. used in find, find_one, ...
 	 *
 	 * filter must be in format:
-	 * - {key: value} where key is key of Resource
+	 * - {key: value} where key is key of R
 	 * - {$and|$or|$nor: [{key: value},{key: value}, ...]}
 	 * - {$and|$or|$nor: [{$and|$or|$nor: [...], ...]}
 	 *
 	 * @param filter - The filter to validate
 	 */
-	private _validate_filter(filter:FilterType<Resource>)
+	private _validate_filter(filter:FilterType<R>)
 			:true | never{
 		if(typeof filter !== 'object' || filter === null){
 			throw urn_error.create(`Invalid filter format`);
 		}
-		let key:keyof FilterType<Resource>;
+		let key:keyof FilterType<R>;
 		for(key in filter){
-			if(this._queryop.andornor.indexOf(key) !== -1){
+			if(_queryop.andornor.indexOf(key) !== -1){
 				if(!Array.isArray(filter[key])){
 					throw urn_error.create(
 						`Invalid filter format. Filter value for [${key}] must be an array`
@@ -200,7 +216,7 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 	 * @param projection - The projection to validate
 	 *
 	 */
-	// private _validate_projection(projection:QueryFilter<Resource> | string)
+	// private _validate_projection(projection:QueryFilter<R> | string)
 	//     :true | never{
 	//   switch(typeof projection){
 	//     case 'string':{
@@ -248,7 +264,7 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 	 * @param object - The object or the string to validate as option
 	 *
 	 */
-	private _validate_options(options:QueryOptions<Resource>)
+	private _validate_options(options:QueryOptions<R>)
 			:true | never{
 		if(urn_util.object.has_key(options, 'sort')){
 			switch(typeof options.sort){

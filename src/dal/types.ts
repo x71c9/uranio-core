@@ -9,7 +9,7 @@
  */
 export type QueryFilter<T> = {
 	
-	[P in keyof T]: any
+	[P in keyof T]?: any
 	
 }
 
@@ -25,7 +25,7 @@ export interface QueryOptions<T> {
 	/*
 	 * Limit records result
 	 */
-	limit?: number | null;
+	limit?: number;
 
 	/*
 	 * Skip number of records

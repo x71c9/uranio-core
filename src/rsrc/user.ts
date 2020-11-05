@@ -8,7 +8,7 @@ import urn_mdls from 'urn-mdls';
 
 import {urn_log} from 'urn-lib';
 
-import {Resource} from './resource';
+import {Resource, CreateResourceFunction} from './resource';
 
 /**
  * Class for Resource User
@@ -63,7 +63,8 @@ class URNUser extends Resource implements urn_mdls.resources.User {
 
 export type UserInstance = InstanceType<typeof URNUser>;
 
-export default function create_instance(user:urn_mdls.resources.User)
-		:UserInstance{
-	return new URNUser(user);
-}
+export const create:CreateResourceFunction<urn_mdls.resources.User, UserInstance> =
+	(user) => {
+		return new URNUser(user);
+	};
+

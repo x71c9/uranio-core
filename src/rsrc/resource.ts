@@ -27,7 +27,11 @@ export class Resource implements urn_mdls.resources.Resource {
 
 export type ResourceInstance = InstanceType<typeof Resource>;
 
-export default function create_instance(resource:urn_mdls.resources.Resource)
-		:ResourceInstance{
-	return new Resource(resource);
-}
+export type CreateResourceFunction<Model, ReturnInstance> =
+	(resource:Model) => ReturnInstance;
+
+export const create:CreateResourceFunction<urn_mdls.resources.Resource, ResourceInstance> =
+	(resource) => {
+		return new Resource(resource);
+	};
+
