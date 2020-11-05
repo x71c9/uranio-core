@@ -59,15 +59,16 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 	 */
 	public async find(
 		filter:QueryFilter<Resource>,
-		projection?:QueryFilter<Resource> | string | null,
 		options?:QueryOptions<Resource>
 	):Promise<Resource[]>{
 		try{
-			this._validate_filter_projection_options_params(filter, projection, options);
+			this._validate_filter_options_params(filter, options);
 		}catch(err){
 			throw urn_error.create(`Invalid query paramters`, err);
 		}
-		const mon_res_find = await this._db_relation.find(filter, projection, options);
+		const mon_res_find = await this._db_relation.find(filter, null, options);
+		console.log(mon_res_find);
+		return [];
 	}
 	
 	// public async find_by_id()
@@ -95,18 +96,14 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 	//   // TODO
 	// }
 	
-	protected abstract _get_approved_fields():urn_mdls.ModelKeys<Resource>;
+	protected abstract _get_approved_keys():urn_mdls.ModelKeys<Resource>;
 	
-	private _validate_filter_projection_options_params(
+	private _validate_filter_options_params(
 		filter:QueryFilter<Resource>,
-		projection?:QueryFilter<Resource> | string | null,
 		options?:QueryOptions<Resource>
 	):true | never{
 		try{
 			this._validate_filter(filter);
-			if(projection){
-				this._validate_projection(projection);
-			}
 			if(options){
 				this._validate_options(options);
 			}
@@ -115,7 +112,7 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 		}
 		return true;
 	}
-
+	
 	/**
 	 * Validate single field of a filter object
 	 *
@@ -183,8 +180,8 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 					this._validate_filter(filter[key][i]);
 				}
 			}else{
-				// if(key!='_id' && !this._get_approved_fields().includes(key))
-				if(!urn_util.object.has_key(this._get_approved_fields(), key)){
+				// if(key!='_id' && !this._get_approved_keys().includes(key))
+				if(!urn_util.object.has_key(this._get_approved_keys(), key)){
 					throw urn_error.create(`Filter field not valid [${key}]`);
 				}
 				try{
@@ -203,47 +200,47 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 	 * @param projection - The projection to validate
 	 *
 	 */
-	private _validate_projection(projection:QueryFilter<Resource> | string)
-			:true | never{
-		switch(typeof projection){
-			case 'string':{
-				if(urn_util.object.has_key(this._get_approved_fields(), projection)){
-					return true;
-				}
-				const splitted = projection.split(' ');
-				const first_chars = splitted.map(v => v[0]);
-				if(first_chars.indexOf('-') !== -1 && !first_chars.every(v => v === first_chars[0])){
-					throw urn_error.create('Projection cannot have a mix of including and excluding');
-				}
-				for(let i=0; i < splitted.length; i++){
-					const s = splitted[i];
-					if(s[0] == '-' || s[0] == '+'){
-						const substring = s.substring(1, s.length);
-						if(!urn_util.object.has_key(this._get_approved_fields(), substring))
-							throw urn_error.create(`Projection invalid [${s}]`);
-					}else{
-						if(!urn_util.object.has_key(this._get_approved_fields(), s))
-							throw urn_error.create(`Projection invalid [${s}]`);
-					}
-				}
-				return true;
-			}
-			case 'object':{
-				for(const k in projection){
-					if(!urn_util.object.has_key(this._get_approved_fields(), k)){
-						throw urn_error.create(`Projection invalid [${k}]`);
-					}
-					if(projection[k] != 1 && projection[k] != 0){
-						throw urn_error.create(`Projection invalid [${k}]`);
-					}
-				}
-				return true;
-			}
-			default:{
-				throw urn_error.create('Projection has an invalid type');
-			}
-		}
-	}
+	// private _validate_projection(projection:QueryFilter<Resource> | string)
+	//     :true | never{
+	//   switch(typeof projection){
+	//     case 'string':{
+	//       if(urn_util.object.has_key(this._get_approved_keys(), projection)){
+	//         return true;
+	//       }
+	//       const splitted = projection.split(' ');
+	//       const first_chars = splitted.map(v => v[0]);
+	//       if(first_chars.indexOf('-') !== -1 && !first_chars.every(v => v === first_chars[0])){
+	//         throw urn_error.create('Projection cannot have a mix of including and excluding');
+	//       }
+	//       for(let i=0; i < splitted.length; i++){
+	//         const s = splitted[i];
+	//         if(s[0] == '-' || s[0] == '+'){
+	//           const substring = s.substring(1, s.length);
+	//           if(!urn_util.object.has_key(this._get_approved_keys(), substring))
+	//             throw urn_error.create(`Projection invalid [${s}]`);
+	//         }else{
+	//           if(!urn_util.object.has_key(this._get_approved_keys(), s))
+	//             throw urn_error.create(`Projection invalid [${s}]`);
+	//         }
+	//       }
+	//       return true;
+	//     }
+	//     case 'object':{
+	//       for(const k in projection){
+	//         if(!urn_util.object.has_key(this._get_approved_keys(), k)){
+	//           throw urn_error.create(`Projection invalid [${k}]`);
+	//         }
+	//         if(projection[k] != 1 && projection[k] != 0){
+	//           throw urn_error.create(`Projection invalid [${k}]`);
+	//         }
+	//       }
+	//       return true;
+	//     }
+	//     default:{
+	//       throw urn_error.create('Projection has an invalid type');
+	//     }
+	//   }
+	// }
 	
 	/**
 	 * Validate option object|string for querying Relation. Used in find, findOne, ...
@@ -260,16 +257,16 @@ export abstract class URNDAL<Resource extends urn_rsrc.ResourceInstance> {
 					if(options.sort[0] == '+' || options.sort[0] == '-'){
 						sort_value = sort_value.substring(1, options.sort.length);
 					}
-					// if(sort_value != '_id' && !this._get_approved_fields().includes(sort_value)){
-					if(!urn_util.object.has_key(this._get_approved_fields(), sort_value)){
+					// if(sort_value != '_id' && !this._get_approved_keys().includes(sort_value)){
+					if(!urn_util.object.has_key(this._get_approved_keys(), sort_value)){
 						throw urn_error.create(`Sort value not valid [${options.sort}]`);
 					}
 					break;
 				}
 				case 'object':{
 					for(const k in options.sort){
-						// if(k!='_id' && !this._get_approved_fields().includes(k))
-						if(!urn_util.object.has_key(this._get_approved_fields(), k)){
+						// if(k!='_id' && !this._get_approved_keys().includes(k))
+						if(!urn_util.object.has_key(this._get_approved_keys(), k)){
 							throw urn_error.create(`Sort value not valid [${k}]`);
 						}
 						// if(!urn_util.object.has_key(options.sort, k)){
