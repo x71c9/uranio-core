@@ -11,25 +11,25 @@ import urn_mdls from 'urn-mdls';
 
 import * as urn_rsrc from '../rsrc/';
 
-import {URNDAL} from './dal';
+import {DAL} from './dal';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class URNDALUsers extends URNDAL<urn_mdls.resources.User, urn_rsrc.user.UserInstance> {
+class DALUsers extends DAL<urn_mdls.resources.User, urn_rsrc.user.UserInstance> {
 	
 	constructor(){
 		super('urn_user');
 	}
 	
-	protected _set_resource_create(){
-		this._resource_create = urn_rsrc.user.create;
+	protected _get_resource_create(){
+		return urn_rsrc.user.create;
 	}
 	
 	protected _get_approved_keys(){
 		return urn_mdls.resources.user.keys.approved;
 	}
 	
-	protected get_schema_definition(){
+	protected _get_schema_definition(){
 		return {
 			first_name: {
 				type: String,
@@ -106,10 +106,10 @@ class URNDALUsers extends URNDAL<urn_mdls.resources.User, urn_rsrc.user.UserInst
 	}
 }
 
-export type DalUsersInstance = InstanceType<typeof URNDALUsers>;
+export type DalUsersInstance = InstanceType<typeof DALUsers>;
 
 export default function create():DalUsersInstance{
-	return new URNDALUsers();
+	return new DALUsers();
 }
 
 

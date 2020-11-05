@@ -27,27 +27,36 @@ const _queryop = {
 };
 
 @urn_log.decorators.debug_methods
-export abstract class URNDAL<M extends urn_mdls.resources.Resource, R extends urn_rsrc.resource.ResourceInstance> {
+export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_rsrc.resource.ResourceInstance> {
 	
-	protected _resource_create!:urn_rsrc.resource.CreateResourceFunction<M,R>
+	protected _resource_create:urn_rsrc.resource.CreateResourceFunction<M,R>
 	
 	protected _db_relation:typeof urn_db.Relation;
 	
+	protected _approved_keys:urn_mdls.ModelKeys<M>;
+	
 	constructor(public relation_name:string){
 		
-		this._db_relation = urn_con.get_relation(this.relation_name, this.get_schema());
+		this._db_relation = this._get_relation();
 		
-		this._set_resource_create();
+		this._resource_create = this._get_resource_create();
+
+		this._approved_keys = this._get_approved_keys();
 		
 	}
 	
-	protected abstract _set_resource_create():void;
+	protected abstract _get_resource_create():urn_rsrc.resource.CreateResourceFunction<M,R>;
 	
-	protected abstract get_schema_definition():urn_db.SchemaDefinition;
+	protected abstract _get_schema_definition():urn_db.SchemaDefinition;
 	
-	private get_schema()
-			:urn_db.Schema{
-		return new urn_db.Schema(this.get_schema_definition());
+	protected abstract _get_approved_keys():urn_mdls.ModelKeys<M>;
+	
+	private _get_schema():urn_db.Schema{
+		return new urn_db.Schema(this._get_schema_definition());
+	}
+	
+	private _get_relation():typeof urn_db.Relation{
+		return urn_con.get_relation(this.relation_name, this._get_schema());
 	}
 	
 	/**
@@ -89,16 +98,9 @@ export abstract class URNDAL<M extends urn_mdls.resources.Resource, R extends ur
 	//   // TODO
 	// }
 	
-	public async insert_one()
-			:Promise<void>{
-		// :Promise<R>{
-		const mon_new = new this._db_relation({
-			first_name: 'Andrea',
-			last_name: 'Reni',
-			email: 'mail@andreareni.com',
-			username: 'trakea',
-			password: 'dskajdlksajdla'
-		});
+	public async insert_one(user:M)
+			:Promise<R>{
+		const mon_new = new this._db_relation(user);
 		return await mon_new.save();
 	}
 	
@@ -111,8 +113,6 @@ export abstract class URNDAL<M extends urn_mdls.resources.Resource, R extends ur
 	//     :Promise<R>{
 	//   // TODO
 	// }
-	
-	protected abstract _get_approved_keys():urn_mdls.ModelKeys<R>;
 	
 	private _validate_filter_options_params(
 		filter:QueryFilter<R>,
@@ -196,8 +196,8 @@ export abstract class URNDAL<M extends urn_mdls.resources.Resource, R extends ur
 					this._validate_filter(filter[key][i]);
 				}
 			}else{
-				// if(key!='_id' && !this._get_approved_keys().includes(key))
-				if(!urn_util.object.has_key(this._get_approved_keys(), key)){
+				// if(key!='_id' && !this._approved_keys.includes(key))
+				if(!urn_util.object.has_key(this._approved_keys, key)){
 					throw urn_error.create(`Filter field not valid [${key}]`);
 				}
 				try{
@@ -220,7 +220,7 @@ export abstract class URNDAL<M extends urn_mdls.resources.Resource, R extends ur
 	//     :true | never{
 	//   switch(typeof projection){
 	//     case 'string':{
-	//       if(urn_util.object.has_key(this._get_approved_keys(), projection)){
+	//       if(urn_util.object.has_key(this._approved_keys, projection)){
 	//         return true;
 	//       }
 	//       const splitted = projection.split(' ');
@@ -232,10 +232,10 @@ export abstract class URNDAL<M extends urn_mdls.resources.Resource, R extends ur
 	//         const s = splitted[i];
 	//         if(s[0] == '-' || s[0] == '+'){
 	//           const substring = s.substring(1, s.length);
-	//           if(!urn_util.object.has_key(this._get_approved_keys(), substring))
+	//           if(!urn_util.object.has_key(this._approved_keys, substring))
 	//             throw urn_error.create(`Projection invalid [${s}]`);
 	//         }else{
-	//           if(!urn_util.object.has_key(this._get_approved_keys(), s))
+	//           if(!urn_util.object.has_key(this._approved_keys, s))
 	//             throw urn_error.create(`Projection invalid [${s}]`);
 	//         }
 	//       }
@@ -243,7 +243,7 @@ export abstract class URNDAL<M extends urn_mdls.resources.Resource, R extends ur
 	//     }
 	//     case 'object':{
 	//       for(const k in projection){
-	//         if(!urn_util.object.has_key(this._get_approved_keys(), k)){
+	//         if(!urn_util.object.has_key(this._approved_keys, k)){
 	//           throw urn_error.create(`Projection invalid [${k}]`);
 	//         }
 	//         if(projection[k] != 1 && projection[k] != 0){
@@ -273,21 +273,16 @@ export abstract class URNDAL<M extends urn_mdls.resources.Resource, R extends ur
 					if(options.sort[0] == '+' || options.sort[0] == '-'){
 						sort_value = sort_value.substring(1, options.sort.length);
 					}
-					// if(sort_value != '_id' && !this._get_approved_keys().includes(sort_value)){
-					if(!urn_util.object.has_key(this._get_approved_keys(), sort_value)){
+					if(!urn_util.object.has_key(this._approved_keys, sort_value)){
 						throw urn_error.create(`Sort value not valid [${options.sort}]`);
 					}
 					break;
 				}
 				case 'object':{
 					for(const k in options.sort){
-						// if(k!='_id' && !this._get_approved_keys().includes(k))
-						if(!urn_util.object.has_key(this._get_approved_keys(), k)){
+						if(!urn_util.object.has_key(this._approved_keys, k)){
 							throw urn_error.create(`Sort value not valid [${k}]`);
 						}
-						// if(!urn_util.object.has_key(options.sort, k)){
-						//   throw urn_error.create('Invalid key');
-						// }
 						const sort_obj_value = options.sort[k];
 						if(isNaN(sort_obj_value) || (sort_obj_value != -1 && sort_obj_value != 1)){
 							throw urn_error.create('Sort value must be equal either to -1 or 1');
@@ -307,14 +302,4 @@ export abstract class URNDAL<M extends urn_mdls.resources.Resource, R extends ur
 	}
 }
 
-// export type DALInstance = InstanceType<typeof URNDAL>;
-
-// export default function create_instance(name:string)
-//     :DALInstance{
-	
-//   urn_log.fn_debug('create_instance for URNDAL');
-
-//   return new URNDAL(name);
-	
-// }
 

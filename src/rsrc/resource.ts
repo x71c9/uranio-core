@@ -32,6 +32,7 @@ export type CreateResourceFunction<Model, ReturnInstance> =
 
 export const create:CreateResourceFunction<urn_mdls.resources.Resource, ResourceInstance> =
 	(resource) => {
+		urn_log.fn_debug(`Create Resource`);
 		return new Resource(resource);
 	};
 

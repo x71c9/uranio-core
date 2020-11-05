@@ -34,7 +34,7 @@ const mongoose_options = {
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class URNDBConnection {
+class DBConnection {
 	
 	/*
 	 * Connection mongoose connection
@@ -208,9 +208,9 @@ class URNDBConnection {
 	}
 }
 
-export type ConnectionInstance = InstanceType<typeof URNDBConnection>;
+export type ConnectionInstance = InstanceType<typeof DBConnection>;
 
 export function create(con_name:string, db_host:string, db_port:number, db_name:string)
 		:ConnectionInstance{
-	return new URNDBConnection(con_name, db_host, db_port, db_name);
+	return new DBConnection(con_name, db_host, db_port, db_name);
 }
