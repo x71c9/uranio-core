@@ -8,9 +8,13 @@
 
 import create from './dal/users';
 
+import {urn_log} from 'urn-lib';
+
+urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
+
 async function run(){
 	
-	console.log('Running...');
+	urn_log.debug('Running...');
 	
 	const dal_users = create();
 	

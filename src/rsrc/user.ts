@@ -15,7 +15,7 @@ import {Resource, CreateResourceFunction} from './resource';
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class URNUser extends Resource implements urn_mdls.resources.User {
+class User extends Resource implements urn_mdls.resources.User {
 	
 	public email:string;
 	
@@ -61,10 +61,11 @@ class URNUser extends Resource implements urn_mdls.resources.User {
 	
 }
 
-export type UserInstance = InstanceType<typeof URNUser>;
+export type UserInstance = InstanceType<typeof User>;
 
 export const create:CreateResourceFunction<urn_mdls.resources.User, UserInstance> =
 	(user) => {
-		return new URNUser(user);
+		urn_log.fn_debug(`Create user`);
+		return new User(user);
 	};
 
