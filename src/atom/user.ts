@@ -1,5 +1,5 @@
 /**
- * Module for Resource User class
+ * Module for Atom User class
  *
  * @packageDocumentation
  */
@@ -8,14 +8,14 @@ import urn_mdls from 'urn-mdls';
 
 import {urn_log} from 'urn-lib';
 
-import {Resource, CreateResourceFunction} from './resource';
+import {Atom, AtomCreateFunction} from './atom';
 
 /**
- * Class for Resource User
+ * Class for Atom User
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class User extends Resource implements urn_mdls.resources.User {
+export class User extends Atom<urn_mdls.resources.User> implements urn_mdls.resources.User {
 	
 	public email:string;
 	
@@ -63,7 +63,7 @@ class User extends Resource implements urn_mdls.resources.User {
 
 export type UserInstance = InstanceType<typeof User>;
 
-export const create:CreateResourceFunction<urn_mdls.resources.User, UserInstance> =
+export const create:AtomCreateFunction<urn_mdls.resources.User, UserInstance> =
 	(user) => {
 		urn_log.fn_debug(`Create user`);
 		return new User(user);

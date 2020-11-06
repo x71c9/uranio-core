@@ -9,20 +9,20 @@ import {urn_log} from 'urn-lib';
 
 import urn_mdls from 'urn-mdls';
 
-import * as urn_rsrc from '../rsrc/';
+import * as urn_atom from '../atom/';
 
 import {DAL} from './dal';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class DALUsers extends DAL<urn_mdls.resources.User, urn_rsrc.user.UserInstance> {
+class DALUsers extends DAL<urn_mdls.resources.User, urn_atom.user.User> {
 	
 	constructor(){
 		super('urn_user');
 	}
 	
-	protected _get_resource_create(){
-		return urn_rsrc.user.create;
+	protected _get_atom_create(){
+		return urn_atom.user.create;
 	}
 	
 	protected _get_approved_keys(){

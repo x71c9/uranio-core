@@ -8,7 +8,7 @@ import {urn_log, urn_util, urn_error} from 'urn-lib';
 
 import urn_mdls from 'urn-mdls';
 
-import * as urn_rsrc from '../rsrc/';
+import * as urn_atom from '../atom/';
 
 import * as urn_db from '../db/';
 
@@ -27,9 +27,9 @@ const _queryop = {
 };
 
 @urn_log.decorators.debug_methods
-export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_rsrc.resource.ResourceInstance> {
+export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_atom.Atom<M>> {
 	
-	protected _resource_create:urn_rsrc.resource.CreateResourceFunction<M,R>
+	protected _atom_create:urn_atom.AtomCreateFunction<M,A>
 	
 	protected _db_relation:urn_db.Relation<M>;
 	
@@ -39,13 +39,13 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 		
 		this._db_relation = this._get_relation();
 		
-		this._resource_create = this._get_resource_create();
-
+		this._atom_create = this._get_atom_create();
+		
 		this._approved_keys = this._get_approved_keys();
 		
 	}
 	
-	protected abstract _get_resource_create():urn_rsrc.resource.CreateResourceFunction<M,R>;
+	protected abstract _get_atom_create():urn_atom.AtomCreateFunction<M,A>;
 	
 	protected abstract _get_schema_definition():urn_db.SchemaDefinition;
 	
@@ -56,7 +56,7 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 	}
 	
 	private _get_relation():urn_db.Relation<M>{
-		return urn_con.get_relation(this.relation_name, this._get_schema());
+		return urn_con.get_relation<M>(this.relation_name, this._get_schema());
 	}
 	
 	/**
@@ -68,14 +68,18 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 	 *   e.g. {sort: 'field0', limit: 10, skip: 20}
 	 */
 	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
-			:Promise<R[]>{
+			:Promise<A[]>{
 		try{
 			this._validate_filter_options_params(filter, options);
 		}catch(err){
 			throw urn_error.create(`Invalid query paramters`, err);
 		}
-		const db_res_find = await this._db_relation.find(filter, options);
-		return db_res_find.map((db_record) => this._resource_create(db_record));
+		try{
+			const db_res_find = await this._db_relation.find(filter, options);
+			return db_res_find.map((db_record:M) => this._atom_create(db_record));
+		}catch(err){
+			throw urn_error.create(`DAL.find error`, err);
+		}
 	}
 	
 	// public async find_by_id()
@@ -88,11 +92,11 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 	//   // TODO
 	// }
 	
-	// public async insert_one(user:M)
-	//     :Promise<R>{
-	//   const mon_new = new this._db_relation(user);
-	//   return await mon_new.save();
-	// }
+	public async insert_one(atom:A)
+			:Promise<A>{
+		const db_res_insert = await this._db_relation.insert_one(atom.resource);
+		return this._atom_create(db_res_insert);
+	}
 	
 	// public async update_one()
 	//     :Promise<R>{
