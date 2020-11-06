@@ -88,9 +88,12 @@ class DBConnection {
 		
 	}
 	
-	public get_relation(relation_name:string, schema:Schema)
-			:typeof Relation{
-		return this._connection.model(relation_name, schema);
+	public get_relation<M>(relation_name:string, schema:Schema)
+			:Relation<M>{
+		const mon_model = this._connection.model(relation_name, schema);
+		const urn_relation = new Relation<M>();
+		urn_relation.prototype = mon_model.prototype;
+		return urn_relation;
 	}
 	
 	/**

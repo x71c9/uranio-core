@@ -10,7 +10,7 @@ import create from './dal/users';
 
 import {urn_log} from 'urn-lib';
 
-urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
+// urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
 
 async function run(){
 	

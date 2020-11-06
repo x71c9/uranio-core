@@ -104,6 +104,7 @@ class DALUsers extends DAL<urn_mdls.resources.User, urn_rsrc.user.UserInstance> 
 			}
 		};
 	}
+	
 }
 
 export type DalUsersInstance = InstanceType<typeof DALUsers>;
