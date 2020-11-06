@@ -12,7 +12,7 @@ import * as urn_rsrc from '../rsrc/';
 
 import * as urn_db from '../db/';
 
-import {QueryOptions, QueryFilter, FilterType} from './types';
+import {QueryOptions, QueryFilter, FilterType} from '../types';
 
 const urn_con = urn_db.connection.create(
 	'main',
@@ -31,7 +31,7 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 	
 	protected _resource_create:urn_rsrc.resource.CreateResourceFunction<M,R>
 	
-	protected _db_relation:typeof urn_db.Relation;
+	protected _db_relation:urn_db.Relation<M>;
 	
 	protected _approved_keys:urn_mdls.ModelKeys<M>;
 	
@@ -55,7 +55,7 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 		return new urn_db.Schema(this._get_schema_definition());
 	}
 	
-	private _get_relation():typeof urn_db.Relation{
+	private _get_relation():urn_db.Relation<M>{
 		return urn_con.get_relation(this.relation_name, this._get_schema());
 	}
 	
@@ -64,28 +64,18 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 	 *
 	 * @param filter - Filter object for query
 	 *   e.g. {field0: 'value', field1: {$gt: 77}}
-	 * @param projection [optional] - Optional fields to return
-	 *   e.g. {field0: 1, field1: 0} or '+field0 -field1'
 	 * @param options [optional] - Option object
 	 *   e.g. {sort: 'field0', limit: 10, skip: 20}
-	 * @param with_sensitve
-	 *   if set to true will return sensitive fields
 	 */
-	public async find(filter:QueryFilter<R>, options?:QueryOptions<R>)
+	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
 			:Promise<R[]>{
 		try{
 			this._validate_filter_options_params(filter, options);
 		}catch(err){
 			throw urn_error.create(`Invalid query paramters`, err);
 		}
-		const mon_res_find = (options) ?
-			await this._db_relation.find(filter, null, options) :
-			await this._db_relation.find(filter);
-		const resource_array = [];
-		for(const mon_res of mon_res_find){
-			resource_array.push(this._resource_create(mon_res));
-		}
-		return resource_array;
+		const db_res_find = await this._db_relation.find(filter, options);
+		return db_res_find.map((db_record) => this._resource_create(db_record));
 	}
 	
 	// public async find_by_id()
@@ -98,11 +88,11 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 	//   // TODO
 	// }
 	
-	public async insert_one(user:M)
-			:Promise<R>{
-		const mon_new = new this._db_relation(user);
-		return await mon_new.save();
-	}
+	// public async insert_one(user:M)
+	//     :Promise<R>{
+	//   const mon_new = new this._db_relation(user);
+	//   return await mon_new.save();
+	// }
 	
 	// public async update_one()
 	//     :Promise<R>{
@@ -115,8 +105,8 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 	// }
 	
 	private _validate_filter_options_params(
-		filter:QueryFilter<R>,
-		options?:QueryOptions<R>
+		filter:QueryFilter<M>,
+		options?:QueryOptions<M>
 	):true | never{
 		try{
 			this._validate_filter(filter);
@@ -179,12 +169,12 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 	 *
 	 * @param filter - The filter to validate
 	 */
-	private _validate_filter(filter:FilterType<R>)
+	private _validate_filter(filter:FilterType<M>)
 			:true | never{
 		if(typeof filter !== 'object' || filter === null){
 			throw urn_error.create(`Invalid filter format`);
 		}
-		let key:keyof FilterType<R>;
+		let key:keyof FilterType<M>;
 		for(key in filter){
 			if(_queryop.andornor.indexOf(key) !== -1){
 				if(!Array.isArray(filter[key])){
@@ -196,7 +186,6 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 					this._validate_filter(filter[key][i]);
 				}
 			}else{
-				// if(key!='_id' && !this._approved_keys.includes(key))
 				if(!urn_util.object.has_key(this._approved_keys, key)){
 					throw urn_error.create(`Filter field not valid [${key}]`);
 				}
@@ -206,6 +195,49 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 					throw urn_error.create(`Invalid filter value`, err);
 				}
 			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Validate option object|string for querying Relation. Used in find, findOne, ...
+	 *
+	 * @param object - The object or the string to validate as option
+	 *
+	 */
+	private _validate_options(options:QueryOptions<M>)
+			:true | never{
+		if(urn_util.object.has_key(options, 'sort')){
+			switch(typeof options.sort){
+				case 'string':{
+					let sort_value = options.sort;
+					if(options.sort[0] == '+' || options.sort[0] == '-'){
+						sort_value = sort_value.substring(1, options.sort.length);
+					}
+					if(!urn_util.object.has_key(this._approved_keys, sort_value)){
+						throw urn_error.create(`Sort value not valid [${options.sort}]`);
+					}
+					break;
+				}
+				case 'object':{
+					for(const k in options.sort){
+						if(!urn_util.object.has_key(this._approved_keys, k)){
+							throw urn_error.create(`Sort value not valid [${k}]`);
+						}
+						const sort_obj_value = options.sort[k];
+						if(isNaN(sort_obj_value) || (sort_obj_value != -1 && sort_obj_value != 1)){
+							throw urn_error.create('Sort value must be equal either to -1 or 1');
+						}
+					}
+					break;
+				}
+			}
+		}
+		if(urn_util.object.has_key(options,'limit') && typeof options.limit != 'number'){
+			throw urn_error.create('Limit value type must be number');
+		}
+		if(urn_util.object.has_key(options,'skip') && typeof options.skip != 'number'){
+			throw urn_error.create('Skip value type must be number');
 		}
 		return true;
 	}
@@ -258,48 +290,6 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, R extends urn_r
 	//   }
 	// }
 	
-	/**
-	 * Validate option object|string for querying Relation. Used in find, findOne, ...
-	 *
-	 * @param object - The object or the string to validate as option
-	 *
-	 */
-	private _validate_options(options:QueryOptions<R>)
-			:true | never{
-		if(urn_util.object.has_key(options, 'sort')){
-			switch(typeof options.sort){
-				case 'string':{
-					let sort_value = options.sort;
-					if(options.sort[0] == '+' || options.sort[0] == '-'){
-						sort_value = sort_value.substring(1, options.sort.length);
-					}
-					if(!urn_util.object.has_key(this._approved_keys, sort_value)){
-						throw urn_error.create(`Sort value not valid [${options.sort}]`);
-					}
-					break;
-				}
-				case 'object':{
-					for(const k in options.sort){
-						if(!urn_util.object.has_key(this._approved_keys, k)){
-							throw urn_error.create(`Sort value not valid [${k}]`);
-						}
-						const sort_obj_value = options.sort[k];
-						if(isNaN(sort_obj_value) || (sort_obj_value != -1 && sort_obj_value != 1)){
-							throw urn_error.create('Sort value must be equal either to -1 or 1');
-						}
-					}
-					break;
-				}
-			}
-		}
-		if(urn_util.object.has_key(options,'limit') && typeof options.limit != 'number'){
-			throw urn_error.create('Limit value type must be number');
-		}
-		if(urn_util.object.has_key(options,'skip') && typeof options.skip != 'number'){
-			throw urn_error.create('Skip value type must be number');
-		}
-		return true;
-	}
 }
 
 
