@@ -8,6 +8,8 @@ import * as urn_connection from './connection';
 
 export * from './types';
 
+export * from './relation';
+
 export {
 	urn_connection as connection
 };

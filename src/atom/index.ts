@@ -1,9 +1,8 @@
 
-import * as resource from './resource';
+export * from './atom';
 
 import * as user from './user';
 
 export {
-	resource,
 	user
 };

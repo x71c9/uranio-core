@@ -10,14 +10,26 @@
 import mongoose from 'mongoose';
 
 /*
- * Import urn_log
+ * Import uranio library
  */
 import {urn_log,  urn_error} from 'urn-lib';
 
 /*
- * Import Relation Class/Type
+ * Import uranio models
  */
-import {Relation, Schema} from './types';
+import urn_mdls from 'urn-mdls';
+
+// import * as urn_atom from '../atom/';
+
+/*
+ * Import Schema type
+ */
+import {Schema} from './types';
+
+/*
+ * Import Relation class
+ */
+import {Relation} from './relation';
 
 /*
  * Define default mongoose option for connection
@@ -30,7 +42,7 @@ const mongoose_options = {
 };
 
 /**
- * URNDBConnection class
+ * DBConnection class
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
@@ -88,12 +100,15 @@ class DBConnection {
 		
 	}
 	
-	public get_relation<M>(relation_name:string, schema:Schema)
+	/**
+	 * Get a relation
+	 *
+	 * @returns a Relation
+	 */
+	public get_relation<M extends urn_mdls.resources.Resource>(relation_name:string, schema:Schema)
 			:Relation<M>{
-		const mon_model = this._connection.model(relation_name, schema);
-		const urn_relation = new Relation<M>();
-		urn_relation.prototype = mon_model.prototype;
-		return urn_relation;
+		const raw_relation = this._connection.model(relation_name, schema);
+		return new Relation<M>(raw_relation);
 	}
 	
 	/**
@@ -117,6 +132,7 @@ class DBConnection {
 			);
 		}
 	}
+	
 	/**
 	 * Get the connection URI
 	 *
@@ -217,3 +233,4 @@ export function create(con_name:string, db_host:string, db_port:number, db_name:
 		:ConnectionInstance{
 	return new DBConnection(con_name, db_host, db_port, db_name);
 }
+

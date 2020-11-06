@@ -10,6 +10,10 @@ import create from './dal/users';
 
 import {urn_log} from 'urn-lib';
 
+import urn_mdls from 'urn-mdls';
+
+import * as urn_atom from './atom/';
+
 // urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
 
 async function run(){
@@ -18,11 +22,25 @@ async function run(){
 	
 	const dal_users = create();
 	
-	// await dal_users.insert_one();
+	const user:urn_mdls.resources.User = {
+		first_name: 'Federico',
+		last_name: 'Reale',
+		password: 'useFindsAndModifydkjdasldkjasl',
+		email: 'feddswdddd@dndr4e.net',
+		username: 'ddddkddsla',
+		active: true,
+		type: 'pro',
+		bio: 'BIO',
+		creation_date: new Date()
+	};
 	
-	const resp = await dal_users.find({});
+	const ins = await dal_users.insert_one(urn_atom.user.create(user));
 	
-	console.log(resp);
+	console.log(ins);
+	
+	// const resp = await dal_users.find({});
+	
+	// console.log(resp);
 }
 
 run();
