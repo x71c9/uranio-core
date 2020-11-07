@@ -29,34 +29,16 @@ const _queryop = {
 @urn_log.decorators.debug_methods
 export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_atom.Atom<M>> {
 	
-	protected _atom_create:urn_atom.AtomCreateFunction<M,A>
-	
 	protected _db_relation:urn_db.Relation<M>;
 	
-	protected _approved_keys:urn_mdls.ModelKeys<M>;
-	
-	constructor(public relation_name:string){
+	constructor(public relation_name:string, private _atom_module:urn_atom.AtomModule<M,A>){
 		
 		this._db_relation = this._get_relation();
 		
-		this._atom_create = this._get_atom_create();
-		
-		this._approved_keys = this._get_approved_keys();
-		
-	}
-	
-	protected abstract _get_atom_create():urn_atom.AtomCreateFunction<M,A>;
-	
-	protected abstract _get_schema_definition():urn_db.SchemaDefinition;
-	
-	protected abstract _get_approved_keys():urn_mdls.ModelKeys<M>;
-	
-	private _get_schema():urn_db.Schema{
-		return new urn_db.Schema(this._get_schema_definition());
 	}
 	
 	private _get_relation():urn_db.Relation<M>{
-		return urn_con.get_relation<M>(this.relation_name, this._get_schema());
+		return urn_con.get_relation<M>(this.relation_name, this._atom_module.schema);
 	}
 	
 	/**
@@ -76,7 +58,7 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 		}
 		try{
 			const db_res_find = await this._db_relation.find(filter, options);
-			return db_res_find.map((db_record:M) => this._atom_create(db_record));
+			return db_res_find.map((db_record:M) => this._atom_module.create(db_record));
 		}catch(err){
 			throw urn_error.create(`DAL.find error`, err);
 		}
@@ -92,11 +74,11 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 	//   // TODO
 	// }
 	
-	public async insert_one(atom:A)
-			:Promise<A>{
-		const db_res_insert = await this._db_relation.insert_one(atom.resource);
-		return this._atom_create(db_res_insert);
-	}
+	// public async insert_one(atom:A)
+	//     :Promise<A>{
+	//   const db_res_insert = await this._db_relation.insert_one(atom.resource);
+	//   return this._atom_create(db_res_insert);
+	// }
 	
 	// public async update_one()
 	//     :Promise<R>{
@@ -190,7 +172,7 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 					this._validate_filter(filter[key][i]);
 				}
 			}else{
-				if(!urn_util.object.has_key(this._approved_keys, key)){
+				if(!urn_util.object.has_key(this._atom_module.keys.approved, key)){
 					throw urn_error.create(`Filter field not valid [${key}]`);
 				}
 				try{
@@ -218,14 +200,14 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 					if(options.sort[0] == '+' || options.sort[0] == '-'){
 						sort_value = sort_value.substring(1, options.sort.length);
 					}
-					if(!urn_util.object.has_key(this._approved_keys, sort_value)){
+					if(!urn_util.object.has_key(this._atom_module.keys.approved, sort_value)){
 						throw urn_error.create(`Sort value not valid [${options.sort}]`);
 					}
 					break;
 				}
 				case 'object':{
 					for(const k in options.sort){
-						if(!urn_util.object.has_key(this._approved_keys, k)){
+						if(!urn_util.object.has_key(this._atom_module.keys.approved, k)){
 							throw urn_error.create(`Sort value not valid [${k}]`);
 						}
 						const sort_obj_value = options.sort[k];
