@@ -8,14 +8,27 @@ import urn_mdls from 'urn-mdls';
 
 import {urn_log} from 'urn-lib';
 
-import {Atom, AtomCreateFunction} from './atom';
+import * as urn_db from '../../db/';
+
+import {AtomCreateFunction, AtomModule} from '../types';
+
+import {Atom} from '../atom';
+
+import {user_schema_definition} from './schema';
+
+export namespace models {
+	export type User = urn_mdls.resources.User;
+}
+
+const user_keys:urn_mdls.ModelKeysCategories<models.User> =
+	urn_mdls.resources.user.keys;
 
 /**
  * Class for Atom User
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class User extends Atom<urn_mdls.resources.User> implements urn_mdls.resources.User {
+class User extends Atom<models.User> implements urn_mdls.resources.User {
 	
 	public email:string;
 	
@@ -35,7 +48,7 @@ export class User extends Atom<urn_mdls.resources.User> implements urn_mdls.reso
 	
 	public readonly creation_date:Date;
 	
-	constructor(user:urn_mdls.resources.User){
+	constructor(user:models.User){
 		
 		super(user);
 		
@@ -59,13 +72,26 @@ export class User extends Atom<urn_mdls.resources.User> implements urn_mdls.reso
 		
 	}
 	
+	protected _get_keys()
+			:urn_mdls.ModelKeysCategories<models.User>{
+		return user_keys;
+	}
+	
 }
+
+const schema:urn_db.Schema = new urn_db.Schema(user_schema_definition);
 
 export type UserInstance = InstanceType<typeof User>;
 
-export const create:AtomCreateFunction<urn_mdls.resources.User, UserInstance> =
-	(user) => {
-		urn_log.fn_debug(`Create user`);
-		return new User(user);
-	};
+const create:AtomCreateFunction<models.User, UserInstance> =
+(user) => {
+	urn_log.fn_debug(`Create user`);
+	return new User(user);
+};
+
+export const module:AtomModule<models.User, User> = {
+	keys: user_keys,
+	create: create,
+	schema: schema
+};
 

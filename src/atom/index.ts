@@ -1,7 +1,9 @@
 
 export * from './atom';
 
-import * as user from './user';
+export * from './types';
+
+import * as user from './user/';
 
 export {
 	user
