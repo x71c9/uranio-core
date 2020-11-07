@@ -1,6 +1,6 @@
-export namespace models {
-	export type User = urn_mdls.resources.User;
-}
+// export namespace models {
+//   export type User = urn_mdls.resources.User;
+// }
 
 /**
  * Index module for URANIO Core
@@ -30,6 +30,33 @@ function makeid(length:number) {
 	return result;
 }
 
+import * as urn_atom from './atom/';
+
+
+const user:urn_mdls.resources.User = {
+	first_name: 'Federico',
+	last_name: 'Reale',
+	password: 'useFindsAndModifydkjdasldkjasl',
+	email: `feddswdddd@dndr4e.net${makeid(20)}`,
+	username: `ddddkddsla${makeid(20)}`,
+	active: true,
+	type: 'pro',
+	bio: 'BIO',
+	creation_date: new Date()
+};
+
+const user_keys:string[] = [];
+
+const uuu = urn_atom.user.module.create(user);
+
+
+// console.log(uuu._get_keys());
+
+console.log(uuu);
+
+console.log(Object.keys(uuu));
+
+console.log(user_keys);
 
 async function run(){
 	
@@ -37,19 +64,26 @@ async function run(){
 	
 	const dal_users = create();
 	
-	const user:urn_mdls.resources.User = {
-		first_name: 'Federico',
-		last_name: 'Reale',
-		password: 'useFindsAndModifydkjdasldkjasl',
-		email: `feddswdddd@dndr4e.net${makeid(20)}`,
-		username: `ddddkddsla${makeid(20)}`,
-		active: true,
-		type: 'pro',
-		bio: 'BIO',
-		creation_date: new Date()
-	};
+	// const user:urn_mdls.resources.User = {
+	//   first_name: 'Federico',
+	//   last_name: 'Reale',
+	//   password: 'useFindsAndModifydkjdasldkjasl',
+	//   email: `feddswdddd@dndr4e.net${makeid(20)}`,
+	//   username: `ddddkddsla${makeid(20)}`,
+	//   active: true,
+	//   type: 'pro',
+	//   bio: 'BIO',
+	//   creation_date: new Date()
+	// };
 
-	console.log(user);
+
+	// const uuu = urn_atom.user.module.create(user);
+
+	// const uset_ke
+
+	// console.log(uuu);
+
+	// console.log(user);
 	
 	// const ins = await dal_users.insert_one(urn_atom.user.create(user));
 	
@@ -115,3 +149,6 @@ run();
 // for(const k in Object.entries(A)){
 //   console.log(k);
 // }
+//
+//
+// https://www.typescriptlang.org/play?#code/JYOwLgpgTgZghgYwgAgApyhcBZA9gEwgBtkBvAWAChkbkB9YfALmQGcwpQBzKgXyqqhIsRCgDCAC2BF8eQiQgAPSCHys0GLGDnEyVWshjAo7OiDgBbCE3acQPSv0pUwATwAOKAMq4rAaQhXVgB5GAAeABUAPmQAXmQvCDAwgGtA3BhkaIBuAUo4ACNbRDBkBCI4VnV0THAw7GQlFTUNWu0CYhjgC3ciCCtwas0cDpIKZ2padwBXAqJgBHpGGw5uXImDBFwQW2mEMFwoAApMVlxpqCQmbAAaZBm5heRT88uIOjSgph9-QJDw7BRACU4wMBjAUlYADoGPg4s8IGcLkgYYx1gYnPoprN5osDnRWN1eu9cAUAFYQfZHIHXPSTMFlbbsNhEvp0Ulk+GkXjISrIbDohmGQ5HLY7UopZAZZAQ4DQl7I96fVggrFC2iEnpsjkAbRSAF14bLWHr9dlkGqwU4hZgwBcQCytSTyYKaJjHHkxczpqxoB8-t9fBAAkFQmFJNJZKMYvEQBAAO4JJJHHUAciMJjAZksEFTN1TsNT+qB6yo5Uq6gjMkayiwLRqWnDUhkOiIXSdAzAlebUfkdMtD1xhmMpnMVhWdgclq9HD2B2OoGAYCYVd7xFV9LBrGmngXICXdx9fuVJct4MhUIzo5z8MXYEvI6zY4gruQ7vdM7KPfhccTq6OpCwkwqYAIx5sOmbZuOyCpgAUrgEggKmvCnhMXq4H0UJELgXCij2UL4pqxLsuSlJgNSJbIAA9FRyAAJKlKwEjnNWtr2mQQHICBdxXk+OYsHBCFIbwQA
