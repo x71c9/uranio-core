@@ -17,11 +17,11 @@ export abstract class Atom<M extends urn_mdls.resources.Resource> implements urn
 	
 	public _id?:string;
 	
-	public keys:urn_mdls.ModelKeysCategories<M>;
+	// public keys:urn_mdls.ModelKeysCategories<M>;
 	
 	constructor(resource:M){
 		
-		this.keys = this._get_keys();
+		// this.keys = this._get_keys();
 		
 		this.validate(resource);
 		
@@ -33,8 +33,12 @@ export abstract class Atom<M extends urn_mdls.resources.Resource> implements urn
 	
 	public return():M{
 		const data_transfer_object = {} as M;
-		for(const key of this.keys.approved){
-			data_transfer_object[key] = this[key];
+		const that = this as any;
+		for(const key of this._get_keys().approved){
+			if(!Object.prototype.hasOwnProperty.call(that, key)){
+				throw urn_error.create(`Cannot return(). Current instance has no property [${key}] set.`);
+			}
+			data_transfer_object[key] = that[key];
 		}
 		return data_transfer_object;
 	}
