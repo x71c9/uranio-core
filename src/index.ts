@@ -1,7 +1,3 @@
-// export namespace models {
-//   export type User = urn_mdls.resources.User;
-// }
-
 /**
  * Index module for URANIO Core
  *
