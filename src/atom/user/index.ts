@@ -46,7 +46,7 @@ class User extends Atom<models.User> implements urn_mdls.resources.User {
 	
 	public password:string;
 	
-	public readonly creation_date:Date;
+	public creation_date:Date;
 	
 	constructor(user:models.User){
 		
