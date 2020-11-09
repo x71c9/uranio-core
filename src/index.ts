@@ -39,6 +39,7 @@ const user:urn_mdls.resources.User = {
 	type: 'pro',
 	bio: 'BIO',
 	creation_date: new Date()
+	// creation_date: 'dsakjdlsa'
 };
 
 const user_keys:string[] = [];
