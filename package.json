@@ -5,6 +5,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
+		"build": "tsc -b",
 		"start": "node -r source-map-support/register -r dotenv/config dist/index.js dotenv_config_path=config/dev.env",
 		"dev": "./node_modules/.bin/tsc-watch --onSuccess \"node -r source-map-support/register -r dotenv/config ./dist/index.js dotenv_config_path=config/dev.env\""
 	},

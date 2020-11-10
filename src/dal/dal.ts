@@ -51,16 +51,41 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 	 */
 	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
 			:Promise<A[]>{
+		
 		try{
+			
 			_validate_filter_options_params(this._atom_module, filter, options);
+			
 		}catch(err){
+			
 			throw urn_error.create(`Invalid query paramters`, err);
+			
 		}
+		
 		try{
 			const db_res_find = await this._db_relation.find(filter, options);
-			return db_res_find.map((db_record:M) => this._atom_module.create(db_record));
+			const atom_array = db_res_find.reduce<A[]>((result, db_record) => {
+				try{
+					
+					result.push(this._atom_module.create(db_record));
+					
+				}catch(err){
+					
+					let err_msg = `Dal.find(). Cannot create Atom.`;
+					err_msg += ` Dal.relation_name [${this.relation_name}].`;
+					err_msg += ` Record _id [${db_record._id}]`;
+					// err_msg += ` Record date [${db_record.date}]`;
+					urn_log.error(err_msg);
+					
+				}
+				return result;
+			}, <A[]>[]);
+			return atom_array;
+			
 		}catch(err){
+			
 			throw urn_error.create(`DAL.find error`, err);
+			
 		}
 	}
 	

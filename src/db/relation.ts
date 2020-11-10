@@ -8,11 +8,15 @@ import mongoose from 'mongoose';
 
 import urn_mdls from 'urn-mdls';
 
+import {urn_log, urn_error} from 'urn-lib';
+
 import {QueryFilter, QueryOptions} from '../types';
 
 /**
  * Relation class
  */
+@urn_log.decorators.debug_constructor
+@urn_log.decorators.debug_methods
 export class Relation<M extends urn_mdls.resources.Resource> {
 	
 	constructor(private _raw:InstanceType<typeof mongoose.Model>){}
@@ -30,12 +34,19 @@ export class Relation<M extends urn_mdls.resources.Resource> {
 	
 	public async insert_one(resource:M)
 			:Promise<M>{
-		const mon_doc = new this._raw(resource);
-		const mon_res_doc = await mon_doc.save();
-		const str_id = mon_res_doc._id.toString();
-		const mon_obj = mon_res_doc.toObject();
-		mon_obj._id = str_id;
-		return mon_obj;
+		if(Object.prototype.hasOwnProperty.call(resource, '_id')){
+			delete resource._id;
+		}
+		try{
+			const mon_model = new this._raw(resource);
+			const mon_res_doc = await mon_model.save();
+			const str_id = mon_res_doc._id.toString();
+			const mon_obj = mon_res_doc.toObject();
+			mon_obj._id = str_id;
+			return mon_obj;
+		}catch(err){
+			throw urn_error.create(`Relation insert_one() failed. Cannot insert Model. ${err.message}`, err);
+		}
 	}
 	
 }

@@ -4,14 +4,14 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-Atom	atom/atom.ts	/^export class Atom implements urn_mdls.resources.Resource {$/;"	c
-AtomCreateFunction	atom/atom.ts	/^export type AtomCreateFunction<M extends urn_mdls.resources.Resource, A extends AtomInstance> =$/;"	t
-AtomInstance	atom/atom.ts	/^export type AtomInstance = InstanceType<typeof Atom>;$/;"	t
+Atom	atom/atom.ts	/^export abstract class Atom<Model extends urn_mdls.resources.Resource> implements urn_mdls.resources.Resource {$/;"	c
+AtomCreateFunction	atom/types.ts	/^export type AtomCreateFunction<M extends urn_mdls.resources.Resource, A extends Atom<M>> =$/;"	t
+AtomModule	atom/types.ts	/^export type AtomModule<M extends urn_mdls.resources.Resource, A extends Atom<M>> = {$/;"	t
 ComparsionQueryFilter	types.ts	/^export type ComparsionQueryFilter = {$/;"	t
 ConditionalQueryFilter	types.ts	/^type ConditionalQueryFilter = {$/;"	t
 ConnectionInstance	db/connection.ts	/^export type ConnectionInstance = InstanceType<typeof DBConnection>;$/;"	t
-DAL	dal/dal.ts	/^export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_atom.AtomInstance> {$/;"	c
-DALUsers	dal/users.ts	/^class DALUsers extends DAL<urn_mdls.resources.User, urn_atom.user.UserInstance> {$/;"	c
+DAL	dal/dal.ts	/^export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_atom.Atom<M>> {$/;"	c
+DALUsers	dal/users.ts	/^class DALUsers extends DAL<urn_atom.user.models.User, urn_atom.user.UserInstance> {$/;"	c
 DBConnection	db/connection.ts	/^class DBConnection {$/;"	c
 DalUsersInstance	dal/users.ts	/^export type DalUsersInstance = InstanceType<typeof DALUsers>;$/;"	t
 FilterAndOrNorType	types.ts	/^type FilterAndOrNorType = {$/;"	t
@@ -19,23 +19,17 @@ FilterComparsionType	types.ts	/^type FilterComparsionType = {$/;"	t
 FilterType	types.ts	/^export type FilterType<T> = QueryFilter<T> | ConditionalQueryFilter;$/;"	t
 QueryFilter	types.ts	/^export type QueryFilter<T> = {$/;"	t
 QueryOptions	types.ts	/^export interface QueryOptions<T> {$/;"	i
-Relation	db/relation.ts	/^export class Relation<M extends urn_mdls.resources.Resource, A extends urn_atom.AtomInstance> {$/;"	c
+Relation	db/relation.ts	/^export class Relation<M extends urn_mdls.resources.Resource> {$/;"	c
 Schema	db/types.ts	/^export class Schema extends mongoose.Schema{}$/;"	c
 SchemaDefinition	db/types.ts	/^export interface SchemaDefinition extends mongoose.SchemaDefinition{}$/;"	i
-User	atom/user.ts	/^class User extends Atom implements urn_mdls.resources.User {$/;"	c
-UserInstance	atom/user.ts	/^export type UserInstance = InstanceType<typeof User>;$/;"	t
-_approved_keys	dal/dal.ts	/^	protected _approved_keys:urn_mdls.ModelKeys<M>;$/;"	m
-_atom_create	dal/dal.ts	/^	protected _atom_create:urn_atom.AtomCreateFunction<M,A>$/;"	m
+User	atom/user/index.ts	/^	export type User = urn_mdls.resources.User;$/;"	t
+User	atom/user/index.ts	/^class User extends Atom<models.User> implements urn_mdls.resources.User {$/;"	c
+UserInstance	atom/user/index.ts	/^export type UserInstance = InstanceType<typeof User>;$/;"	t
 _connection	db/connection.ts	/^	private _connection:mongoose.Connection;$/;"	m
-_db_relation	dal/dal.ts	/^	protected _db_relation:urn_db.Relation<M,A>;$/;"	m
-_get_approved_keys	dal/dal.ts	/^	protected abstract _get_approved_keys():urn_mdls.ModelKeys<M>;$/;"	m
-_get_approved_keys	dal/users.ts	/^	protected _get_approved_keys(){$/;"	m
-_get_atom_create	dal/dal.ts	/^	protected abstract _get_atom_create():urn_atom.AtomCreateFunction<M,A>;$/;"	m
-_get_atom_create	dal/users.ts	/^	protected _get_atom_create(){$/;"	m
-_get_relation	dal/dal.ts	/^	private _get_relation():urn_db.Relation<M,A>{$/;"	m
-_get_schema	dal/dal.ts	/^	private _get_schema():urn_db.Schema{$/;"	m
-_get_schema_definition	dal/dal.ts	/^	protected abstract _get_schema_definition():urn_db.SchemaDefinition;$/;"	m
-_get_schema_definition	dal/users.ts	/^	protected _get_schema_definition(){$/;"	m
+_db_relation	dal/dal.ts	/^	protected _db_relation:urn_db.Relation<M>;$/;"	m
+_get_keys	atom/atom.ts	/^	protected abstract _get_keys():urn_mdls.ModelKeysCategories<Model>;$/;"	m
+_get_keys	atom/user/index.ts	/^	protected _get_keys()$/;"	m
+_get_relation	dal/dal.ts	/^	private _get_relation():urn_db.Relation<M>{$/;"	m
 _id	atom/atom.ts	/^	public _id?:string;$/;"	m
 _on_close	db/connection.ts	/^	private _on_close()$/;"	m
 _on_connected	db/connection.ts	/^	private _on_connected()$/;"	m
@@ -46,42 +40,44 @@ _on_error	db/connection.ts	/^	private _on_error(e:Error)$/;"	m
 _on_reconnect_failed	db/connection.ts	/^	private _on_reconnect_failed()$/;"	m
 _on_reconnect_tries	db/connection.ts	/^	private _on_reconnect_tries()$/;"	m
 _on_reconnected	db/connection.ts	/^	private _on_reconnected()$/;"	m
-_validate_field	dal/dal.ts	/^	private _validate_field(field:any)$/;"	m
-_validate_filter	dal/dal.ts	/^	private _validate_filter(filter:FilterType<M>)$/;"	m
-_validate_filter_options_params	dal/dal.ts	/^	private _validate_filter_options_params($/;"	m
-_validate_options	dal/dal.ts	/^	private _validate_options(options:QueryOptions<M>)$/;"	m
-active	atom/user.ts	/^	public active:boolean;$/;"	m
-bio	atom/user.ts	/^	public bio:string;$/;"	m
+_validate_field	dal/dal.ts	/^function _validate_field(field:any)$/;"	f
+_validate_filter	dal/dal.ts	/^function _validate_filter<M extends urn_mdls.resources.Resource, A extends urn_atom.Atom<M>>$/;"	f
+_validate_filter_options_params	dal/dal.ts	/^function _validate_filter_options_params<M extends urn_mdls.resources.Resource, A extends urn_atom.Atom<M>>($/;"	f
+_validate_options	dal/dal.ts	/^function _validate_options<M extends urn_mdls.resources.Resource, A extends urn_atom.Atom<M>>$/;"	f
+active	atom/user/index.ts	/^	public active:boolean;$/;"	m
+bio	atom/user/index.ts	/^	public bio:string;$/;"	m
 close	db/connection.ts	/^	public async close()$/;"	m
-create	atom/atom.ts	/^export const create:AtomCreateFunction<urn_mdls.resources.Resource, AtomInstance> =$/;"	v
-create	atom/user.ts	/^export const create:AtomCreateFunction<urn_mdls.resources.User, UserInstance> =$/;"	v
 create	dal/users.ts	/^export default function create():DalUsersInstance{$/;"	f
 create	db/connection.ts	/^export function create(con_name:string, db_host:string, db_port:number, db_name:string)$/;"	f
-create	index.ts	/^import create from '.\/dal\/users';$/;"	I
-creation_date	atom/user.ts	/^	public readonly creation_date:Date;$/;"	m
-email	atom/user.ts	/^	public email:string;$/;"	m
+create_user_dal	index.ts	/^import create_user_dal from '.\/dal\/users';$/;"	I
+creation_date	atom/user/index.ts	/^	public creation_date:Date;$/;"	m
+email	atom/user/index.ts	/^	public email:string;$/;"	m
 find	dal/dal.ts	/^	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)$/;"	m
 find	db/relation.ts	/^	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)$/;"	m
-first_name	atom/user.ts	/^	public first_name:string;$/;"	m
-get_relation	db/connection.ts	/^	public get_relation<M extends urn_mdls.resources.Resource, A extends urn_atom.AtomInstance>(relation_name:string, schema:Schema)$/;"	m
+first_name	atom/user/index.ts	/^	public first_name:string;$/;"	m
+get_relation	db/connection.ts	/^	public get_relation<M extends urn_mdls.resources.Resource>(relation_name:string, schema:Schema)$/;"	m
 get_uri	db/connection.ts	/^	public get_uri():string{$/;"	m
-insert_one	dal/dal.ts	/^	public async insert_one(user:A)$/;"	m
-insert_one	db/relation.ts	/^	public async insert_one(model:A)$/;"	m
-last_name	atom/user.ts	/^	public last_name:string;$/;"	m
+insert_one	dal/dal.ts	/^	public async insert_one(atom:A)$/;"	m
+insert_one	db/relation.ts	/^	public async insert_one(resource:M)$/;"	m
+last_name	atom/user/index.ts	/^	public last_name:string;$/;"	m
+makeid	index.ts	/^function makeid(length:number) {$/;"	f
+module	atom/user/index.ts	/^export const module:AtomModule<models.User, User> = {$/;"	v
 mongoose	db/connection.ts	/^import mongoose from 'mongoose';$/;"	I
 mongoose	db/relation.ts	/^import mongoose from 'mongoose';$/;"	I
 mongoose	db/types.ts	/^import mongoose from 'mongoose';$/;"	I
 name	db/connection.ts	/^	public name:string;$/;"	m
-password	atom/user.ts	/^	public password:string;$/;"	m
+password	atom/user/index.ts	/^	public password:string;$/;"	m
 readyState	db/connection.ts	/^	public readyState:number;$/;"	m
-run	index.ts	/^async function run(){$/;"	f
-type	atom/user.ts	/^	public type:string;$/;"	m
+return	atom/atom.ts	/^	public return()$/;"	m
+run	index.ts	/^async function run(user:urn_atom.user.UserInstance){$/;"	f
+type	atom/user/index.ts	/^	public type:string;$/;"	m
 urn_mdls	atom/atom.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
-urn_mdls	atom/user.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
+urn_mdls	atom/types.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
+urn_mdls	atom/user/index.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
 urn_mdls	dal/dal.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
-urn_mdls	dal/users.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
 urn_mdls	db/connection.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
 urn_mdls	db/relation.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
 urn_mdls	index.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
-username	atom/user.ts	/^	public username:string;$/;"	m
-validate	atom/atom.ts	/^	public validate(resource:urn_mdls.resources.Resource):true | never{$/;"	m
+user_schema_definition	atom/user/schema.ts	/^export const user_schema_definition:urn_db.SchemaDefinition = {$/;"	v
+username	atom/user/index.ts	/^	public username:string;$/;"	m
+validate	atom/atom.ts	/^	public validate(resource:Model)$/;"	m
