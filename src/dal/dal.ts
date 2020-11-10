@@ -42,7 +42,7 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 	}
 	
 	/**
-	 * Private function that return a colleciton of records from a Relation
+	 * Method that returns a colleciton of records from a Relation
 	 *
 	 * @param filter - Filter object for query
 	 *   e.g. {field0: 'value', field1: {$gt: 77}}
@@ -71,6 +71,14 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 		
 	}
 	
+	/**
+	 * Method that returns a record from a Relation matching a given `id`
+	 *
+	 * @param filter - Filter object for query
+	 *   e.g. {field0: 'value', field1: {$gt: 77}}
+	 * @param options [optional] - Option object
+	 *   e.g. {sort: 'field0', limit: 10, skip: 20}
+	 */
 	public async find_by_id(id:string)
 			:Promise<A | null>{
 		if(!_is_valid_id(id)){
@@ -92,7 +100,7 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 	}
 	
 	/**
-	 * Function that return the first record from a Relation matching
+	 * Method that returns the first record from a Relation matching
 	 * filter and options
 	 *
 	 * @param filter - Filter object for query
@@ -119,16 +127,29 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 		}
 	}
 	
+	/**
+	 * Method that insert a record into a Relation
+	 *
+	 * @param atom - the Atom to insert
+	 */
 	public async insert_one(atom:A)
 			:Promise<A>{
 		const db_res_insert = await this._db_relation.insert_one(atom.return());
 		return this._atom_module.create(db_res_insert);
 	}
 	
-	// public async update_one()
-	//     :Promise<R>{
-	//   // TODO
-	// }
+	/**
+	 * Method that insert a record into a Relation
+	 *
+	 * @param atom - the Atom to update
+	 */
+	public async update_one(atom:A)
+			:Promise<A | null>{
+		const db_res_insert = await this._db_relation.update_one(atom.return());
+		if(db_res_insert === null)
+			return null;
+		return this._atom_module.create(db_res_insert);
+	}
 	
 	// public async delete_one()
 	//     :Promise<R>{

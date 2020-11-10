@@ -68,10 +68,34 @@ export class Relation<M extends urn_mdls.resources.Resource> {
 			mon_obj._id = str_id;
 			return mon_obj;
 		}catch(err){
-			throw urn_error.create(`Relation insert_one() failed. Cannot insert Model. ${err.message}`, err);
+			let err_msg = `Relation insert_one() failed. Cannot insert Model.`;
+			err_msg += ` ${err.message}`;
+			throw urn_error.create(err_msg, err);
 		}
 	}
 	
+	public async update_one(resource:M)
+			:Promise<M | null>{
+		try{
+			if(!Object.prototype.hasOwnProperty.call(resource, '_id') ||
+					typeof resource._id !== 'string' ||
+					resource._id === ''){
+				throw urn_error.create(`Cannot update. Atom has no _id`);
+			}
+			const mon_update_res =
+				await this._raw.findOneAndUpdate({id:resource._id}, resource, {new: true, lean: true});
+			if(mon_update_res === null){
+				return null;
+			}
+			return mon_update_res as M;
+			// const mon_obj = mon_update_res.toObject();
+			// return string_id(mon_obj);
+		}catch(err){
+			let err_msg = `Relation update_one() failed. Cannot update Model.`;
+			err_msg += ` ${err.message}`;
+			throw urn_error.create(err_msg, err);
+		}
+	}
 }
 
 function string_id<M extends urn_mdls.resources.Resource>(resource:M)
