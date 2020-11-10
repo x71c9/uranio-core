@@ -108,13 +108,13 @@ const dal_users = create_user_dal();
 //   console.log('FIND', data);
 // });
 
-dal_users.find_by_id('5faa5acc1628f87526de20f4').then((data:any) => {
-	console.log('FIND BY ID', data);
-});
+// dal_users.find_by_id('5faa5acc1628f87526de20f4').then((data:any) => {
+//   console.log('FIND BY ID', data);
+// });
 
-dal_users.find_one({_id:'5faa5acc1628f87526de20f4'},{sort: '-creation_date'}).then((data:any) => {
-	console.log('FIND ONE', data);
-});
+// dal_users.find_one({_id:'5faa5acc1628f87526de20f4'},{sort: '-creation_date'}).then((data:any) => {
+//   console.log('FIND ONE', data);
+// });
 
 dal_users.update_one(urn_atom.user.module.create(user)).then((data:any) => {
 	console.log('UPDATE ONE', data);
