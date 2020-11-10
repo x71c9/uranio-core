@@ -56,7 +56,7 @@ export abstract class Atom<Model extends urn_mdls.resources.Resource> implements
 				continue;
 			if(!Object.prototype.hasOwnProperty.call(resource, key)){
 				let err_msg = `Invalid ${this.constructor.name} constructor initializer.`;
-				err_msg += `Initializer is missing propery [${key}].`;
+				err_msg += ` Initializer is missing propery [${key}].`;
 				throw urn_error.create(err_msg);
 			}
 		}
@@ -83,8 +83,28 @@ export abstract class Atom<Model extends urn_mdls.resources.Resource> implements
 				throw urn_error.create(err_msg);
 			}
 		}
-
+		
 		return true;
 	}
 }
+
+export function create_atom<M extends urn_mdls.resources.Resource, A extends Atom<M>>(
+	model_instance:M,
+	atom_class: new (init: M) => A
+)
+		:A{
+	
+	urn_log.fn_debug(`Create ${atom_class.constructor.name}`);
+	
+	try{
+		
+		return new atom_class(model_instance);
+		
+	}catch(err){
+		
+		throw urn_error.create(`Cannot create Atom [${atom_class.constructor.name}]. ` + err.message, err);
+		
+	}
+}
+
 

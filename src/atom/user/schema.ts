@@ -71,6 +71,10 @@ export const user_schema_definition:urn_db.SchemaDefinition = {
 		minlenght: 8,
 		maxlenght: 255,
 		required: true
+	},
+	creation_date:{
+		type: Date,
+		required: true
 	}
 };
 

@@ -67,6 +67,11 @@ class DBConnection {
 	 */
 	public readyState:number;
 	
+	/*
+	 * Connection URI
+	 */
+	public uri:string;
+	
 	/**
 	 * Constructor function for URNDBConnection
 	 *
@@ -78,9 +83,11 @@ class DBConnection {
 	constructor(con_name:string, public db_host:string, public db_port:number, public db_name:string){
 		
 		this.name = con_name;
+		this.uri = `mongodb://${this.db_host}:${this.db_port}/${this.db_name}`;
+		
 		this.readyState = 0;
 		try{
-			this._connection = mongoose.createConnection(this.get_uri(), mongoose_options);
+			this._connection = mongoose.createConnection(this.uri, mongoose_options);
 			this._connection.on('connecting', () => { this._on_connecting(); });
 			this._connection.on('connected', () => { this._on_connected(); });
 			this._connection.on('disconnecting', () => { this._on_disconnecting(); });
@@ -93,7 +100,7 @@ class DBConnection {
 			return this;
 		}catch(err){
 			throw urn_error.create(
-				`Cannot create connection to ${this.get_uri()} - ${err.message}`,
+				`Cannot create connection to ${this.uri} - ${err.message}`,
 				err
 			);
 		}
@@ -120,14 +127,14 @@ class DBConnection {
 			:Promise<ConnectionInstance>{
 		if(this._connection == null)
 			throw urn_error.create(
-				`Trying to close a connection that was never created [${this.name}][${this.get_uri()}]`
+				`Trying to close a connection that was never created [${this.name}][${this.uri}]`
 			);
 		try {
 			await this._connection.close();
 			return this;
 		}catch(err){
 			throw urn_error.create(
-				`Cannot disconnect from [${this.name}][${this.get_uri()}] - ${err.message}`,
+				`Cannot disconnect from [${this.name}][${this.uri}] - ${err.message}`,
 				err
 			);
 		}
@@ -138,16 +145,16 @@ class DBConnection {
 	 *
 	 * @returns the connection URI
 	 */
-	public get_uri():string{
-		return `mongodb://${this.db_host}:${this.db_port}/${this.db_name}`;
-	}
+	// public get_uri():string{
+	//   return `mongodb://${this.db_host}:${this.db_port}/${this.db_name}`;
+	// }
 	
 	/**
 	 * Function called when event onConnecting is fired
 	 */
 	private _on_connecting()
 			:void{
-		urn_log.debug(`Connection connecting [${this.name}][${this.get_uri()}]...`);
+		urn_log.debug(`Connection connecting [${this.name}][${this.uri}]...`);
 		if(this._connection)
 			this.readyState = this._connection.readyState;
 	}
@@ -157,7 +164,7 @@ class DBConnection {
 	 */
 	private _on_connected()
 			:void{
-		urn_log.debug(`Connection connected [${this.name}][${this.get_uri()}]`);
+		urn_log.debug(`Connection connected [${this.name}][${this.uri}]`);
 		if(this._connection)
 			this.readyState = this._connection.readyState;
 	}
@@ -167,7 +174,7 @@ class DBConnection {
 	 */
 	private _on_disconnecting()
 			:void{
-		urn_log.debug(`Connection disconnecting [${this.name}][${this.get_uri()}]...`);
+		urn_log.debug(`Connection disconnecting [${this.name}][${this.uri}]...`);
 		if(this._connection)
 			this.readyState = this._connection.readyState;
 	}
@@ -177,7 +184,7 @@ class DBConnection {
 	 */
 	private _on_disconnected()
 			:void{
-		urn_log.debug(`Connection disconnected [${this.name}][${this.get_uri()}]`);
+		urn_log.debug(`Connection disconnected [${this.name}][${this.uri}]`);
 		if(this._connection)
 			this.readyState = this._connection.readyState;
 	}
@@ -187,7 +194,7 @@ class DBConnection {
 	 */
 	private _on_close()
 			:void{
-		urn_log.debug(`Connection closed [${this.name}][${this.get_uri()}]`);
+		urn_log.debug(`Connection closed [${this.name}][${this.uri}]`);
 		if(this._connection)
 			this.readyState = this._connection.readyState;
 	}
@@ -197,7 +204,7 @@ class DBConnection {
 	 */
 	private _on_reconnected()
 			:void{
-		urn_log.debug(`Connection reconnected [${this.name}][${this.get_uri()}]`);
+		urn_log.debug(`Connection reconnected [${this.name}][${this.uri}]`);
 		if(this._connection)
 			this.readyState = this._connection.readyState;
 	}
@@ -215,7 +222,7 @@ class DBConnection {
 	 */
 	private _on_reconnect_failed()
 			:void{
-		urn_log.debug(`Connection reconnectFailed [${this.name}][${this.get_uri()}]`);
+		urn_log.debug(`Connection reconnectFailed [${this.name}][${this.uri}]`);
 	}
 	
 	/**
@@ -223,7 +230,7 @@ class DBConnection {
 	 */
 	private _on_reconnect_tries()
 			:void{
-		urn_log.debug(`Connection reconnectTries [${this.name}][${this.get_uri()}]`);
+		urn_log.debug(`Connection reconnectTries [${this.name}][${this.uri}]`);
 	}
 }
 
