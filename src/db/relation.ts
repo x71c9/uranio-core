@@ -83,11 +83,11 @@ export class Relation<M extends urn_mdls.resources.Resource> {
 				throw urn_error.create(`Cannot update. Atom has no _id`);
 			}
 			const mon_update_res =
-				await this._raw.findOneAndUpdate({id:resource._id}, resource, {new: true, lean: true});
+				await this._raw.findOneAndUpdate({_id:resource._id}, resource, {new: true, lean: true});
 			if(mon_update_res === null){
 				return null;
 			}
-			return mon_update_res as M;
+			return string_id(mon_update_res as M);
 			// const mon_obj = mon_update_res.toObject();
 			// return string_id(mon_obj);
 		}catch(err){
