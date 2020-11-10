@@ -17,20 +17,13 @@ export type QueryFilter<T> = {
  * Interface for option object used for querying the database
  */
 export interface QueryOptions<T> {
-	/*
-	 * Sort by field
-	 */
+	
 	sort?: string | QueryFilter<T>;
 	
-	/*
-	 * Limit records result
-	 */
 	limit?: number;
-
-	/*
-	 * Skip number of records
-	 */
+	
 	skip?: number;
+	
 }
 
 
@@ -40,7 +33,7 @@ type FilterAndOrNorType = {
 	
 	$or: any[],
 	
-	$now: any[],
+	$nor: any[],
 	
 	$not: any[]
 	

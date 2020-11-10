@@ -101,26 +101,22 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 	 *   e.g. {sort: 'field0', limit: 10, skip: 20}
 	 */
 	public async find_one(filter:QueryFilter<M>, options?:QueryOptions<M>)
-			:Promise<A[]>{
+			:Promise<A | null>{
 		
 		_validate_filter_options_params(this._atom_module, filter, options);
 		
-		const db_res_find = await this._db_relation.find(filter, options);
-		const atom_array = db_res_find.reduce<A[]>((result, db_record) => {
-			try{
-				result.push(this._atom_module.create(db_record));
-			}catch(err){
-				let err_msg = `Dal.find(). Cannot create Atom.`;
-				err_msg += ` Dal.relation_name [${this.relation_name}].`;
-				err_msg += ` Record _id [${db_record._id}]`;
-				// err_msg += ` Record date [${db_record.date}]`;
-				urn_log.error(err_msg);
-			}
-			return result;
-		}, <A[]>[]);
-		
-		return atom_array;
-		
+		const db_res_find_one = await this._db_relation.find_one(filter, options);
+		try{
+			return (db_res_find_one === null) ? null : this._atom_module.create(db_res_find_one);
+		}catch(err){
+			let err_msg = `Dal.find(). Cannot create Atom.`;
+			err_msg += ` Dal.relation_name [${this.relation_name}].`;
+			if(db_res_find_one && db_res_find_one._id)
+				err_msg += ` Record _id [${db_res_find_one._id}]`;
+			// err_msg += ` Record date [${db_record.date}]`;
+			urn_log.error(err_msg);
+			return null;
+		}
 	}
 	
 	public async insert_one(atom:A)
@@ -184,7 +180,7 @@ function _validate_filter_options_params<M extends urn_mdls.resources.Resource, 
  */
 function _validate_field(field:any)
 		:true{
-	if(typeof field !== 'object' || field === null){
+	if(field === null){
 		throw urn_error.create('Invalid filter value format');
 	}
 	switch(typeof field){
@@ -244,7 +240,7 @@ function _validate_filter<M extends urn_mdls.resources.Resource, A extends urn_a
 				_validate_filter(filter[key][i], atom_module);
 			}
 		}else{
-			if(!urn_util.object.has_key(atom_module.keys.approved, key)){
+			if(!atom_module.keys.approved.has(key)){
 				throw urn_error.create(`Filter field not valid [${key}]`);
 			}
 			try{
@@ -273,14 +269,14 @@ function _validate_options<M extends urn_mdls.resources.Resource, A extends urn_
 				if(options.sort[0] == '+' || options.sort[0] == '-'){
 					sort_value = sort_value.substring(1, options.sort.length);
 				}
-				if(!urn_util.object.has_key(atom_module.keys.approved, sort_value)){
+				if(!atom_module.keys.approved.has(sort_value as keyof M)){
 					throw urn_error.create(`Sort value not valid [${options.sort}]`);
 				}
 				break;
 			}
 			case 'object':{
 				for(const k in options.sort){
-					if(!urn_util.object.has_key(atom_module.keys.approved, k)){
+					if(!atom_module.keys.approved.has(k)){
 						throw urn_error.create(`Sort value not valid [${k}]`);
 					}
 					const sort_obj_value = options.sort[k];
