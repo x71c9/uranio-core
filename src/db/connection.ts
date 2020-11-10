@@ -140,14 +140,10 @@ class DBConnection {
 		}
 	}
 	
-	/**
-	 * Get the connection URI
-	 *
-	 * @returns the connection URI
-	 */
-	// public get_uri():string{
-	//   return `mongodb://${this.db_host}:${this.db_port}/${this.db_name}`;
-	// }
+	public is_valid_id(id:string)
+			:boolean{
+		return mongoose.Types.ObjectId.isValid(id);
+	}
 	
 	/**
 	 * Function called when event onConnecting is fired

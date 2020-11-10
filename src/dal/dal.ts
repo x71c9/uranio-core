@@ -51,48 +51,55 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 	 */
 	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
 			:Promise<A[]>{
-		
 		try{
-			
 			_validate_filter_options_params(this._atom_module, filter, options);
-			
 		}catch(err){
-			
 			throw urn_error.create(`Invalid query paramters`, err);
-			
 		}
-		
 		try{
 			const db_res_find = await this._db_relation.find(filter, options);
 			const atom_array = db_res_find.reduce<A[]>((result, db_record) => {
 				try{
-					
 					result.push(this._atom_module.create(db_record));
-					
 				}catch(err){
-					
 					let err_msg = `Dal.find(). Cannot create Atom.`;
 					err_msg += ` Dal.relation_name [${this.relation_name}].`;
 					err_msg += ` Record _id [${db_record._id}]`;
 					// err_msg += ` Record date [${db_record.date}]`;
 					urn_log.error(err_msg);
-					
 				}
 				return result;
 			}, <A[]>[]);
 			return atom_array;
-			
 		}catch(err){
-			
 			throw urn_error.create(`DAL.find error`, err);
-			
 		}
 	}
 	
-	// public async find_by_id()
-	//     :Promise<R>{
-	//   // TODO
-	// }
+	public async find_by_id(id:string)
+			:Promise<A | null>{
+		if(!_is_valid_id(id)){
+			throw urn_error.create(`Dal.find_by_id(). Invalid id.`);
+		}
+		try{
+			const db_res_find_by_id = await this._db_relation.find_by_id(id);
+			if(!db_res_find_by_id){
+				return null;
+			}
+			try{
+				const atom = this._atom_module.create(db_res_find_by_id);
+				return atom;
+			}catch(err){
+				let err_msg = `Dal.find_by_id(). Cannot create Atom.`;
+				err_msg += ` Dal.relation_name [${this.relation_name}].`;
+				err_msg += ` Record _id [${db_res_find_by_id._id}]`;
+				// err_msg += ` Record date [${db_record.date}]`;
+				throw urn_error.create(err_msg);
+			}
+		}catch(err){
+			throw urn_error.create(`Dal.find_by_id error`);
+		}
+	}
 	
 	// public async find_one()
 	//     :Promise<R>{
@@ -117,11 +124,30 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 	
 }
 
+/**
+ * Helper functions
+ */
+
+/**
+ * Validate id
+ */
+function _is_valid_id(id:string)
+		:boolean{
+	return urn_con.is_valid_id(id);
+}
+
+/**
+ * Validate `filter` and `options` paramaters
+ *
+ * @param atom_module - The Atom module that is needed to check the keys
+ * @param filter - the filter object
+ * @param options- the options object
+ */
 function _validate_filter_options_params<M extends urn_mdls.resources.Resource, A extends urn_atom.Atom<M>>(
 	atom_module:urn_atom.AtomModule<M, A>,
 	filter:QueryFilter<M>,
 	options?:QueryOptions<M>,
-):true | never{
+):true{
 	try{
 		_validate_filter<M,A>(filter, atom_module);
 		if(options){
@@ -132,6 +158,7 @@ function _validate_filter_options_params<M extends urn_mdls.resources.Resource, 
 	}
 	return true;
 }
+
 /**
  * Validate single field of a filter object
  *
@@ -139,7 +166,7 @@ function _validate_filter_options_params<M extends urn_mdls.resources.Resource, 
  *
  */
 function _validate_field(field:any)
-		:true | never{
+		:true{
 	if(typeof field !== 'object' || field === null){
 		throw urn_error.create('Invalid filter value format');
 	}
@@ -184,7 +211,7 @@ function _validate_field(field:any)
  */
 function _validate_filter<M extends urn_mdls.resources.Resource, A extends urn_atom.Atom<M>>
 (filter:FilterType<M>, atom_module:urn_atom.AtomModule<M,A>)
-		:true | never{
+		:true{
 	if(typeof filter !== 'object' || filter === null){
 		throw urn_error.create(`Invalid filter format`);
 	}
@@ -221,7 +248,7 @@ function _validate_filter<M extends urn_mdls.resources.Resource, A extends urn_a
  */
 function _validate_options<M extends urn_mdls.resources.Resource, A extends urn_atom.Atom<M>>
 (options:QueryOptions<M>, atom_module:urn_atom.AtomModule<M,A>)
-		:true | never{
+		:true{
 	if(urn_util.object.has_key(options, 'sort')){
 		switch(typeof options.sort){
 			case 'string':{

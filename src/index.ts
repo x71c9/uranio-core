@@ -106,4 +106,8 @@ dal_users.find({}).then((data:any) => {
 	console.log('FIND', data);
 });
 
+dal_users.find_by_id('5faa5a6b20082873e570d450').then((data:any) => {
+	console.log('FIND BY ID', data);
+});
+
 

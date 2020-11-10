@@ -19,17 +19,30 @@ import {QueryFilter, QueryOptions} from '../types';
 @urn_log.decorators.debug_methods
 export class Relation<M extends urn_mdls.resources.Resource> {
 	
-	constructor(private _raw:InstanceType<typeof mongoose.Model>){}
+	constructor(private _raw:mongoose.Model<mongoose.Document>){}
 	
 	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
 			:Promise<M[]>{
 		const mon_find_res = (options) ?
-			await this._raw.find(filter, null, options).lean() :
-			await this._raw.find(filter).lean();
-		return mon_find_res.map((mon_doc:mongoose.Document) => {
-			mon_doc._id = mon_doc._id.toString();
+			await this._raw.find(filter, null, options).lean<M>():
+			await this._raw.find(filter).lean<M>();
+		return mon_find_res.map((mon_doc:M) => {
+			if(mon_doc._id)
+				mon_doc._id = mon_doc._id.toString();
 			return mon_doc;
 		});
+	}
+	
+	public async find_by_id(id:string)
+			:Promise<M | null>{
+		const mon_find_by_id_res = await this._raw.findById(id).lean<M>();
+		if(mon_find_by_id_res === null){
+			return null;
+		}
+		if(mon_find_by_id_res._id){
+			mon_find_by_id_res._id = mon_find_by_id_res._id.toString();
+		}
+		return mon_find_by_id_res;
 	}
 	
 	public async insert_one(resource:M)
