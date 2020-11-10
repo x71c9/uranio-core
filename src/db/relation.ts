@@ -44,7 +44,7 @@ export class Relation<M extends urn_mdls.resources.Resource> {
 		return string_id(mon_find_by_id_res);
 	}
 	
-	public async find_one(filter:QueryFilter<M>, options:QueryOptions<M>)
+	public async find_one(filter:QueryFilter<M>, options?:QueryOptions<M>)
 			:Promise<M | null>{
 		const mon_find_one_res = (typeof options !== 'undefined' && options.sort) ?
 			await this._raw.findOne(filter).sort(options.sort).lean<M>() :
