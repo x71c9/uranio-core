@@ -23,14 +23,16 @@ export class Relation<M extends urn_mdls.resources.Resource> {
 	
 	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
 			:Promise<M[]>{
-		const mon_find_res = (options) ?
-			await this._raw.find(filter, null, options).lean<M>():
-			await this._raw.find(filter).lean<M>();
-		return mon_find_res.map((mon_doc:M) => {
-			if(mon_doc._id)
-				mon_doc._id = mon_doc._id.toString();
-			return mon_doc;
-		});
+		try{
+			const mon_find_res = (options) ?
+				await this._raw.find(filter, null, options).lean<M>():
+				await this._raw.find(filter).lean<M>();
+			return mon_find_res.map((mon_doc:M) => {
+				return string_id(mon_doc);
+			});
+		}catch(err){
+			throw urn_error.create(`Relation.find ERROR.`);
+		}
 	}
 	
 	public async find_by_id(id:string)
@@ -39,10 +41,18 @@ export class Relation<M extends urn_mdls.resources.Resource> {
 		if(mon_find_by_id_res === null){
 			return null;
 		}
-		if(mon_find_by_id_res._id){
-			mon_find_by_id_res._id = mon_find_by_id_res._id.toString();
+		return string_id(mon_find_by_id_res);
+	}
+	
+	public async find_one(filter:QueryFilter<M>, options:QueryOptions<M>)
+			:Promise<M | null>{
+		const mon_find_one_res = (typeof options !== 'undefined' && options.sort) ?
+			await this._raw.findOne(filter).sort(options.sort).lean<M>() :
+			await this._raw.findOne(filter).lean<M>();
+		if(mon_find_one_res === null){
+			return null;
 		}
-		return mon_find_by_id_res;
+		return string_id(mon_find_one_res);
 	}
 	
 	public async insert_one(resource:M)
@@ -62,5 +72,13 @@ export class Relation<M extends urn_mdls.resources.Resource> {
 		}
 	}
 	
+}
+
+function string_id<M extends urn_mdls.resources.Resource>(resource:M)
+		:M{
+	if(resource._id){
+		resource._id = resource._id.toString();
+	}
+	return resource;
 }
 

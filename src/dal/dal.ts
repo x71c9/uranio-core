@@ -51,29 +51,24 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 	 */
 	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
 			:Promise<A[]>{
-		try{
-			_validate_filter_options_params(this._atom_module, filter, options);
-		}catch(err){
-			throw urn_error.create(`Invalid query paramters`, err);
-		}
-		try{
-			const db_res_find = await this._db_relation.find(filter, options);
-			const atom_array = db_res_find.reduce<A[]>((result, db_record) => {
-				try{
-					result.push(this._atom_module.create(db_record));
-				}catch(err){
-					let err_msg = `Dal.find(). Cannot create Atom.`;
-					err_msg += ` Dal.relation_name [${this.relation_name}].`;
-					err_msg += ` Record _id [${db_record._id}]`;
-					// err_msg += ` Record date [${db_record.date}]`;
-					urn_log.error(err_msg);
-				}
-				return result;
-			}, <A[]>[]);
-			return atom_array;
-		}catch(err){
-			throw urn_error.create(`DAL.find error`, err);
-		}
+		
+		_validate_filter_options_params(this._atom_module, filter, options);
+		
+		const db_res_find = await this._db_relation.find(filter, options);
+		const atom_array = db_res_find.reduce<A[]>((result, db_record) => {
+			try{
+				result.push(this._atom_module.create(db_record));
+			}catch(err){
+				let err_msg = `Dal.find(). Cannot create Atom.`;
+				err_msg += ` Dal.relation_name [${this.relation_name}].`;
+				err_msg += ` Record _id [${db_record._id}]`;
+				urn_log.error(err_msg);
+			}
+			return result;
+		}, <A[]>[]);
+		
+		return atom_array;
+		
 	}
 	
 	public async find_by_id(id:string)
@@ -81,30 +76,52 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 		if(!_is_valid_id(id)){
 			throw urn_error.create(`Dal.find_by_id(). Invalid id.`);
 		}
+		const db_res_find_by_id = await this._db_relation.find_by_id(id);
+		if(!db_res_find_by_id){
+			return null;
+		}
 		try{
-			const db_res_find_by_id = await this._db_relation.find_by_id(id);
-			if(!db_res_find_by_id){
-				return null;
-			}
-			try{
-				const atom = this._atom_module.create(db_res_find_by_id);
-				return atom;
-			}catch(err){
-				let err_msg = `Dal.find_by_id(). Cannot create Atom.`;
-				err_msg += ` Dal.relation_name [${this.relation_name}].`;
-				err_msg += ` Record _id [${db_res_find_by_id._id}]`;
-				// err_msg += ` Record date [${db_record.date}]`;
-				throw urn_error.create(err_msg);
-			}
+			const atom = this._atom_module.create(db_res_find_by_id);
+			return atom;
 		}catch(err){
-			throw urn_error.create(`Dal.find_by_id error`);
+			let err_msg = `Dal.find_by_id(). Cannot create Atom.`;
+			err_msg += ` Dal.relation_name [${this.relation_name}].`;
+			err_msg += ` Record _id [${db_res_find_by_id._id}]`;
+			throw urn_error.create(err_msg);
 		}
 	}
 	
-	// public async find_one()
-	//     :Promise<R>{
-	//   // TODO
-	// }
+	/**
+	 * Function that return the first record from a Relation matching
+	 * filter and options
+	 *
+	 * @param filter - Filter object for query
+	 *   e.g. {field0: 'value', field1: {$gt: 77}}
+	 * @param options [optional] - Option object
+	 *   e.g. {sort: 'field0', limit: 10, skip: 20}
+	 */
+	public async find_one(filter:QueryFilter<M>, options?:QueryOptions<M>)
+			:Promise<A[]>{
+		
+		_validate_filter_options_params(this._atom_module, filter, options);
+		
+		const db_res_find = await this._db_relation.find(filter, options);
+		const atom_array = db_res_find.reduce<A[]>((result, db_record) => {
+			try{
+				result.push(this._atom_module.create(db_record));
+			}catch(err){
+				let err_msg = `Dal.find(). Cannot create Atom.`;
+				err_msg += ` Dal.relation_name [${this.relation_name}].`;
+				err_msg += ` Record _id [${db_record._id}]`;
+				// err_msg += ` Record date [${db_record.date}]`;
+				urn_log.error(err_msg);
+			}
+			return result;
+		}, <A[]>[]);
+		
+		return atom_array;
+		
+	}
 	
 	public async insert_one(atom:A)
 			:Promise<A>{
