@@ -1,6 +1,7 @@
-import * as urn_db from '../../db/';
 
-export const user_schema_definition:urn_db.SchemaDefinition = {
+import mongoose from 'mongoose';
+
+export const user_schema_definition:mongoose.SchemaDefinition = {
 	first_name: {
 		type: String,
 		trim: true,

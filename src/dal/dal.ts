@@ -10,16 +10,9 @@ import urn_mdls from 'urn-mdls';
 
 import * as urn_atom from '../atom/';
 
-import * as urn_db from '../db/';
+import * as urn_rel from '../rel/';
 
-import {QueryOptions, QueryFilter, FilterType} from '../types';
-
-const urn_con = urn_db.connection.create(
-	'main',
-	process.env.urn_db_host!,
-	parseInt(process.env.urn_db_port!),
-	process.env.urn_db_name!
-);
+import {RelationName, DBType, QueryOptions, QueryFilter, FilterType} from '../types';
 
 const _queryop = {
 	andornor: ['$and','$or','$nor','$not'],
@@ -29,16 +22,19 @@ const _queryop = {
 @urn_log.decorators.debug_methods
 export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_atom.Atom<M>> {
 	
-	protected _db_relation:urn_db.Relation<M>;
+	protected _db_relation:urn_rel.Relation<M>;
 	
-	constructor(public relation_name:string, private _atom_module:urn_atom.AtomModule<M,A>){
+	constructor(private _db_type:DBType, public relation_name:RelationName, private _atom_module:urn_atom.AtomModule<M,A>){
+		switch(this._db_type){
+			case 'mongo':
+				this._db_relation = new urn_rel.mongo.MongooseRelation<M>(relation_name);
+				break;
+			case 'mysql':
+				break;
+		}
 		
-		this._db_relation = this._get_relation();
+		this._db_relation = new urn_rel.mongo.MongooseRelation<M>(relation_name);
 		
-	}
-	
-	private _get_relation():urn_db.Relation<M>{
-		return urn_con.get_relation<M>(this.relation_name, this._atom_module.schema);
 	}
 	
 	/**
@@ -81,7 +77,7 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 	 */
 	public async find_by_id(id:string)
 			:Promise<A | null>{
-		if(!_is_valid_id(id)){
+		if(!this._db_relation.is_valid_id(id)){
 			throw urn_error.create(`Dal.find_by_id(). Invalid id.`);
 		}
 		const db_res_find_by_id = await this._db_relation.find_by_id(id);
@@ -165,10 +161,10 @@ export abstract class DAL<M extends urn_mdls.resources.Resource, A extends urn_a
 /**
  * Validate id
  */
-function _is_valid_id(id:string)
-		:boolean{
-	return urn_con.is_valid_id(id);
-}
+// function _is_valid_id(id:string)
+//     :boolean{
+//   return urn_con.is_valid_id(id);
+// }
 
 /**
  * Validate `filter` and `options` paramaters
