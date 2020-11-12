@@ -26,6 +26,6 @@ const create:AtomCreateFunction<models.User, UserInstance> =
 export const module:AtomModule<models.User, User> = {
 	create: create,
 	keys: models.user.keys,
-	relation_name: 'urn_users'
+	relation_name: 'urn_user'
 };
 
