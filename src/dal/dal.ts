@@ -19,10 +19,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	
 	protected _db_relation:urn_rel.Relation<M>;
 	
-	constructor(
-		public db_type:DBType,
-		private _atom_module:urn_atms.AtomModule<M,A>,
-	){
+	constructor(public db_type:DBType, private _atom_module:urn_atms.AtomModule<M,A>) {
 		switch(this.db_type){
 			case 'mongo':
 				this._db_relation = new urn_rel.mongo.MongooseRelation<M>(this._atom_module.relation_name);
@@ -30,6 +27,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 			case 'mysql':
 				break;
 		}
+		// Because MySQL is not implemented yet
 		this._db_relation = new urn_rel.mongo.MongooseRelation<M>(this._atom_module.relation_name);
 	}
 	
@@ -42,23 +40,15 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	 *   e.g. {sort: 'field0', limit: 10, skip: 20}
 	 */
 	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
-			:Promise<A[]>{
+			:Promise<Array<A | null>>{
 		
 		urn_validators.query.validate_filter_options_params(this._atom_module.keys, filter, options);
 		
 		const db_res_find = await this._db_relation.find(filter, options);
-		const atom_array = db_res_find.reduce<A[]>((result, db_record) => {
-			try{
-				result.push(this._atom_module.create(db_record));
-			}catch(err){
-				let err_msg = `Dal.find(). Cannot create Atom.`;
-				err_msg += ` Dal.relation_name [${this._atom_module.relation_name}].`;
-				err_msg += ` Record _id [${db_record._id}]`;
-				urn_log.error(err_msg);
-			}
+		const atom_array = db_res_find.reduce<Array<A | null>>((result, db_record) => {
+			result.push(this._create_atom(db_record, 'find'));
 			return result;
-		}, <A[]>[]);
-		
+		}, []);
 		return atom_array;
 		
 	}
@@ -74,21 +64,10 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	public async find_by_id(id:string)
 			:Promise<A | null>{
 		if(!this._db_relation.is_valid_id(id)){
-			throw urn_error.create(`Dal.find_by_id(). Invalid id.`);
+			throw urn_error.create(`DAL.find_by_id(). Invalid id.`);
 		}
 		const db_res_find_by_id = await this._db_relation.find_by_id(id);
-		if(!db_res_find_by_id){
-			return null;
-		}
-		try{
-			const atom = this._atom_module.create(db_res_find_by_id);
-			return atom;
-		}catch(err){
-			let err_msg = `Dal.find_by_id(). Cannot create Atom.`;
-			err_msg += ` Dal.relation_name [${this._atom_module.relation_name}].`;
-			err_msg += ` Record _id [${db_res_find_by_id._id}]`;
-			throw urn_error.create(err_msg);
-		}
+		return this._create_atom(db_res_find_by_id, 'find_by_id');
 	}
 	
 	/**
@@ -106,17 +85,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		urn_validators.query.validate_filter_options_params(this._atom_module.keys, filter, options);
 		
 		const db_res_find_one = await this._db_relation.find_one(filter, options);
-		try{
-			return (!db_res_find_one) ? null : this._atom_module.create(db_res_find_one);
-		}catch(err){
-			let err_msg = `Dal.find(). Cannot create Atom.`;
-			err_msg += ` Dal.relation_name [${this._atom_module.relation_name}].`;
-			if(db_res_find_one && db_res_find_one._id)
-				err_msg += ` Record _id [${db_res_find_one._id}]`;
-			// err_msg += ` Record date [${db_record.date}]`;
-			urn_log.error(err_msg);
-			return null;
-		}
+		return this._create_atom(db_res_find_one, 'find_one');
 	}
 	
 	/**
@@ -127,20 +96,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	public async insert_one(atom:A)
 			:Promise<A | null>{
 		const db_res_insert = await this._db_relation.insert_one(atom.return());
-		if(!db_res_insert){
-			return null;
-		}
-		try{
-			return (!db_res_insert) ? null : this._atom_module.create(db_res_insert);
-		}catch(err){
-			let err_msg = `Dal.inser(). Cannot create Atom.`;
-			err_msg += ` Dal.relation_name [${this._atom_module.relation_name}].`;
-			if(db_res_insert && db_res_insert._id)
-				err_msg += ` Record _id [${db_res_insert._id}]`;
-			// err_msg += ` Record date [${db_record.date}]`;
-			urn_log.error(err_msg);
-			return null;
-		}
+		return this._create_atom(db_res_insert, 'insert_one');
 	}
 	
 	/**
@@ -151,25 +107,39 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	public async update_one(atom:A)
 			:Promise<A | null>{
 		const db_res_update = await this._db_relation.update_one(atom.return());
-		if(!db_res_update)
-			return null;
+		return this._create_atom(db_res_update, 'update_one');
+	}
+	
+	/**
+	 * Method that delete a record from a Relation
+	 *
+	 * @param atom - the Atom to update
+	 */
+	public async delete_one(atom:A)
+			:Promise<A | null>{
+		const db_res_delete = await this._db_relation.delete_one(atom.return());
+		return this._create_atom(db_res_delete, 'delete_one');
+	}
+	
+	/**
+	 * Private helper method for creating Atom and throwing Exception on Error
+	 *
+	 * @param resource - The resource from a Relation method
+	 * @param func_name - DAL method name
+	 */
+	private _create_atom(resource:M | null, func_name:keyof DAL<M,A>)
+			:A | null{
 		try{
-			return (!db_res_update) ? null : this._atom_module.create(db_res_update);
+			return (!resource) ? null : this._atom_module.create(resource);
 		}catch(err){
-			let err_msg = `Dal.inser(). Cannot create Atom.`;
-			err_msg += ` Dal.relation_name [${this._atom_module.relation_name}].`;
-			if(db_res_update && db_res_update._id)
-				err_msg += ` Record _id [${db_res_update._id}]`;
-			// err_msg += ` Record date [${db_record.date}]`;
+			let err_msg = `DAL.${func_name}(). Cannot create Atom.`;
+			err_msg += ` DAL.relation_name [${this._atom_module.relation_name}].`;
+			if(resource && resource._id)
+				err_msg += ` Record _id [${resource._id}]`;
 			urn_log.error(err_msg);
 			return null;
 		}
 	}
-	
-	// public async delete_one()
-	//     :Promise<R>{
-	//   // TODO
-	// }
 	
 }
 
