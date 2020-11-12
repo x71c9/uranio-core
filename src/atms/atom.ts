@@ -5,15 +5,15 @@
  * @packageDocumentation
  */
 
-import urn_mdls from 'urn-mdls';
-
 import {urn_log, urn_error} from 'urn-lib';
+
+import {models} from './types';
 
 /**
  * Class for general Atom
  */
 @urn_log.decorators.debug_methods
-export abstract class Atom<Model extends urn_mdls.resources.Resource> implements urn_mdls.resources.Resource {
+export abstract class Atom<Model extends models.Resource> implements models.Resource {
 	
 	public _id?:string;
 	
@@ -25,7 +25,7 @@ export abstract class Atom<Model extends urn_mdls.resources.Resource> implements
 		
 	}
 	
-	protected abstract _get_keys():urn_mdls.ModelKeysCategories<Model>;
+	protected abstract _get_keys():models.ModelKeysCategories<Model>;
 	
 	public return()
 			:Model{
@@ -60,7 +60,7 @@ export abstract class Atom<Model extends urn_mdls.resources.Resource> implements
 				throw urn_error.create(err_msg);
 			}
 		}
-		const types:Set<keyof urn_mdls.ModelKeysCategories<Model>> =
+		const types:Set<keyof models.ModelKeysCategories<Model>> =
 			new Set(['boolean', 'number', 'string', 'object']);
 		for(const t of types){
 			for(const key of this._get_keys()[t]){
@@ -73,7 +73,7 @@ export abstract class Atom<Model extends urn_mdls.resources.Resource> implements
 				}
 			}
 		}
-
+		
 		for(const key of this._get_keys().date){
 			if(this._get_keys().optional.has(key) && typeof resource[key] === typeof undefined)
 				continue;
@@ -88,22 +88,14 @@ export abstract class Atom<Model extends urn_mdls.resources.Resource> implements
 	}
 }
 
-export function create_atom<M extends urn_mdls.resources.Resource, A extends Atom<M>>(
-	model_instance:M,
-	atom_class: new (init: M) => A
-)
+export function create_atom<M extends models.Resource, A extends Atom<M>>
+(model_instance:M, atom_class: new (init: M) => A)
 		:A{
-	
 	urn_log.fn_debug(`Create ${atom_class.constructor.name}`);
-	
 	try{
-		
 		return new atom_class(model_instance);
-		
 	}catch(err){
-		
 		throw urn_error.create(`Cannot create Atom [${atom_class.constructor.name}]. ` + err.message, err);
-		
 	}
 }
 

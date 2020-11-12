@@ -15,6 +15,6 @@ type MongoSchemas = {
 }
 
 export const mongo_schemas:MongoSchemas = {
-	urn_user: new mongoose.Schema(user_schema_definition)
+	urn_users: new mongoose.Schema(user_schema_definition)
 };
 

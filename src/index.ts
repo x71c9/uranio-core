@@ -6,7 +6,7 @@
 
 // import mongoose from 'mongoose';
 
-import * as urn_atom from './atom/';
+import * as urn_atms from './atms/';
 
 // const mongoose_options = {
 //   useNewUrlParser: true,
@@ -20,7 +20,7 @@ import * as urn_atom from './atom/';
 // console.log(uri);
 	
 // const connection = mongoose.createConnection(uri, mongoose_options);
-// const Model = connection.model('urn_users', urn_atom.user.module.schema);
+// const Model = connection.model('urn_users', urn_atms.user.module.schema);
 
 // mongoose.connect(uri, mongoose_options);
 
@@ -37,7 +37,7 @@ import create_user_dal from './dal/users';
 
 // import urn_mdls from 'urn-mdls';
 
-// import * as urn_atom from './atom/';
+// import * as urn_atms from './atom/';
 
 // urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
 
@@ -72,11 +72,11 @@ const user = {
 // // });
 
 
-// const u = urn_atom.user.module.create(user);
+// const u = urn_atms.user.module.create(user);
 
 // // // console.log(u);
 
-// async function run(user:urn_atom.user.UserInstance){
+// async function run(user:urn_atms.user.UserInstance){
 	
 //   try{
 		
@@ -102,7 +102,7 @@ const user = {
 
 // run(u);
 
-const dal_users = create_user_dal();
+const dal_users = create_user_dal('mongo');
 
 // dal_users.find({}).then((data:any) => {
 //   console.log('FIND', data);
@@ -116,7 +116,7 @@ const dal_users = create_user_dal();
 //   console.log('FIND ONE', data);
 // });
 
-dal_users.update_one(urn_atom.user.module.create(user)).then((data:any) => {
+dal_users.update_one(urn_atms.user.module.create(user)).then((data:any) => {
 	console.log('UPDATE ONE', data);
 });
 

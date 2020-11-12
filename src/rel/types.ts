@@ -22,6 +22,6 @@ export interface Relation<M extends urn_mdls.resources.Resource> {
 	
 	delete_one(resource:M):Promise<M | null>;
 	
-	is_valid_is(id:string):boolean;
+	is_valid_id(id:string):boolean;
 	
 }
