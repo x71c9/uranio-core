@@ -6,7 +6,7 @@
 
 export type DBType = 'mongo' | 'mysql';
 
-export type RelationName = 'urn_users';
+export type RelationName = 'urn_user' | 'urn_trash';
 
 /**
  * Type for Query Filter paramter
