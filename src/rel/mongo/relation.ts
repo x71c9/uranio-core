@@ -6,8 +6,6 @@
 
 import mongoose from 'mongoose';
 
-import urn_mdls from 'urn-mdls';
-
 import {urn_log, urn_error} from 'urn-lib';
 
 import {RelationName, QueryFilter, QueryOptions} from '../../types';
@@ -17,6 +15,8 @@ import {Relation} from '../types';
 import * as mongo_connection from './connection';
 
 import {mongo_schemas} from './schemas/';
+
+import * as urn_atms from '../../atms/';
 
 const mongo_conn = mongo_connection.create(
 	'main',
@@ -30,7 +30,7 @@ const mongo_conn = mongo_connection.create(
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class MongooseRelation<M extends urn_mdls.resources.Resource> implements Relation<M>{
+export class MongooseRelation<M extends urn_atms.models.Resource> implements Relation<M>{
 	
 	private _raw:mongoose.Model<mongoose.Document>;
 	
@@ -99,7 +99,7 @@ export class MongooseRelation<M extends urn_mdls.resources.Resource> implements 
 			if(!Object.prototype.hasOwnProperty.call(resource, '_id') ||
 					typeof resource._id !== 'string' ||
 					resource._id === ''){
-				throw urn_error.create(`Cannot update. Atom has no _id`);
+				throw urn_error.create(`Cannot update. Model has no _id`);
 			}
 			const mon_update_res =
 				await this._raw.findOneAndUpdate({_id:resource._id}, resource, {new: true, lean: true});
@@ -122,14 +122,14 @@ export class MongooseRelation<M extends urn_mdls.resources.Resource> implements 
 			if(!Object.prototype.hasOwnProperty.call(resource, '_id') ||
 					typeof resource._id !== 'string' ||
 					resource._id === ''){
-				throw urn_error.create(`Cannot delete. Atom has no _id`);
+				throw urn_error.create(`Cannot delete. Model has no _id`);
 			}
 			const mon_delete_res =
 				await this._raw.findOneAndDelete({_id:resource._id});
 			if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
 				return null;
 			}
-			return string_id(mon_delete_res as any);
+			return string_id(mon_delete_res.toObject() as M);
 		}catch(err){
 			let err_msg = `Mongoose Relation delete() failed. Cannot delete Model.`;
 			err_msg += ` ${err.message}`;
@@ -143,7 +143,7 @@ export class MongooseRelation<M extends urn_mdls.resources.Resource> implements 
 	}
 }
 
-function string_id<M extends urn_mdls.resources.Resource>(resource:M)
+function string_id<M extends urn_atms.models.Resource>(resource:M)
 		:M{
 	if(resource._id){
 		resource._id = resource._id.toString();

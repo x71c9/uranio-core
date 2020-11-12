@@ -52,7 +52,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 			throw urn_error.create(err_msg);
 		}
 		for(const key of this._get_keys().approved){
-			if(key === '_id')
+			if(this._get_keys().optional.has(key))
 				continue;
 			if(!Object.prototype.hasOwnProperty.call(resource, key)){
 				let err_msg = `Invalid ${this.constructor.name} constructor initializer.`;
