@@ -7,24 +7,28 @@
 
 import {urn_log} from 'urn-lib';
 
-import * as urn_atom from '../atom/';
+import {DBType} from '../types';
+
+import * as urn_atms from '../atms/';
 
 import {DAL} from './dal';
 
+import * as urn_user_atms from '../atms/user/';
+
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class DALUsers extends DAL<urn_atom.user.models.User, urn_atom.user.UserInstance> {
+class DALUsers extends DAL<urn_atms.models.User, urn_atms.user.UserInstance> {
 	
-	constructor(){
-		super('urn_user', urn_atom.user.module);
+	constructor(db_type:DBType){
+		super(db_type, urn_user_atms.module);
 	}
 	
 }
 
 export type DalUsersInstance = InstanceType<typeof DALUsers>;
 
-export default function create():DalUsersInstance{
-	return new DALUsers();
+export default function create(db_type:DBType):DalUsersInstance{
+	return new DALUsers(db_type);
 }
 
 

@@ -4,21 +4,21 @@
  * @packageDocumentation
  */
 
-import urn_mdls from 'urn-mdls';
-
 import {urn_log} from 'urn-lib';
 
 import {Atom} from '../atom';
 
-export const user_keys:urn_mdls.ModelKeysCategories<urn_mdls.resources.User> =
-	urn_mdls.resources.user.keys;
+import {models} from '../types';
+
+export const user_keys:models.ModelKeysCategories<models.User> =
+	models.user.keys;
 
 /**
  * Class for Atom User
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class User extends Atom<urn_mdls.resources.User> implements urn_mdls.resources.User {
+export class User extends Atom<models.User> implements models.User {
 	
 	public email:string;
 	
@@ -38,7 +38,7 @@ export class User extends Atom<urn_mdls.resources.User> implements urn_mdls.reso
 	
 	public creation_date:Date;
 	
-	constructor(user:urn_mdls.resources.User){
+	constructor(user:models.User){
 		
 		super(user);
 		
@@ -63,7 +63,7 @@ export class User extends Atom<urn_mdls.resources.User> implements urn_mdls.reso
 	}
 	
 	protected _get_keys()
-			:urn_mdls.ModelKeysCategories<urn_mdls.resources.User>{
+			:models.ModelKeysCategories<models.User>{
 		return user_keys;
 	}
 	

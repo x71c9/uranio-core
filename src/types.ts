@@ -4,10 +4,9 @@
  * @packageDocumentation
  */
 
-
 export type DBType = 'mongo' | 'mysql';
 
-export type RelationName = 'urn_user';
+export type RelationName = 'urn_users';
 
 /**
  * Type for Query Filter paramter
