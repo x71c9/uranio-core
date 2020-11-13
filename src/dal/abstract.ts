@@ -63,6 +63,7 @@ export abstract class DAL<M extends urn_atm.models.Resource, A extends urn_atm.A
 			:Promise<A | null>{
 		const db_res_delete = await this._delete_one(atom);
 		if(db_res_delete && this._db_trash_relation){
+			db_res_delete._deleted_from = db_res_delete._id;
 			this.trash_insert_one(db_res_delete);
 		}
 		return db_res_delete;

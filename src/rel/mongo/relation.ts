@@ -6,7 +6,7 @@
 
 import mongoose from 'mongoose';
 
-import {urn_log, urn_error} from 'urn-lib';
+import {urn_log, urn_error, urn_util} from 'urn-lib';
 
 import {RelationName, QueryFilter, QueryOptions} from '../../types';
 
@@ -38,7 +38,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	
 	constructor(public relation_name:RelationName, connection?:mongo_connection.ConnectionInstance){
 		
-		this._conn = (connection && Object.prototype.hasOwnProperty.call(connection,'_connection')) ?
+		this._conn = (connection && urn_util.object.has_key(connection,'_connection')) ?
 			connection : mongo_conn;
 		
 		this._raw = this._conn.get_model(relation_name, mongo_schemas[relation_name]);
@@ -81,7 +81,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	
 	public async insert_one(resource:M)
 			:Promise<M>{
-		if(Object.prototype.hasOwnProperty.call(resource, '_id')){
+		if(urn_util.object.has_key(resource, '_id')){
 			delete resource._id;
 		}
 		try{
@@ -101,7 +101,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	public async update_one(resource:M)
 			:Promise<M | null>{
 		try{
-			if(!Object.prototype.hasOwnProperty.call(resource, '_id') ||
+			if(!urn_util.object.has_key(resource, '_id') ||
 					typeof resource._id !== 'string' ||
 					resource._id === ''){
 				throw urn_error.create(`Cannot update. Model has no _id`);
@@ -124,7 +124,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	public async delete_one(resource:M)
 			:Promise<M | null>{
 		try{
-			if(!Object.prototype.hasOwnProperty.call(resource, '_id') ||
+			if(!urn_util.object.has_key(resource, '_id') ||
 					typeof resource._id !== 'string' ||
 					resource._id === ''){
 				throw urn_error.create(`Cannot delete. Model has no _id`);
@@ -136,7 +136,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 			}
 			return string_id(mon_delete_res.toObject() as M);
 		}catch(err){
-			let err_msg = `Mongoose Relation delete() failed. Cannot delete Model.`;
+			let err_msg = `Mongoose Relation delete_one() failed. Cannot delete Model.`;
 			err_msg += ` ${err.message}`;
 			throw urn_error.create(err_msg, err);
 		}

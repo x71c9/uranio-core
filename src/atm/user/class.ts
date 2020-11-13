@@ -32,11 +32,7 @@ export class User extends Atom<models.User> implements models.User {
 	
 	public active:boolean;
 	
-	public bio:string;
-	
 	public password:string;
-	
-	public creation_date:Date;
 	
 	constructor(user:models.User){
 		
@@ -54,11 +50,7 @@ export class User extends Atom<models.User> implements models.User {
 		
 		this.active = user.active;
 		
-		this.bio = user.bio;
-		
 		this.password = user.password;
-		
-		this.creation_date = user.creation_date;
 		
 	}
 	
