@@ -5,7 +5,7 @@
  * @packageDocumentation
  */
 
-import {urn_log, urn_error} from 'urn-lib';
+import {urn_log, urn_error, urn_util} from 'urn-lib';
 
 import {models} from './types';
 
@@ -17,11 +17,25 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 	
 	public _id?:string;
 	
+	public _deleted_from?:string;
+	
+	public date?:Date;
+	
 	constructor(resource:Model){
 		
 		this.validate(resource);
 		
-		this._id = resource._id;
+		if(urn_util.object.has_key(resource, '_id')){
+			this._id = resource._id;
+		}
+		
+		if(urn_util.object.has_key(resource, '_deleted_from')){
+			this._deleted_from = resource._deleted_from;
+		}
+		
+		if(urn_util.object.has_key(resource, 'date')){
+			this.date = resource.date;
+		}
 		
 	}
 	
@@ -35,7 +49,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 		
 		const data_transfer_object = {} as Model;
 		for(const key of this._get_keys().approved){
-			if(!Object.prototype.hasOwnProperty.call(that, key)){
+			if(!this._get_keys().optional.has(key) && !urn_util.object.has_key(that, key)){
 				throw urn_error.create(`Cannot return(). Current instance has no property [${key}] set.`);
 			}
 			data_transfer_object[key] = that[key];
@@ -54,7 +68,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 		for(const key of this._get_keys().approved){
 			if(this._get_keys().optional.has(key))
 				continue;
-			if(!Object.prototype.hasOwnProperty.call(resource, key)){
+			if(!urn_util.object.has_key(resource, key)){
 				let err_msg = `Invalid ${this.constructor.name} constructor initializer.`;
 				err_msg += ` Initializer is missing propery [${key}].`;
 				throw urn_error.create(err_msg);
@@ -77,7 +91,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 		for(const key of this._get_keys().date){
 			if(this._get_keys().optional.has(key) && typeof resource[key] === typeof undefined)
 				continue;
-			if(Object.prototype.toString.call(resource[key]) !== '[object Date]'){
+			if(!urn_util.is_date(resource[key])){
 				let err_msg = `Invalid initializer key type [${key}].`;
 				err_msg += ` Type must be "date" - given type [${typeof resource[key]}]`;
 				throw urn_error.create(err_msg);

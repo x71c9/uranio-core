@@ -2,6 +2,10 @@
 import mongoose from 'mongoose';
 
 export const user_schema_definition:mongoose.SchemaDefinition = {
+	_deleted_from: {
+		type: String,
+		trim: true
+	},
 	first_name: {
 		type: String,
 		trim: true,
@@ -61,20 +65,12 @@ export const user_schema_definition:mongoose.SchemaDefinition = {
 		default: false,
 		required: true
 	},
-	bio:{
-		type: String,
-		trim: true
-	},
 	password:{
 		type: String,
 		trim: true,
 		match: /^[^ \t\r+]+$/,
 		minlenght: 8,
 		maxlenght: 255,
-		required: true
-	},
-	creation_date:{
-		type: Date,
 		required: true
 	}
 };

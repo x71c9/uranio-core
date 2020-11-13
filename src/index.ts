@@ -4,6 +4,10 @@
  * @packageDocumentation
  */
 
+import {urn_log} from 'urn-lib';
+
+urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
+
 import * as urn_atm from './atm/';
 
 import create_user_dal from './dal/users';
@@ -19,7 +23,7 @@ function makeid(length:number) {
 }
 
 const user = {
-	_id:'5fad2102bcfacd4ea51dc9ae',
+	// _id:'5fad2102bcfacd4ea51dc9ae',
 	first_name: 'Federico',
 	last_name: 'Reale',
 	email: `a@a${makeid(9)}.com`,
@@ -65,9 +69,10 @@ const dal_users = create_user_dal('mongo');
 dal_users.insert_one(urn_atm.user.module.create(user)).then((data:urn_atm.user.UserInstance | null) => {
 	// console.log('INSERT ONE2', data);
 	if(data !== null){
-		dal_users.delete_one(data).then((data:urn_atm.user.UserInstance | null) => {
-			console.log('DELETE ONE2', data);
-		});
+		dal_users.delete_one(data);
+		// dal_users.delete_one(data).then((data:urn_atm.user.UserInstance | null) => {
+		//   console.log('DELETE ONE2', data);
+		// });
 	}
 });
 
