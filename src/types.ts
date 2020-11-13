@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-export type DBType = 'mongo' | 'mysql';
+export type DBType = 'mongo'; // | 'mysql'
 
 export type RelationName = 'urn_user' | 'urn_trash';
 

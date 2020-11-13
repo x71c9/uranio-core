@@ -38,7 +38,8 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	
 	constructor(public relation_name:RelationName, connection?:mongo_connection.ConnectionInstance){
 		
-		this._conn = (connection) ? connection : mongo_conn;
+		this._conn = (connection && Object.prototype.hasOwnProperty.call(connection,'_connection')) ?
+			connection : mongo_conn;
 		
 		this._raw = this._conn.get_model(relation_name, mongo_schemas[relation_name]);
 		

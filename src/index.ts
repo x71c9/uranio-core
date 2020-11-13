@@ -31,18 +31,18 @@ const user = {
 	creation_date: new Date()
 };
 
-const user2 = {
-	_id:'5fad2102bcfacd4ea51dc9ae',
-	first_name: 'Federico',
-	last_name: 'Reale',
-	email: `a@a${makeid(9)}.com`,
-	username: `sakjd${makeid(9)}las`,
-	password: 'skajdlsadlSSKLJ@à2',
-	active: true,
-	bio: 'S',
-	type: 'pro',
-	creation_date: new Date()
-};
+// const user2 = {
+//   _id:'5fad2102bcfacd4ea51dc9ae',
+//   first_name: 'Federico',
+//   last_name: 'Reale',
+//   email: `a@a${makeid(9)}.com`,
+//   username: `sakjd${makeid(9)}las`,
+//   password: 'skajdlsadlSSKLJ@à2',
+//   active: true,
+//   bio: 'S',
+//   type: 'pro',
+//   creation_date: new Date()
+// };
 
 const dal_users = create_user_dal('mongo');
 
@@ -58,14 +58,14 @@ const dal_users = create_user_dal('mongo');
 //   console.log('FIND ONE', data);
 // });
 
-dal_users.insert_one(urn_atm.user.module.create(user2)).then((data:urn_atm.user.UserInstance | null) => {
-	console.log('INSERT ONE1', data);
-});
+// dal_users.insert_one(urn_atm.user.module.create(user2)).then((data:urn_atm.user.UserInstance | null) => {
+//   console.log('INSERT ONE1', data);
+// });
 
 dal_users.insert_one(urn_atm.user.module.create(user)).then((data:urn_atm.user.UserInstance | null) => {
-	console.log('INSERT ONE2', data);
+	// console.log('INSERT ONE2', data);
 	if(data !== null){
-		dal_users.delete_one(urn_atm.user.module.create(data.return())).then((data:urn_atm.user.UserInstance | null) => {
+		dal_users.delete_one(data).then((data:urn_atm.user.UserInstance | null) => {
 			console.log('DELETE ONE2', data);
 		});
 	}
