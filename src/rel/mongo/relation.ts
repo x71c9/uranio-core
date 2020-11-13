@@ -16,7 +16,7 @@ import * as mongo_connection from './connection';
 
 import {mongo_schemas} from './schemas/';
 
-import * as urn_atms from '../../atms/';
+import * as urn_atm from '../../atm/';
 
 const mongo_conn = mongo_connection.create(
 	'main',
@@ -30,13 +30,17 @@ const mongo_conn = mongo_connection.create(
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class MongooseRelation<M extends urn_atms.models.Resource> implements Relation<M>{
+export class MongooseRelation<M extends urn_atm.models.Resource> implements Relation<M>{
 	
-	private _raw:mongoose.Model<mongoose.Document>;
+	protected _conn:mongo_connection.ConnectionInstance;
 	
-	constructor(public relation_name:RelationName){
+	protected _raw:mongoose.Model<mongoose.Document>;
+	
+	constructor(public relation_name:RelationName, connection?:mongo_connection.ConnectionInstance){
 		
-		this._raw = mongo_conn.get_model(relation_name, mongo_schemas[relation_name]);
+		this._conn = (connection) ? connection : mongo_conn;
+		
+		this._raw = this._conn.get_model(relation_name, mongo_schemas[relation_name]);
 		
 	}
 	
@@ -139,15 +143,17 @@ export class MongooseRelation<M extends urn_atms.models.Resource> implements Rel
 	
 	public is_valid_id(id:string)
 		:boolean{
-		return mongo_conn.is_valid_id(id);
+		return this._conn.is_valid_id(id);
 	}
+	
 }
 
-function string_id<M extends urn_atms.models.Resource>(resource:M)
+function string_id<M extends urn_atm.models.Resource>(resource:M)
 		:M{
 	if(resource._id){
 		resource._id = resource._id.toString();
 	}
 	return resource;
 }
+
 

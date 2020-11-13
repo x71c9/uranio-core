@@ -9,16 +9,16 @@ import {urn_log} from 'urn-lib';
 
 import {DBType} from '../types';
 
-import {DALResources} from './rsrc';
+import * as urn_atm from '../atm/';
 
-import * as urn_atms from '../atms/';
+import {DAL} from './abstract';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class DALUsers extends DALResources<urn_atms.models.User, urn_atms.user.UserInstance> {
+class DALUsers extends DAL<urn_atm.models.User, urn_atm.user.UserInstance> {
 	
 	constructor(db_type:DBType){
-		super(db_type, urn_atms.user.module);
+		super(db_type, urn_atm.user.module);
 	}
 	
 }

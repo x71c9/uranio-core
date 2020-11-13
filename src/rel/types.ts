@@ -3,11 +3,11 @@
  *
  * @packageDocumentation
  */
-import * as urn_atms from '../atms/';
+import * as urn_atm from '../atm/';
 
 import {QueryFilter, QueryOptions} from '../types';
 
-export interface Relation<M extends urn_atms.models.Resource> {
+export interface Relation<M extends urn_atm.models.Resource> {
 	
 	find(filter:QueryFilter<M>, options?:QueryOptions<M>):Promise<M[]>;
 	
