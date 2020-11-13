@@ -4,33 +4,43 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-Atom	atms/atom.ts	/^export abstract class Atom<Model extends models.Resource> implements models.Resource {$/;"	c
-AtomCreateFunction	atms/types.ts	/^export type AtomCreateFunction<M extends models.Resource, A extends Atom<M>> =$/;"	t
-AtomModule	atms/types.ts	/^export type AtomModule<M extends models.Resource, A extends Atom<M>> = {$/;"	t
+Atom	atm/atom.ts	/^export abstract class Atom<Model extends models.Resource> implements models.Resource {$/;"	c
+AtomCreateFunction	atm/types.ts	/^export type AtomCreateFunction<M extends models.Resource, A extends Atom<M>> =$/;"	t
+AtomModule	atm/types.ts	/^export type AtomModule<M extends models.Resource, A extends Atom<M>> = {$/;"	t
 ComparsionQueryFilter	types.ts	/^export type ComparsionQueryFilter = {$/;"	t
 ConditionalQueryFilter	types.ts	/^type ConditionalQueryFilter = {$/;"	t
 ConnectionInstance	rel/mongo/connection.ts	/^export type ConnectionInstance = InstanceType<typeof MongooseDBConnection>;$/;"	t
-DAL	dal/dal.ts	/^export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms.Atom<M>> {$/;"	c
-DALUsers	dal/users.ts	/^class DALUsers extends DAL<urn_atms.models.User, urn_atms.user.UserInstance> {$/;"	c
+DAL	dal/abstract.ts	/^export abstract class DAL<M extends urn_atm.models.Resource, A extends urn_atm.Atom<M>> {$/;"	c
+DALAssets	dal/assets/assets.ts	/^export abstract class DALAssets$/;"	c
+DALTrashes	dal/trashes.ts	/^class DALTrashes extends DAL<urn_atm.models.Trash, urn_atm.trash.TrashInstance> {$/;"	c
+DALUsers	dal/assets/users.ts	/^class DALUsers extends DALAssets<urn_atm.models.User, urn_atm.user.UserInstance> {$/;"	c
 DBType	types.ts	/^export type DBType = 'mongo' | 'mysql';$/;"	t
-DalUsersInstance	dal/users.ts	/^export type DalUsersInstance = InstanceType<typeof DALUsers>;$/;"	t
+DalTrashesInstance	dal/trashes.ts	/^export type DalTrashesInstance = InstanceType<typeof DALTrashes>;$/;"	t
+DalUsersInstance	dal/assets/users.ts	/^export type DalUsersInstance = InstanceType<typeof DALUsers>;$/;"	t
 FilterAndOrNorType	types.ts	/^type FilterAndOrNorType = {$/;"	t
 FilterComparsionType	types.ts	/^type FilterComparsionType = {$/;"	t
 FilterType	types.ts	/^export type FilterType<T> = QueryFilter<T> | ConditionalQueryFilter;$/;"	t
 MongoSchemas	rel/mongo/schemas/index.ts	/^type MongoSchemas = {$/;"	t
 MongooseDBConnection	rel/mongo/connection.ts	/^class MongooseDBConnection {$/;"	c
-MongooseRelation	rel/mongo/relation.ts	/^export class MongooseRelation<M extends urn_atms.models.Resource> implements Relation<M>{$/;"	c
+MongooseRelation	rel/mongo/relation.ts	/^export class MongooseRelation<M extends urn_atm.models.Resource> implements Relation<M>{$/;"	c
+MongooseTrashRelation	rel/mongo/trash.ts	/^class MongooseTrashRelation extends MongooseRelation<urn_atm.models.Trash>$/;"	c
+MongooseTrashRelationInstance	rel/mongo/trash.ts	/^export type MongooseTrashRelationInstance = InstanceType<typeof MongooseTrashRelation>;$/;"	t
 QueryFilter	types.ts	/^export type QueryFilter<T> = {$/;"	t
 QueryOptions	types.ts	/^export interface QueryOptions<T> {$/;"	i
-Relation	rel/types.ts	/^export interface Relation<M extends urn_atms.models.Resource> {$/;"	i
-RelationName	types.ts	/^export type RelationName = 'urn_users';$/;"	t
-User	atms/user/class.ts	/^export class User extends Atom<models.User> implements models.User {$/;"	c
-UserInstance	atms/user/index.ts	/^export type UserInstance = InstanceType<typeof User>;$/;"	t
+Relation	rel/types.ts	/^export interface Relation<M extends urn_atm.models.Resource> {$/;"	i
+RelationName	types.ts	/^export type RelationName = 'urn_user' | 'urn_trash';$/;"	t
+Trash	atm/trash/class.ts	/^export class Trash extends Atom<models.Trash> implements models.Trash {$/;"	c
+TrashInstance	atm/trash/index.ts	/^export type TrashInstance = InstanceType<typeof Trash>;$/;"	t
+User	atm/user/class.ts	/^export class User extends Atom<models.User> implements models.User {$/;"	c
+UserInstance	atm/user/index.ts	/^export type UserInstance = InstanceType<typeof User>;$/;"	t
+_conn	rel/mongo/relation.ts	/^	protected _conn:mongo_connection.ConnectionInstance;$/;"	m
 _connection	rel/mongo/connection.ts	/^	private _connection:mongoose.Connection;$/;"	m
-_db_relation	dal/dal.ts	/^	protected _db_relation:urn_rel.Relation<M>;$/;"	m
-_get_keys	atms/atom.ts	/^	protected abstract _get_keys():models.ModelKeysCategories<Model>;$/;"	m
-_get_keys	atms/user/class.ts	/^	protected _get_keys()$/;"	m
-_id	atms/atom.ts	/^	public _id?:string;$/;"	m
+_create_atom	dal/abstract.ts	/^	private _create_atom(resource:M | null, func_name:keyof DAL<M,A>)$/;"	m
+_db_relation	dal/abstract.ts	/^	protected _db_relation:urn_rel.Relation<M>;$/;"	m
+_get_keys	atm/atom.ts	/^	protected abstract _get_keys():models.ModelKeysCategories<Model>;$/;"	m
+_get_keys	atm/trash/class.ts	/^	protected _get_keys()$/;"	m
+_get_keys	atm/user/class.ts	/^	protected _get_keys()$/;"	m
+_id	atm/atom.ts	/^	public _id?:string;$/;"	m
 _on_close	rel/mongo/connection.ts	/^	private _on_close()$/;"	m
 _on_connected	rel/mongo/connection.ts	/^	private _on_connected()$/;"	m
 _on_connecting	rel/mongo/connection.ts	/^	private _on_connecting()$/;"	m
@@ -40,52 +50,60 @@ _on_error	rel/mongo/connection.ts	/^	private _on_error(e:Error)$/;"	m
 _on_reconnect_failed	rel/mongo/connection.ts	/^	private _on_reconnect_failed()$/;"	m
 _on_reconnect_tries	rel/mongo/connection.ts	/^	private _on_reconnect_tries()$/;"	m
 _on_reconnected	rel/mongo/connection.ts	/^	private _on_reconnected()$/;"	m
-_raw	rel/mongo/relation.ts	/^	private _raw:mongoose.Model<mongoose.Document>;$/;"	m
+_raw	rel/mongo/relation.ts	/^	protected _raw:mongoose.Model<mongoose.Document>;$/;"	m
 _validate_field	vali/query.ts	/^function _validate_field(field:any)$/;"	f
-active	atms/user/class.ts	/^	public active:boolean;$/;"	m
-bio	atms/user/class.ts	/^	public bio:string;$/;"	m
+active	atm/user/class.ts	/^	public active:boolean;$/;"	m
+bio	atm/user/class.ts	/^	public bio:string;$/;"	m
 close	rel/mongo/connection.ts	/^	public async close()$/;"	m
-create	dal/users.ts	/^export default function create(db_type:DBType):DalUsersInstance{$/;"	f
+create	dal/assets/users.ts	/^export default function create(db_type:DBType):DalUsersInstance{$/;"	f
+create	dal/trashes.ts	/^export default function create(db_type:DBType):DalTrashesInstance{$/;"	f
 create	rel/mongo/connection.ts	/^export function create(con_name:string, db_host:string, db_port:number, db_name:string)$/;"	f
-create_atom	atms/atom.ts	/^export function create_atom<M extends models.Resource, A extends Atom<M>>$/;"	f
-create_user_dal	index.ts	/^import create_user_dal from '.\/dal\/users';$/;"	I
-creation_date	atms/user/class.ts	/^	public creation_date:Date;$/;"	m
+create	rel/mongo/trash.ts	/^export function create():MongooseTrashRelationInstance{$/;"	f
+create_atom	atm/atom.ts	/^export function create_atom<M extends models.Resource, A extends Atom<M>>$/;"	f
+create_user_dal	index.ts	/^import create_user_dal from '.\/dal\/assets\/users';$/;"	I
+creation_date	atm/user/class.ts	/^	public creation_date:Date;$/;"	m
+delete_one	dal/abstract.ts	/^	public async delete_one(atom:A)$/;"	m
 delete_one	rel/mongo/relation.ts	/^	public async delete_one(resource:M)$/;"	m
-email	atms/user/class.ts	/^	public email:string;$/;"	m
-find	dal/dal.ts	/^	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)$/;"	m
+email	atm/user/class.ts	/^	public email:string;$/;"	m
+find	dal/abstract.ts	/^	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)$/;"	m
 find	rel/mongo/relation.ts	/^	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)$/;"	m
-find_by_id	dal/dal.ts	/^	public async find_by_id(id:string)$/;"	m
+find_by_id	dal/abstract.ts	/^	public async find_by_id(id:string)$/;"	m
 find_by_id	rel/mongo/relation.ts	/^	public async find_by_id(id:string)$/;"	m
-find_one	dal/dal.ts	/^	public async find_one(filter:QueryFilter<M>, options?:QueryOptions<M>)$/;"	m
+find_one	dal/abstract.ts	/^	public async find_one(filter:QueryFilter<M>, options?:QueryOptions<M>)$/;"	m
 find_one	rel/mongo/relation.ts	/^	public async find_one(filter:QueryFilter<M>, options?:QueryOptions<M>)$/;"	m
-first_name	atms/user/class.ts	/^	public first_name:string;$/;"	m
+first_name	atm/user/class.ts	/^	public first_name:string;$/;"	m
 get_model	rel/mongo/connection.ts	/^	public get_model(relation_name:string, schema:mongoose.Schema)$/;"	m
-insert_one	dal/dal.ts	/^	public async insert_one(atom:A)$/;"	m
+insert_one	dal/abstract.ts	/^	public async insert_one(atom:A)$/;"	m
 insert_one	rel/mongo/relation.ts	/^	public async insert_one(resource:M)$/;"	m
 is_valid_id	rel/mongo/connection.ts	/^	public is_valid_id(id:string)$/;"	m
 is_valid_id	rel/mongo/relation.ts	/^	public is_valid_id(id:string)$/;"	m
-last_name	atms/user/class.ts	/^	public last_name:string;$/;"	m
+last_name	atm/user/class.ts	/^	public last_name:string;$/;"	m
 makeid	index.ts	/^function makeid(length:number) {$/;"	f
-module	atms/user/index.ts	/^export const module:AtomModule<models.User, User> = {$/;"	v
+module	atm/trash/index.ts	/^export const module:AtomModule<models.Trash, Trash> = {$/;"	v
+module	atm/user/index.ts	/^export const module:AtomModule<models.User, User> = {$/;"	v
 mongo_schemas	rel/mongo/schemas/index.ts	/^export const mongo_schemas:MongoSchemas = {$/;"	v
 mongoose	rel/mongo/connection.ts	/^import mongoose from 'mongoose';$/;"	I
 mongoose	rel/mongo/relation.ts	/^import mongoose from 'mongoose';$/;"	I
 mongoose	rel/mongo/schemas/index.ts	/^import mongoose from 'mongoose';$/;"	I
+mongoose	rel/mongo/schemas/urn_trash.ts	/^import mongoose from 'mongoose';$/;"	I
 mongoose	rel/mongo/schemas/urn_user.ts	/^import mongoose from 'mongoose';$/;"	I
 name	rel/mongo/connection.ts	/^	public name:string;$/;"	m
-password	atms/user/class.ts	/^	public password:string;$/;"	m
+password	atm/user/class.ts	/^	public password:string;$/;"	m
 readyState	rel/mongo/connection.ts	/^	public readyState:number;$/;"	m
-return	atms/atom.ts	/^	public return()$/;"	m
-string_id	rel/mongo/relation.ts	/^function string_id<M extends urn_atms.models.Resource>(resource:M)$/;"	f
-type	atms/user/class.ts	/^	public type:string;$/;"	m
-update_one	dal/dal.ts	/^	public async update_one(atom:A)$/;"	m
+record	atm/trash/class.ts	/^	public record:models.Resource;$/;"	m
+return	atm/atom.ts	/^	public return()$/;"	m
+string_id	rel/mongo/relation.ts	/^function string_id<M extends urn_atm.models.Resource>(resource:M)$/;"	f
+trash_keys	atm/trash/class.ts	/^export const trash_keys:models.ModelKeysCategories<models.Trash> =$/;"	v
+trash_schema_definition	rel/mongo/schemas/urn_trash.ts	/^export const trash_schema_definition:mongoose.SchemaDefinition = {$/;"	v
+type	atm/user/class.ts	/^	public type:string;$/;"	m
+update_one	dal/abstract.ts	/^	public async update_one(atom:A)$/;"	m
 update_one	rel/mongo/relation.ts	/^	public async update_one(resource:M)$/;"	m
 uri	rel/mongo/connection.ts	/^	public uri:string;$/;"	m
-urn_mdls	atms/types.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
-user_keys	atms/user/class.ts	/^export const user_keys:models.ModelKeysCategories<models.User> =$/;"	v
+urn_mdls	atm/types.ts	/^import urn_mdls from 'urn-mdls';$/;"	I
+user_keys	atm/user/class.ts	/^export const user_keys:models.ModelKeysCategories<models.User> =$/;"	v
 user_schema_definition	rel/mongo/schemas/urn_user.ts	/^export const user_schema_definition:mongoose.SchemaDefinition = {$/;"	v
-username	atms/user/class.ts	/^	public username:string;$/;"	m
-validate	atms/atom.ts	/^	public validate(resource:Model)$/;"	m
-validate_filter	vali/query.ts	/^function validate_filter<M extends urn_atms.models.Resource>$/;"	f
-validate_filter_options_params	vali/query.ts	/^export function validate_filter_options_params<M extends urn_atms.models.Resource>$/;"	f
-validate_options	vali/query.ts	/^function validate_options<M extends urn_atms.models.Resource>$/;"	f
+username	atm/user/class.ts	/^	public username:string;$/;"	m
+validate	atm/atom.ts	/^	public validate(resource:Model)$/;"	m
+validate_filter	vali/query.ts	/^function validate_filter<M extends urn_atm.models.Resource>$/;"	f
+validate_filter_options_params	vali/query.ts	/^export function validate_filter_options_params<M extends urn_atm.models.Resource>$/;"	f
+validate_options	vali/query.ts	/^function validate_options<M extends urn_atm.models.Resource>$/;"	f

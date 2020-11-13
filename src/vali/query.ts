@@ -9,7 +9,7 @@ import {urn_error, urn_util} from 'urn-lib';
 
 import {QueryOptions, QueryFilter, FilterType} from '../types';
 
-import * as urn_atms from '../atms/';
+import * as urn_atm from '../atm/';
 
 const _queryop = {
 	andornor: ['$and','$or','$nor','$not'],
@@ -23,8 +23,8 @@ const _queryop = {
  * @param filter - the filter object
  * @param options- the options object
  */
-export function validate_filter_options_params<M extends urn_atms.models.Resource>
-(atom_keys:urn_atms.models.ModelKeysCategories<M>, filter:QueryFilter<M>, options?:QueryOptions<M>)
+export function validate_filter_options_params<M extends urn_atm.models.Resource>
+(atom_keys:urn_atm.models.ModelKeysCategories<M>, filter:QueryFilter<M>, options?:QueryOptions<M>)
 		:true{
 	try{
 		validate_filter<M>(filter, atom_keys);
@@ -87,8 +87,8 @@ function _validate_field(field:any)
  *
  * @param filter - The filter to validate
  */
-function validate_filter<M extends urn_atms.models.Resource>
-(filter:FilterType<M>, atom_keys:urn_atms.models.ModelKeysCategories<M>)
+function validate_filter<M extends urn_atm.models.Resource>
+(filter:FilterType<M>, atom_keys:urn_atm.models.ModelKeysCategories<M>)
 		:true{
 	if(typeof filter !== 'object' || filter === null){
 		throw urn_error.create(`Invalid filter format`);
@@ -124,8 +124,8 @@ function validate_filter<M extends urn_atms.models.Resource>
  * @param object - The object or the string to validate as option
  *
  */
-function validate_options<M extends urn_atms.models.Resource>
-(options:QueryOptions<M>, atom_keys:urn_atms.models.ModelKeysCategories<M>)
+function validate_options<M extends urn_atm.models.Resource>
+(options:QueryOptions<M>, atom_keys:urn_atm.models.ModelKeysCategories<M>)
 		:true{
 	if(urn_util.object.has_key(options, 'sort')){
 		switch(typeof options.sort){

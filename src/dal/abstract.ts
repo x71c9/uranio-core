@@ -6,7 +6,7 @@
 
 import {urn_log, urn_error} from 'urn-lib';
 
-import * as urn_atms from '../atms/';
+import * as urn_atm from '../atm/';
 
 import * as urn_rel from '../rel/';
 
@@ -15,20 +15,24 @@ import * as urn_validators from '../vali/';
 import {DBType, QueryOptions, QueryFilter} from '../types';
 
 @urn_log.decorators.debug_methods
-export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms.Atom<M>> {
+export abstract class DAL<M extends urn_atm.models.Resource, A extends urn_atm.Atom<M>> {
 	
 	protected _db_relation:urn_rel.Relation<M>;
 	
-	constructor(public db_type:DBType, private _atom_module:urn_atms.AtomModule<M,A>) {
+	protected _db_trash_relation:urn_rel.Relation<M> | null;
+	
+	constructor(public db_type:DBType, private _atom_module:urn_atm.AtomModule<M,A>) {
 		switch(this.db_type){
 			case 'mongo':
 				this._db_relation = new urn_rel.mongo.MongooseRelation<M>(this._atom_module.relation_name);
+				this._db_trash_relation = new urn_rel.mongo.MongooseTrashRelation<M>(this._atom_module.relation_name);
 				break;
 			case 'mysql':
 				break;
 		}
 		// Because MySQL is not implemented yet
 		this._db_relation = new urn_rel.mongo.MongooseRelation<M>(this._atom_module.relation_name);
+		this._db_trash_relation = new urn_rel.mongo.MongooseTrashRelation<M>(this._atom_module.relation_name);
 	}
 	
 	/**
@@ -118,6 +122,10 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	public async delete_one(atom:A)
 			:Promise<A | null>{
 		const db_res_delete = await this._db_relation.delete_one(atom.return());
+		if(db_res_delete && this._db_trash_relation){
+			const db_trash_res = await this._db_trash_relation.insert_one(db_res_delete);
+			console.log('DB TRASH', db_trash_res);
+		}
 		return this._create_atom(db_res_delete, 'delete_one');
 	}
 	
