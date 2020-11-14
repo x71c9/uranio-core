@@ -18,7 +18,7 @@ import {mongo_schemas} from './schemas/';
 
 import * as urn_atm from '../../atm/';
 
-const mongo_conn = mongo_connection.create(
+const mongo_main_conn = mongo_connection.create(
 	'main',
 	process.env.urn_db_host!,
 	parseInt(process.env.urn_db_port!),
@@ -36,13 +36,20 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	
 	protected _raw:mongoose.Model<mongoose.Document>;
 	
-	constructor(public relation_name:RelationName, connection?:mongo_connection.ConnectionInstance){
+	constructor(public relation_name:RelationName){
 		
-		this._conn = (connection && urn_util.object.has_key(connection,'_connection')) ?
-			connection : mongo_conn;
+		this._conn = this._get_connection();
 		
-		this._raw = this._conn.get_model(relation_name, mongo_schemas[relation_name]);
+		this._raw = this._complie_mongoose_model();
 		
+	}
+	
+	protected _get_connection():mongo_connection.ConnectionInstance{
+		return mongo_main_conn;
+	}
+	
+	protected _complie_mongoose_model():mongoose.Model<mongoose.Document>{
+		return this._conn.get_model(this.relation_name, mongo_schemas[this.relation_name]);
 	}
 	
 	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)

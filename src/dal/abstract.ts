@@ -51,11 +51,13 @@ export abstract class DAL<M extends urn_atm.models.Resource, A extends urn_atm.A
 	
 	public async insert_one(atom:A)
 			:Promise<A | null>{
+		await this._check_unique(atom, 'insert_one');
 		return await this._insert_one(atom);
 	}
 	
 	public async update_one(atom:A)
 			:Promise<A | null>{
+		await this._check_unique(atom, 'update_one');
 		return await this._update_one(atom);
 	}
 	
@@ -64,7 +66,7 @@ export abstract class DAL<M extends urn_atm.models.Resource, A extends urn_atm.A
 		const db_res_delete = await this._delete_one(atom);
 		if(db_res_delete && this._db_trash_relation){
 			db_res_delete._deleted_from = db_res_delete._id;
-			this.trash_insert_one(db_res_delete);
+			return await this.trash_insert_one(db_res_delete);
 		}
 		return db_res_delete;
 	}
@@ -178,6 +180,22 @@ export abstract class DAL<M extends urn_atm.models.Resource, A extends urn_atm.A
 		const db_res_insert = await _relation.delete_one(atom.return());
 		const func_name = '_delete_one' + (in_trash === true) ? ' [TRASH]' : '';
 		return this._create_atom(db_res_insert, func_name);
+	}
+	
+	private async _check_unique(atom:A, func_name:string)
+			:Promise<void>{
+		const filter:QueryFilter<M> = {};
+		const model = atom.return();
+		for(const k of atom.get_keys().unique){
+			filter[k] = model[k];
+		}
+		const res_find_one = await this._find_one(filter);
+		if(res_find_one !== null){
+			let err_msg = `Cannot ${func_name}.`;
+			err_msg += ` Atom unique fields are already in the database.`;
+			err_msg += ` ${filter}.`;
+			throw urn_error.create(err_msg);
+		}
 	}
 	
 	/**
