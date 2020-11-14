@@ -54,7 +54,8 @@ export class User extends Atom<models.User> implements models.User {
 		
 	}
 	
-	protected _get_keys()
+	@urn_log.decorators.no_debug
+	public get_keys()
 			:models.ModelKeysCategories<models.User>{
 		return user_keys;
 	}

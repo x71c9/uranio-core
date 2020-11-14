@@ -39,7 +39,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 		
 	}
 	
-	protected abstract _get_keys():models.ModelKeysCategories<Model>;
+	public abstract get_keys():models.ModelKeysCategories<Model>;
 	
 	public return()
 			:Model{
@@ -48,8 +48,8 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 		this.validate(that);
 		
 		const data_transfer_object = {} as Model;
-		for(const key of this._get_keys().approved){
-			if(!this._get_keys().optional.has(key) && !urn_util.object.has_key(that, key)){
+		for(const key of this.get_keys().approved){
+			if(!this.get_keys().optional.has(key) && !urn_util.object.has_key(that, key)){
 				throw urn_error.create(`Cannot return(). Current instance has no property [${key}] set.`);
 			}
 			data_transfer_object[key] = that[key];
@@ -65,8 +65,8 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 			err_msg += ` Constructor initializer value must be of type "object" - given type [${resource_type}].`;
 			throw urn_error.create(err_msg);
 		}
-		for(const key of this._get_keys().approved){
-			if(this._get_keys().optional.has(key))
+		for(const key of this.get_keys().approved){
+			if(this.get_keys().optional.has(key))
 				continue;
 			if(!urn_util.object.has_key(resource, key)){
 				let err_msg = `Invalid ${this.constructor.name} constructor initializer.`;
@@ -77,8 +77,8 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 		const types:Set<keyof models.ModelKeysCategories<Model>> =
 			new Set(['boolean', 'number', 'string', 'object']);
 		for(const t of types){
-			for(const key of this._get_keys()[t]){
-				if(this._get_keys().optional.has(key) && typeof resource[key] === typeof undefined)
+			for(const key of this.get_keys()[t]){
+				if(this.get_keys().optional.has(key) && typeof resource[key] === typeof undefined)
 					continue;
 				if(typeof resource[key] !== t){
 					let err_msg = `Invalid initializer key type [${key}].`;
@@ -88,8 +88,8 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 			}
 		}
 		
-		for(const key of this._get_keys().date){
-			if(this._get_keys().optional.has(key) && typeof resource[key] === typeof undefined)
+		for(const key of this.get_keys().date){
+			if(this.get_keys().optional.has(key) && typeof resource[key] === typeof undefined)
 				continue;
 			if(!urn_util.is_date(resource[key])){
 				let err_msg = `Invalid initializer key type [${key}].`;

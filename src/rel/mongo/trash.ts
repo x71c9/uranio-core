@@ -4,6 +4,8 @@
  * @packageDocumentation
  */
 
+import mongoose from 'mongoose';
+
 import {urn_log} from 'urn-lib';
 
 import * as urn_atm from '../../atm/';
@@ -11,6 +13,8 @@ import * as urn_atm from '../../atm/';
 import {RelationName} from '../../types';
 
 import {Relation} from '../types';
+
+import {mongo_trash_schemas} from './schemas/';
 
 import * as mongo_connection from './connection';
 
@@ -32,7 +36,15 @@ export class MongooseTrashRelation<M extends urn_atm.models.Resource> extends Mo
 	implements Relation<M> {
 	
 	constructor(public relation_name:RelationName){
-		super(relation_name, mongo_trash_conn);
+		super(relation_name);
+	}
+	
+	protected _get_connection():mongo_connection.ConnectionInstance{
+		return mongo_trash_conn;
+	}
+	
+	protected _complie_mongoose_model():mongoose.Model<mongoose.Document>{
+		return this._conn.get_model(this.relation_name, mongo_trash_schemas[this.relation_name]);
 	}
 	
 }
