@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {urn_log, urn_error} from 'urn-lib';
+import {urn_log, urn_error, urn_util} from 'urn-lib';
 
 import * as urn_atm from '../atm/';
 
@@ -193,17 +193,11 @@ export abstract class DAL<M extends urn_atm.models.Resource, A extends urn_atm.A
 		if(res_find_one !== null){
 			let err_msg = `Cannot ${func_name}.`;
 			err_msg += ` Atom unique fields are already in the database.`;
-			err_msg += ` ${filter}.`;
+			err_msg += ' ' +  urn_util.formatter.json_one_line(filter);
 			throw urn_error.create(err_msg);
 		}
 	}
 	
-	/**
-	 * Private helper method for creating Atom and throwing Exception on Error
-	 *
-	 * @param resource - The resource from a Relation method
-	 * @param func_name - DAL method name
-	 */
 	private _create_atom(resource:M | null, func_name:string)
 			:A | null{
 		try{

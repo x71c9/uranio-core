@@ -8,9 +8,9 @@
 
 // urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
 
-import * as urn_atm from './atm/';
+// import * as urn_atm from './atm/';
 
-import create_user_dal from './dal/users';
+// import create_user_dal from './dal/users';
 
 // function makeid(length:number) {
 //   let result = '';
@@ -22,18 +22,18 @@ import create_user_dal from './dal/users';
 //   return result;
 // }
 
-const user:urn_atm.models.User = {
-	// _id:'5fad2102bcfacd4ea51dc9ae',
-	first_name: 'Federico',
-	last_name: 'Reale',
-	// email: `a@a${makeid(9)}.com`,
-	// username: `sakjd${makeid(9)}las`,
-	email: `a@a.com`,
-	username: `sakjdlas`,
-	password: 'skajdlsadlSSKLJ@à2',
-	active: true,
-	type: 'pro',
-};
+// const user:urn_atm.models.User = {
+//   // _id:'5fad2102bcfacd4ea51dc9ae',
+//   first_name: 'Federico',
+//   last_name: 'Reale',
+//   email: `a@a${makeid(9)}.com`,
+//   username: `sakjd${makeid(9)}las`,
+//   // email: `a@a.com`,
+//   // username: `sakjdlas`,
+//   password: 'skajdlsadlSSKLJ@à2',
+//   active: true,
+//   type: 'pro',
+// };
 
 // const user2 = {
 //   _id:'5fad2102bcfacd4ea51dc9ae',
@@ -48,7 +48,7 @@ const user:urn_atm.models.User = {
 //   creation_date: new Date()
 // };
 
-const dal_users = create_user_dal('mongo');
+// const dal_users = create_user_dal('mongo');
 
 // dal_users.find({}).then((data:any) => {
 //   console.log('FIND', data);
@@ -66,15 +66,15 @@ const dal_users = create_user_dal('mongo');
 //   console.log('INSERT ONE1', data);
 // });
 
-dal_users.insert_one(urn_atm.user.module.create(user)).then((data:urn_atm.user.UserInstance | null) => {
-	console.log('INSERT ONE2', data);
-	// if(data !== null){
-	//   // dal_users.delete_one(data);
-	//   dal_users.delete_one(data).then((data:urn_atm.user.UserInstance | null) => {
-	//     console.log('DELETE ONE2', data);
-	//   });
-	// }
-});
+// dal_users.insert_one(urn_atm.user.module.create(user)).then((data:urn_atm.user.UserInstance | null) => {
+//   console.log('INSERT ONE2', data);
+//   // if(data !== null){
+//   //   // dal_users.delete_one(data);
+//   //   dal_users.delete_one(data).then((data:urn_atm.user.UserInstance | null) => {
+//   //     console.log('DELETE ONE2', data);
+//   //   });
+//   // }
+// });
 
 // dal_users.update_one(urn_atm.user.module.create(user)).then((data:any) => {
 //   console.log('UPDATE ONE', data);
