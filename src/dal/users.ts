@@ -25,7 +25,7 @@ class DALUsers extends DAL<urn_atm.models.User, urn_atm.user.UserInstance> {
 
 export type DalUsersInstance = InstanceType<typeof DALUsers>;
 
-export default function create(db_type:DBType):DalUsersInstance{
+export function create(db_type:DBType):DalUsersInstance{
 	urn_log.fn_debug(`Create DAL Users`);
 	return new DALUsers(db_type);
 }

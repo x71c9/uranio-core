@@ -1,5 +1,10 @@
+/**
+ * Index module for Data Access Layers
+ *
+ * @packageDocumentation
+ */
 
-export * from './atom';
+export * from './abstract';
 
 export * from './types';
 

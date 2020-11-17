@@ -10,7 +10,9 @@
 
 // import * as urn_atm from './atm/';
 
-// import create_user_dal from './dal/users';
+import * as urn_dal from './dal/';
+
+urn_dal.users.create('mongo');
 
 // function makeid(length:number) {
 //   let result = '';
