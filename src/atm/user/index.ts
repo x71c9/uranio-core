@@ -10,7 +10,7 @@ import {models, AtomModule, AtomCreateFunction} from '../types';
 
 import {User} from './class';
 
-import {create_atom} from '../atom';
+import {create_atom} from '../abstract';
 
 export type UserInstance = InstanceType<typeof User>;
 

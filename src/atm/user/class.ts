@@ -6,7 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import {Atom} from '../atom';
+import {Atom} from '../abstract';
 
 import {models} from '../types';
 

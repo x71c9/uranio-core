@@ -10,7 +10,7 @@ import urn_mdls from 'urn-mdls';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export import models = urn_mdls.resources;
 
-import {Atom} from './atom';
+import {Atom} from './abstract';
 
 import {RelationName} from '../types';
 
