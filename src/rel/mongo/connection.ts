@@ -6,7 +6,7 @@
 
 import mongoose from 'mongoose';
 
-import {urn_log,  urn_error} from 'urn-lib';
+import {urn_log,  urn_exception} from 'urn-lib';
 
 /*
  * Define default mongoose option for connection
@@ -17,6 +17,8 @@ const mongoose_options = {
 	useFindAndModify: false,
 	useCreateIndex: true
 };
+
+const urn_exception_code = 'DBC-M';
 
 /**
  * MongooseDBConnection class
@@ -63,24 +65,17 @@ class MongooseDBConnection {
 		this.uri = `mongodb://${this.db_host}:${this.db_port}/${this.db_name}`;
 		
 		this.readyState = 0;
-		try{
-			this._connection = mongoose.createConnection(this.uri, mongoose_options);
-			this._connection.on('connecting', () => { this._on_connecting(); });
-			this._connection.on('connected', () => { this._on_connected(); });
-			this._connection.on('disconnecting', () => { this._on_disconnecting(); });
-			this._connection.on('disconnected', () => { this._on_disconnected(); });
-			this._connection.on('close', () => { this._on_close(); });
-			this._connection.on('reconnected', () => { this._on_reconnected(); });
-			this._connection.on('error', (err) => { this._on_error(err); });
-			this._connection.on('reconnectFailed', () => { this._on_reconnect_failed(); });
-			this._connection.on('reconnectTries', () => { this._on_reconnect_tries(); });
-			return this;
-		}catch(err){
-			throw urn_error.create(
-				`Cannot create connection to ${this.uri} - ${err.message}`,
-				err
-			);
-		}
+		this._connection = mongoose.createConnection(this.uri, mongoose_options);
+		this._connection.on('connecting', () => { this._on_connecting(); });
+		this._connection.on('connected', () => { this._on_connected(); });
+		this._connection.on('disconnecting', () => { this._on_disconnecting(); });
+		this._connection.on('disconnected', () => { this._on_disconnected(); });
+		this._connection.on('close', () => { this._on_close(); });
+		this._connection.on('reconnected', () => { this._on_reconnected(); });
+		this._connection.on('error', (err) => { this._on_error(err); });
+		this._connection.on('reconnectFailed', () => { this._on_reconnect_failed(); });
+		this._connection.on('reconnectTries', () => { this._on_reconnect_tries(); });
+		return this;
 		
 	}
 	
@@ -101,19 +96,14 @@ class MongooseDBConnection {
 	 */
 	public async close()
 			:Promise<ConnectionInstance>{
-		if(this._connection == null)
-			throw urn_error.create(
-				`Trying to close a connection that was never created [${this.name}][${this.uri}]`
-			);
-		try {
-			await this._connection.close();
-			return this;
-		}catch(err){
-			throw urn_error.create(
-				`Cannot disconnect from [${this.name}][${this.uri}] - ${err.message}`,
-				err
+		if(this._connection == null){
+			throw urn_exception.create(
+				`${urn_exception_code}-001`,
+				`Mongoose DBConnection cannot close. Connection is null. [${this.name}][${this.uri}].`
 			);
 		}
+		await this._connection.close();
+		return this;
 	}
 	
 	public is_valid_id(id:string)
@@ -186,7 +176,7 @@ class MongooseDBConnection {
 	 */
 	private _on_error(e:Error)
 			:void{
-		throw urn_error.create(e.message, e);
+		throw urn_exception.create(`${urn_exception_code}-002`, `Mongoose DBConnetion error.`, e);
 	}
 	
 	/**

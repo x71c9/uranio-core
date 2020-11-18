@@ -6,7 +6,7 @@
 
 import mongoose from 'mongoose';
 
-import {urn_log, urn_error, urn_util} from 'urn-lib';
+import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 import {RelationName, QueryFilter, QueryOptions} from '../../types';
 
@@ -24,6 +24,8 @@ const mongo_main_conn = mongo_connection.create(
 	parseInt(process.env.urn_db_port!),
 	process.env.urn_db_name!
 );
+
+const urn_exception_code = 'REL-M';
 
 /**
  * Mongoose Relation class
@@ -54,16 +56,12 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	
 	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
 			:Promise<M[]>{
-		try{
-			const mon_find_res = (options) ?
-				await this._raw.find(filter, null, options).lean<M>():
-				await this._raw.find(filter).lean<M>();
-			return mon_find_res.map((mon_doc:M) => {
-				return string_id(mon_doc);
-			});
-		}catch(err){
-			throw urn_error.create(`Mongoose Relation.find ERROR.`);
-		}
+		const mon_find_res = (options) ?
+			await this._raw.find(filter, null, options).lean<M>():
+			await this._raw.find(filter).lean<M>();
+		return mon_find_res.map((mon_doc:M) => {
+			return string_id(mon_doc);
+		});
 	}
 	
 	public async find_by_id(id:string)
@@ -91,62 +89,46 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		if(urn_util.object.has_key(resource, '_id')){
 			delete resource._id;
 		}
-		try{
-			const mon_model = new this._raw(resource);
-			const mon_res_doc = await mon_model.save();
-			const str_id = mon_res_doc._id.toString();
-			const mon_obj = mon_res_doc.toObject();
-			mon_obj._id = str_id;
-			return mon_obj;
-		}catch(err){
-			let err_msg = `Mongoose Relation insert_one() failed. Cannot insert Model.`;
-			err_msg += ` ${err.message}`;
-			throw urn_error.create(err_msg, err);
-		}
+		const mon_model = new this._raw(resource);
+		const mon_res_doc = await mon_model.save();
+		const str_id = mon_res_doc._id.toString();
+		const mon_obj = mon_res_doc.toObject();
+		mon_obj._id = str_id;
+		return mon_obj;
 	}
 	
 	public async update_one(resource:M)
 			:Promise<M | null>{
-		try{
-			if(!urn_util.object.has_key(resource, '_id') ||
-					typeof resource._id !== 'string' ||
-					resource._id === ''){
-				throw urn_error.create(`Cannot update. Model has no _id`);
-			}
-			const mon_update_res =
-				await this._raw.findOneAndUpdate({_id:resource._id}, resource, {new: true, lean: true});
-			if(mon_update_res === null){
-				return null;
-			}
-			return string_id(mon_update_res as M);
-			// const mon_obj = mon_update_res.toObject();
-			// return string_id(mon_obj);
-		}catch(err){
-			let err_msg = `Mongoose Relation update_one() failed. Cannot update Model.`;
-			err_msg += ` ${err.message}`;
-			throw urn_error.create(err_msg, err);
+		if(!urn_util.object.has_key(resource, '_id')){
+			throw urn_exception.create(`${urn_exception_code}-001`,`Mongoose Relation cannot update_one. Argument has no _id.`);
 		}
+		if(typeof resource._id !== 'string' || resource._id === ''){
+			throw urn_exception.create(`${urn_exception_code}-002`,`Mongoose Relation cannot update_one. Argument has invalid _id.`);
+		}
+		const mon_update_res =
+			await this._raw.findOneAndUpdate({_id:resource._id}, resource, {new: true, lean: true});
+		if(mon_update_res === null){
+			return null;
+		}
+		return string_id(mon_update_res as M);
+		// const mon_obj = mon_update_res.toObject();
+		// return string_id(mon_obj);
 	}
 	
 	public async delete_one(resource:M)
 			:Promise<M | null>{
-		try{
-			if(!urn_util.object.has_key(resource, '_id') ||
-					typeof resource._id !== 'string' ||
-					resource._id === ''){
-				throw urn_error.create(`Cannot delete. Model has no _id`);
-			}
-			const mon_delete_res =
-				await this._raw.findOneAndDelete({_id:resource._id});
-			if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
-				return null;
-			}
-			return string_id(mon_delete_res.toObject() as M);
-		}catch(err){
-			let err_msg = `Mongoose Relation delete_one() failed. Cannot delete Model.`;
-			err_msg += ` ${err.message}`;
-			throw urn_error.create(err_msg, err);
+		if(!urn_util.object.has_key(resource, '_id')){
+			throw urn_exception.create(`${urn_exception_code}-003`,`Mongoose Relation cannot delete_one. Argument has no _id.`);
 		}
+		if(typeof resource._id !== 'string' || resource._id === ''){
+			throw urn_exception.create(`${urn_exception_code}-004`,`Mongoose Relation cannot delete_one. Argument has invalid _id.`);
+		}
+		const mon_delete_res =
+			await this._raw.findOneAndDelete({_id:resource._id});
+		if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
+			return null;
+		}
+		return string_id(mon_delete_res.toObject() as M);
 	}
 	
 	public is_valid_id(id:string)
