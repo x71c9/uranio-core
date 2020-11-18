@@ -14,7 +14,7 @@ import {create_atom} from '../abstract';
 
 export type UserInstance = InstanceType<typeof User>;
 
-const create:AtomCreateFunction<models.User, UserInstance> =
+export const create:AtomCreateFunction<models.User, UserInstance> =
 (user) => {
 	
 	urn_log.fn_debug(`User create`);
