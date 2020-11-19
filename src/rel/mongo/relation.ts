@@ -25,7 +25,7 @@ const mongo_main_conn = mongo_connection.create(
 	process.env.urn_db_name!
 );
 
-const urn_exception_code = 'REL-M';
+const urn_exc = urn_exception.init('REL-M', 'Mongoose Relation');
 
 /**
  * Mongoose Relation class
@@ -100,10 +100,12 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	public async update_one(resource:M)
 			:Promise<M | null>{
 		if(!urn_util.object.has_key(resource, '_id')){
-			throw urn_exception.create(`${urn_exception_code}-001`,`Mongoose Relation cannot update_one. Argument has no _id.`);
+			const err_msg = `Cannot update_one. Argument has no _id.`;
+			throw urn_exc.create('UNI', err_msg);
 		}
-		if(typeof resource._id !== 'string' || resource._id === ''){
-			throw urn_exception.create(`${urn_exception_code}-002`,`Mongoose Relation cannot update_one. Argument has invalid _id.`);
+		if(typeof resource._id !== 'string' || resource._id === '' || !this.is_valid_id(resource._id)){
+			const err_msg = `Cannot update_one. Argument has invalid _id.`;
+			throw urn_exc.create('UII', err_msg);
 		}
 		const mon_update_res =
 			await this._raw.findOneAndUpdate({_id:resource._id}, resource, {new: true, lean: true});
@@ -118,10 +120,12 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	public async delete_one(resource:M)
 			:Promise<M | null>{
 		if(!urn_util.object.has_key(resource, '_id')){
-			throw urn_exception.create(`${urn_exception_code}-003`,`Mongoose Relation cannot delete_one. Argument has no _id.`);
+			const err_msg = `Cannot delete_one. Argument has no _id.`;
+			throw urn_exc.create('DNI', err_msg);
 		}
-		if(typeof resource._id !== 'string' || resource._id === ''){
-			throw urn_exception.create(`${urn_exception_code}-004`,`Mongoose Relation cannot delete_one. Argument has invalid _id.`);
+		if(typeof resource._id !== 'string' || resource._id === '' || !this.is_valid_id(resource._id)){
+			const err_msg = `Cannot delete_one. Argument has invalid _id.`;
+			throw urn_exc.create('DII', err_msg);
 		}
 		const mon_delete_res =
 			await this._raw.findOneAndDelete({_id:resource._id});

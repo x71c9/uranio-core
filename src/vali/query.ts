@@ -16,7 +16,7 @@ const _queryop = {
 	comparsion: ['$eq','$gt','$gte','$in','$lt','$lte','$ne','$nin']
 };
 
-const urn_ex = urn_exception.init('QVAL','Query Validator');
+const urn_exc = urn_exception.init('QVAL','Query Validator');
 
 /**
  * Validate `filter` and `options` paramaters
@@ -44,7 +44,8 @@ export function validate_filter_options_params<M extends urn_atms.models.Resourc
 function _validate_field(field:any)
 		:true{
 	if(field === null){
-		throw urn_ex.create(1, `Cannot _validate_field. Invalid argument filed. field is null.`);
+		const err_msg = `Cannot _validate_field. Invalid argument "field". "field" is null.`;
+		throw urn_exc.create('VIF', err_msg);
 	}
 	switch(typeof field){
 		case 'string':
@@ -53,35 +54,28 @@ function _validate_field(field:any)
 		case 'object':{
 			for(const k in field){
 				if(_queryop.comparsion.indexOf(k) === -1){
-					throw urn_exception.create(
-						`${urn_exception_code}-002`,
-						`Query Validator. Filter value comparsion not valid [${k}].`
-					);
+					const err_msg = `Filter value comparsion not valid [${k}].`;
+					throw urn_exc.create('VIC', err_msg);
 				}
 				if(typeof field[k] != 'string' && field[k] != 'number' && !Array.isArray(field[k])){
-					throw urn_exception.create(
-						`${urn_exception_code}-003`,
-						`Query Validator. Filter comparsion value type must be a string, a number, on an Array [${k}].`
-					);
+					const err_msg = `Filter comparsion value type must be a string, a number, on an Array [${k}]`;
+					throw urn_exc.create('VCT', err_msg);
 				}
 				if(Array.isArray(field[k])){
 					for(const v of field[k]){
 						if(typeof v !== 'string' && typeof v !== 'number'){
-							throw urn_exception.create(
-								`${urn_exception_code}-004`,
-								`Query Validator. Invalid filter comparsion value type.`
-							);
+							const err_msg = `Invalid filter comparsion value type.`;
+							throw urn_exc.create('VCV', err_msg);
 						}
 					}
 				}
 			}
 			return true;
 		}
-		default:
-			throw urn_exception.create(
-				`${urn_exception_code}-005`,
-				'Query Validator. Filter filed type not valid.'
-			);
+		default:{
+			const err_msg = `Filter filed type not valid.`;
+			throw urn_exc.create('VIN', err_msg);
+		}
 	}
 }
 
@@ -99,29 +93,23 @@ function validate_filter<M extends urn_atms.models.Resource>
 (filter:FilterType<M>, atom_keys:urn_atms.models.ModelKeysCategories<M>)
 		:true{
 	if(typeof filter !== 'object' || filter === null){
-		throw urn_exception.create(
-			`${urn_exception_code}-006`,
-			`Query Validator. Invalid filter format.`
-		);
+		const err_msg = `Invalid filter format.`;
+		throw urn_exc.create('FIF', err_msg);
 	}
 	let key:keyof FilterType<M>;
 	for(key in filter){
 		if(_queryop.andornor.indexOf(key) !== -1){
 			if(!Array.isArray(filter[key])){
-				throw urn_exception.create(
-					`${urn_exception_code}-007`,
-					`Query Validator. Invalid filter format. Filter value for [${key}] must be an array.`
-				);
+				const err_msg = `Invalid filter format. Filter value for [${key}] must be an array.`;
+				throw urn_exc.create('FVA', err_msg);
 			}
 			for(let i=0; i < filter[key].length; i++){
 				validate_filter(filter[key][i], atom_keys);
 			}
 		}else{
 			if(!atom_keys.approved.has(key)){
-				throw urn_exception.create(
-					`${urn_exception_code}-008`,
-					`Query Validator. Filter field not valid [${key}].`
-				);
+				const err_msg = `Filter field not valid [${key}].`;
+				throw urn_exc.create('FIN', err_msg);
 			}
 			_validate_field(filter[key]);
 		}
@@ -146,27 +134,21 @@ function validate_options<M extends urn_atms.models.Resource>
 					sort_value = sort_value.substring(1, options.sort.length);
 				}
 				if(!atom_keys.approved.has(sort_value as keyof M)){
-					throw urn_exception.create(
-						`${urn_exception_code}-009`,
-						`Query Validator. Sort value not valid [${options.sort}].`
-					);
+					const err_msg = `Sort value not valid [${options.sort}].`;
+					throw urn_exc.create('OSI', err_msg);
 				}
 				break;
 			}
 			case 'object':{
 				for(const k in options.sort){
 					if(!atom_keys.approved.has(k)){
-						throw urn_exception.create(
-							`${urn_exception_code}-010`,
-							`Query Validator. Sort value not valid [${k}].`
-						);
+						const err_msg = `Sort value not valid [${k}].`;
+						throw urn_exc.create('OSV', err_msg);
 					}
 					const sort_obj_value = options.sort[k];
 					if(isNaN(sort_obj_value) || (sort_obj_value != -1 && sort_obj_value != 1)){
-						throw urn_exception.create(
-							`${urn_exception_code}-011`,
-							'Query Validator. Sort value must be equal either to -1 or 1.'
-						);
+						const err_msg = `Sort value must be equal either to -1 or 1.`;
+						throw urn_exc.create('OSO', err_msg);
 					}
 				}
 				break;
@@ -174,16 +156,12 @@ function validate_options<M extends urn_atms.models.Resource>
 		}
 	}
 	if(urn_util.object.has_key(options,'limit') && typeof options.limit != 'number'){
-		throw urn_exception.create(
-			`${urn_exception_code}-012`,
-			'Query Validator. Limit value type must be number.'
-		);
+		const err_msg = `Limit value type must be number.`;
+		throw urn_exc.create('OLN', err_msg);
 	}
 	if(urn_util.object.has_key(options,'skip') && typeof options.skip != 'number'){
-		throw urn_exception.create(
-			`${urn_exception_code}-013`,
-			'Query Validator. Skip value type must be number.'
-		);
+		const err_msg = `Skip value type must be number.`;
+		throw urn_exc.create('OSN', err_msg);
 	}
 	return true;
 }
