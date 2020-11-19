@@ -9,7 +9,7 @@ import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 import {models} from './types';
 
-const urn_exception_code = 'ATM-';
+const urn_exc = urn_exception.init('ATM','Abstract Atom');
 
 /**
  * Class for general Atom
@@ -52,10 +52,8 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 		const data_transfer_object = {} as Model;
 		for(const key of this.get_keys().approved){
 			if(!this.get_keys().optional.has(key) && !urn_util.object.has_key(that, key)){
-				throw urn_exception.create(
-					`${urn_exception_code}-001`,
-					`Abstract Atom. Cannot return. Current instance has no property [${key}] set.`
-				);
+				const err_msg = `Cannot return. Current instance has no property [${key}] set.`;
+				throw urn_exc.create('RNK', err_msg);
 			}
 			data_transfer_object[key] = that[key];
 		}
@@ -66,17 +64,17 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 			:true | never{
 		if(typeof resource !== 'object' || resource === null){
 			const resource_type = (typeof resource === 'object') ? 'null' : typeof resource;
-			let err_msg = `Abstract Atom. Invalid ${this.constructor.name} constructor initializer type.`;
+			let err_msg = `Invalid ${this.constructor.name} constructor initializer type.`;
 			err_msg += ` Constructor initializer value must be of type "object" - given type [${resource_type}].`;
-			throw urn_exception.create(`${urn_exception_code}-002`, err_msg);
+			throw urn_exc.create('VIT', err_msg);
 		}
 		for(const key of this.get_keys().approved){
 			if(this.get_keys().optional.has(key))
 				continue;
 			if(!urn_util.object.has_key(resource, key)){
-				let err_msg = `Abstract Atom. Invalid ${this.constructor.name} constructor initializer.`;
+				let err_msg = `Invalid ${this.constructor.name} constructor initializer.`;
 				err_msg += ` Initializer is missing propery [${key}].`;
-				throw urn_exception.create(`${urn_exception_code}-003`, err_msg);
+				throw urn_exc.create('VNK', err_msg);
 			}
 		}
 		const types:Set<keyof models.ModelKeysCategories<Model>> =
@@ -86,9 +84,9 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 				if(this.get_keys().optional.has(key) && typeof resource[key] === typeof undefined)
 					continue;
 				if(typeof resource[key] !== t){
-					let err_msg = `Abstract Atom. Invalid initializer key type [${key}].`;
+					let err_msg = `Invalid initializer key type [${key}].`;
 					err_msg += ` Type must be "${t}" - given type [${typeof resource[key]}]`;
-					throw urn_exception.create(`${urn_exception_code}-004`, err_msg);
+					throw urn_exc.create('VKT', err_msg);
 				}
 			}
 		}
@@ -97,9 +95,9 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 			if(this.get_keys().optional.has(key) && typeof resource[key] === typeof undefined)
 				continue;
 			if(!urn_util.is_date(resource[key])){
-				let err_msg = `Abstract Atom. Invalid initializer key type [${key}].`;
+				let err_msg = `Invalid initializer key type [${key}].`;
 				err_msg += ` Type must be "date" - given type [${typeof resource[key]}]`;
-				throw urn_exception.create(`${urn_exception_code}-004`, err_msg);
+				throw urn_exc.create('VKD', err_msg);
 			}
 		}
 		

@@ -8,6 +8,8 @@ import mongoose from 'mongoose';
 
 import {urn_log,  urn_exception} from 'urn-lib';
 
+const urn_exc = urn_exception.init('DBC-M', 'Mongoose DB Connection');
+
 /*
  * Define default mongoose option for connection
  */
@@ -17,8 +19,6 @@ const mongoose_options = {
 	useFindAndModify: false,
 	useCreateIndex: true
 };
-
-const urn_exception_code = 'DBC-M';
 
 /**
  * MongooseDBConnection class
@@ -97,10 +97,8 @@ class MongooseDBConnection {
 	public async close()
 			:Promise<ConnectionInstance>{
 		if(this._connection == null){
-			throw urn_exception.create(
-				`${urn_exception_code}-001`,
-				`Mongoose DBConnection cannot close. Connection is null. [${this.name}][${this.uri}].`
-			);
+			const err_msg = `Cannot close. Connection is null. [${this.name}][${this.uri}].`;
+			throw urn_exc.create('CCN', err_msg);
 		}
 		await this._connection.close();
 		return this;
@@ -176,7 +174,8 @@ class MongooseDBConnection {
 	 */
 	private _on_error(e:Error)
 			:void{
-		throw urn_exception.create(`${urn_exception_code}-002`, `Mongoose DBConnetion error.`, e);
+		const err_msg = `General Error.`;
+		throw urn_exc.create('ERR', err_msg, e);
 	}
 	
 	/**

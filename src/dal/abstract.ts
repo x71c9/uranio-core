@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {urn_log, urn_exception} from 'urn-lib';
+import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 import * as urn_atms from '../atm/';
 
@@ -14,7 +14,7 @@ import * as urn_validators from '../vali/';
 
 import {DBType, QueryOptions, QueryFilter} from '../types';
 
-const urn_exception_code = 'DAL';
+const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
 @urn_log.decorators.debug_methods
 export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms.Atom<M>> {
@@ -128,10 +128,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		if(!this._db_relation.is_valid_id(id)){
-			throw urn_exception.create(
-				`${urn_exception_code}-001`,
-				`Abstract DAL. Cannot _find_by_id. Invalid argument id.`
-			);
+			throw urn_exc.create('FII', `Cannot _find_by_id. Invalid argument id.`);
 		}
 		const db_res_find_by_id = await _relation.find_by_id(id);
 		// const func_name = '_find_by_id' + (in_trash === true) ? ' [TRASH]' : '';
@@ -196,10 +193,9 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		}
 		const res_find_one = await this._find_one(filter);
 		if(res_find_one !== null){
-			let err_msg = `Abstract DAL`;
-			err_msg += ` Atom unique fields are already in the database.`;
-			// err_msg += ' ' +  urn_util.formatter.json_one_line(filter);
-			throw urn_exception.create(`${urn_exception_code}-001`, err_msg);
+			let err_msg = `Atom unique fields are already in the database.`;
+			err_msg += ` ${urn_util.formatter.json_one_line(atom.get_keys().unique)}.`;
+			throw urn_exc.create('CUA', err_msg);
 		}
 	}
 	
