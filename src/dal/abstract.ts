@@ -12,7 +12,7 @@ import * as urn_rels from '../rel/';
 
 import * as urn_validators from '../vali/';
 
-import {DBType, QueryOptions, QueryFilter} from '../types';
+import {DBType, QueryOptions, FilterType} from '../types';
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -36,7 +36,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		}
 	}
 	
-	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
+	public async find(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<Array<A | null>>{
 		return await this._find(filter, options);
 	}
@@ -46,7 +46,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		return await this._find_by_id(id);
 	}
 	
-	public async find_one(filter:QueryFilter<M>, options?:QueryOptions<M>)
+	public async find_one(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<A | null>{
 		return await this._find_one(filter, options);
 	}
@@ -73,7 +73,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		return db_res_delete;
 	}
 	
-	public async trash_find(filter:QueryFilter<M>, options?:QueryOptions<M>)
+	public async trash_find(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<Array<A | null>>{
 		return await this._find(filter, options, true);
 	}
@@ -83,7 +83,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		return await this._find_by_id(id, true);
 	}
 	
-	public async trash_find_one(filter:QueryFilter<M>, options?:QueryOptions<M>)
+	public async trash_find_one(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<A | null>{
 		return await this._find_one(filter, options, true);
 	}
@@ -103,7 +103,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		return await this._delete_one(atom, true);
 	}
 	
-	private async _find(filter:QueryFilter<M>, options?:QueryOptions<M>, in_trash = false)
+	private async _find(filter:FilterType<M>, options?:QueryOptions<M>, in_trash = false)
 			:Promise<Array<A | null>>{
 		if(in_trash === true && this._db_trash_relation === null){
 			return [];
@@ -135,7 +135,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		return this._create_atom(db_res_find_by_id);
 	}
 	
-	private async _find_one(filter:QueryFilter<M>, options?:QueryOptions<M>, in_trash = false)
+	private async _find_one(filter:FilterType<M>, options?:QueryOptions<M>, in_trash = false)
 			:Promise<A | null>{
 		if(in_trash === true && this._db_trash_relation === null){
 			return null;
@@ -186,15 +186,25 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	
 	private async _check_unique(atom:A)
 			:Promise<void>{
-		const filter:QueryFilter<M> = {};
+		const filter:FilterType<M> = {};
+		filter.$or = [];
 		const model = atom.return();
 		for(const k of atom.get_keys().unique){
-			filter[k] = model[k];
+			const filter_object:{[P in keyof M]?:any} = {};
+			filter_object[k] = model[k];
+			filter.$or.push(filter_object);
 		}
 		const res_find_one = await this._find_one(filter);
 		if(res_find_one !== null){
+			const equal_values:Set<keyof M> = new Set();
+			const res_model = res_find_one.return();
+			for(const k of atom.get_keys().unique){
+				if(model[k] == res_model[k]){
+					equal_values.add(k);
+				}
+			}
 			let err_msg = `Atom unique fields are already in the database.`;
-			err_msg += ` ${urn_util.formatter.json_one_line(atom.get_keys().unique)}.`;
+			err_msg += ` Duplicate fields: ${urn_util.formatter.json_one_line(equal_values)}.`;
 			throw urn_exc.create('CUA', err_msg);
 		}
 	}

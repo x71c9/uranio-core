@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 
 import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
-import {RelationName, QueryFilter, QueryOptions} from '../../types';
+import {RelationName, FilterType, QueryOptions} from '../../types';
 
 import {Relation} from '../types';
 
@@ -54,7 +54,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		return this._conn.get_model(this.relation_name, mongo_schemas[this.relation_name]);
 	}
 	
-	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
+	public async find(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<M[]>{
 		const mon_find_res = (options) ?
 			await this._raw.find(filter, null, options).lean<M>():
@@ -73,7 +73,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		return string_id(mon_find_by_id_res);
 	}
 	
-	public async find_one(filter:QueryFilter<M>, options?:QueryOptions<M>)
+	public async find_one(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<M | null>{
 		const mon_find_one_res = (typeof options !== 'undefined' && options.sort) ?
 			await this._raw.findOne(filter).sort(options.sort).lean<M>() :

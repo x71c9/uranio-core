@@ -7,13 +7,27 @@
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-import {QueryOptions, QueryFilter, FilterType} from '../types';
+import {QueryOptions, FilterType} from '../types';
 
 import * as urn_atms from '../atm/';
 
 const _queryop = {
-	andornor: ['$and','$or','$nor','$not'],
-	comparsion: ['$eq','$gt','$gte','$in','$lt','$lte','$ne','$nin']
+	andornor: {
+		$and: null,
+		$or: null,
+		$nor: null,
+		$not: null
+	},
+	comparsion: {
+		$eq: null,
+		$gt: null,
+		$gte: null,
+		$in: null,
+		$lt: null,
+		$lte: null,
+		$ne: null,
+		$nin: null
+	}
 };
 
 const urn_exc = urn_exception.init('QVAL','Query Validator');
@@ -26,7 +40,7 @@ const urn_exc = urn_exception.init('QVAL','Query Validator');
  * @param options- the options object
  */
 export function validate_filter_options_params<M extends urn_atms.models.Resource>
-(atom_keys:urn_atms.models.ModelKeysCategories<M>, filter:QueryFilter<M>, options?:QueryOptions<M>)
+(atom_keys:urn_atms.models.ModelKeysCategories<M>, filter:FilterType<M>, options?:QueryOptions<M>)
 		:true{
 	validate_filter<M>(filter, atom_keys);
 	if(options){
@@ -53,7 +67,8 @@ function _validate_field(field:any)
 			return true;
 		case 'object':{
 			for(const k in field){
-				if(_queryop.comparsion.indexOf(k) === -1){
+				// if(_queryop.comparsion.indexOf(k) === -1){
+				if(urn_util.object.has_key(_queryop.comparsion, k)){
 					const err_msg = `Filter value comparsion not valid [${k}].`;
 					throw urn_exc.create('VIC', err_msg);
 				}
@@ -98,13 +113,14 @@ function validate_filter<M extends urn_atms.models.Resource>
 	}
 	let key:keyof FilterType<M>;
 	for(key in filter){
-		if(_queryop.andornor.indexOf(key) !== -1){
+		if(urn_util.object.has_key(_queryop.andornor, key)){
+		// if(_queryop.andornor.indexOf(key) !== -1){
 			if(!Array.isArray(filter[key])){
 				const err_msg = `Invalid filter format. Filter value for [${key}] must be an array.`;
 				throw urn_exc.create('FVA', err_msg);
 			}
-			for(let i=0; i < filter[key].length; i++){
-				validate_filter(filter[key][i], atom_keys);
+			for(let i=0; i < filter[key]!.length; i++){
+				validate_filter(filter[key]![i], atom_keys);
 			}
 		}else{
 			if(!atom_keys.approved.has(key)){
@@ -172,7 +188,7 @@ function validate_options<M extends urn_atms.models.Resource>
  * @param projection - The projection to validate
  *
  */
-// _validate_projection(projection:QueryFilter<R> | string)
+// _validate_projection(projection:FilterType<R> | string)
 //     :true | never{
 //   switch(typeof projection){
 //     case 'string':{

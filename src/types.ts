@@ -8,40 +8,21 @@ export type DBType = 'mongo'; // | 'mysql'
 
 export type RelationName = 'urn_user'; // | 'urn_media';
 
-/**
- * Type for Query Filter paramter
- */
-export type QueryFilter<T> = {
+type KeysOfType<T> = {
 	
-	[P in keyof T]?: any
+	[P in keyof T]?:any;
 	
 }
 
-/**
- * Interface for option object used for querying the database
- */
-export interface QueryOptions<T> {
+export type QueryOptions<T> = {
 	
-	sort?: string | QueryFilter<T>;
+	sort?: string | KeysOfType<T>;
 	
 	limit?: number;
 	
 	skip?: number;
 	
 }
-
-
-type FilterAndOrNorType = {
-	
-	$and: any[],
-	
-	$or: any[],
-	
-	$nor: any[],
-	
-	$not: any[]
-	
-};
 
 type FilterComparsionType = {
 	
@@ -62,15 +43,47 @@ type FilterComparsionType = {
 	$nin: [string | number]
 }
 
-type ConditionalQueryFilter = {
-	[P in keyof FilterAndOrNorType]: any[]
-}
-
 export type ComparsionQueryFilter = {
-	[P in keyof FilterComparsionType]: any
+	[P in keyof FilterComparsionType]?: any
 }
 
-export type FilterType<T> = QueryFilter<T> | ConditionalQueryFilter;
+type FilterAndOrNorType<M> = {
+	
+	$and?: KeysOfType<M>[],
+	
+	$or?: KeysOfType<M>[],
+	
+	$nor?: KeysOfType<M>[],
+	
+	$not?: KeysOfType<M>[]
+	
+};
+
+// type ConditionalQueryFilter<M> = {
+//   [P in keyof FilterAndOrNorType<M>]?: KeysOfType<M>[]
+// }
+
+// export type FilterType<T> = KeysOfType<T> | ConditionalQueryFilter<T>;
+export type FilterType<T> = KeysOfType<T> & FilterAndOrNorType<T>;
 
 
+
+export const _queryop = {
+	andornor: {
+		$and: null,
+		$or: null,
+		$nor: null,
+		$not: null
+	},
+	comparsion: {
+		$eq: null,
+		$gt: null,
+		$gte: null,
+		$in: null,
+		$lt: null,
+		$lte: null,
+		$ne: null,
+		$nin: null
+	}
+};
 
