@@ -31,7 +31,7 @@ const user:urn_atms.models.User = {
 	// email: `a@a${makeid(9)}.com`,
 	// username: `sakjd${makeid(9)}las`,
 	email: `a@a.com`,
-	username: `sakjdlas`,
+	username: `sakjdlasssssss`,
 	password: 'skajdlsadlSSKLJ@à2',
 	active: true,
 	type: 'pro',

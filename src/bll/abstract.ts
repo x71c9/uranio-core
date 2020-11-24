@@ -10,7 +10,7 @@ import * as urn_atms from '../atm/';
 
 import * as urn_dals from '../dal/';
 
-import {QueryOptions, QueryFilter} from '../types';
+import {QueryOptions, FilterType} from '../types';
 
 @urn_log.decorators.debug_methods
 export abstract class BLL<M extends urn_atms.models.Resource, A extends urn_atms.Atom<M>> {
@@ -23,7 +23,7 @@ export abstract class BLL<M extends urn_atms.models.Resource, A extends urn_atms
 
 	protected abstract get_dal():urn_dals.DAL<M,A>;
 	
-	public async find(filter:QueryFilter<M>, options?:QueryOptions<M>)
+	public async find(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<Array<A | null>>{
 		return await this._dal.find(filter, options);
 	}
@@ -33,7 +33,7 @@ export abstract class BLL<M extends urn_atms.models.Resource, A extends urn_atms
 		return await this._dal.find_by_id(id);
 	}
 	
-	public async find_one(filter:QueryFilter<M>, options?:QueryOptions<M>)
+	public async find_one(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<A | null>{
 		return await this._dal.find_one(filter, options);
 	}
