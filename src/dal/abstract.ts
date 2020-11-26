@@ -37,34 +37,34 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	}
 	
 	public async find(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<Array<A | null>>{
+			:Promise<A[]>{
 		return await this._find(filter, options);
 	}
 	
 	public async find_by_id(id:string)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._find_by_id(id);
 	}
 	
 	public async find_one(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._find_one(filter, options);
 	}
 	
 	public async insert_one(atom:A)
-			:Promise<A | null>{
+			:Promise<A>{
 		await this._check_unique(atom);
 		return await this._insert_one(atom);
 	}
 	
 	public async update_one(atom:A)
-			:Promise<A | null>{
+			:Promise<A>{
 		await this._check_unique(atom);
 		return await this._update_one(atom);
 	}
 	
 	public async delete_one(atom:A)
-			:Promise<A | null>{
+			:Promise<A>{
 		const db_res_delete = await this._delete_one(atom);
 		if(db_res_delete && this._db_trash_relation){
 			db_res_delete._deleted_from = db_res_delete._id;
@@ -74,37 +74,37 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	}
 	
 	public async trash_find(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<Array<A | null>>{
+			:Promise<A[]>{
 		return await this._find(filter, options, true);
 	}
 	
 	public async trash_find_by_id(id:string)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._find_by_id(id, true);
 	}
 	
 	public async trash_find_one(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._find_one(filter, options, true);
 	}
 	
 	public async trash_insert_one(atom:A)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._insert_one(atom, true);
 	}
 	
 	public async trash_update_one(atom:A)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._update_one(atom, true);
 	}
 	
 	public async trash_delete_one(atom:A)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._delete_one(atom, true);
 	}
 	
 	private async _find(filter:FilterType<M>, options?:QueryOptions<M>, in_trash = false)
-			:Promise<Array<A | null>>{
+			:Promise<A[]>{
 		if(in_trash === true && this._db_trash_relation === null){
 			return [];
 		}
@@ -112,8 +112,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		const db_res_find = await _relation.find(filter, options);
-		const atom_array = db_res_find.reduce<Array<A | null>>((result, db_record) => {
-			// const func_name = '_find' + (in_trash === true) ? ' [TRASH]' : '';
+		const atom_array = db_res_find.reduce<A[]>((result, db_record) => {
 			result.push(this._create_atom(db_record));
 			return result;
 		}, []);
@@ -121,9 +120,10 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	}
 	
 	private async _find_by_id(id:string, in_trash = false)
-			:Promise<A | null>{
+			:Promise<A>{
 		if(in_trash === true && this._db_trash_relation === null){
-			return null;
+			const err_msg = `Cannot _find_by_id [in_trash=true]. Trash DB not found.`;
+			throw urn_exc.create('FIN', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
@@ -131,56 +131,55 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 			throw urn_exc.create('FII', `Cannot _find_by_id. Invalid argument id.`);
 		}
 		const db_res_find_by_id = await _relation.find_by_id(id);
-		// const func_name = '_find_by_id' + (in_trash === true) ? ' [TRASH]' : '';
 		return this._create_atom(db_res_find_by_id);
 	}
 	
 	private async _find_one(filter:FilterType<M>, options?:QueryOptions<M>, in_trash = false)
-			:Promise<A | null>{
+			:Promise<A>{
 		if(in_trash === true && this._db_trash_relation === null){
-			return null;
+			const err_msg = `Cannot _find_one [in_trash=true]. Trash DB not found.`;
+			throw urn_exc.create('FON', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		urn_validators.query.validate_filter_options_params(this._atom_module.keys, filter, options);
 		const db_res_find_one = await _relation.find_one(filter, options);
-		// const func_name = '_find_one' + (in_trash === true) ? ' [TRASH]' : '';
 		return this._create_atom(db_res_find_one);
 	}
 
 	private async _insert_one(atom:A, in_trash = false)
-			:Promise<A | null>{
+			:Promise<A>{
 		if(in_trash === true && this._db_trash_relation === null){
-			return null;
+			const err_msg = `Cannot _insert_one [in_trash=true]. Trash DB not found.`;
+			throw urn_exc.create('ION', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		const db_res_insert = await _relation.insert_one(atom.return());
-		// const func_name = '_insert_one' + (in_trash === true) ? ' [TRASH]' : '';
 		return this._create_atom(db_res_insert);
 	}
 	
 	private async _update_one(atom:A, in_trash = false)
-			:Promise<A | null>{
+			:Promise<A>{
 		if(in_trash === true && this._db_trash_relation === null){
-			return null;
+			const err_msg = `Cannot _update_one [in_trash=true]. Trash DB not found.`;
+			throw urn_exc.create('UON', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		const db_res_insert = await _relation.update_one(atom.return());
-		// const func_name = '_update_one' + (in_trash === true) ? ' [TRASH]' : '';
 		return this._create_atom(db_res_insert);
 	}
 	
 	private async _delete_one(atom:A, in_trash = false)
-			:Promise<A | null>{
+			:Promise<A>{
 		if(in_trash === true && !this._db_trash_relation){
-			return null;
+			const err_msg = `Cannot _delete_one [in_trash=true]. Trash DB not found.`;
+			throw urn_exc.create('DON', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		const db_res_insert = await _relation.delete_one(atom.return());
-		// const func_name = '_delete_one' + (in_trash === true) ? ' [TRASH]' : '';
 		return this._create_atom(db_res_insert);
 	}
 	
@@ -209,9 +208,9 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		}
 	}
 	
-	private _create_atom(resource:M | null)
-			:A | null{
-		return (!resource) ? null : this._atom_module.create(resource);
+	private _create_atom(resource:M)
+			:A{
+		return this._atom_module.create(resource);
 	}
 	
 }

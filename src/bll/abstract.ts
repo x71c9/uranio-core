@@ -24,32 +24,32 @@ export abstract class BLL<M extends urn_atms.models.Resource, A extends urn_atms
 	protected abstract get_dal():urn_dals.DAL<M,A>;
 	
 	public async find(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<Array<A | null>>{
+			:Promise<A[]>{
 		return await this._dal.find(filter, options);
 	}
 	
 	public async find_by_id(id:string)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._dal.find_by_id(id);
 	}
 	
 	public async find_one(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._dal.find_one(filter, options);
 	}
 	
 	public async insert_one(atom:A)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._dal.insert_one(atom);
 	}
 	
 	public async update_one(atom:A)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._dal.update_one(atom);
 	}
 	
 	public async delete_one(atom:A)
-			:Promise<A | null>{
+			:Promise<A>{
 		return await this._dal.delete_one(atom);
 	}
 	

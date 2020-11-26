@@ -8,7 +8,6 @@ export type DBType = 'mongo'; // | 'mysql'
 
 export type RelationName = 'urn_user'; // | 'urn_media';
 
-
 type KeysOfType<T> = {
 	
 	[P in keyof T]?:any;
