@@ -4,15 +4,19 @@
  * @packageDocumentation
  */
 
+import * as urn_core from './main';
+
+export default urn_core;
+
 // import {urn_log} from 'urn-lib';
 
 // urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
 
 // import * as urn_atms from './atm/';
 
-import * as urn_blls from './bll/';
+// import * as urn_blls from './bll/';
 
-import * as urn_atms from './atm/';
+// import * as urn_atms from './atm/';
 
 // function makeid(length:number) {
 //   let result = '';
@@ -24,18 +28,18 @@ import * as urn_atms from './atm/';
 //   return result;
 // }
 
-const user:urn_atms.models.User = {
-	// _id:'5fad2102bcfacd4ea51dc9ae',
-	first_name: 'Federico',
-	last_name: 'Reale',
-	// email: `a@a${makeid(9)}.com`,
-	// username: `sakjd${makeid(9)}las`,
-	email: `a@a.com`,
-	username: `sakjdlasssssss`,
-	password: 'skajdlsadlSSKLJ@à2',
-	active: true,
-	type: 'pro',
-};
+// const user:urn_atms.models.User = {
+//   // _id:'5fad2102bcfacd4ea51dc9ae',
+//   first_name: 'Federico',
+//   last_name: 'Reale',
+//   // email: `a@a${makeid(9)}.com`,
+//   // username: `sakjd${makeid(9)}las`,
+//   email: `a@a.com`,
+//   username: `sakjdlasssssss`,
+//   password: 'skajdlsadlSSKLJ@à2',
+//   active: true,
+//   type: 'pro',
+// };
 
 // const user2 = {
 //   _id:'5fad2102bcfacd4ea51dc9ae',
@@ -50,20 +54,23 @@ const user:urn_atms.models.User = {
 //   creation_date: new Date()
 // };
 
-const urn_bllusers = urn_blls.users.create();
+// const urn_bllusers = urn_blls.users.create();
 
 
 
-const user_atom = urn_atms.user.create(user);
+// const user_atom = urn_atms.user.create(user);
 
-urn_bllusers.insert_one(user_atom).then((data) => {
-	console.log(data);
-});
+// urn_bllusers.insert_one(user_atom).then((data) => {
+//   console.log(data);
+// });
 
-urn_bllusers.find({}).then((data) => {
-	console.log(data);
-});
+// urn_bllusers.find({}).then((data) => {
+//   console.log(data);
+// });
 
+// urn_bllusers.find_by_id('5fb408f49615d43593e8cac2').then((data) => {
+//   console.log(data);
+// });
 // const dal_users = create_user_dal('mongo');
 
 // dal_users.find({}).then((data:any) => {

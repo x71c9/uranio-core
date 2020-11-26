@@ -65,21 +65,21 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	}
 	
 	public async find_by_id(id:string)
-			:Promise<M | null>{
+			:Promise<M>{
 		const mon_find_by_id_res = await this._raw.findById(id).lean<M>();
 		if(mon_find_by_id_res === null){
-			return null;
+			throw urn_exc.create('FIN', `Record not found.`);
 		}
 		return string_id(mon_find_by_id_res);
 	}
 	
 	public async find_one(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<M | null>{
+			:Promise<M>{
 		const mon_find_one_res = (typeof options !== 'undefined' && options.sort) ?
 			await this._raw.findOne(filter).sort(options.sort).lean<M>() :
 			await this._raw.findOne(filter).lean<M>();
 		if(mon_find_one_res === null){
-			return null;
+			throw urn_exc.create('FON', `Record not found.`);
 		}
 		return string_id(mon_find_one_res);
 	}
@@ -98,7 +98,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	}
 	
 	public async update_one(resource:M)
-			:Promise<M | null>{
+			:Promise<M>{
 		if(!urn_util.object.has_key(resource, '_id')){
 			const err_msg = `Cannot update_one. Argument has no _id.`;
 			throw urn_exc.create('UNI', err_msg);
@@ -110,7 +110,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		const mon_update_res =
 			await this._raw.findOneAndUpdate({_id:resource._id}, resource, {new: true, lean: true});
 		if(mon_update_res === null){
-			return null;
+			throw urn_exc.create('UON', `Cannot update_one. Record not found.`);
 		}
 		return string_id(mon_update_res as M);
 		// const mon_obj = mon_update_res.toObject();
@@ -118,7 +118,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	}
 	
 	public async delete_one(resource:M)
-			:Promise<M | null>{
+			:Promise<M>{
 		if(!urn_util.object.has_key(resource, '_id')){
 			const err_msg = `Cannot delete_one. Argument has no _id.`;
 			throw urn_exc.create('DNI', err_msg);
@@ -130,7 +130,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		const mon_delete_res =
 			await this._raw.findOneAndDelete({_id:resource._id});
 		if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
-			return null;
+			throw urn_exc.create('DON', `Cannot delete_one. Record not found.`);
 		}
 		return string_id(mon_delete_res.toObject() as M);
 	}
