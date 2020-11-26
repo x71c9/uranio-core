@@ -13,6 +13,8 @@ import * as urn_dals from '../dal/';
 
 import {BLL} from './abstract';
 
+import {core_default_config} from '../defaults';
+
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
 class BLLUsers extends BLL<urn_atms.models.User, urn_atms.user.UserInstance> {
@@ -21,8 +23,8 @@ class BLLUsers extends BLL<urn_atms.models.User, urn_atms.user.UserInstance> {
 		super();
 	}
 	
-	protected get_dal(){
-		return urn_dals.users.create('mongo');
+	protected get_dal():urn_dals.users.DalUsersInstance{
+		return urn_dals.users.create(core_default_config.db_type);
 	}
 }
 

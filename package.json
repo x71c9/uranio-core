@@ -6,8 +6,8 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc -b",
-		"start": "node -r source-map-support/register -r dotenv/config dist/index.js dotenv_config_path=config/dev.env",
-		"dev": "./node_modules/.bin/tsc-watch --onSuccess \"node -r source-map-support/register -r dotenv/config ./dist/index.js dotenv_config_path=config/dev.env\""
+		"start": "node -r source-map-support/register dist/index.js",
+		"dev": "./node_modules/.bin/tsc-watch --onSuccess \"node -r source-map-support/register ./dist/index.js\""
 	},
 	"repository": {
 		"type": "git",
@@ -25,7 +25,6 @@
 		"urn-dev": "git+ssh://git@bitbucket.org/nbl7/urn-dev.git"
 	},
 	"dependencies": {
-		"dotenv": "^8.2.0",
 		"mongoose": "^5.10.10",
 		"urn-lib": "file:../urn-lib/",
 		"urn-mdls": "file:../urn-mdls/"

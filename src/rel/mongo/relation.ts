@@ -18,11 +18,13 @@ import {mongo_schemas} from './schemas/';
 
 import * as urn_atm from '../../atm/';
 
+import {core_default_config} from '../../defaults';
+
 const mongo_main_conn = mongo_connection.create(
 	'main',
-	process.env.urn_db_host!,
-	parseInt(process.env.urn_db_port!),
-	process.env.urn_db_name!
+	core_default_config.db_host,
+	core_default_config.db_port,
+	core_default_config.db_name
 );
 
 const urn_exc = urn_exception.init('REL-M', 'Mongoose Relation');
