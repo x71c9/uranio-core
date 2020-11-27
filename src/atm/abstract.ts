@@ -53,7 +53,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 		for(const key of this.get_keys().approved){
 			if(!this.get_keys().optional.has(key) && !urn_util.object.has_key(that, key)){
 				const err_msg = `Cannot return. Current instance has no property [${key}] set.`;
-				throw urn_exc.create('RNK', err_msg);
+				throw urn_exc.create('RETURN_NO_PROP', err_msg);
 			}
 			data_transfer_object[key] = that[key];
 		}
@@ -66,7 +66,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 			const resource_type = (typeof resource === 'object') ? 'null' : typeof resource;
 			let err_msg = `Invalid ${this.constructor.name} constructor initializer type.`;
 			err_msg += ` Constructor initializer value must be of type "object" - given type [${resource_type}].`;
-			throw urn_exc.create('VIT', err_msg);
+			throw urn_exc.create('VALIDATE_INVALID_PARAM', err_msg);
 		}
 		for(const key of this.get_keys().approved){
 			if(this.get_keys().optional.has(key))
@@ -74,7 +74,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 			if(!urn_util.object.has_key(resource, key)){
 				let err_msg = `Invalid ${this.constructor.name} constructor initializer.`;
 				err_msg += ` Initializer is missing propery [${key}].`;
-				throw urn_exc.create('VNK', err_msg);
+				throw urn_exc.create('VALIDATE_PROP_NOT_SET', err_msg);
 			}
 		}
 		const types:Set<keyof models.ModelKeysCategories<Model>> =
@@ -86,7 +86,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 				if(typeof resource[key] !== t){
 					let err_msg = `Invalid initializer key type [${key}].`;
 					err_msg += ` Type must be "${t}" - given type [${typeof resource[key]}]`;
-					throw urn_exc.create('VKT', err_msg);
+					throw urn_exc.create('VALIDATE_PROP_INVALID_TYPE', err_msg);
 				}
 			}
 		}
@@ -97,7 +97,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 			if(!urn_util.is_date(resource[key])){
 				let err_msg = `Invalid initializer key type [${key}].`;
 				err_msg += ` Type must be "date" - given type [${typeof resource[key]}]`;
-				throw urn_exc.create('VKD', err_msg);
+				throw urn_exc.create('VALIDATE_PROP_INVALID_DATE', err_msg);
 			}
 		}
 		

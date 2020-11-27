@@ -18,8 +18,6 @@ export const core_default_config:Configuration = {
 	
 	db_trash_name: 'uranio_trash_dev',
 	
-	db_log_name: 'uranio_log_dev',
-	
-	log_level: 1
+	db_log_name: 'uranio_log_dev'
 	
 };
