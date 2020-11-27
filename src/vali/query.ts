@@ -30,7 +30,7 @@ const _queryop = {
 	}
 };
 
-const urn_exc = urn_exception.init('QVAL','Query Validator');
+const urn_exc = urn_exception.init('QUERY_VALIDATE','Query Validator');
 
 /**
  * Validate `filter` and `options` paramaters
@@ -59,7 +59,7 @@ function _validate_field(field:any)
 		:true{
 	if(field === null){
 		const err_msg = `Cannot _validate_field. Invalid argument "field". "field" is null.`;
-		throw urn_exc.create('VIF', err_msg);
+		throw urn_exc.create('FIELD_NULL', err_msg);
 	}
 	switch(typeof field){
 		case 'string':
@@ -70,17 +70,17 @@ function _validate_field(field:any)
 				// if(_queryop.comparsion.indexOf(k) === -1){
 				if(urn_util.object.has_key(_queryop.comparsion, k)){
 					const err_msg = `Filter value comparsion not valid [${k}].`;
-					throw urn_exc.create('VIC', err_msg);
+					throw urn_exc.create('FIELD_INVALID_COMP', err_msg);
 				}
 				if(typeof field[k] != 'string' && field[k] != 'number' && !Array.isArray(field[k])){
 					const err_msg = `Filter comparsion value type must be a string, a number, on an Array [${k}]`;
-					throw urn_exc.create('VCT', err_msg);
+					throw urn_exc.create('FIELD_INVALID_COMP_TYPE', err_msg);
 				}
 				if(Array.isArray(field[k])){
 					for(const v of field[k]){
 						if(typeof v !== 'string' && typeof v !== 'number'){
 							const err_msg = `Invalid filter comparsion value type.`;
-							throw urn_exc.create('VCV', err_msg);
+							throw urn_exc.create('FIELD_INVALID_VAL_TYPE', err_msg);
 						}
 					}
 				}
@@ -89,7 +89,7 @@ function _validate_field(field:any)
 		}
 		default:{
 			const err_msg = `Filter filed type not valid.`;
-			throw urn_exc.create('VIN', err_msg);
+			throw urn_exc.create('FIELD_INVALID_TYPE', err_msg);
 		}
 	}
 }
@@ -109,7 +109,7 @@ function validate_filter<M extends urn_atms.models.Resource>
 		:true{
 	if(typeof filter !== 'object' || filter === null){
 		const err_msg = `Invalid filter format.`;
-		throw urn_exc.create('FIF', err_msg);
+		throw urn_exc.create('FILTER_INVALID_TYPE', err_msg);
 	}
 	let key:keyof FilterType<M>;
 	for(key in filter){
@@ -117,7 +117,7 @@ function validate_filter<M extends urn_atms.models.Resource>
 		// if(_queryop.andornor.indexOf(key) !== -1){
 			if(!Array.isArray(filter[key])){
 				const err_msg = `Invalid filter format. Filter value for [${key}] must be an array.`;
-				throw urn_exc.create('FVA', err_msg);
+				throw urn_exc.create('FILTER_OP_VAL_NOT_ARRAY', err_msg);
 			}
 			for(let i=0; i < filter[key]!.length; i++){
 				validate_filter(filter[key]![i], atom_keys);
@@ -125,7 +125,7 @@ function validate_filter<M extends urn_atms.models.Resource>
 		}else{
 			if(!atom_keys.approved.has(key)){
 				const err_msg = `Filter field not valid [${key}].`;
-				throw urn_exc.create('FIN', err_msg);
+				throw urn_exc.create('FILTER_INVALID_KEY', err_msg);
 			}
 			_validate_field(filter[key]);
 		}
@@ -151,7 +151,7 @@ function validate_options<M extends urn_atms.models.Resource>
 				}
 				if(!atom_keys.approved.has(sort_value as keyof M)){
 					const err_msg = `Sort value not valid [${options.sort}].`;
-					throw urn_exc.create('OSI', err_msg);
+					throw urn_exc.create('OPTIONS_INVALID_SORT_VAL', err_msg);
 				}
 				break;
 			}
@@ -159,12 +159,12 @@ function validate_options<M extends urn_atms.models.Resource>
 				for(const k in options.sort){
 					if(!atom_keys.approved.has(k)){
 						const err_msg = `Sort value not valid [${k}].`;
-						throw urn_exc.create('OSV', err_msg);
+						throw urn_exc.create('OPTIONS_INVALID_OBJECT_SORT_VAL', err_msg);
 					}
 					const sort_obj_value = options.sort[k];
 					if(isNaN(sort_obj_value) || (sort_obj_value != -1 && sort_obj_value != 1)){
 						const err_msg = `Sort value must be equal either to -1 or 1.`;
-						throw urn_exc.create('OSO', err_msg);
+						throw urn_exc.create('OPTIONS_INVALID_VAL', err_msg);
 					}
 				}
 				break;
@@ -173,11 +173,11 @@ function validate_options<M extends urn_atms.models.Resource>
 	}
 	if(urn_util.object.has_key(options,'limit') && typeof options.limit != 'number'){
 		const err_msg = `Limit value type must be number.`;
-		throw urn_exc.create('OLN', err_msg);
+		throw urn_exc.create('OPTIONS_INVALID_LIMIT_VAL', err_msg);
 	}
 	if(urn_util.object.has_key(options,'skip') && typeof options.skip != 'number'){
 		const err_msg = `Skip value type must be number.`;
-		throw urn_exc.create('OSN', err_msg);
+		throw urn_exc.create('OPTIONS_INVALID_SKIP_VAL', err_msg);
 	}
 	return true;
 }

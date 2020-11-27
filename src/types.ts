@@ -4,8 +4,6 @@
  * @packageDocumentation
  */
 
-import {urn_log} from 'urn-lib';
-
 export type DBType = 'mongo'; // | 'mysql'
 
 export type RelationName = 'urn_user'; // | 'urn_media';
@@ -23,8 +21,6 @@ export type Configuration = {
 	db_trash_name: string;
 	
 	db_log_name: string;
-	
-	log_level: urn_log.LogLevel;
 	
 }
 

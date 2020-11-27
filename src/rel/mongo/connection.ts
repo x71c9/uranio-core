@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 
 import {urn_log,  urn_exception} from 'urn-lib';
 
-const urn_exc = urn_exception.init('DBC-M', 'Mongoose DB Connection');
+const urn_exc = urn_exception.init('DBC_M', 'Mongoose DB Connection');
 
 /*
  * Define default mongoose option for connection
@@ -98,7 +98,7 @@ class MongooseDBConnection {
 			:Promise<ConnectionInstance>{
 		if(this._connection == null){
 			const err_msg = `Cannot close. Connection is null. [${this.name}][${this.uri}].`;
-			throw urn_exc.create('CCN', err_msg);
+			throw urn_exc.create('CLOSE_CON_NULL', err_msg);
 		}
 		await this._connection.close();
 		return this;

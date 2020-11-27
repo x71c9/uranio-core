@@ -123,12 +123,12 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 			:Promise<A>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _find_by_id [in_trash=true]. Trash DB not found.`;
-			throw urn_exc.create('FIN', err_msg);
+			throw urn_exc.create('FIND_ID_TRASH_NOT_FOUND', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		if(!this._db_relation.is_valid_id(id)){
-			throw urn_exc.create('FII', `Cannot _find_by_id. Invalid argument id.`);
+			throw urn_exc.create('FIND_ID_INVALID_ID', `Cannot _find_by_id. Invalid argument id.`);
 		}
 		const db_res_find_by_id = await _relation.find_by_id(id);
 		return this._create_atom(db_res_find_by_id);
@@ -138,7 +138,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 			:Promise<A>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _find_one [in_trash=true]. Trash DB not found.`;
-			throw urn_exc.create('FON', err_msg);
+			throw urn_exc.create('FIND_ONE_TRASH_NOT_FOUND', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
@@ -151,7 +151,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 			:Promise<A>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _insert_one [in_trash=true]. Trash DB not found.`;
-			throw urn_exc.create('ION', err_msg);
+			throw urn_exc.create('INS_ONE_TRASH_NOT_FOUND', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
@@ -163,7 +163,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 			:Promise<A>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _update_one [in_trash=true]. Trash DB not found.`;
-			throw urn_exc.create('UON', err_msg);
+			throw urn_exc.create('UPD_ONE_TRASH_NOT_FOUND', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
@@ -175,7 +175,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 			:Promise<A>{
 		if(in_trash === true && !this._db_trash_relation){
 			const err_msg = `Cannot _delete_one [in_trash=true]. Trash DB not found.`;
-			throw urn_exc.create('DON', err_msg);
+			throw urn_exc.create('DEL_ONE_TRASH_NOT_FOUND', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
@@ -193,8 +193,8 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 			filter_object[k] = model[k];
 			filter.$or.push(filter_object);
 		}
-		const res_find_one = await this._find_one(filter);
-		if(res_find_one !== null){
+		try{
+			const res_find_one = await this._find_one(filter);
 			const equal_values:Set<keyof M> = new Set();
 			const res_model = res_find_one.return();
 			for(const k of atom.get_keys().unique){
@@ -204,7 +204,11 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 			}
 			let err_msg = `Atom unique fields are already in the database.`;
 			err_msg += ` Duplicate fields: ${urn_util.formatter.json_one_line(equal_values)}.`;
-			throw urn_exc.create('CUA', err_msg);
+			throw urn_exc.create('CHECK_UNIQUE_DUPLICATE', err_msg);
+		}catch(err){
+			if(!err.type || err.type !== urn_exception.ExceptionType.NOT_FOUND){
+				throw err;
+			}
 		}
 	}
 	

@@ -27,7 +27,7 @@ const mongo_main_conn = mongo_connection.create(
 	core_default_config.db_name
 );
 
-const urn_exc = urn_exception.init('REL-M', 'Mongoose Relation');
+const urn_exc = urn_exception.init('REL_M', 'Mongoose Relation');
 
 /**
  * Mongoose Relation class
@@ -70,7 +70,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 			:Promise<M>{
 		const mon_find_by_id_res = await this._raw.findById(id).lean<M>();
 		if(mon_find_by_id_res === null){
-			throw urn_exc.create('FIN', `Record not found.`);
+			throw urn_exc.create_not_found('FIND_ID_NOT_FOUND', `Record not found.`);
 		}
 		return string_id(mon_find_by_id_res);
 	}
@@ -81,7 +81,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 			await this._raw.findOne(filter).sort(options.sort).lean<M>() :
 			await this._raw.findOne(filter).lean<M>();
 		if(mon_find_one_res === null){
-			throw urn_exc.create('FON', `Record not found.`);
+			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
 		}
 		return string_id(mon_find_one_res);
 	}
@@ -103,16 +103,16 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 			:Promise<M>{
 		if(!urn_util.object.has_key(resource, '_id')){
 			const err_msg = `Cannot update_one. Argument has no _id.`;
-			throw urn_exc.create('UNI', err_msg);
+			throw urn_exc.create('UPD_ONE_NO_ID', err_msg);
 		}
 		if(typeof resource._id !== 'string' || resource._id === '' || !this.is_valid_id(resource._id)){
 			const err_msg = `Cannot update_one. Argument has invalid _id.`;
-			throw urn_exc.create('UII', err_msg);
+			throw urn_exc.create('UPD_ONE_INVALID_ID', err_msg);
 		}
 		const mon_update_res =
 			await this._raw.findOneAndUpdate({_id:resource._id}, resource, {new: true, lean: true});
 		if(mon_update_res === null){
-			throw urn_exc.create('UON', `Cannot update_one. Record not found.`);
+			throw urn_exc.create('UPD_ONE_NOT_FOUND', `Cannot update_one. Record not found.`);
 		}
 		return string_id(mon_update_res as M);
 		// const mon_obj = mon_update_res.toObject();
@@ -123,16 +123,16 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 			:Promise<M>{
 		if(!urn_util.object.has_key(resource, '_id')){
 			const err_msg = `Cannot delete_one. Argument has no _id.`;
-			throw urn_exc.create('DNI', err_msg);
+			throw urn_exc.create('DEL_ONE_NO_ID', err_msg);
 		}
 		if(typeof resource._id !== 'string' || resource._id === '' || !this.is_valid_id(resource._id)){
 			const err_msg = `Cannot delete_one. Argument has invalid _id.`;
-			throw urn_exc.create('DII', err_msg);
+			throw urn_exc.create('DEL_ONE_INVALID_ID', err_msg);
 		}
 		const mon_delete_res =
 			await this._raw.findOneAndDelete({_id:resource._id});
 		if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
-			throw urn_exc.create('DON', `Cannot delete_one. Record not found.`);
+			throw urn_exc.create_not_found('DEL_ONE_NOT_FOUND', `Cannot delete_one. Record not found.`);
 		}
 		return string_id(mon_delete_res.toObject() as M);
 	}
