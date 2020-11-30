@@ -22,3 +22,8 @@ export type AtomModule<M extends models.Resource, A extends Atom<M>> = {
 	keys: models.ModelKeysCategories<M>,
 	relation_name: RelationName
 }
+
+export type TokenObject = {
+	_id: string,
+	name: string
+}

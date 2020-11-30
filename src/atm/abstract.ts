@@ -94,7 +94,7 @@ export abstract class Atom<Model extends models.Resource> implements models.Reso
 		for(const key of this.get_keys().date){
 			if(this.get_keys().optional.has(key) && typeof resource[key] === typeof undefined)
 				continue;
-			if(!urn_util.is_date(resource[key])){
+			if(!urn_util.is.date(resource[key])){
 				let err_msg = `Invalid initializer key type [${key}].`;
 				err_msg += ` Type must be "date" - given type [${typeof resource[key]}]`;
 				throw urn_exc.create('VALIDATE_PROP_INVALID_DATE', err_msg);

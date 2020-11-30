@@ -17,7 +17,7 @@ export interface Relation<M extends urn_atm.models.Resource> {
 	
 	insert_one(resource:M):Promise<M>;
 	
-	update_one(resource:M):Promise<M>;
+	alter_one(resource:M):Promise<M>;
 	
 	delete_one(resource:M):Promise<M>;
 	

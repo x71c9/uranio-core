@@ -15,11 +15,11 @@ import {create_atom} from '../abstract';
 export type UserInstance = InstanceType<typeof User>;
 
 export const create:AtomCreateFunction<models.User, UserInstance> =
-(user) => {
+(model) => {
 	
 	urn_log.fn_debug(`User create`);
 	
-	return create_atom(user, User);
+	return create_atom(model, User);
 	
 };
 

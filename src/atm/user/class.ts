@@ -4,11 +4,13 @@
  * @packageDocumentation
  */
 
-import {urn_log} from 'urn-lib';
+import {urn_log, urn_exception} from 'urn-lib';
 
 import {Atom} from '../abstract';
 
-import {models} from '../types';
+import {models, TokenObject} from '../types';
+
+const urn_exc = urn_exception.init('ATM-USER', `Atom User Module`);
 
 export const user_keys:models.ModelKeysCategories<models.User> =
 	models.user.keys;
@@ -58,6 +60,23 @@ export class User extends Atom<models.User> implements models.User {
 	public get_keys()
 			:models.ModelKeysCategories<models.User>{
 		return user_keys;
+	}
+	
+	public get name()
+			:string{
+		return `${this.first_name} ${this.last_name}`;
+	}
+	
+	public get_token_object()
+			:TokenObject{
+		if(!this._id){
+			const err_msg = `Cannot generate token object. Atom User has no _id.`;
+			throw urn_exc.create('GET_TOKEN_OBJ_USER_NO_ID', err_msg);
+		}
+		return {
+			_id: this._id,
+			name: this.name
+		};
 	}
 	
 }
