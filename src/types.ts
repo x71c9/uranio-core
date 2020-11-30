@@ -22,6 +22,8 @@ export type Configuration = {
 	
 	db_log_name: string;
 	
+	jwt_private_key: string;
+	
 }
 
 type KeysOfType<T> = {

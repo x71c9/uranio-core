@@ -99,20 +99,20 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		return mon_obj;
 	}
 	
-	public async update_one(resource:M)
+	public async alter_one(resource:M)
 			:Promise<M>{
 		if(!urn_util.object.has_key(resource, '_id')){
-			const err_msg = `Cannot update_one. Argument has no _id.`;
+			const err_msg = `Cannot alter_one. Argument has no _id.`;
 			throw urn_exc.create('UPD_ONE_NO_ID', err_msg);
 		}
 		if(typeof resource._id !== 'string' || resource._id === '' || !this.is_valid_id(resource._id)){
-			const err_msg = `Cannot update_one. Argument has invalid _id.`;
+			const err_msg = `Cannot alter_one. Argument has invalid _id.`;
 			throw urn_exc.create('UPD_ONE_INVALID_ID', err_msg);
 		}
 		const mon_update_res =
 			await this._raw.findOneAndUpdate({_id:resource._id}, resource, {new: true, lean: true});
 		if(mon_update_res === null){
-			throw urn_exc.create('UPD_ONE_NOT_FOUND', `Cannot update_one. Record not found.`);
+			throw urn_exc.create('UPD_ONE_NOT_FOUND', `Cannot alter_one. Record not found.`);
 		}
 		return string_id(mon_update_res as M);
 		// const mon_obj = mon_update_res.toObject();

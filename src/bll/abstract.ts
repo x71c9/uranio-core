@@ -20,37 +20,39 @@ export abstract class BLL<M extends urn_atms.models.Resource, A extends urn_atms
 	constructor() {
 		this._dal = this.get_dal();
 	}
-
+	
 	protected abstract get_dal():urn_dals.DAL<M,A>;
 	
-	public async find(filter:FilterType<M>, options?:QueryOptions<M>)
+	protected abstract create_atom(resource:M):A;
+	
+	public async search(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<A[]>{
 		return await this._dal.find(filter, options);
 	}
 	
-	public async find_by_id(id:string)
+	public async search_by_id(id:string)
 			:Promise<A>{
 		return await this._dal.find_by_id(id);
 	}
 	
-	public async find_one(filter:FilterType<M>, options?:QueryOptions<M>)
+	public async search_one(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<A>{
 		return await this._dal.find_one(filter, options);
 	}
 	
-	public async insert_one(atom:A)
+	public async save_one(resource:M)
 			:Promise<A>{
-		return await this._dal.insert_one(atom);
+		return await this._dal.insert_one(this.create_atom(resource));
 	}
 	
-	public async update_one(atom:A)
+	public async update_one(resource:M)
 			:Promise<A>{
-		return await this._dal.update_one(atom);
+		return await this._dal.alter_one(this.create_atom(resource));
 	}
 	
-	public async delete_one(atom:A)
+	public async remove_one(resource:M)
 			:Promise<A>{
-		return await this._dal.delete_one(atom);
+		return await this._dal.delete_one(this.create_atom(resource));
 	}
 	
 }

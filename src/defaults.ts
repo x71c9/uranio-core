@@ -18,6 +18,8 @@ export const core_default_config:Configuration = {
 	
 	db_trash_name: 'uranio_trash_dev',
 	
-	db_log_name: 'uranio_log_dev'
+	db_log_name: 'uranio_log_dev',
+	
+	jwt_private_key: 'A_KEY_THAT_NEED_TO_BE_CHANGED'
 	
 };
