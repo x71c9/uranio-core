@@ -56,30 +56,3 @@ type FilterLogicType<M> = {
 
 export type FilterType<T> = KeysOfType<T> & FilterLogicType<T>;
 
-
-
-// type FilterComparsionType = {
-	
-//   $eq: string | number,
-	
-//   $gt: string | number,
-	
-//   $gte: string | number,
-	
-//   $in: [string | number],
-	
-//   $lt: string | number,
-	
-//   $lte: string | number,
-	
-//   $ne: string | number,
-	
-//   $nin: [string | number]
-// }
-
-// export type ComparsionQueryFilter = {
-//   [P in keyof FilterComparsionType]?: any
-// }
-
-
-
