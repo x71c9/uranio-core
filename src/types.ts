@@ -4,6 +4,8 @@
  * @packageDocumentation
  */
 
+export {AtomConfig, AtomFieldType} from './typ/atom_config';
+
 export type DBType = 'mongo'; // | 'mysql'
 
 export type RelationName = 'urn_user'; // | 'urn_media';

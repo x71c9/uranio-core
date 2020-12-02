@@ -19,7 +19,7 @@ import * as urn_dals from '../dal/';
 
 import {BLL} from './abstract';
 
-import {core_default_config} from '../defaults';
+import {core_config} from '../defaults';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
@@ -31,7 +31,7 @@ class BLLUsers extends BLL<urn_atms.models.User, urn_atms.user.UserInstance> {
 	
 	protected get_dal()
 			:urn_dals.users.DalUsersInstance{
-		return urn_dals.users.create(core_default_config.db_type);
+		return urn_dals.users.create(core_config.db_type);
 	}
 	
 	protected create_atom(resource:urn_atms.models.User)
@@ -81,7 +81,7 @@ class BLLUsers extends BLL<urn_atms.models.User, urn_atms.user.UserInstance> {
 			throw urn_exc.create('AUTH_INVALID_PASSWORD', err_msg);
 		}
 		
-		const token = jwt.sign(user_find_one.get_token_object(), core_default_config.jwt_private_key);
+		const token = jwt.sign(user_find_one.get_token_object(), core_config.jwt_private_key);
 		
 		return token;
 		
