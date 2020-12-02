@@ -10,9 +10,9 @@ export * from './bll/';
 
 import {Configuration} from './types';
 
-import {core_default_config} from './defaults';
+import {core_config} from './defaults';
 
 export function init(config:Configuration)
 		:void{
-	Object.assign(core_default_config, config);
+	Object.assign(core_config, config);
 }

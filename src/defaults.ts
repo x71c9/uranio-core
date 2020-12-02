@@ -6,7 +6,7 @@
 
 import {Configuration} from './types';
 
-export const core_default_config:Configuration = {
+export const core_config:Configuration = {
 	
 	db_type: 'mongo',
 	

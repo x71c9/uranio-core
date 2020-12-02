@@ -20,13 +20,13 @@ import * as mongo_connection from './connection';
 
 import {MongooseRelation} from './relation';
 
-import {core_default_config} from '../../defaults';
+import {core_config} from '../../defaults';
 
 const mongo_trash_conn = mongo_connection.create(
 	'trash',
-	core_default_config.db_host,
-	core_default_config.db_port,
-	core_default_config.db_trash_name
+	core_config.db_host,
+	core_config.db_port,
+	core_config.db_trash_name
 );
 
 /**
