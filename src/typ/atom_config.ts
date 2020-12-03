@@ -4,19 +4,23 @@
  * @packageDocumentation
  */
 
-export type AtomConfig<T extends string> = {
-	atoms: AtomList<T>
+// export type CoreAtomConfig = {
+//   atoms: CoreAtomList
+// }
+
+// export type CoreAtomList = {
+//   [k:string]: CoreAtomDefinition
+// }
+
+export type AtomDefinition = {
+	properties: AtomProperties
 }
 
-type AtomList<T extends string> = {
-	[k in T]: AtomDefinition<T>
+export type AtomProperties = {
+	[k:string]: AtomField
 }
 
-type AtomDefinition<T> = {
-	[k:string]: AtomField<T>
-}
-
-type AtomField<T> =
+type AtomField =
 	AtomFieldText |
 	AtomFieldLongText |
 	AtomFieldEmail |
@@ -26,7 +30,7 @@ type AtomField<T> =
 	AtomFieldEncrypted |
 	AtomFieldTime |
 	AtomFieldSet |
-	AtomFieldAtom<T>;
+	AtomFieldAtom;
 
 export const enum AtomFieldType {
 	TEXT = 'TEXT',
@@ -92,9 +96,9 @@ interface AtomFieldSet extends AtomFiledShared {
 	validation?: AtomFieldSetValidation
 }
 
-interface AtomFieldAtom<T> extends AtomFiledShared {
+interface AtomFieldAtom extends AtomFiledShared {
 	type: AtomFieldType.ATOM,
-	atom: T,
+	atom: string,
 	validation?: AtomFieldAtomValidation
 }
 

@@ -199,6 +199,7 @@ export type ConnectionInstance = InstanceType<typeof MongooseDBConnection>;
 
 export function create(con_name:string, db_host:string, db_port:number, db_name:string)
 		:ConnectionInstance{
+	urn_log.debug(`Create MongooseDBConnection`);
 	return new MongooseDBConnection(con_name, db_host, db_port, db_name);
 }
 
