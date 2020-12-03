@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-export {AtomConfig, AtomFieldType} from './typ/atom_config';
+export * from './typ/atom_config';
 
 export type DBType = 'mongo'; // | 'mysql'
 
