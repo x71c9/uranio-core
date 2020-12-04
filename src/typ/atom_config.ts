@@ -4,6 +4,8 @@
  * @packageDocumentation
  */
 
+import mongoose from 'mongoose';
+
 // export type CoreAtomConfig = {
 //   atoms: CoreAtomList
 // }
@@ -12,27 +14,32 @@
 //   [k:string]: CoreAtomDefinition
 // }
 
+export type AtomBook = {
+	[k:string]: AtomDefinition
+};
+
 export type AtomDefinition = {
-	properties: AtomProperties
+	properties: AtomProperties,
+	mongo_schema: mongoose.SchemaDefinition
 }
 
 export type AtomProperties = {
-	[k:string]: AtomField
+	[k:string]: AtomProperty
 }
 
-type AtomField =
-	AtomFieldText |
-	AtomFieldLongText |
-	AtomFieldEmail |
-	AtomFieldInteger |
-	AtomFieldFloat |
-	AtomFieldBinary |
-	AtomFieldEncrypted |
-	AtomFieldTime |
-	AtomFieldSet |
-	AtomFieldAtom;
+type AtomProperty =
+	AtomPropertyText |
+	AtomPropertyLongText |
+	AtomPropertyEmail |
+	AtomPropertyInteger |
+	AtomPropertyFloat |
+	AtomPropertyBinary |
+	AtomPropertyEncrypted |
+	AtomPropertyTime |
+	AtomPropertySet |
+	AtomPropertyAtom;
 
-export const enum AtomFieldType {
+export const enum AtomPropertyType {
 	TEXT = 'TEXT',
 	LONG_TEXT = 'LONG_TEXT',
 	EMAIL = 'EMAIL',
@@ -46,63 +53,63 @@ export const enum AtomFieldType {
 }
 
 interface AtomFiledShared {
-	type: AtomFieldType,
+	type: AtomPropertyType,
 	label: string,
 	required?: boolean
 }
 
-interface AtomFieldText extends AtomFiledShared {
-	type: AtomFieldType.TEXT,
-	validation?: AtomFieldStringValidation
+interface AtomPropertyText extends AtomFiledShared {
+	type: AtomPropertyType.TEXT,
+	validation?: AtomPropertyStringValidation
 }
 
-interface AtomFieldLongText extends AtomFiledShared {
-	type: AtomFieldType.LONG_TEXT,
-	validation?: AtomFieldStringValidation
+interface AtomPropertyLongText extends AtomFiledShared {
+	type: AtomPropertyType.LONG_TEXT,
+	validation?: AtomPropertyStringValidation
 }
 
-interface AtomFieldEmail extends AtomFiledShared {
-	type: AtomFieldType.EMAIL
+interface AtomPropertyEmail extends AtomFiledShared {
+	type: AtomPropertyType.EMAIL
 }
 
-interface AtomFieldInteger extends AtomFiledShared {
-	type: AtomFieldType.INTEGER
+interface AtomPropertyInteger extends AtomFiledShared {
+	type: AtomPropertyType.INTEGER
 }
 
-interface AtomFieldFloat extends AtomFiledShared {
-	type: AtomFieldType.FLOAT,
-	format?: AtomFieldFloatFormat
+interface AtomPropertyFloat extends AtomFiledShared {
+	type: AtomPropertyType.FLOAT,
+	format?: AtomPropertyFloatFormat
 }
 
-interface AtomFieldBinary extends AtomFiledShared {
-	type: AtomFieldType.BINARY
+interface AtomPropertyBinary extends AtomFiledShared {
+	type: AtomPropertyType.BINARY
 	default?: 0 | 1,
 	values?: [string, string]
 }
 
-interface AtomFieldEncrypted extends AtomFiledShared {
-	type: AtomFieldType.ENCRYPTED,
-	validation?: AtomFieldStringValidation
+interface AtomPropertyEncrypted extends AtomFiledShared {
+	type: AtomPropertyType.ENCRYPTED,
+	validation?: AtomPropertyStringValidation
 }
 
-interface AtomFieldTime extends AtomFiledShared {
-	type: AtomFieldType.TIME,
-	validation?: AtomFieldTimeValidation
+interface AtomPropertyTime extends AtomFiledShared {
+	type: AtomPropertyType.TIME,
+	validation?: AtomPropertyTimeValidation
 }
 
-interface AtomFieldSet extends AtomFiledShared {
-	type: AtomFieldType.SET,
+interface AtomPropertySet extends AtomFiledShared {
+	type: AtomPropertyType.SET,
 	values: (string | number)[],
-	validation?: AtomFieldSetValidation
+	validation?: AtomPropertySetValidation
 }
 
-interface AtomFieldAtom extends AtomFiledShared {
-	type: AtomFieldType.ATOM,
+interface AtomPropertyAtom extends AtomFiledShared {
+	type: AtomPropertyType.ATOM,
 	atom: string,
-	validation?: AtomFieldAtomValidation
+	validation?: AtomPropertyAtomValidation
 }
 
-interface AtomFieldStringValidation {
+interface AtomPropertyStringValidation {
 	alphanum?: boolean,
 	contain_lowercase?: boolean,
 	contain_number?: boolean,
@@ -117,23 +124,23 @@ interface AtomFieldStringValidation {
 	uppercase?: boolean
 }
 
-interface AtomFieldTimeValidation {
+interface AtomPropertyTimeValidation {
 	min?: Date,
 	max?: Date
 }
 
-interface AtomFieldSetValidation {
+interface AtomPropertySetValidation {
 	min?: number,
 	max?: number,
 	length?: number
 }
 
-interface AtomFieldAtomValidation {
+interface AtomPropertyAtomValidation {
 	date_from?: Date,
 	date_until?: Date
 }
 
-interface AtomFieldFloatFormat {
+interface AtomPropertyFloatFormat {
 	decimal?: number,
 	decimal_point?: string,
 	thousands_step?: string

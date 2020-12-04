@@ -3,9 +3,8 @@
  *
  * @packageDocumentation
  */
-
-import * as users from './users';
+import * as bll from './bll';
 
 export {
-	users,
+	bll
 };

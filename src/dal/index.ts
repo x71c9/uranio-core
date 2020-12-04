@@ -6,10 +6,5 @@
 
 // export * from './types';
 
-export * from './abstract';
+export * from './dal';
 
-import * as users from './users';
-
-export {
-	users,
-};

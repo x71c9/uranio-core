@@ -6,7 +6,7 @@
 
 import mongoose from 'mongoose';
 
-import {urn_log, urn_util} from 'urn-lib';
+import {urn_log} from 'urn-lib';
 
 import * as urn_atm from '../../atm/';
 
@@ -14,7 +14,7 @@ import * as urn_atm from '../../atm/';
 
 import {Relation} from '../types';
 
-// import {mongo_trash_schemas} from './schemas/';
+import {mongo_trash_schemas} from './schemas/';
 
 import * as mongo_connection from './connection';
 
@@ -37,8 +37,8 @@ const mongo_trash_conn = mongo_connection.create(
 export class MongooseTrashRelation<M extends urn_atm.models.Resource> extends MongooseRelation<M>
 	implements Relation<M> {
 	
-	constructor(relation_name:string, _mongo_schema:mongoose.SchemaDefinition){
-		super(relation_name, _mongo_schema);
+	constructor(public relation_name:string){
+		super(relation_name);
 	}
 	
 	protected _get_connection():mongo_connection.ConnectionInstance{
@@ -46,21 +46,9 @@ export class MongooseTrashRelation<M extends urn_atm.models.Resource> extends Mo
 	}
 	
 	protected _complie_mongoose_model():mongoose.Model<mongoose.Document>{
-		const mongo_trash_schema = new mongoose.Schema(_allow_duplicate(this._mongo_schema));
-		return this._conn.get_model(this.relation_name, mongo_trash_schema);
+		return this._conn.get_model(this.relation_name, mongo_trash_schemas[this.relation_name]);
 	}
 	
-}
-
-function _allow_duplicate(schema_definition:mongoose.SchemaDefinition)
-		:mongoose.SchemaDefinition{
-	const schema_without_unique:mongoose.SchemaDefinition = {...schema_definition};
-	for(const [k] of Object.entries(schema_without_unique)){
-		if(urn_util.object.has_key(schema_without_unique[k], 'unique')){
-			delete (schema_without_unique[k] as any).unique;
-		}
-	}
-	return schema_without_unique;
 }
 
 // export type MongooseTrashRelationInstance = InstanceType<typeof MongooseTrashRelation>;
