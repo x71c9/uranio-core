@@ -14,7 +14,7 @@ import {Relation} from '../types';
 
 import * as mongo_connection from './connection';
 
-// import {mongo_schemas} from './schemas/';
+import {mongo_schemas} from './schemas/';
 
 import * as urn_atm from '../../atm/';
 
@@ -40,7 +40,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	
 	protected _raw:mongoose.Model<mongoose.Document>;
 	
-	constructor(public relation_name:string, protected _mongo_schema:mongoose.SchemaDefinition){
+	constructor(public relation_name:string){
 		
 		this._conn = this._get_connection();
 		
@@ -53,8 +53,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	}
 	
 	protected _complie_mongoose_model():mongoose.Model<mongoose.Document>{
-		const mongo_schema = new mongoose.Schema(this._mongo_schema);
-		return this._conn.get_model(this.relation_name, mongo_schema);
+		return this._conn.get_model(this.relation_name, mongo_schemas[this.relation_name]);
 	}
 	
 	public async find(filter:FilterType<M>, options?:QueryOptions<M>)

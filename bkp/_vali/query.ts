@@ -7,11 +7,9 @@
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-import {QueryOptions, FilterType} from '../types';
+import {QueryOptions, FilterType, AtomProperties} from '../types';
 
 import * as urn_atms from '../atm/';
-
-import {atom_book} from '../book';
 
 const _queryop = {
 	andornor: {
@@ -37,16 +35,16 @@ const urn_exc = urn_exception.init('QUERY_VALIDATE','Query Validator');
 /**
  * Validate `filter` and `options` paramaters
  *
- * @param atom_name - The Atom module that is needed to check the keys
+ * @param atom_properties - The Atom module that is needed to check the keys
  * @param filter - the filter object
  * @param options- the options object
  */
 export function validate_filter_options_params<M extends urn_atms.models.Resource>
-(atom_name:string, filter:FilterType<M>, options?:QueryOptions<M>)
+(atom_properties:AtomProperties, filter:FilterType<M>, options?:QueryOptions<M>)
 		:true{
-	validate_filter<M>(filter, atom_name);
+	validate_filter<M>(filter, atom_properties);
 	if(options){
-		validate_options(options, atom_name);
+		validate_options(options, atom_properties);
 	}
 	return true;
 }
@@ -107,7 +105,7 @@ function _validate_field(field:any)
  * @param filter - The filter to validate
  */
 function validate_filter<M extends urn_atms.models.Resource>
-(filter:FilterType<M>, atom_name:string)
+(filter:FilterType<M>, atom_properties:AtomProperties)
 		:true{
 	if(typeof filter !== 'object' || filter === null){
 		const err_msg = `Invalid filter format.`;
@@ -122,10 +120,10 @@ function validate_filter<M extends urn_atms.models.Resource>
 				throw urn_exc.create('FILTER_OP_VAL_NOT_ARRAY', err_msg);
 			}
 			for(let i=0; i < filter[key]!.length; i++){
-				validate_filter(filter[key]![i], atom_name);
+				validate_filter(filter[key]![i], atom_properties);
 			}
 		}else{
-			if(!urn_util.object.has_key(atom_book[atom_name].properties, key)){
+			if(!urn_util.object.has_key(atom_properties, key)){
 				const err_msg = `Filter field not valid [${key}].`;
 				throw urn_exc.create('FILTER_INVALID_KEY', err_msg);
 			}
@@ -142,7 +140,7 @@ function validate_filter<M extends urn_atms.models.Resource>
  *
  */
 function validate_options<M extends urn_atms.models.Resource>
-(options:QueryOptions<M>, atom_name:string)
+(options:QueryOptions<M>, atom_properties:AtomProperties)
 		:true{
 	if(urn_util.object.has_key(options, 'sort')){
 		switch(typeof options.sort){
@@ -151,7 +149,7 @@ function validate_options<M extends urn_atms.models.Resource>
 				if(options.sort[0] == '+' || options.sort[0] == '-'){
 					sort_value = sort_value.substring(1, options.sort.length);
 				}
-				if(!urn_util.object.has_key(atom_book[atom_name].properties, sort_value)){
+				if(!urn_util.object.has_key(atom_properties, sort_value)){
 					const err_msg = `Sort value not valid [${options.sort}].`;
 					throw urn_exc.create('OPTIONS_INVALID_SORT_VAL', err_msg);
 				}
@@ -159,7 +157,7 @@ function validate_options<M extends urn_atms.models.Resource>
 			}
 			case 'object':{
 				for(const k in options.sort){
-					if(!urn_util.object.has_key(atom_book[atom_name].properties, k)){
+					if(!urn_util.object.has_key(atom_properties, k)){
 						const err_msg = `Sort value not valid [${k}].`;
 						throw urn_exc.create('OPTIONS_INVALID_OBJECT_SORT_VAL', err_msg);
 					}

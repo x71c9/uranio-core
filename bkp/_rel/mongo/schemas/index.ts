@@ -10,10 +10,10 @@ import {urn_util} from 'urn-lib';
 
 import {user_schema_definition} from './urn_user';
 
-import {RelationName} from '../../../types';
+// import {RelationName} from '../../../types';
 
 type MongoSchemas = {
-	[P in RelationName]: mongoose.Schema;
+	[k:string]: mongoose.Schema;
 }
 
 export const mongo_schemas:MongoSchemas = {

@@ -12,7 +12,7 @@ import * as urn_rels from '../rel/';
 
 import * as urn_validators from '../vali/';
 
-import {DatabaseType, QueryOptions, FilterType} from '../types';
+import {AtomDefinition, DatabaseType, QueryOptions, FilterType} from '../types';
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -23,15 +23,15 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	
 	protected _db_trash_relation:urn_rels.Relation<M> | null;
 	
-	constructor(public db_type:DatabaseType, private _atom_module:urn_atms.AtomModule<M,A>) {
+	constructor(public db_type:DatabaseType, public atom_definition:AtomDefinition) {
 		switch(this.db_type){
 			case 'mongo':
-				this._db_relation = new urn_rels.mongo.MongooseRelation<M>(this._atom_module.relation_name);
-				this._db_trash_relation = new urn_rels.mongo.MongooseTrashRelation<M>(this._atom_module.relation_name);
+				this._db_relation = new urn_rels.mongo.MongooseRelation<M>(this.atom_definition.name);
+				this._db_trash_relation = new urn_rels.mongo.MongooseTrashRelation<M>(this.atom_definition.name);
 				break;
 			default:
-				this._db_relation = new urn_rels.mongo.MongooseRelation<M>(this._atom_module.relation_name);
-				this._db_trash_relation = new urn_rels.mongo.MongooseTrashRelation<M>(this._atom_module.relation_name);
+				this._db_relation = new urn_rels.mongo.MongooseRelation<M>(this.atom_definition.name);
+				this._db_trash_relation = new urn_rels.mongo.MongooseTrashRelation<M>(this.atom_definition.name);
 				break;
 		}
 	}
@@ -108,7 +108,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		if(in_trash === true && this._db_trash_relation === null){
 			return [];
 		}
-		urn_validators.query.validate_filter_options_params(this._atom_module.keys, filter, options);
+		urn_validators.query.validate_filter_options_params(this.atom_definition.properties, filter, options);
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		const db_res_find = await _relation.find(filter, options);
@@ -142,7 +142,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
-		urn_validators.query.validate_filter_options_params(this._atom_module.keys, filter, options);
+		urn_validators.query.validate_filter_options_params(this.atom_definition.properties, filter, options);
 		const db_res_find_one = await _relation.find_one(filter, options);
 		return this._create_atom(db_res_find_one);
 	}
@@ -214,7 +214,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	
 	private _create_atom(resource:M)
 			:A{
-		return this._atom_module.create(resource);
+		return this.atom_definition.create(resource);
 	}
 	
 }
