@@ -6,13 +6,13 @@
 
 export * from './typ/atom_config';
 
-export type DBType = 'mongo'; // | 'mysql'
+export type DatabaseType = 'mongo'; // | 'mysql'
 
 export type RelationName = 'urn_user'; // | 'urn_media';
 
 export type Configuration = {
 	
-	db_type: DBType;
+	db_type: DatabaseType;
 	
 	db_host: string;
 	
