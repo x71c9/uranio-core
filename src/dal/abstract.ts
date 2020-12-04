@@ -12,7 +12,7 @@ import * as urn_rels from '../rel/';
 
 import * as urn_validators from '../vali/';
 
-import {DBType, QueryOptions, FilterType} from '../types';
+import {DatabaseType, QueryOptions, FilterType} from '../types';
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -23,7 +23,7 @@ export abstract class DAL<M extends urn_atms.models.Resource, A extends urn_atms
 	
 	protected _db_trash_relation:urn_rels.Relation<M> | null;
 	
-	constructor(public db_type:DBType, private _atom_module:urn_atms.AtomModule<M,A>) {
+	constructor(public db_type:DatabaseType, private _atom_module:urn_atms.AtomModule<M,A>) {
 		switch(this.db_type){
 			case 'mongo':
 				this._db_relation = new urn_rels.mongo.MongooseRelation<M>(this._atom_module.relation_name);
