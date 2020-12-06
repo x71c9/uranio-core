@@ -12,6 +12,7 @@ import * as urn_dal from '../dal/';
 
 import {QueryOptions, FilterType} from '../types';
 
+@urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
 class BLL<M> {
 	
@@ -21,19 +22,19 @@ class BLL<M> {
 		this._dal = urn_dal.create(atom_name);
 	}
 	
-	public async search(filter:FilterType<M>, options?:QueryOptions<M>)
+	public async find(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<urn_atm.AtomInstance[]>{
-		return await this._dal.find(filter, options);
+		return await this._dal.select(filter, options);
 	}
 	
-	public async search_by_id(id:string)
+	public async find_by_id(id:string)
 			:Promise<urn_atm.AtomInstance>{
-		return await this._dal.find_by_id(id);
+		return await this._dal.select_by_id(id);
 	}
 	
-	public async search_one(filter:FilterType<M>, options?:QueryOptions<M>)
+	public async find_one(filter:FilterType<M>, options?:QueryOptions<M>)
 			:Promise<urn_atm.AtomInstance>{
-		return await this._dal.find_one(filter, options);
+		return await this._dal.select_one(filter, options);
 	}
 	
 	public async save_one(resource:M)

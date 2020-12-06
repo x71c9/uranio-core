@@ -57,38 +57,38 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		return this._conn.get_model(this.relation_name, mongo_schema);
 	}
 	
-	public async find(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<M[]>{
+	public async select(filter:FilterType<M>, options?:QueryOptions<M>)
+			:Promise<urn_atm.models.Resource[]>{
 		const mon_find_res = (options) ?
-			await this._raw.find(filter, null, options).lean<M>():
-			await this._raw.find(filter).lean<M>();
-		return mon_find_res.map((mon_doc:M) => {
+			await this._raw.find(filter, null, options).lean<urn_atm.models.Resource>():
+			await this._raw.find(filter).lean<urn_atm.models.Resource>();
+		return mon_find_res.map((mon_doc:urn_atm.models.Resource) => {
 			return string_id(mon_doc);
 		});
 	}
 	
-	public async find_by_id(id:string)
-			:Promise<M>{
-		const mon_find_by_id_res = await this._raw.findById(id).lean<M>();
+	public async select_by_id(id:string)
+			:Promise<urn_atm.models.Resource>{
+		const mon_find_by_id_res = await this._raw.findById(id).lean<urn_atm.models.Resource>();
 		if(mon_find_by_id_res === null){
 			throw urn_exc.create_not_found('FIND_ID_NOT_FOUND', `Record not found.`);
 		}
 		return string_id(mon_find_by_id_res);
 	}
 	
-	public async find_one(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<M>{
+	public async select_one(filter:FilterType<M>, options?:QueryOptions<M>)
+			:Promise<urn_atm.models.Resource>{
 		const mon_find_one_res = (typeof options !== 'undefined' && options.sort) ?
-			await this._raw.findOne(filter).sort(options.sort).lean<M>() :
-			await this._raw.findOne(filter).lean<M>();
+			await this._raw.findOne(filter).sort(options.sort).lean<urn_atm.models.Resource>() :
+			await this._raw.findOne(filter).lean<urn_atm.models.Resource>();
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
 		}
 		return string_id(mon_find_one_res);
 	}
 	
-	public async insert_one(resource:M)
-			:Promise<M>{
+	public async insert_one(resource:urn_atm.models.Resource)
+			:Promise<urn_atm.models.Resource>{
 		if(urn_util.object.has_key(resource, '_id')){
 			delete resource._id;
 		}
@@ -100,8 +100,8 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		return mon_obj;
 	}
 	
-	public async alter_one(resource:M)
-			:Promise<M>{
+	public async alter_one(resource:urn_atm.models.Resource)
+			:Promise<urn_atm.models.Resource>{
 		if(!urn_util.object.has_key(resource, '_id')){
 			const err_msg = `Cannot alter_one. Argument has no _id.`;
 			throw urn_exc.create('UPD_ONE_NO_ID', err_msg);
@@ -115,13 +115,13 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		if(mon_update_res === null){
 			throw urn_exc.create('UPD_ONE_NOT_FOUND', `Cannot alter_one. Record not found.`);
 		}
-		return string_id(mon_update_res as M);
+		return string_id(mon_update_res as urn_atm.models.Resource);
 		// const mon_obj = mon_update_res.toObject();
 		// return string_id(mon_obj);
 	}
 	
-	public async delete_one(resource:M)
-			:Promise<M>{
+	public async delete_one(resource:urn_atm.models.Resource)
+			:Promise<urn_atm.models.Resource>{
 		if(!urn_util.object.has_key(resource, '_id')){
 			const err_msg = `Cannot delete_one. Argument has no _id.`;
 			throw urn_exc.create('DEL_ONE_NO_ID', err_msg);
@@ -135,7 +135,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
 			throw urn_exc.create_not_found('DEL_ONE_NOT_FOUND', `Cannot delete_one. Record not found.`);
 		}
-		return string_id(mon_delete_res.toObject() as M);
+		return string_id(mon_delete_res.toObject() as urn_atm.models.Resource);
 	}
 	
 	public is_valid_id(id:string)

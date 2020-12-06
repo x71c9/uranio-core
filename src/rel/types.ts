@@ -9,17 +9,17 @@ import {QueryOptions, FilterType} from '../types';
 
 export interface Relation<M extends urn_atm.models.Resource> {
 	
-	find(filter:FilterType<M>, options?:QueryOptions<M>):Promise<M[]>;
+	select(filter:FilterType<M>, options?:QueryOptions<M>):Promise<urn_atm.models.Resource[]>;
 	
-	find_by_id(id:string):Promise<M>;
+	select_by_id(id:string):Promise<urn_atm.models.Resource>;
 	
-	find_one(filter:FilterType<M>, options?:QueryOptions<M>):Promise<M>;
+	select_one(filter:FilterType<M>, options?:QueryOptions<M>):Promise<urn_atm.models.Resource>;
 	
-	insert_one(resource:M):Promise<M>;
+	insert_one(resource:urn_atm.models.Resource):Promise<urn_atm.models.Resource>;
 	
-	alter_one(resource:M):Promise<M>;
+	alter_one(resource:urn_atm.models.Resource):Promise<urn_atm.models.Resource>;
 	
-	delete_one(resource:M):Promise<M>;
+	delete_one(resource:urn_atm.models.Resource):Promise<urn_atm.models.Resource>;
 	
 	is_valid_id(id:string):boolean;
 	
