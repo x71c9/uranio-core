@@ -8,7 +8,7 @@ export * from './typ/atom_config';
 
 export type DatabaseType = 'mongo'; // | 'mysql'
 
-export type RelationName = 'urn_user'; // | 'urn_media';
+// export type RelationName = 'urn_user'; // | 'urn_media';
 
 export type Configuration = {
 	
@@ -28,67 +28,67 @@ export type Configuration = {
 	
 }
 
-type KeysOfType<T> = {
+// type KeysOfType<T> = {
 	
-	[P in keyof T]?: any;
+//   [P in keyof T]?: any;
 	
-}
+// }
 
-export type QueryOptions<T> = {
+// export type QueryOptions<T> = {
 	
-	sort?: string | KeysOfType<T>;
+//   sort?: string | KeysOfType<T>;
 	
-	limit?: number;
+//   limit?: number;
 	
-	skip?: number;
+//   skip?: number;
 	
-}
+// }
 
-type FilterLogicType<M> = {
+// type FilterLogicType<M> = {
 	
-	$and?: KeysOfType<M>[],
+//   $and?: KeysOfType<M>[],
 	
-	$or?: KeysOfType<M>[],
+//   $or?: KeysOfType<M>[],
 	
-	$nor?: KeysOfType<M>[],
+//   $nor?: KeysOfType<M>[],
 	
-	$not?: KeysOfType<M>[]
+//   $not?: KeysOfType<M>[]
 	
-};
+// };
 
-export type FilterType<T> = KeysOfType<T> & FilterLogicType<T>;
+// export type FilterType<T> = KeysOfType<T> & FilterLogicType<T>;
 
 
 
-const real = {
-	product: {
-		properties: {
-			title: {
-				type: 'string'
-			}
-		}
-	}
-};
+// const real = {
+//   product: {
+//     properties: {
+//       title: {
+//         type: 'string'
+//       }
+//     }
+//   }
+// };
 
-const config = {
-	...real,
-	user: {
-		properties: {
-			first_name: {
-				type: ''
-			},
-			last_name: {
-				type: ''
-			}
-		}
-	}
-};
+// const config = {
+//   ...real,
+//   user: {
+//     properties: {
+//       first_name: {
+//         type: ''
+//       },
+//       last_name: {
+//         type: ''
+//       }
+//     }
+//   }
+// };
 
-type AtomNames = keyof typeof config;
+// type AtomNames = keyof typeof config;
 
-export interface Atom {
-	_id:string
-}
+// export interface Atom {
+//   _id:string
+// }
 
 //interface User extends Atom {
 //    first_name:string
@@ -105,45 +105,45 @@ export interface Atom {
 //   }
 // }
 
-type PropOfAtom<T extends AtomNames> = typeof config[T]['properties'];
+// type PropOfAtom<T extends AtomNames> = typeof config[T]['properties'];
 
-// const k:PropOfAtom<AtomNames.USER> = ;
+// // const k:PropOfAtom<AtomNames.USER> = ;
 
-//const p:Query<PropOfAtom<AtomNames.USER>> = {first_name: ''}
+// //const p:Query<PropOfAtom<AtomNames.USER>> = {first_name: ''}
 
-export type Query<T extends AtomNames> = Partial<Record<keyof PropOfAtom<T>, string>>;
+// export type Query<T extends AtomNames> = Partial<Record<keyof PropOfAtom<T>, string>>;
 
-// const p1:Query<'user'> = {first_ename: ''};
-// const p2:Query<'user'> = {last_name: '', first_name: '', ii: ''};
-
-
-// const dal = new DAL<'user'>();
-
-// new DAL<'producyt'>();
-
-// const user = dal.find({first_nawme:''}):
+// // const p1:Query<'user'> = {first_ename: ''};
+// // const p2:Query<'user'> = {last_name: '', first_name: '', ii: ''};
 
 
-//const enum AtomNames {
-//    USER = 'user'
-//}
+// // const dal = new DAL<'user'>();
 
-type AtomProperty = {
-    readonly type: string
-}
+// // new DAL<'producyt'>();
 
-type AtomProperties = {
-    readonly [k:string]: AtomProperty
-}
+// // const user = dal.find({first_nawme:''}):
 
-type AtomDefinition = {
-    readonly properties: AtomProperties
-}
 
-export type AtomConfig = {
-    readonly [k in AtomNames]: AtomDefinition
-    //readonly [k:string]: AtomDefinition
-}
+// //const enum AtomNames {
+// //    USER = 'user'
+// //}
+
+// type AtomProperty = {
+//     readonly type: string
+// }
+
+// type AtomProperties = {
+//     readonly [k:string]: AtomProperty
+// }
+
+// type AtomDefinition = {
+//     readonly properties: AtomProperties
+// }
+
+// export type AtomConfig = {
+//     readonly [k in AtomNames]: AtomDefinition
+//     //readonly [k:string]: AtomDefinition
+// }
 
 //function use(ad:AtomDefinition):void{
 //}
