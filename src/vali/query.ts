@@ -11,7 +11,7 @@ import {QueryOptions, FilterType} from '../types';
 
 import * as urn_atms from '../atm/';
 
-import {atom_book} from '../book';
+import {atom_book} from '../urn.config';
 
 const _queryop = {
 	andornor: {

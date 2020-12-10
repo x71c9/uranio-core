@@ -10,7 +10,7 @@ import {urn_log, urn_util} from 'urn-lib';
 
 import {models} from './types';
 
-import {atom_book} from '../book';
+// import {atom_book} from '../urn.config';
 
 // const urn_exc = urn_exception.init('ATM','Abstract Atom');
 
@@ -52,13 +52,13 @@ class Atom implements models.Resource {
 		this.validate(that);
 		
 		const data_transfer_object = {} as models.Resource;
-		for(const [k] of Object.entries(atom_book[this.name].properties)){
-			// if(!this.get_keys().optional.has(key) && !urn_util.object.has_key(that, key)){
-			//   const err_msg = `Cannot return. Current instance has no property [${key}] set.`;
-			//   throw urn_exc.create('RETURN_NO_PROP', err_msg);
-			// }
-			data_transfer_object[k] = that[k];
-		}
+		// for(const [k] of Object.entries(atom_book[this.name].properties)){
+		//   // if(!this.get_keys().optional.has(key) && !urn_util.object.has_key(that, key)){
+		//   //   const err_msg = `Cannot return. Current instance has no property [${key}] set.`;
+		//   //   throw urn_exc.create('RETURN_NO_PROP', err_msg);
+		//   // }
+		//   data_transfer_object[k] = that[k];
+		// }
 		return data_transfer_object;
 	}
 	

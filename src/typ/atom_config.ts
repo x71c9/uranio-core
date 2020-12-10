@@ -4,181 +4,26 @@
  * @packageDocumentation
  */
 
+import mongoose from 'mongoose';
+
 import {atom_book} from '../urn.config';
 
 export type AtomName = keyof typeof atom_book;
 
+type PropertiesOfAtom<A extends AtomName> = typeof atom_book[A]['properties'];
 
+type AtomPropertyInferType<A> = A extends {type: infer I} ? I : never;
 
-const my_constant = {
-    user: {
-        props: {
-            name: {
-                type: 'string',
-                label: ''
-            },
-            id: {
-                type: 'number',
-                label: 'ID'
-            }
-        }
-    },
-    media: {
-        props: {
-            id: {
-                label: 'ID',
-                type: 'number'
-            }
-        }
-    }
-} as const;
+type AtomTypeOfProperty<A extends AtomName, k extends keyof PropertiesOfAtom<A>> =
+	AtomPropertyInferType<PropertiesOfAtom<A>[k]>;
 
-type Name = keyof typeof my_constant;
-
-type CType = typeof my_constant['user']['props']['name']['type'];
-
-type MType<N extends Name, K extends keyof typeof my_constant[N]['props']> =
-    typeof my_constant[N]['props'][K];
-
-type G<M> = M extends {readonly type: infer I} ? I : never;
-
-//const ll:G<MType<'user', 'eid'>> = '';
-
-type Constructed<T extends Name> = {
-    [K in keyof typeof my_constant[T]['props']]: G<typeof my_constant[T]['props'][K]>
-    //[K in keyof typeof my_constant[T]['props']]: typeof my_constant[N]['props'][K]
-    //[K in keyof typeof my_constant[T]['props']]: TypeOfProp<T,K,'type'>
-    //[K in keyof typeof my_constant[T]['props']]: PropType
-}
-
-type KeyofPropType<
-    N extends Name,
-    K extends keyof typeof my_constant[N]['props']
-    > = keyof typeof my_constant[N]['props'][K]
-
-const kk:KeyofPropType<'user','name'> = 'type';
-
-type TypeOfProp<
-    N extends Name,
-    K extends keyof typeof my_constant[N]['props'],
-    P extends KeyofPropType<N,K>> = P extends string ? typeof my_constant[N]['props'][K][P] : never;
-
-
-const jj:TypeOfProp<'user','name','type'> = 'string';
-
-const a:Constructed<'user'> = {
-    name: 'string',
-    id: 'number'
-}
-
-const b:Constructed<'media'> = {
-    id: 'number'
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// type TypeValues<A extends AtomName, K> = MapType[atom_book[A]['properties'][K]['type']];
-
-type PropKeys<A extends AtomName> = keyof typeof atom_book[A]['properties'];
-type PropType<A extends AtomName, P extends PropKeys<A>> = typeof atom_book[A]['properties'][P]['type']
+type RealTypeOfAtomProperty<A extends AtomName, k extends keyof PropertiesOfAtom<A>> =
+	AtomTypeOfProperty<A,k> extends AtomPropertyType ?
+		RealTypeAtomProperty<AtomTypeOfProperty<A,k>> : never;
 
 export type Grain<A extends AtomName> = {
-	[K in PropKeys<A>]: keyof typeof atom_book[A]['properties'][K]['type']
+	[k in keyof PropertiesOfAtom<A>]: RealTypeOfAtomProperty<A,k>
 }
-
-// export type PropDef<N extends AtomName, P extends keyof typeof atom_book[N]['properties']> =
-//   typeof atom_book[N]['properties'][P];
-
-// export type MType<N extends AtomName, P extends keyof typeof atom_book[N]['properties']> =
-//   PropDef<N,P>['type'];
-
-// export const rr:PropDef<'superuser', 'email'> = {
-	
-// };
-
-export interface MapType {
-	'TEXT': string,
-	'LONG_TEXT': string,
-	'EMAIL': string,
-	'INTEGER': number,
-	'FLOAT': number,
-	'BINARY': boolean,
-	'ENCRYPTED': string,
-	'TIME': number,
-	'SET': (string|number)[],
-	'ATOM': any
-}
-
-// export type Mapped<T extends AtomPropertyType> =
-//   T extends AtomPropertyType.ATOM ? 'ATOM' :
-//   T extends AtomPropertyType.BINARY ? 'BINARY' :
-//   T extends AtomPropertyType.EMAIL ? 'EMAIL' : never;
-
-// const yy:Mapped<AtomPropertyType.EMAIL> = 'EMAIL';
-// console.log(yy);
-
-
-// type B<K extends keyof MapType> = MapType[K];
-
-// type GetType<P extends AtomProperty> = P['type'];
-
-// const l:GetType<AtomPropertyText> = 'TEXT';
-// console.log(l);
-
-export const a:Grain<'superuser'> = {
-	password: 1,
-	email: 1
-};
-
-
-
-// type Inferno<N extends AtomName, K extends keyof typeof atom_book[N]['properties']> =
-//   typeof atom_book[N]['properties'][K]['type'];
-
-// const tt:Inferno<'superuser', 'email'> = 'EMAIL';
-// console.log(tt);
-
-// type CType<N extends AtomName, P extends keyof typeof atom_book[N]['properties'] =
-//   Inferno<N,P>['type'];
-
-
-
-// import mongoose from 'mongoose';
-
-// export type CoreAtomConfig = {
-//   atoms: CoreAtomList
-// }
-
-// export type CoreAtomList = {
-//   [k:string]: CoreAtomDefinition
-// }
 
 export type AtomBook = {
 	[k:string]: AtomDefinition
@@ -186,7 +31,7 @@ export type AtomBook = {
 
 export type AtomDefinition = {
 	properties: AtomProperties,
-	// mongo_schema: mongoose.SchemaDefinition
+	mongo_schema: mongoose.SchemaDefinition
 }
 
 export type AtomProperties = {
@@ -205,7 +50,7 @@ type AtomProperty =
 	AtomPropertySet |
 	AtomPropertyAtom;
 
-export enum AtomPropertyType {
+export const enum AtomPropertyType {
 	TEXT = 'TEXT',
 	LONG_TEXT = 'LONG_TEXT',
 	EMAIL = 'EMAIL',
@@ -217,6 +62,19 @@ export enum AtomPropertyType {
 	SET = 'SET',
 	ATOM = 'ATOM'
 }
+
+type RealTypeAtomProperty<AT extends AtomPropertyType> =
+	AT extends AtomPropertyType.TEXT ? string :
+	AT extends AtomPropertyType.LONG_TEXT ? string :
+	AT extends AtomPropertyType.EMAIL ? string :
+	AT extends AtomPropertyType.INTEGER ? number :
+	AT extends AtomPropertyType.FLOAT ? number :
+	AT extends AtomPropertyType.BINARY ? boolean :
+	AT extends AtomPropertyType.ENCRYPTED ? string :
+	AT extends AtomPropertyType.TIME ? Date :
+	AT extends AtomPropertyType.SET ? Array<string | number> :
+	AT extends AtomPropertyType.ATOM ? any :
+	never;
 
 interface AtomFiledShared {
 	type: AtomPropertyType,
@@ -311,5 +169,3 @@ interface AtomPropertyFloatFormat {
 	decimal_point?: string,
 	thousands_step?: string
 }
-
-

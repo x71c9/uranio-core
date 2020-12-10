@@ -13,11 +13,11 @@ import * as urn_rel from '../rel/';
 
 import * as urn_validators from '../vali/';
 
-import {QueryOptions, FilterType} from '../types';
+import {QueryOptions, FilterType, AtomName} from '../types';
 
 import {core_config} from '../defaults';
 
-import {atom_book} from '../book';
+import {atom_book} from '../urn.config';
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -29,7 +29,7 @@ class DAL<M> {
 	
 	protected _db_trash_relation:urn_rel.Relation<M> | null;
 	
-	constructor(public atom_name:string) {
+	constructor(public atom_name:AtomName) {
 		
 		switch(core_config.db_type){
 			case 'mongo':{
