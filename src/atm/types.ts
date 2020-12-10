@@ -12,7 +12,7 @@ export import models = urn_mdls.resources;
 
 import {AtomInstance} from './atm';
 
-import {RelationName} from '../types';
+// import {RelationName} from '../types';
 
 export type AtomCreateFunction<M extends models.Resource, A extends AtomInstance> =
 	(resource:M) => A;
@@ -20,7 +20,7 @@ export type AtomCreateFunction<M extends models.Resource, A extends AtomInstance
 export type AtomModule<M extends models.Resource, A extends AtomInstance> = {
 	create: AtomCreateFunction<M,A>,
 	keys: models.ModelKeysCategories<M>,
-	relation_name: RelationName
+	// relation_name: RelationName
 }
 
 export type TokenObject = {
