@@ -4,6 +4,8 @@
  * @packageDocumentation
  */
 
+import {AtomName, Grain} from './typ/atom_config';
+
 export * from './typ/atom_config';
 
 export type DatabaseType = 'mongo'; // | 'mysql'
@@ -28,15 +30,15 @@ export type Configuration = {
 	
 }
 
-type KeysOfType<T> = {
+type KeysOfType<A extends AtomName> = {
 	
-	[P in keyof T]?: any;
+	[P in keyof Grain<A>]?: any;
 	
 }
 
-export type QueryOptions<T> = {
+export type QueryOptions<A extends AtomName> = {
 	
-	sort?: string | KeysOfType<T>;
+	sort?: string | KeysOfType<A>;
 	
 	limit?: number;
 	
@@ -44,19 +46,19 @@ export type QueryOptions<T> = {
 	
 }
 
-type FilterLogicType<M> = {
+type FilterLogicType<A extends AtomName> = {
 	
-	$and?: KeysOfType<M>[],
+	$and?: KeysOfType<A>[],
 	
-	$or?: KeysOfType<M>[],
+	$or?: KeysOfType<A>[],
 	
-	$nor?: KeysOfType<M>[],
+	$nor?: KeysOfType<A>[],
 	
-	$not?: KeysOfType<M>[]
+	$not?: KeysOfType<A>[]
 	
 };
 
-export type FilterType<T> = KeysOfType<T> & FilterLogicType<T>;
+export type FilterType<A extends AtomName> = KeysOfType<A> & FilterLogicType<A>;
 
 
 

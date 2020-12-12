@@ -8,9 +8,9 @@ import mongoose from 'mongoose';
 
 import {urn_log, urn_util} from 'urn-lib';
 
-import * as urn_atm from '../../atm/';
+// import * as urn_atm from '../../atm/';
 
-// import {RelationName} from '../../types';
+import {AtomName} from '../../types';
 
 import {Relation} from '../types';
 
@@ -34,10 +34,10 @@ const mongo_trash_conn = mongo_connection.create(
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class MongooseTrashRelation<M extends urn_atm.models.Resource> extends MongooseRelation<M>
-	implements Relation<M> {
+export class MongooseTrashRelation<A extends AtomName> extends MongooseRelation<A>
+	implements Relation<A> {
 	
-	constructor(relation_name:string, _mongo_schema:mongoose.SchemaDefinition){
+	constructor(relation_name:A, _mongo_schema:mongoose.SchemaDefinition){
 		super(relation_name, _mongo_schema);
 	}
 	
