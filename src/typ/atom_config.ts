@@ -21,9 +21,17 @@ type RealTypeOfAtomProperty<A extends AtomName, k extends keyof PropertiesOfAtom
 	AtomTypeOfProperty<A,k> extends AtomPropertyType ?
 		RealTypeAtomProperty<AtomTypeOfProperty<A,k>> : never;
 
-export type Grain<A extends AtomName> = {
-	[k in keyof PropertiesOfAtom<A>]: RealTypeOfAtomProperty<A,k>
+type AtomDefaultProperties = {
+	_id?: RealTypeAtomProperty<AtomPropertyType.ID>,
+	_deleted_from?: RealTypeAtomProperty<AtomPropertyType.ID>,
+	date?: RealTypeAtomProperty<AtomPropertyType.TIME>
 }
+
+export type DeltaGrain<A extends AtomName> = {
+	[k in keyof PropertiesOfAtom<A>]: RealTypeOfAtomProperty<A,k>
+};
+
+export type Grain<A extends AtomName> = AtomDefaultProperties & DeltaGrain<A>;
 
 export type AtomBook = {
 	[k:string]: AtomDefinition
@@ -35,10 +43,11 @@ export type AtomDefinition = {
 }
 
 export type AtomProperties = {
-	[k:string]: AtomProperty
+	[k:string]: AtomProperty,
 }
 
 type AtomProperty =
+	AtomPropertyID |
 	AtomPropertyText |
 	AtomPropertyLongText |
 	AtomPropertyEmail |
@@ -51,6 +60,7 @@ type AtomProperty =
 	AtomPropertyAtom;
 
 export const enum AtomPropertyType {
+	ID = 'ID',
 	TEXT = 'TEXT',
 	LONG_TEXT = 'LONG_TEXT',
 	EMAIL = 'EMAIL',
@@ -64,6 +74,7 @@ export const enum AtomPropertyType {
 }
 
 type RealTypeAtomProperty<AT extends AtomPropertyType> =
+	AT extends AtomPropertyType.ID ? string :
 	AT extends AtomPropertyType.TEXT ? string :
 	AT extends AtomPropertyType.LONG_TEXT ? string :
 	AT extends AtomPropertyType.EMAIL ? string :
@@ -80,6 +91,11 @@ interface AtomFiledShared {
 	type: AtomPropertyType,
 	label: string,
 	required?: boolean
+}
+
+interface AtomPropertyID extends AtomFiledShared {
+	type: AtomPropertyType.ID,
+	validation?: AtomPropertyStringValidation
 }
 
 interface AtomPropertyText extends AtomFiledShared {

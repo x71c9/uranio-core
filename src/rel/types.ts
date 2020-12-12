@@ -3,23 +3,23 @@
  *
  * @packageDocumentation
  */
-import * as urn_atm from '../atm/';
+// import * as urn_atm from '../atm/';
 
-import {QueryOptions, FilterType} from '../types';
+import {QueryOptions, FilterType, AtomName, Grain} from '../types';
 
-export interface Relation<M extends urn_atm.models.Resource> {
+export interface Relation<A extends AtomName> {
 	
-	select(filter:FilterType<M>, options?:QueryOptions<M>):Promise<urn_atm.models.Resource[]>;
+	select(filter:FilterType<A>, options?:QueryOptions<A>):Promise<Grain<A>[]>;
 	
-	select_by_id(id:string):Promise<urn_atm.models.Resource>;
+	select_by_id(id:string):Promise<Grain<A>>;
 	
-	select_one(filter:FilterType<M>, options?:QueryOptions<M>):Promise<urn_atm.models.Resource>;
+	select_one(filter:FilterType<A>, options?:QueryOptions<A>):Promise<Grain<A>>;
 	
-	insert_one(resource:urn_atm.models.Resource):Promise<urn_atm.models.Resource>;
+	insert_one(resource:Grain<A>):Promise<Grain<A>>;
 	
-	alter_one(resource:urn_atm.models.Resource):Promise<urn_atm.models.Resource>;
+	alter_one(resource:Grain<A>):Promise<Grain<A>>;
 	
-	delete_one(resource:urn_atm.models.Resource):Promise<urn_atm.models.Resource>;
+	delete_one(resource:Grain<A>):Promise<Grain<A>>;
 	
 	is_valid_id(id:string):boolean;
 	

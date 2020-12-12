@@ -8,9 +8,7 @@
 // import {urn_log, urn_exception, urn_util} from 'urn-lib';
 import {urn_log, urn_util} from 'urn-lib';
 
-import {models} from './types';
-
-// import {atom_book} from '../urn.config';
+import {AtomName, Grain} from '../types';
 
 // const urn_exc = urn_exception.init('ATM','Abstract Atom');
 
@@ -19,7 +17,7 @@ import {models} from './types';
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class Atom implements models.Resource {
+class Atom<A extends AtomName> {
 	
 	public _id?:string;
 	
@@ -27,7 +25,7 @@ class Atom implements models.Resource {
 	
 	public date?:Date;
 	
-	constructor(public name:string, resource:models.Resource){
+	constructor(public name:A, resource:Grain<A>){
 		
 		this.validate(resource);
 		
@@ -46,12 +44,12 @@ class Atom implements models.Resource {
 	}
 	
 	public return()
-			:models.Resource{
+			:Grain<A>{
 
 		const that = this as any;
 		this.validate(that);
 		
-		const data_transfer_object = {} as models.Resource;
+		const data_transfer_object = {} as Grain<A>;
 		// for(const [k] of Object.entries(atom_book[this.name].properties)){
 		//   // if(!this.get_keys().optional.has(key) && !urn_util.object.has_key(that, key)){
 		//   //   const err_msg = `Cannot return. Current instance has no property [${key}] set.`;
@@ -62,7 +60,7 @@ class Atom implements models.Resource {
 		return data_transfer_object;
 	}
 	
-	public validate(resource:models.Resource)
+	public validate(resource:Grain<A>)
 			:true {
 		console.log(resource);
 		return true;
@@ -71,9 +69,10 @@ class Atom implements models.Resource {
 
 export type AtomInstance = InstanceType<typeof Atom>;
 
-export function create(atom_name:string, resource:models.Resource):AtomInstance{
+export function create<A extends AtomName>(atom_name:A, resource:Grain<A>)
+		:Atom<A>{
 	urn_log.fn_debug(`Create Atom [${atom_name}]`);
-	return new Atom(atom_name, resource);
+	return new Atom<A>(atom_name, resource);
 }
 
 

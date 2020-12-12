@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 
 import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
-import {FilterType, QueryOptions} from '../../types';
+import {FilterType, QueryOptions, AtomName, Grain} from '../../types';
 
 import {Relation} from '../types';
 
@@ -16,7 +16,7 @@ import * as mongo_connection from './connection';
 
 // import {mongo_schemas} from './schemas/';
 
-import * as urn_atm from '../../atm/';
+// import * as urn_atm from '../../atm/';
 
 import {core_config} from '../../defaults';
 
@@ -34,13 +34,13 @@ const urn_exc = urn_exception.init('REL_M', 'Mongoose Relation');
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class MongooseRelation<M extends urn_atm.models.Resource> implements Relation<M>{
+export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 	protected _conn:mongo_connection.ConnectionInstance;
 	
 	protected _raw:mongoose.Model<mongoose.Document>;
 	
-	constructor(public relation_name:string, protected _mongo_schema:mongoose.SchemaDefinition){
+	constructor(public relation_name:A, protected _mongo_schema:mongoose.SchemaDefinition){
 		
 		this._conn = this._get_connection();
 		
@@ -57,38 +57,38 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		return this._conn.get_model(this.relation_name, mongo_schema);
 	}
 	
-	public async select(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<urn_atm.models.Resource[]>{
+	public async select(filter:FilterType<A>, options?:QueryOptions<A>)
+			:Promise<Grain<A>[]>{
 		const mon_find_res = (options) ?
-			await this._raw.find(filter, null, options).lean<urn_atm.models.Resource>():
-			await this._raw.find(filter).lean<urn_atm.models.Resource>();
-		return mon_find_res.map((mon_doc:urn_atm.models.Resource) => {
+			await this._raw.find(filter, null, options).lean<Grain<A>>():
+			await this._raw.find(filter).lean<Grain<A>>();
+		return mon_find_res.map((mon_doc:Grain<A>) => {
 			return string_id(mon_doc);
 		});
 	}
 	
 	public async select_by_id(id:string)
-			:Promise<urn_atm.models.Resource>{
-		const mon_find_by_id_res = await this._raw.findById(id).lean<urn_atm.models.Resource>();
+			:Promise<Grain<A>>{
+		const mon_find_by_id_res = await this._raw.findById(id).lean<Grain<A>>();
 		if(mon_find_by_id_res === null){
 			throw urn_exc.create_not_found('FIND_ID_NOT_FOUND', `Record not found.`);
 		}
 		return string_id(mon_find_by_id_res);
 	}
 	
-	public async select_one(filter:FilterType<M>, options?:QueryOptions<M>)
-			:Promise<urn_atm.models.Resource>{
+	public async select_one(filter:FilterType<A>, options?:QueryOptions<A>)
+			:Promise<Grain<A>>{
 		const mon_find_one_res = (typeof options !== 'undefined' && options.sort) ?
-			await this._raw.findOne(filter).sort(options.sort).lean<urn_atm.models.Resource>() :
-			await this._raw.findOne(filter).lean<urn_atm.models.Resource>();
+			await this._raw.findOne(filter).sort(options.sort).lean<Grain<A>>() :
+			await this._raw.findOne(filter).lean<Grain<A>>();
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
 		}
 		return string_id(mon_find_one_res);
 	}
 	
-	public async insert_one(resource:urn_atm.models.Resource)
-			:Promise<urn_atm.models.Resource>{
+	public async insert_one(resource:Grain<A>)
+			:Promise<Grain<A>>{
 		if(urn_util.object.has_key(resource, '_id')){
 			delete resource._id;
 		}
@@ -100,8 +100,8 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		return mon_obj;
 	}
 	
-	public async alter_one(resource:urn_atm.models.Resource)
-			:Promise<urn_atm.models.Resource>{
+	public async alter_one(resource:Grain<A>)
+			:Promise<Grain<A>>{
 		if(!urn_util.object.has_key(resource, '_id')){
 			const err_msg = `Cannot alter_one. Argument has no _id.`;
 			throw urn_exc.create('UPD_ONE_NO_ID', err_msg);
@@ -115,13 +115,13 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		if(mon_update_res === null){
 			throw urn_exc.create('UPD_ONE_NOT_FOUND', `Cannot alter_one. Record not found.`);
 		}
-		return string_id(mon_update_res as urn_atm.models.Resource);
+		return string_id(mon_update_res as Grain<A>);
 		// const mon_obj = mon_update_res.toObject();
 		// return string_id(mon_obj);
 	}
 	
-	public async delete_one(resource:urn_atm.models.Resource)
-			:Promise<urn_atm.models.Resource>{
+	public async delete_one(resource:Grain<A>)
+			:Promise<Grain<A>>{
 		if(!urn_util.object.has_key(resource, '_id')){
 			const err_msg = `Cannot delete_one. Argument has no _id.`;
 			throw urn_exc.create('DEL_ONE_NO_ID', err_msg);
@@ -135,7 +135,7 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 		if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
 			throw urn_exc.create_not_found('DEL_ONE_NOT_FOUND', `Cannot delete_one. Record not found.`);
 		}
-		return string_id(mon_delete_res.toObject() as urn_atm.models.Resource);
+		return string_id(mon_delete_res.toObject() as Grain<A>);
 	}
 	
 	public is_valid_id(id:string)
@@ -145,8 +145,8 @@ export class MongooseRelation<M extends urn_atm.models.Resource> implements Rela
 	
 }
 
-function string_id<M extends urn_atm.models.Resource>(resource:M)
-		:M{
+function string_id<A extends AtomName>(resource:Grain<A>)
+		:Grain<A>{
 	if(resource._id){
 		resource._id = resource._id.toString();
 	}
