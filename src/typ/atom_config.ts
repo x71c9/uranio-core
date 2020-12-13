@@ -10,7 +10,7 @@ import {atom_book} from '../urn.config';
 
 export type AtomName = keyof typeof atom_book;
 
-type PropertiesOfAtom<A extends AtomName> = typeof atom_book[A]['properties'];
+export type PropertiesOfAtom<A extends AtomName> = typeof atom_book[A]['properties'];
 
 type AtomPropertyInferType<A> = A extends {type: infer I} ? I : never;
 

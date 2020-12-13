@@ -8,6 +8,8 @@ import mongoose from 'mongoose';
 
 import {urn_log,  urn_exception} from 'urn-lib';
 
+import {AtomName} from '../../types';
+
 const urn_exc = urn_exception.init('DBC_M', 'Mongoose DB Connection');
 
 /*
@@ -84,7 +86,7 @@ class MongooseDBConnection {
 	 *
 	 * @returns a Relation
 	 */
-	public get_model(relation_name:string, schema:mongoose.Schema)
+	public get_model(relation_name:AtomName, schema:mongoose.Schema)
 			:mongoose.Model<mongoose.Document>{
 		return this._connection.model(relation_name, schema);
 	}
