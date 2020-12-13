@@ -1,6 +1,4 @@
 
-// import mongoose from 'mongoose';
-
 import {AtomPropertyType} from './types';
 
 const core_atoms_book = {
@@ -9,7 +7,8 @@ const core_atoms_book = {
 			email: {
 				type: AtomPropertyType.EMAIL,
 				label: 'Email',
-				required: true
+				required: true,
+				unique: true
 			},
 			password: {
 				type: AtomPropertyType.ENCRYPTED,
@@ -25,14 +24,14 @@ export const atom_book = {
 	...core_atoms_book,
 	product: {
 		properties: {
-			_id: {
-				type: AtomPropertyType.INTEGER,
-				label: '_id'
-			},
 			title: {
 				type: AtomPropertyType.TEXT,
 				label: 'Title',
 				required: true
+			},
+			barcode: {
+				type: AtomPropertyType.TEXT,
+				label: 'Barcode'
 			}
 		},
 		mongo_schema: {}

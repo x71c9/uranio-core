@@ -20,7 +20,7 @@ import * as mongo_connection from './connection';
 
 import {MongooseRelation} from './relation';
 
-import {core_config} from '../../defaults';
+import {core_config} from '../../config/defaults';
 
 const mongo_trash_conn = mongo_connection.create(
 	'trash',

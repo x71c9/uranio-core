@@ -9,9 +9,7 @@ import {urn_exception, urn_util} from 'urn-lib';
 
 import {QueryOptions, FilterType, AtomName} from '../types';
 
-// import * as urn_atms from '../atm/';
-
-import {atom_book} from '../urn.config';
+import {atom_book} from '../book';
 
 const _queryop = {
 	andornor: {
