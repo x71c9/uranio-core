@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {Configuration} from './types';
+import {Configuration} from '../types';
 
 export const core_config:Configuration = {
 	

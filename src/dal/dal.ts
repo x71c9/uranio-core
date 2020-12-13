@@ -4,8 +4,7 @@
  * @packageDocumentation
  */
 
-// import {urn_log, urn_exception, urn_util} from 'urn-lib';
-import {urn_log, urn_exception} from 'urn-lib';
+import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 import * as urn_atm from '../atm/';
 
@@ -13,11 +12,13 @@ import * as urn_rel from '../rel/';
 
 import * as urn_validators from '../vali/';
 
-import {QueryOptions, FilterType, AtomName} from '../types';
+import * as util from '../util/';
 
-import {core_config} from '../defaults';
+import {QueryOptions, FilterType, AtomName, Grain} from '../types';
 
-import {atom_book} from '../urn.config';
+import {core_config} from '../config/defaults';
+
+import {atom_book} from '../book';
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -200,34 +201,31 @@ export class DAL<A extends AtomName> {
 	
 	private async _check_unique(atom:urn_atm.Atom<A>)
 			:Promise<void>{
-		
-		console.log(atom);
-		
-		// const filter:FilterType<A> = {};
-		// filter.$or = [];
-		// const model = atom.return();
-		// for(const k of atom.get_keys().unique){
-		//   const filter_object:{[P in keyof A]?:any} = {};
-		//   filter_object[k] = model[k];
-		//   filter.$or.push(filter_object);
-		// }
-		// try{
-		//   const res_select_one = await this._select_one(filter);
-		//   const equal_values:Set<keyof A> = new Set();
-		//   const res_model = res_select_one.return();
-		//   for(const k of atom.get_keys().unique){
-		//     if(model[k] == res_model[k]){
-		//       equal_values.add(k);
-		//     }
-		//   }
-		//   let err_msg = `Atom unique fields are already in the database.`;
-		//   err_msg += ` Duplicate fields: ${urn_util.formatter.json_one_line(equal_values)}.`;
-		//   throw urn_exc.create('CHECK_UNIQUE_DUPLICATE', err_msg);
-		// }catch(err){
-		//   if(!err.type || err.type !== urn_exception.ExceptionType.NOT_FOUND){
-		//     throw err;
-		//   }
-		// }
+		const filter:FilterType<A> = {};
+		filter.$or = [];
+		const model = atom.return();
+		for(const k of util.book.get_unique_keys(this.atom_name)){
+			const filter_object:{[P in keyof Grain<A>]?:any} = {};
+			filter_object[k] = model[k];
+			filter.$or.push(filter_object);
+		}
+		try{
+			const res_select_one = await this._select_one(filter);
+			const equal_values:Set<keyof Grain<A>> = new Set();
+			const res_model = res_select_one.return();
+			for(const k of util.book.get_unique_keys(this.atom_name)){
+				if(model[k] === res_model[k]){
+					equal_values.add(k);
+				}
+			}
+			let err_msg = `Atom unique fields are already in the database.`;
+			err_msg += ` Duplicate fields: ${urn_util.formatter.json_one_line(equal_values)}.`;
+			throw urn_exc.create('CHECK_UNIQUE_DUPLICATE', err_msg);
+		}catch(err){
+			if(!err.type || err.type !== urn_exception.ExceptionType.NOT_FOUND){
+				throw err;
+			}
+		}
 	}
 	
 	// private _create_atom(resource:A)

@@ -23,7 +23,7 @@
 //   // relation_name: RelationName
 // }
 
-export type TokenObject = {
-	_id: string,
-	name: string
-}
+// export type TokenObject = {
+//   _id: string,
+//   name: string
+// }

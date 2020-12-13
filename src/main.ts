@@ -12,7 +12,7 @@ export * from './bll/';
 
 import {Configuration} from './types';
 
-import {core_config} from './defaults';
+import {core_config} from './config/defaults';
 
 export function init(config:Configuration)
 		:void{

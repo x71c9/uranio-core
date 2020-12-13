@@ -16,7 +16,7 @@ import {QueryOptions, FilterType, AtomName, Grain} from '../types';
 @urn_log.decorators.debug_methods
 class BLL<A extends AtomName> {
 	
-	private _dal:urn_dal.DAL<A>;
+	protected _dal:urn_dal.DAL<A>;
 	
 	constructor(public atom_name:A) {
 		this._dal = urn_dal.create<A>(atom_name);
@@ -37,30 +37,30 @@ class BLL<A extends AtomName> {
 		return await this._dal.select_one(filter, options);
 	}
 	
-	public async save_one(resource:Grain<A>)
+	public async save_one(grain:Grain<A>)
 			:Promise<urn_atm.Atom<A>>{
-		const atom = urn_atm.create(this.atom_name, resource);
+		const atom = urn_atm.create(this.atom_name, grain);
 		return await this._dal.insert_one(atom);
 	}
 	
-	public async update_one(resource:Grain<A>)
+	public async update_one(grain:Grain<A>)
 			:Promise<urn_atm.Atom<A>>{
-		const atom = urn_atm.create(this.atom_name, resource);
+		const atom = urn_atm.create(this.atom_name, grain);
 		return await this._dal.alter_one(atom);
 	}
 	
-	public async remove_one(resource:Grain<A>)
+	public async remove_one(grain:Grain<A>)
 			:Promise<urn_atm.Atom<A>>{
-		const atom = urn_atm.create(this.atom_name, resource);
+		const atom = urn_atm.create(this.atom_name, grain);
 		return await this._dal.delete_one(atom);
 	}
 	
 }
 
-export type BllInstance = InstanceType<typeof BLL>;
+// export type BllInstance = InstanceType<typeof BLL>;
 
-export function create<A extends AtomName>(atom_name:A):BllInstance{
-	urn_log.fn_debug(`Create BLL`);
+export function create<A extends AtomName>(atom_name:A):BLL<A>{
+	urn_log.fn_debug(`Create BLL [${atom_name}]`);
 	return new BLL<A>(atom_name);
 }
 

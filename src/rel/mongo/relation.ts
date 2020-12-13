@@ -18,7 +18,7 @@ import * as mongo_connection from './connection';
 
 // import * as urn_atm from '../../atm/';
 
-import {core_config} from '../../defaults';
+import {core_config} from '../../config/defaults';
 
 const mongo_main_conn = mongo_connection.create(
 	'main',
