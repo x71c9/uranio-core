@@ -30,30 +30,30 @@ export type Configuration = {
 
 export type AtomName = keyof typeof atom_book;
 
-export type PropertiesOfAtom<A extends AtomName> = typeof atom_book[A]['properties'];
+export type PropertiesOfAtomDefinition<A extends AtomName> = typeof atom_book[A]['properties'];
 
-export type KeysOfAtom<A extends AtomName> = keyof PropertiesOfAtom<A>;
+// export type KeyOfAtom<A extends AtomName> = keyof PropertiesOfAtomDefinition<A>;
 
-type AtomPropertyInferType<A> = A extends {type: infer I} ? I : never;
+type AtomDefinitionPropertyInferType<P> = P extends {type: infer I} ? I : never;
 
-type AtomTypeOfProperty<A extends AtomName, k extends keyof PropertiesOfAtom<A>> =
-	AtomPropertyInferType<PropertiesOfAtom<A>[k]>;
+type AtomTypeOfProperty<A extends AtomName, k extends keyof PropertiesOfAtomDefinition<A>> =
+	AtomDefinitionPropertyInferType<PropertiesOfAtomDefinition<A>[k]>;
 
-type RealTypeOfAtomProperty<A extends AtomName, k extends keyof PropertiesOfAtom<A>> =
+type RealTypeOfAtomProperty<A extends AtomName, k extends keyof PropertiesOfAtomDefinition<A>> =
 	AtomTypeOfProperty<A,k> extends AtomPropertyType ?
 		RealTypeAtomProperty<AtomTypeOfProperty<A,k>> : never;
 
 type AtomDefaultProperties = {
-	_id?: RealTypeAtomProperty<AtomPropertyType.ID>,
+	_id: RealTypeAtomProperty<AtomPropertyType.ID>,
 	_deleted_from?: RealTypeAtomProperty<AtomPropertyType.ID>,
-	date?: RealTypeAtomProperty<AtomPropertyType.TIME>
+	date: RealTypeAtomProperty<AtomPropertyType.TIME>
 }
 
-export type DeltaGrain<A extends AtomName> = {
-	[k in keyof PropertiesOfAtom<A>]: RealTypeOfAtomProperty<A,k>
+export type AtomShape<A extends AtomName> = {
+	[k in keyof PropertiesOfAtomDefinition<A>]: RealTypeOfAtomProperty<A,k>
 };
 
-export type Grain<A extends AtomName> = AtomDefaultProperties & DeltaGrain<A>;
+export type Atom<A extends AtomName> = AtomDefaultProperties & AtomShape<A>;
 
 export type AtomBook = {
 	[k:string]: AtomDefinition
@@ -212,7 +212,7 @@ interface AtomPropertyFloatFormat {
 
 type KeyObjectOfAtom<A extends AtomName> = {
 	
-	[P in keyof Grain<A>]?: any;
+	[P in keyof Atom<A>]?: any;
 	
 }
 
