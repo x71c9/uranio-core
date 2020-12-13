@@ -5,19 +5,20 @@
  * @packageDocumentation
  */
 
-// import {urn_log, urn_exception, urn_util} from 'urn-lib';
-import {urn_log, urn_util} from 'urn-lib';
+import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
-import {AtomName, Grain} from '../types';
+import {AtomName, Grain, PropertiesOfAtom} from '../types';
 
-// const urn_exc = urn_exception.init('ATM','Abstract Atom');
+import {atom_book} from '../urn.config';
+
+const urn_exc = urn_exception.init('ATM','Atom Class Module');
 
 /**
  * Class for general Atom
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class Atom<A extends AtomName> {
+export class Atom<A extends AtomName> {
 	
 	public _id?:string;
 	
@@ -45,18 +46,30 @@ class Atom<A extends AtomName> {
 	
 	public return()
 			:Grain<A>{
-
+		
 		const that = this as any;
 		this.validate(that);
 		
 		const data_transfer_object = {} as Grain<A>;
-		// for(const [k] of Object.entries(atom_book[this.name].properties)){
-		//   // if(!this.get_keys().optional.has(key) && !urn_util.object.has_key(that, key)){
-		//   //   const err_msg = `Cannot return. Current instance has no property [${key}] set.`;
-		//   //   throw urn_exc.create('RETURN_NO_PROP', err_msg);
-		//   // }
-		//   data_transfer_object[k] = that[k];
-		// }
+		const props:PropertiesOfAtom<A> = atom_book[this.name].properties;
+		let k: keyof typeof props;
+		for(k in props){
+		// for(const [k] of Object.entries(props)){
+			if(!urn_util.object.has_key(that, k)){
+				const err_msg = `Cannot return. Current instance has no property [${k}] set.`;
+				throw urn_exc.create('RETURN_NO_PROP', err_msg);
+			}
+			data_transfer_object[k] = that[k];
+		}
+		if(urn_util.object.has_key(that, '_id')){
+			data_transfer_object._id = that._id;
+		}
+		if(urn_util.object.has_key(that, '_deleted_from')){
+			data_transfer_object._deleted_from = that._deleted_from;
+		}
+		if(urn_util.object.has_key(that, 'date')){
+			data_transfer_object.date = that.date;
+		}
 		return data_transfer_object;
 	}
 	
@@ -67,7 +80,7 @@ class Atom<A extends AtomName> {
 	}
 }
 
-export type AtomInstance = InstanceType<typeof Atom>;
+// export type AtomInstance = InstanceType<typeof Atom>;
 
 export function create<A extends AtomName>(atom_name:A, resource:Grain<A>)
 		:Atom<A>{

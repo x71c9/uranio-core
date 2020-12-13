@@ -153,4 +153,9 @@ function string_id<A extends AtomName>(resource:Grain<A>)
 	return resource;
 }
 
+export function create<A extends AtomName>(relation_name: A, _mongo_schema:mongoose.SchemaDefinition)
+		:MongooseRelation<A>{
+	urn_log.fn_debug(`Create MongooseRelation`);
+	return new MongooseRelation<A>(relation_name, _mongo_schema);
+}
 

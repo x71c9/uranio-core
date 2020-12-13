@@ -69,3 +69,9 @@ function _allow_duplicate(schema_definition:mongoose.SchemaDefinition)
 //   urn_log.fn_debug(`Create Mongoose Trash Relation`);
 //   return new MongooseTrashRelation(relation_name);
 // }
+
+export function trash_create<A extends AtomName>(relation_name: A, _mongo_schema:mongoose.SchemaDefinition)
+		:MongooseRelation<A>{
+	urn_log.fn_debug(`Create MongooseTrashRelation`);
+	return new MongooseTrashRelation<A>(relation_name, _mongo_schema);
+}
