@@ -6,7 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import * as urn_atm from '../atm/';
+// import * as urn_atm from '../atm/';
 
 import * as urn_dal from '../dal/';
 
@@ -46,7 +46,8 @@ class BLL<A extends AtomName> {
 	public async update_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
 		// urn_atm.validate(atom);
-		return await this._dal.alter_one(atom);
+		return await this.update_by_id(atom._id, atom);
+		// return await this._dal.alter_one(atom);
 	}
 	
 	public async update_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
@@ -60,7 +61,8 @@ class BLL<A extends AtomName> {
 	public async remove_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
 		// urn_atm.validate(atom);
-		return await this._dal.delete_one(atom);
+		return await this.remove_by_id(atom._id);
+		// return await this._dal.delete_one(atom);
 	}
 	
 	public async remove_by_id(id:string)

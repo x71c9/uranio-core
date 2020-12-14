@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 
 import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
-import {FilterType, QueryOptions, AtomName, Grain} from '../../types';
+import {FilterType, QueryOptions, AtomName, Atom, AtomShape} from '../../types';
 
 import {Relation} from '../types';
 
@@ -58,18 +58,18 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	}
 	
 	public async select(filter:FilterType<A>, options?:QueryOptions<A>)
-			:Promise<Grain<A>[]>{
+			:Promise<Atom<A>[]>{
 		const mon_find_res = (options) ?
-			await this._raw.find(filter, null, options).lean<Grain<A>>():
-			await this._raw.find(filter).lean<Grain<A>>();
-		return mon_find_res.map((mon_doc:Grain<A>) => {
+			await this._raw.find(filter, null, options).lean<Atom<A>>():
+			await this._raw.find(filter).lean<Atom<A>>();
+		return mon_find_res.map((mon_doc:Atom<A>) => {
 			return string_id(mon_doc);
 		});
 	}
 	
 	public async select_by_id(id:string)
-			:Promise<Grain<A>>{
-		const mon_find_by_id_res = await this._raw.findById(id).lean<Grain<A>>();
+			:Promise<Atom<A>>{
+		const mon_find_by_id_res = await this._raw.findById(id).lean<Atom<A>>();
 		if(mon_find_by_id_res === null){
 			throw urn_exc.create_not_found('FIND_ID_NOT_FOUND', `Record not found.`);
 		}
@@ -77,18 +77,18 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	}
 	
 	public async select_one(filter:FilterType<A>, options?:QueryOptions<A>)
-			:Promise<Grain<A>>{
+			:Promise<Atom<A>>{
 		const mon_find_one_res = (typeof options !== 'undefined' && options.sort) ?
-			await this._raw.findOne(filter).sort(options.sort).lean<Grain<A>>() :
-			await this._raw.findOne(filter).lean<Grain<A>>();
+			await this._raw.findOne(filter).sort(options.sort).lean<Atom<A>>() :
+			await this._raw.findOne(filter).lean<Atom<A>>();
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
 		}
 		return string_id(mon_find_one_res);
 	}
 	
-	public async insert_one(resource:Grain<A>)
-			:Promise<Grain<A>>{
+	public async insert_one(resource:AtomShape<A>)
+			:Promise<Atom<A>>{
 		if(urn_util.object.has_key(resource, '_id')){
 			delete resource._id;
 		}
@@ -100,42 +100,74 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		return mon_obj;
 	}
 	
-	public async alter_one(resource:Grain<A>)
-			:Promise<Grain<A>>{
-		if(!urn_util.object.has_key(resource, '_id')){
-			const err_msg = `Cannot alter_one. Argument has no _id.`;
-			throw urn_exc.create('UPD_ONE_NO_ID', err_msg);
-		}
-		if(typeof resource._id !== 'string' || resource._id === '' || !this.is_valid_id(resource._id)){
-			const err_msg = `Cannot alter_one. Argument has invalid _id.`;
-			throw urn_exc.create('UPD_ONE_INVALID_ID', err_msg);
+	public async alter_one(resource:Atom<A>)
+			:Promise<Atom<A>>{
+		return this.alter_by_id(resource._id, resource);
+		// if(!urn_util.object.has_key(resource, '_id')){
+		//   const err_msg = `Cannot alter_one. Argument has no _id.`;
+		//   throw urn_exc.create('ALTER_ONE_NO_ID', err_msg);
+		// }
+		// if(typeof resource._id !== 'string' || resource._id === '' || !this.is_valid_id(resource._id)){
+		//   const err_msg = `Cannot alter_one. Argument has invalid _id.`;
+		//   throw urn_exc.create('ALTER_ONE_INVALID_ID', err_msg);
+		// }
+		// const mon_update_res =
+		//   await this._raw.findOneAndUpdate({_id:resource._id}, resource, {new: true, lean: true});
+		// if(mon_update_res === null){
+		//   throw urn_exc.create('ALTER_ONE_NOT_FOUND', `Cannot alter_one. Record not found.`);
+		// }
+		// return string_id(mon_update_res as Atom<A>);
+		// // const mon_obj = mon_update_res.toObject();
+		// // return string_id(mon_obj);
+	}
+	
+	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
+			:Promise<Atom<A>>{
+		if(typeof id !== 'string' || id === '' || !this.is_valid_id(id)){
+			const err_msg = `Cannot alter_by_id. Invalid id param.`;
+			throw urn_exc.create('ALTER_BY_ID_INVALID_ID', err_msg);
 		}
 		const mon_update_res =
-			await this._raw.findOneAndUpdate({_id:resource._id}, resource, {new: true, lean: true});
+			await this._raw.findOneAndUpdate({_id:id}, partial_atom, {new: true, lean: true});
 		if(mon_update_res === null){
-			throw urn_exc.create('UPD_ONE_NOT_FOUND', `Cannot alter_one. Record not found.`);
+			throw urn_exc.create('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
 		}
-		return string_id(mon_update_res as Grain<A>);
+		return string_id(mon_update_res as Atom<A>);
 		// const mon_obj = mon_update_res.toObject();
 		// return string_id(mon_obj);
 	}
 	
-	public async delete_one(resource:Grain<A>)
-			:Promise<Grain<A>>{
-		if(!urn_util.object.has_key(resource, '_id')){
-			const err_msg = `Cannot delete_one. Argument has no _id.`;
-			throw urn_exc.create('DEL_ONE_NO_ID', err_msg);
-		}
-		if(typeof resource._id !== 'string' || resource._id === '' || !this.is_valid_id(resource._id)){
-			const err_msg = `Cannot delete_one. Argument has invalid _id.`;
-			throw urn_exc.create('DEL_ONE_INVALID_ID', err_msg);
+	public async delete_one(resource:Atom<A>)
+			:Promise<Atom<A>>{
+		return this.delete_by_id(resource._id);
+		// if(!urn_util.object.has_key(resource, '_id')){
+		//   const err_msg = `Cannot delete_one. Argument has no _id.`;
+		//   throw urn_exc.create('DEL_ONE_NO_ID', err_msg);
+		// }
+		// if(typeof resource._id !== 'string' || resource._id === '' || !this.is_valid_id(resource._id)){
+		//   const err_msg = `Cannot delete_one. Argument has invalid _id.`;
+		//   throw urn_exc.create('DEL_ONE_INVALID_ID', err_msg);
+		// }
+		// const mon_delete_res =
+		//   await this._raw.findOneAndDelete({_id:resource._id});
+		// if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
+		//   throw urn_exc.create_not_found('DEL_ONE_NOT_FOUND', `Cannot delete_one. Record not found.`);
+		// }
+		// return string_id(mon_delete_res.toObject() as Atom<A>);
+	}
+	
+	public async delete_by_id(id:string)
+			:Promise<Atom<A>>{
+		if(typeof id !== 'string' || id === '' || !this.is_valid_id(id)){
+			const err_msg = `Cannot delete_by_id. Invalid id param.`;
+			throw urn_exc.create('DEL_BY_ID_INVALID_ID', err_msg);
 		}
 		const mon_delete_res =
-			await this._raw.findOneAndDelete({_id:resource._id});
+			await this._raw.findOneAndDelete({_id:id});
 		if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
-			throw urn_exc.create_not_found('DEL_ONE_NOT_FOUND', `Cannot delete_one. Record not found.`);
+			throw urn_exc.create_not_found('DEL_BY_ID_NOT_FOUND', `Cannot delete_by_id. Record not found.`);
 		}
-		return string_id(mon_delete_res.toObject() as Grain<A>);
+		return string_id(mon_delete_res.toObject() as Atom<A>);
 	}
 	
 	public is_valid_id(id:string)
@@ -145,8 +177,8 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 }
 
-function string_id<A extends AtomName>(resource:Grain<A>)
-		:Grain<A>{
+function string_id<A extends AtomName>(resource:Atom<A>)
+		:Atom<A>{
 	if(resource._id){
 		resource._id = resource._id.toString();
 	}

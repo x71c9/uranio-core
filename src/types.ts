@@ -32,14 +32,14 @@ export type AtomName = keyof typeof atom_book;
 
 export type PropertiesOfAtomDefinition<A extends AtomName> = typeof atom_book[A]['properties'];
 
-// export type KeyOfAtom<A extends AtomName> = keyof PropertiesOfAtomDefinition<A>;
+export type KeyOfAtom<A extends AtomName> = keyof PropertiesOfAtomDefinition<A>;
 
 type AtomDefinitionPropertyInferType<P> = P extends {type: infer I} ? I : never;
 
-type AtomTypeOfProperty<A extends AtomName, k extends keyof PropertiesOfAtomDefinition<A>> =
+type AtomTypeOfProperty<A extends AtomName, k extends KeyOfAtom<A>> =
 	AtomDefinitionPropertyInferType<PropertiesOfAtomDefinition<A>[k]>;
 
-type RealTypeOfAtomProperty<A extends AtomName, k extends keyof PropertiesOfAtomDefinition<A>> =
+type RealTypeOfAtomProperty<A extends AtomName, k extends KeyOfAtom<A>> =
 	AtomTypeOfProperty<A,k> extends AtomPropertyType ?
 		RealTypeAtomProperty<AtomTypeOfProperty<A,k>> : never;
 
@@ -60,15 +60,15 @@ export type AtomBook = {
 };
 
 export type AtomDefinition = {
-	properties: AtomProperties,
+	properties: AtomPropertiesDefinition,
 	mongo_schema: mongoose.SchemaDefinition
 }
 
-export type AtomProperties = {
-	[k:string]: AtomProperty,
+export type AtomPropertiesDefinition = {
+	[k:string]: AtomPropertyDefinition,
 }
 
-export type AtomProperty =
+export type AtomPropertyDefinition =
 	AtomPropertyID |
 	AtomPropertyText |
 	AtomPropertyLongText |
@@ -212,7 +212,7 @@ interface AtomPropertyFloatFormat {
 
 type KeyObjectOfAtom<A extends AtomName> = {
 	
-	[P in keyof Atom<A>]?: any;
+	[P in KeyOfAtom<A>]?: any;
 	
 }
 
