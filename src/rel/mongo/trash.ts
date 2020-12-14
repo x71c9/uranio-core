@@ -46,7 +46,7 @@ export class MongooseTrashRelation<A extends AtomName> extends MongooseRelation<
 	}
 	
 	protected _complie_mongoose_model():mongoose.Model<mongoose.Document>{
-		const mongo_trash_schema = new mongoose.Schema(_allow_duplicate(this._mongo_schema));
+		const mongo_trash_schema = new mongoose.Schema(_allow_duplicate(this._mongo_schema), { versionKey: false });
 		return this._conn.get_model(this.relation_name, mongo_trash_schema);
 	}
 	

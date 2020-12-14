@@ -53,7 +53,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	}
 	
 	protected _complie_mongoose_model():mongoose.Model<mongoose.Document>{
-		const mongo_schema = new mongoose.Schema(this._mongo_schema);
+		const mongo_schema = new mongoose.Schema(this._mongo_schema, { versionKey: false });
 		return this._conn.get_model(this.relation_name, mongo_schema);
 	}
 	
@@ -63,7 +63,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 			await this._raw.find(filter, null, options).lean<Atom<A>>():
 			await this._raw.find(filter).lean<Atom<A>>();
 		return mon_find_res.map((mon_doc:Atom<A>) => {
-			return string_id(mon_doc);
+			return _clean_object(mon_doc);
 		});
 	}
 	
@@ -73,7 +73,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_find_by_id_res === null){
 			throw urn_exc.create_not_found('FIND_ID_NOT_FOUND', `Record not found.`);
 		}
-		return string_id(mon_find_by_id_res);
+		return _clean_object(mon_find_by_id_res);
 	}
 	
 	public async select_one(filter:FilterType<A>, options?:QueryOptions<A>)
@@ -84,13 +84,13 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
 		}
-		return string_id(mon_find_one_res);
+		return _clean_object(mon_find_one_res);
 	}
 	
 	public async insert_one(resource:AtomShape<A>)
 			:Promise<Atom<A>>{
 		if(urn_util.object.has_key(resource, '_id')){
-			delete resource._id;
+			delete (resource as any)._id;
 		}
 		const mon_model = new this._raw(resource);
 		const mon_res_doc = await mon_model.save();
@@ -102,7 +102,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 	public async alter_one(resource:Atom<A>)
 			:Promise<Atom<A>>{
-		return this.alter_by_id(resource._id, resource);
+		return await this.alter_by_id(resource._id, resource);
 		// if(!urn_util.object.has_key(resource, '_id')){
 		//   const err_msg = `Cannot alter_one. Argument has no _id.`;
 		//   throw urn_exc.create('ALTER_ONE_NO_ID', err_msg);
@@ -116,9 +116,9 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		// if(mon_update_res === null){
 		//   throw urn_exc.create('ALTER_ONE_NOT_FOUND', `Cannot alter_one. Record not found.`);
 		// }
-		// return string_id(mon_update_res as Atom<A>);
+		// return _clean_object(mon_update_res as Atom<A>);
 		// // const mon_obj = mon_update_res.toObject();
-		// // return string_id(mon_obj);
+		// // return _clean_object(mon_obj);
 	}
 	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
@@ -132,14 +132,14 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_update_res === null){
 			throw urn_exc.create('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
 		}
-		return string_id(mon_update_res as Atom<A>);
+		return _clean_object(mon_update_res as Atom<A>);
 		// const mon_obj = mon_update_res.toObject();
-		// return string_id(mon_obj);
+		// return _clean_object(mon_obj);
 	}
 	
 	public async delete_one(resource:Atom<A>)
 			:Promise<Atom<A>>{
-		return this.delete_by_id(resource._id);
+		return await this.delete_by_id(resource._id);
 		// if(!urn_util.object.has_key(resource, '_id')){
 		//   const err_msg = `Cannot delete_one. Argument has no _id.`;
 		//   throw urn_exc.create('DEL_ONE_NO_ID', err_msg);
@@ -153,7 +153,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		// if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
 		//   throw urn_exc.create_not_found('DEL_ONE_NOT_FOUND', `Cannot delete_one. Record not found.`);
 		// }
-		// return string_id(mon_delete_res.toObject() as Atom<A>);
+		// return _clean_object(mon_delete_res.toObject() as Atom<A>);
 	}
 	
 	public async delete_by_id(id:string)
@@ -167,7 +167,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
 			throw urn_exc.create_not_found('DEL_BY_ID_NOT_FOUND', `Cannot delete_by_id. Record not found.`);
 		}
-		return string_id(mon_delete_res.toObject() as Atom<A>);
+		return _clean_object(mon_delete_res.toObject() as Atom<A>);
 	}
 	
 	public is_valid_id(id:string)
@@ -177,10 +177,13 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 }
 
-function string_id<A extends AtomName>(resource:Atom<A>)
+function _clean_object<A extends AtomName>(resource:Atom<A>)
 		:Atom<A>{
-	if(resource._id){
+	if(urn_util.object.has_key(resource,'_id')){
 		resource._id = resource._id.toString();
+	}
+	if(urn_util.object.has_key(resource,'__v')){
+		delete (resource as any).__v;
 	}
 	return resource;
 }

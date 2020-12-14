@@ -32,7 +32,8 @@ export type AtomName = keyof typeof atom_book;
 
 export type PropertiesOfAtomDefinition<A extends AtomName> = typeof atom_book[A]['properties'];
 
-export type KeyOfAtom<A extends AtomName> = keyof PropertiesOfAtomDefinition<A>;
+export type KeyOfAtom<A extends AtomName> =
+	keyof PropertiesOfAtomDefinition<A> & keyof typeof atom_default_properties;
 
 type AtomDefinitionPropertyInferType<P> = P extends {type: infer I} ? I : never;
 
@@ -43,14 +44,30 @@ type RealTypeOfAtomProperty<A extends AtomName, k extends KeyOfAtom<A>> =
 	AtomTypeOfProperty<A,k> extends AtomPropertyType ?
 		RealTypeAtomProperty<AtomTypeOfProperty<A,k>> : never;
 
+export const atom_default_properties = {
+	_id: {
+		type: AtomPropertyType.ID,
+		label: '_id',
+	},
+	_deleted_from: {
+		type: AtomPropertyType.ID,
+		label: '_deleted_from',
+		optional: true
+	},
+	_date: {
+		type: AtomPropertyType.TIME,
+		label: '_date'
+	}
+} as const;
+
 type AtomDefaultProperties = {
 	_id: RealTypeAtomProperty<AtomPropertyType.ID>,
 	_deleted_from?: RealTypeAtomProperty<AtomPropertyType.ID>,
-	date: RealTypeAtomProperty<AtomPropertyType.TIME>
+	_date: RealTypeAtomProperty<AtomPropertyType.TIME>
 }
 
 export type AtomShape<A extends AtomName> = {
-	[k in keyof PropertiesOfAtomDefinition<A>]: RealTypeOfAtomProperty<A,k>
+	[k in KeyOfAtom<A>]: RealTypeOfAtomProperty<A,k>
 };
 
 export type Atom<A extends AtomName> = AtomDefaultProperties & AtomShape<A>;
@@ -112,7 +129,7 @@ type RealTypeAtomProperty<AT extends AtomPropertyType> =
 interface AtomFiledShared {
 	type: AtomPropertyType,
 	label: string,
-	required?: boolean,
+	optional?: boolean,
 	unique?: boolean
 }
 
