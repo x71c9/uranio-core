@@ -8,3 +8,5 @@ export * from './relation';
 
 export * from './trash';
 
+export * from './schema';
+

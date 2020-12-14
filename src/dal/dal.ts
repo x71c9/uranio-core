@@ -18,7 +18,7 @@ import {QueryOptions, FilterType, AtomName, AtomShape, Atom, KeyOfAtom} from '..
 
 import {core_config} from '../config/defaults';
 
-import {atom_book} from '../book';
+// import {atom_book} from '../book'
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -35,11 +35,11 @@ export class DAL<A extends AtomName> {
 			case 'mongo':{
 				this._db_relation = urn_rel.mongo.create<A>(
 					this.atom_name,
-					atom_book[this.atom_name].mongo_schema
+					urn_rel.mongo.generate_mongoose_schema<A>(atom_name)
 				);
 				this._db_trash_relation = urn_rel.mongo.trash_create<A>(
 					this.atom_name,
-					atom_book[this.atom_name].mongo_schema
+					urn_rel.mongo.generate_mongoose_trash_schema<A>(atom_name)
 				);
 				break;
 			}
@@ -72,12 +72,12 @@ export class DAL<A extends AtomName> {
 		return await this._insert_one(atom_shape);
 	}
 	
-	// public async alter_one(atom:Atom<A>)
-	//     :Promise<Atom<A>>{
-	//   return this.alter_by_id(atom._id, atom);
-	//   // await this._check_unique(atom);
-	//   // return await this._alter_one(atom);
-	// }
+	public async alter_one(atom:Atom<A>)
+			:Promise<Atom<A>>{
+		return await this.alter_by_id(atom._id, atom);
+		// await this._check_unique(atom);
+		// return await this._alter_one(atom);
+	}
 	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
@@ -85,16 +85,16 @@ export class DAL<A extends AtomName> {
 		return await this._alter_by_id(id, partial_atom);
 	}
 	
-	// public async delete_one(atom:Atom<A>)
-	//     :Promise<Atom<A>>{
-	//   return this.delete_by_id(atom._id);
-	//   // const db_res_delete = await this._delete_one(atom);
-	//   // if(db_res_delete && this._db_trash_relation){
-	//   //   db_res_delete._deleted_from = db_res_delete._id;
-	//   //   return await this.trash_insert_one(db_res_delete);
-	//   // }
-	//   // return db_res_delete;
-	// }
+	public async delete_one(atom:Atom<A>)
+			:Promise<Atom<A>>{
+		return await this.delete_by_id(atom._id);
+		// const db_res_delete = await this._delete_one(atom);
+		// if(db_res_delete && this._db_trash_relation){
+		//   db_res_delete._deleted_from = db_res_delete._id;
+		//   return await this.trash_insert_one(db_res_delete);
+		// }
+		// return db_res_delete;
+	}
 	
 	public async delete_by_id(id:string)
 			:Promise<Atom<A>>{
@@ -205,7 +205,7 @@ export class DAL<A extends AtomName> {
 			const err_msg = `Cannot _insert_one [in_trash=true]. Trash DB not found.`;
 			throw urn_exc.create('INS_ONE_TRASH_NOT_FOUND', err_msg);
 		}
-		
+			
 		urn_atm.validate_shape<A>(this.atom_name, atom_shape);
 		
 		const _relation = (in_trash === true && this._db_trash_relation) ?

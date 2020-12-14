@@ -10,6 +10,7 @@ import {urn_exception, urn_util} from 'urn-lib';
 const urn_exc = urn_exception.init(`ATM`, `Atom module`);
 
 import {
+	atom_default_properties,
 	AtomName,
 	KeyOfAtom,
 	AtomPropertiesDefinition,
@@ -61,17 +62,9 @@ export function validate_partial<A extends AtomName>(atom_name:A, partial_atom:P
 
 function _validate_default_properties<A extends AtomName>(atom:Atom<A>)
 		:true{
-	if(!urn_util.object.has_key(atom, '_id') || typeof atom._id !== 'string'){
-		const err_msg = `Invalid or missing property [_id].`;
-		throw urn_exc.create('VALIDATE_INVALID_DEF_PROP', err_msg);
-	}
-	if(!urn_util.object.has_key(atom, 'date') || !urn_util.is.date(atom.date)){
-		const err_msg = `Invalid or missing property [date].`;
-		throw urn_exc.create('VALIDATE_INVALID_DEF_PROP', err_msg);
-	}
-	if(urn_util.object.has_key(atom, '_deleted_from') && typeof atom._deleted_from !== 'string'){
-		const err_msg = `Invalid property [_deleted_from].`;
-		throw urn_exc.create('VALIDATE_INVALID_DEF_PROP', err_msg);
+	let k: keyof typeof atom_default_properties;
+	for(k in atom_default_properties){
+		_check_prop(atom_default_properties[k], k, atom[k]);
 	}
 	return true;
 }
@@ -79,7 +72,7 @@ function _validate_default_properties<A extends AtomName>(atom:Atom<A>)
 function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
 	const atom_properties = atom_book[atom_name]['properties'] as PropertiesOfAtomDefinition<A>;
-	const missin_props:KeyOfAtom<A>[] = [];
+	const missin_props:string[] = [];
 	for(const k in atom_properties){
 		if(!urn_util.object.has_key(atom_shape,k)){
 			missin_props.push(k);
@@ -98,6 +91,9 @@ function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:
 	const atom_properties = atom_book[atom_name]['properties'] as PropertiesOfAtomDefinition<A>;
 	const extra_props:string[] = [];
 	for(const k in partial_atom){
+		if(urn_util.object.has_key(atom_default_properties,k)){
+			continue;
+		}
 		if(!urn_util.object.has_key(atom_properties,k)){
 			extra_props.push(k);
 		}
@@ -112,21 +108,29 @@ function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:
 
 function _properties_have_correct_type<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
-	// let k:KeyOfAtom<A>;
+	let k:KeyOfAtom<A>;
 	const props = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
-	for(const k in partial_atom){
-		const prop_def = props[k];
-		_check_prop(prop_def.type, k, partial_atom[k]);
+	for(k in partial_atom){
+		const prop_def = (urn_util.object.has_key(atom_default_properties, k)) ? 
+			atom_default_properties[k] : props[k];
+		_check_prop(prop_def, k, partial_atom[k]);
 	}
 	return true;
 }
 
 function _check_prop(
-	prop_type: AtomPropertyType,
+	prop_def: AtomPropertyDefinition,
 	prop_key: string,
-	prop_value:any
+	prop_value: any
 ):true{
-	switch(prop_type){
+	if(
+		urn_util.object.has_key(prop_def,'optional') &&
+		prop_def.optional === true &&
+		typeof prop_value === 'undefined'
+	){
+		return true;
+	}
+	switch(prop_def.type){
 		case AtomPropertyType.ID:
 		case AtomPropertyType.TEXT:
 		case AtomPropertyType.LONG_TEXT:
