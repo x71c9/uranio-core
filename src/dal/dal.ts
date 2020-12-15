@@ -286,6 +286,9 @@ export class DAL<A extends AtomName> {
 			filter_object[k] = partial_atom[k];
 			filter.$or.push(filter_object);
 		}
+		if(filter.$or.length === 0){
+			return;
+		}
 		try{
 			const res_select_one = await this._select_one(filter);
 			const equal_values:Set<KeyOfAtom<A>> = new Set();

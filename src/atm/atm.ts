@@ -17,7 +17,6 @@ import {
 	AtomPropertyDefinition,
 	Atom,
 	AtomShape,
-	PropertiesOfAtomDefinition,
 	AtomPropertyType
 } from '../types';
 
@@ -39,17 +38,19 @@ export function get_unique_keys<A extends AtomName>(atom_name:A)
 export function validate<A extends AtomName>(atom_name:A, atom:Atom<A>)
 		:true{
 	_validate_default_properties(atom);
-	_has_all_properties<A>(atom_name, atom);
-	_has_no_other_properties<A>(atom_name, atom);
-	_properties_have_correct_type<A>(atom_name, atom);
+	validate_shape<A>(atom_name, atom);
+	// _has_all_properties<A>(atom_name, atom);
+	// _has_no_other_properties<A>(atom_name, atom);
+	// _properties_have_correct_type<A>(atom_name, atom);
 	return true;
 }
 
 export function validate_shape<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
 	_has_all_properties<A>(atom_name, atom_shape);
-	_has_no_other_properties<A>(atom_name, atom_shape);
-	_properties_have_correct_type<A>(atom_name, atom_shape);
+	validate_partial<A>(atom_name, atom_shape);
+	// _has_no_other_properties<A>(atom_name, atom_shape);
+	// _properties_have_correct_type<A>(atom_name, atom_shape);
 	return true;
 }
 
@@ -64,14 +65,14 @@ function _validate_default_properties<A extends AtomName>(atom:Atom<A>)
 		:true{
 	let k: keyof typeof atom_default_properties;
 	for(k in atom_default_properties){
-		_check_prop(atom_default_properties[k], k, atom[k]);
+		_check_prop_main_type(atom_default_properties[k], k, atom[k]);
 	}
 	return true;
 }
 
 function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
-	const atom_properties = atom_book[atom_name]['properties'] as PropertiesOfAtomDefinition<A>;
+	const atom_properties = atom_book[atom_name]['properties'];
 	const missin_props:string[] = [];
 	for(const k in atom_properties){
 		if(!urn_util.object.has_key(atom_shape,k)){
@@ -88,7 +89,7 @@ function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomSha
 
 function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
-	const atom_properties = atom_book[atom_name]['properties'] as PropertiesOfAtomDefinition<A>;
+	const atom_properties = atom_book[atom_name]['properties'];
 	const extra_props:string[] = [];
 	for(const k in partial_atom){
 		if(urn_util.object.has_key(atom_default_properties,k)){
@@ -108,23 +109,22 @@ function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:
 
 function _properties_have_correct_type<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
-	let k:KeyOfAtom<A>;
-	const props = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
-	for(k in partial_atom){
-		const prop_def = (urn_util.object.has_key(atom_default_properties, k)) ? 
-			atom_default_properties[k] : props[k];
-		_check_prop(prop_def, k, partial_atom[k]);
+	const props = atom_book[atom_name]['properties'];
+	for(const k in partial_atom){
+		const prop_def = (urn_util.object.has_key(atom_default_properties, k)) ?
+			atom_default_properties[k] : (urn_util.object.has_key(props,k)) ? props[k] : undefined;
+		if(!prop_def){
+			const err_msg = `Atom property definition missing for atom [${atom_name}] property [${k}]`;
+			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
+		}
+		_check_prop_main_type(prop_def, k, partial_atom[k]);
 	}
 	return true;
 }
 
-function _check_prop(
-	prop_def: AtomPropertyDefinition,
-	prop_key: string,
-	prop_value: any
-):true{
-	if(
-		urn_util.object.has_key(prop_def,'optional') &&
+function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: string, prop_value: any)
+		:true{
+	if(urn_util.object.has_key(prop_def,'optional') &&
 		prop_def.optional === true &&
 		typeof prop_value === 'undefined'
 	){
@@ -170,6 +170,8 @@ function _check_prop(
 			return true;
 		}
 	}
+	const err_msg = `Invalid Atom type definition.`;
+	throw urn_exc.create('CHECK_PROP_MAIN_TYPE_INVALID_ATM_TYPE',err_msg);
 }
 
 
