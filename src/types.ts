@@ -4,45 +4,7 @@
  * @packageDocumentation
  */
 
-import mongoose from 'mongoose';
-
 import {atom_book} from './book';
-
-export type DatabaseType = 'mongo'; // | 'mysql'
-
-export type Configuration = {
-	
-	db_type: DatabaseType;
-	
-	db_host: string;
-	
-	db_port: number;
-	
-	db_name: string;
-	
-	db_trash_name: string;
-	
-	db_log_name: string;
-	
-	jwt_private_key: string;
-	
-}
-
-export type AtomName = keyof typeof atom_book;
-
-export type PropertiesOfAtomDefinition<A extends AtomName> = typeof atom_book[A]['properties'];
-
-export type KeyOfAtom<A extends AtomName> =
-	keyof PropertiesOfAtomDefinition<A> & keyof typeof atom_default_properties;
-
-type AtomDefinitionPropertyInferType<P> = P extends {type: infer I} ? I : never;
-
-type AtomTypeOfProperty<A extends AtomName, k extends KeyOfAtom<A>> =
-	AtomDefinitionPropertyInferType<PropertiesOfAtomDefinition<A>[k]>;
-
-type RealTypeOfAtomProperty<A extends AtomName, k extends KeyOfAtom<A>> =
-	AtomTypeOfProperty<A,k> extends AtomPropertyType ?
-		RealTypeAtomProperty<AtomTypeOfProperty<A,k>> : never;
 
 export const atom_default_properties = {
 	_id: {
@@ -60,25 +22,59 @@ export const atom_default_properties = {
 	}
 } as const;
 
+export type AtomName = keyof typeof atom_book;
+
+export type PropertiesOfAtomDefinition<A extends AtomName> = typeof atom_book[A]['properties'];
+
+export type KeyOfDefaultProperties = keyof typeof atom_default_properties;
+
+
+type AtomDefinitionPropertyInferType<P> = P extends {type: infer I} ? I : never;
+
+type AtomTypeOfProperty<A extends AtomName, k extends KeyOfAtomShape<A>> =
+	AtomDefinitionPropertyInferType<PropertiesOfAtomDefinition<A>[k]>;
+
+type RealTypeOfAtomProperty<A extends AtomName, k extends KeyOfAtomShape<A>> =
+	AtomTypeOfProperty<A,k> extends AtomPropertyType ?
+		RealTypeAtomProperty<AtomTypeOfProperty<A,k>> : never;
+
+type AtomTypeOfDefaultProperty<k extends KeyOfDefaultProperties> =
+	AtomDefinitionPropertyInferType<typeof atom_default_properties[k]>;
+
+type RealTypeOfAtomDefaultProperty<k extends KeyOfDefaultProperties> =
+	RealTypeAtomProperty<AtomTypeOfDefaultProperty<k>>;
+
 type AtomDefaultProperties = {
-	_id: RealTypeAtomProperty<AtomPropertyType.ID>,
-	_deleted_from?: RealTypeAtomProperty<AtomPropertyType.ID>,
-	_date: RealTypeAtomProperty<AtomPropertyType.TIME>
+	[k in KeyOfDefaultProperties]: RealTypeOfAtomDefaultProperty<k>
 }
 
+
+export type KeyOfAtomShape<A extends AtomName> = keyof PropertiesOfAtomDefinition<A>;
+
+export type KeyOfAtom<A extends AtomName> =
+	KeyOfAtomShape<A> & KeyOfDefaultProperties;
+
+
 export type AtomShape<A extends AtomName> = {
-	[k in KeyOfAtom<A>]: RealTypeOfAtomProperty<A,k>
+	[k in KeyOfAtomShape<A>]: RealTypeOfAtomProperty<A,k>
 };
 
 export type Atom<A extends AtomName> = AtomDefaultProperties & AtomShape<A>;
+
+
+type SubType<Base, Condition> = Pick<Base, {
+    [Key in keyof Base]: Base[Key] extends Condition ? Key : never
+}[keyof Base]>;
+
+type ExtractOptional<P> = SubType<P, {optional: true}>;
+
 
 export type AtomBook = {
 	[k:string]: AtomDefinition
 };
 
 export type AtomDefinition = {
-	properties: AtomPropertiesDefinition,
-	mongo_schema: mongoose.SchemaDefinition
+	properties: AtomPropertiesDefinition
 }
 
 export type AtomPropertiesDefinition = {
@@ -153,17 +149,19 @@ interface AtomPropertyEmail extends AtomFiledShared {
 }
 
 interface AtomPropertyInteger extends AtomFiledShared {
-	type: AtomPropertyType.INTEGER
+	type: AtomPropertyType.INTEGER,
+	validation?: AtomPropertyNumberValidation
 }
 
 interface AtomPropertyFloat extends AtomFiledShared {
 	type: AtomPropertyType.FLOAT,
+	validation?: AtomPropertyNumberValidation
 	format?: AtomPropertyFloatFormat
 }
 
 interface AtomPropertyBinary extends AtomFiledShared {
 	type: AtomPropertyType.BINARY
-	default?: 0 | 1,
+	default?: false | true,
 	values?: [string, string]
 }
 
@@ -185,7 +183,7 @@ interface AtomPropertySet extends AtomFiledShared {
 
 interface AtomPropertyAtom extends AtomFiledShared {
 	type: AtomPropertyType.ATOM,
-	atom: string,
+	atom: AtomName,
 	validation?: AtomPropertyAtomValidation
 }
 
@@ -204,9 +202,16 @@ interface AtomPropertyStringValidation {
 	uppercase?: boolean
 }
 
+interface AtomPropertyNumberValidation {
+	min?: number,
+	max?: number,
+	eq?: number
+}
+
 interface AtomPropertyTimeValidation {
 	min?: Date,
-	max?: Date
+	max?: Date,
+	eq?: Date
 }
 
 interface AtomPropertySetValidation {
@@ -228,34 +233,42 @@ interface AtomPropertyFloatFormat {
 
 
 type KeyObjectOfAtom<A extends AtomName> = {
-	
 	[P in KeyOfAtom<A>]?: any;
-	
 }
 
 export type QueryOptions<A extends AtomName> = {
-	
 	sort?: string | KeyObjectOfAtom<A>;
-	
 	limit?: number;
-	
 	skip?: number;
-	
 }
 
 type FilterLogicType<A extends AtomName> = {
-	
 	$and?: KeyObjectOfAtom<A>[],
-	
 	$or?: KeyObjectOfAtom<A>[],
-	
 	$nor?: KeyObjectOfAtom<A>[],
-	
 	$not?: KeyObjectOfAtom<A>[]
-	
 };
 
 export type FilterType<A extends AtomName> = KeyObjectOfAtom<A> & FilterLogicType<A>;
 
+export type DatabaseType = 'mongo'; // | 'mysql'
+
+export type Configuration = {
+	
+	db_type: DatabaseType;
+	
+	db_host: string;
+	
+	db_port: number;
+	
+	db_name: string;
+	
+	db_trash_name: string;
+	
+	db_log_name: string;
+	
+	jwt_private_key: string;
+	
+}
 
 
