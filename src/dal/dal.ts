@@ -64,34 +64,24 @@ export class DAL<A extends AtomName> {
 	
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
-		// vim ts compiler was giving an unusal error
-		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
+		await this._check_unique(atom_shape);
 		return await this._insert_one(atom_shape);
 	}
 	
 	public async alter_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
-		// vim ts compiler was giving an unusal error
-		return await this.alter_by_id(atom._id, atom as Partial<AtomShape<A>>);
-		// await this._check_unique(atom);
-		// return await this._alter_one(atom);
+		return await this.alter_by_id(atom._id, atom);
 	}
 	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
-		await this._check_unique(partial_atom);
+		await this._check_unique(partial_atom, id);
 		return await this._alter_by_id(id, partial_atom);
 	}
 	
 	public async delete_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
 		return await this.delete_by_id(atom._id);
-		// const db_res_delete = await this._delete_one(atom);
-		// if(db_res_delete && this._db_trash_relation){
-		//   db_res_delete._deleted_from = db_res_delete._id;
-		//   return await this.trash_insert_one(db_res_delete);
-		// }
-		// return db_res_delete;
 	}
 	
 	public async delete_by_id(id:string)
@@ -272,21 +262,30 @@ export class DAL<A extends AtomName> {
 		return db_res_delete;
 	}
 	
-	private async _check_unique(partial_atom:Partial<AtomShape<A>>)
+	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id = '')
 			:Promise<void>{
 		
 		urn_atm.validate_partial<A>(this.atom_name, partial_atom);
 		
 		const filter:FilterType<A> = {};
-		filter.$or = [];
+		if(id !== '' && this._db_relation.is_valid_id(id)){
+			filter.$and = [{_id: id}];
+		}
+		const $or = [];
 		for(const k of urn_atm.get_unique_keys(this.atom_name)){
 			const filter_object:{[P in KeyOfAtom<A>]?:any} = {};
 			filter_object[k] = partial_atom[k];
-			filter.$or.push(filter_object);
+			$or.push(filter_object);
 		}
-		if(filter.$or.length === 0){
+		if($or.length === 0){
 			return;
 		}
+		if(filter.$and){
+			filter.$and.push($or);
+		}else{
+			filter.$or = $or;
+		}
+		console.log(filter);
 		try{
 			const res_select_one = await this._select_one(filter);
 			const equal_values:Set<KeyOfAtom<A>> = new Set();
