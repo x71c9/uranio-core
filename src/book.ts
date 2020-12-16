@@ -11,8 +11,7 @@ const core_atoms_book = {
 			},
 			password: {
 				type: AtomPropertyType.ENCRYPTED,
-				label: 'Email',
-				required: true
+				label: 'Email'
 			}
 		}
 	}
@@ -28,7 +27,8 @@ export const atom_book = {
 			},
 			barcode: {
 				type: AtomPropertyType.TEXT,
-				label: 'Barcode'
+				label: 'Barcode',
+				optional: true
 			}
 		}
 	},

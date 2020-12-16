@@ -10,7 +10,8 @@ import {urn_exception, urn_util} from 'urn-lib';
 const urn_exc = urn_exception.init(`ATM`, `Atom module`);
 
 import {
-	atom_default_properties,
+	atom_hard_properties,
+	atom_common_properties,
 	AtomName,
 	KeyOfAtom,
 	AtomPropertiesDefinition,
@@ -32,25 +33,28 @@ export function get_unique_keys<A extends AtomName>(atom_name:A)
 			unique_keys.add(k as KeyOfAtom<A>);
 		}
 	}
+	let k:keyof typeof atom_common_properties;
+	for(k in atom_common_properties){
+		const prop:AtomPropertyDefinition = atom_common_properties[k];
+		if(urn_util.object.has_key(prop, 'unique') && prop.unique === true){
+			unique_keys.add(k as KeyOfAtom<A>);
+		}
+	}
 	return unique_keys;
 }
 
 export function validate<A extends AtomName>(atom_name:A, atom:Atom<A>)
 		:true{
-	_validate_default_properties(atom);
+	_validate_hard_properties(atom);
 	validate_shape<A>(atom_name, atom);
-	// _has_all_properties<A>(atom_name, atom);
-	// _has_no_other_properties<A>(atom_name, atom);
-	// _properties_have_correct_type<A>(atom_name, atom);
 	return true;
 }
 
 export function validate_shape<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
 	_has_all_properties<A>(atom_name, atom_shape);
-	validate_partial<A>(atom_name, atom_shape);
-	// _has_no_other_properties<A>(atom_name, atom_shape);
-	// _properties_have_correct_type<A>(atom_name, atom_shape);
+	// vim ts compiler was giving an error AtomShape is not compatibile with Partial<AtomShape>>
+	validate_partial<A>(atom_name, atom_shape as Partial<AtomShape<A>>);
 	return true;
 }
 
@@ -61,11 +65,16 @@ export function validate_partial<A extends AtomName>(atom_name:A, partial_atom:P
 	return true;
 }
 
-function _validate_default_properties<A extends AtomName>(atom:Atom<A>)
+function _is_optional_property(prop:AtomPropertyDefinition)
+		:boolean{
+	return (urn_util.object.has_key(prop, 'optional') && prop.optional === true);
+}
+
+function _validate_hard_properties<A extends AtomName>(atom:Atom<A>)
 		:true{
-	let k: keyof typeof atom_default_properties;
-	for(k in atom_default_properties){
-		_check_prop_main_type(atom_default_properties[k], k, atom[k]);
+	let k: keyof typeof atom_hard_properties;
+	for(k in atom_hard_properties){
+		_check_prop_main_type(atom_hard_properties[k], k, atom[k]);
 	}
 	return true;
 }
@@ -74,8 +83,13 @@ function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomSha
 		:true{
 	const atom_properties = atom_book[atom_name]['properties'];
 	const missin_props:string[] = [];
-	for(const k in atom_properties){
-		if(!urn_util.object.has_key(atom_shape,k)){
+	for(const [k,v] of Object.entries(atom_properties)){
+		if(!_is_optional_property(v) && !urn_util.object.has_key(atom_shape,k)){
+			missin_props.push(k);
+		}
+	}
+	for(const [k,v] of Object.entries(atom_common_properties)){
+		if(!_is_optional_property(v) && !urn_util.object.has_key(atom_shape,k)){
 			missin_props.push(k);
 		}
 	}
@@ -92,7 +106,10 @@ function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:
 	const atom_properties = atom_book[atom_name]['properties'];
 	const extra_props:string[] = [];
 	for(const k in partial_atom){
-		if(urn_util.object.has_key(atom_default_properties,k)){
+		if(urn_util.object.has_key(atom_hard_properties,k)){
+			continue;
+		}
+		if(urn_util.object.has_key(atom_common_properties,k)){
 			continue;
 		}
 		if(!urn_util.object.has_key(atom_properties,k)){
@@ -110,14 +127,21 @@ function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:
 function _properties_have_correct_type<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
 	const props = atom_book[atom_name]['properties'];
-	for(const k in partial_atom){
-		const prop_def = (urn_util.object.has_key(atom_default_properties, k)) ?
-			atom_default_properties[k] : (urn_util.object.has_key(props,k)) ? props[k] : undefined;
+	let k:keyof typeof partial_atom;
+	for(k in partial_atom){
+		let prop_def = undefined;
+		if(urn_util.object.has_key(atom_hard_properties, k)){
+			prop_def = atom_hard_properties[k];
+		}else if(urn_util.object.has_key(atom_common_properties, k)){
+			prop_def = atom_common_properties[k];
+		}else if(urn_util.object.has_key(props, k)){
+			prop_def = props[k];
+		}
 		if(!prop_def){
 			const err_msg = `Atom property definition missing for atom [${atom_name}] property [${k}]`;
 			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
 		}
-		_check_prop_main_type(prop_def, k, partial_atom[k]);
+		_check_prop_main_type(prop_def, k as string, partial_atom[k]);
 	}
 	return true;
 }
