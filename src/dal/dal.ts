@@ -262,13 +262,13 @@ export class DAL<A extends AtomName> {
 		return db_res_delete;
 	}
 	
-	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id = '')
+	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
 			:Promise<void>{
 		
 		urn_atm.validate_partial<A>(this.atom_name, partial_atom);
 		
 		const filter:FilterType<A> = {};
-		if(id !== '' && this._db_relation.is_valid_id(id)){
+		if(id !== false && this._db_relation.is_valid_id(id)){
 			filter.$and = [{_id: id}];
 		}
 		const $or = [];
