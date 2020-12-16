@@ -14,34 +14,48 @@ import {
 	AtomName,
 	AtomPropertyDefinition,
 	AtomPropertiesDefinition,
-	AtomPropertyType
+	AtomPropertyType,
+	atom_hard_properties,
+	atom_common_properties
 } from '../../types';
 
 import {atom_book} from '../../book';
 
-const default_atom_schema = {
+const hard_atom_schema = {
 	_date: {
+		required: true,
 		type: Date,
-		default: Date.now,
-		required: true
-	},
-	_deleted_from: {
-		type: String,
-		trim: true
-	},
+		default: Date.now
+	}
 };
 
 export function generate_mongoose_schema<A extends AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{
 	const props_def = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
-	let mongoose_schema = {...default_atom_schema};
-	for(const k in props_def){
-		const atom_prop_def:AtomPropertyDefinition = props_def[k];
+	let mongoose_schema = {...hard_atom_schema};
+	// let k:keyof typeof atom_hard_properties;
+	// for(k in atom_hard_properties){
+	//   const atom_prop_def:AtomPropertyDefinition = atom_hard_properties[k];
+	//   mongoose_schema = {
+	//     ..._generate_mongoose_schema_prop(atom_prop_def, k)
+	//   };
+	// }
+	let l:keyof typeof atom_common_properties;
+	for(l in atom_common_properties){
+		const atom_prop_def:AtomPropertyDefinition = atom_common_properties[l];
 		mongoose_schema = {
 			...mongoose_schema,
-			..._generate_mongoose_schema_prop(atom_prop_def, k)
+			..._generate_mongoose_schema_prop(atom_prop_def, l)
 		};
 	}
+	for(const m in props_def){
+		const atom_prop_def:AtomPropertyDefinition = props_def[m];
+		mongoose_schema = {
+			...mongoose_schema,
+			..._generate_mongoose_schema_prop(atom_prop_def, m)
+		};
+	}
+	console.log(mongoose_schema);
 	return mongoose_schema;
 }
 
@@ -52,9 +66,16 @@ export function generate_mongoose_trash_schema<A extends AtomName>(atom_name:A)
 
 function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_key:string)
 		:mongoose.SchemaDefinition{
+	let is_required = true;
+	if(urn_util.object.has_key(prop_def,'optional') && prop_def.optional === true){
+		is_required = false;
+	}
+	if(prop_key in atom_hard_properties){
+		is_required = false;
+	}
 	const schema_prop = {
 		[prop_key]:{
-			required: true
+			required: is_required
 		}
 	} as mongoose.SchemaDefinition;
 	if(urn_util.object.has_key(prop_def,'unique') && prop_def.unique === true){
@@ -167,7 +188,7 @@ function _allow_duplicate(schema_definition:mongoose.SchemaDefinition)
 
 
 export const user_schema_definition:mongoose.SchemaDefinition = {
-	...default_atom_schema,
+	// ...default_atom_schema,
 	first_name: {
 		type: String,
 		trim: true,

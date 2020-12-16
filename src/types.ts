@@ -39,11 +39,11 @@ export type KeyOfCommonProperties = keyof typeof atom_common_properties;
 
 
 type PickSubType<Base, Condition> = Pick<Base, {
-    [Key in keyof Base]: Base[Key] extends Condition ? Key : never
+	[Key in keyof Base]: Base[Key] extends Condition ? Key : never
 }[keyof Base]>;
 
 type OmitSubType<Base, Condition> = Omit<Base, {
-    [Key in keyof Base]: Base[Key] extends Condition ? Key : never
+	[Key in keyof Base]: Base[Key] extends Condition ? Key : never
 }[keyof Base]>;
 
 type ExtractOptional<P> = PickSubType<P, {optional: true}>;
