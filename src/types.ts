@@ -6,15 +6,10 @@
 
 import {atom_book} from './book';
 
-export const atom_default_properties = {
+export const atom_hard_properties = {
 	_id: {
 		type: AtomPropertyType.ID,
 		label: '_id',
-	},
-	_deleted_from: {
-		type: AtomPropertyType.ID,
-		label: '_deleted_from',
-		optional: true
 	},
 	_date: {
 		type: AtomPropertyType.TIME,
@@ -22,11 +17,25 @@ export const atom_default_properties = {
 	}
 } as const;
 
+export const atom_common_properties = {
+	_deleted_from: {
+		type: AtomPropertyType.ID,
+		label: 'Deleted from',
+		optional: true
+	},
+	active: {
+		type: AtomPropertyType.BINARY,
+		label: 'Active'
+	}
+} as const;
+
 export type AtomName = keyof typeof atom_book;
 
 export type PropertiesOfAtomDefinition<A extends AtomName> = typeof atom_book[A]['properties'];
 
-export type KeyOfDefaultProperties = keyof typeof atom_default_properties;
+export type KeyOfHardProperties = keyof typeof atom_hard_properties;
+
+export type KeyOfCommonProperties = keyof typeof atom_common_properties;
 
 
 type AtomDefinitionPropertyInferType<P> = P extends {type: infer I} ? I : never;
@@ -38,35 +47,68 @@ type RealTypeOfAtomProperty<A extends AtomName, k extends KeyOfAtomShape<A>> =
 	AtomTypeOfProperty<A,k> extends AtomPropertyType ?
 		RealTypeAtomProperty<AtomTypeOfProperty<A,k>> : never;
 
-type AtomTypeOfDefaultProperty<k extends KeyOfDefaultProperties> =
-	AtomDefinitionPropertyInferType<typeof atom_default_properties[k]>;
+type AtomTypeOfHardProperty<k extends KeyOfHardProperties> =
+	AtomDefinitionPropertyInferType<typeof atom_hard_properties[k]>;
 
-type RealTypeOfAtomDefaultProperty<k extends KeyOfDefaultProperties> =
-	RealTypeAtomProperty<AtomTypeOfDefaultProperty<k>>;
+type AtomTypeOfCommonProperty<k extends KeyOfCommonProperties> =
+	AtomDefinitionPropertyInferType<typeof atom_common_properties[k]>;
 
-type AtomDefaultProperties = {
-	[k in KeyOfDefaultProperties]: RealTypeOfAtomDefaultProperty<k>
+type RealTypeOfAtomDefaultProperty<k extends KeyOfHardProperties> =
+	RealTypeAtomProperty<AtomTypeOfHardProperty<k>>;
+
+type RealTypeOfAtomCommonProperty<k extends KeyOfCommonProperties> =
+	RealTypeAtomProperty<AtomTypeOfCommonProperty<k>>;
+
+type AtomHardProperties = {
+	[k in KeyOfHardProperties]: RealTypeOfAtomDefaultProperty<k>
 }
 
+// type AtomCommonProperties = {
+//   [k in KeyOfCommonProperties]: RealTypeOfAtomCommonProperty<k>
+// }
 
-export type KeyOfAtomShape<A extends AtomName> = keyof PropertiesOfAtomDefinition<A>;
+export type OptionalKeyOfAtomShape<A extends AtomName> =
+	keyof ExtractOptional<PropertiesOfAtomDefinition<A>>;
 
-export type KeyOfAtom<A extends AtomName> =
-	KeyOfAtomShape<A> & KeyOfDefaultProperties;
+export type RequiredKeyOfAtomShape<A extends AtomName> =
+	keyof ExcludeOptional<PropertiesOfAtomDefinition<A>>;
 
+export type OptionalKeyOfCommonProperties =
+	keyof ExtractOptional<typeof atom_common_properties>;
+
+export type RequiredKeyOfCommonProperties =
+	keyof ExcludeOptional<typeof atom_common_properties>;
+
+export type KeyOfAtomShape<A extends AtomName> =
+	RequiredKeyOfAtomShape<A> | OptionalKeyOfAtomShape<A>;
 
 export type AtomShape<A extends AtomName> = {
-	[k in KeyOfAtomShape<A>]: RealTypeOfAtomProperty<A,k>
+	[k in RequiredKeyOfAtomShape<A>]: RealTypeOfAtomProperty<A,k>
+} & {
+	[k in OptionalKeyOfAtomShape<A>]?: RealTypeOfAtomProperty<A,k>
+} & {
+	[k in RequiredKeyOfCommonProperties]: RealTypeOfAtomCommonProperty<k>
+} & {
+	[k in OptionalKeyOfCommonProperties]?: RealTypeOfAtomCommonProperty<k>
 };
 
-export type Atom<A extends AtomName> = AtomDefaultProperties & AtomShape<A>;
+export type KeyOfAtom<A extends AtomName> =
+	KeyOfAtomShape<A> & KeyOfHardProperties & KeyOfCommonProperties;
+
+export type Atom<A extends AtomName> = AtomHardProperties & AtomShape<A>;
 
 
-type SubType<Base, Condition> = Pick<Base, {
+type PickSubType<Base, Condition> = Pick<Base, {
     [Key in keyof Base]: Base[Key] extends Condition ? Key : never
 }[keyof Base]>;
 
-type ExtractOptional<P> = SubType<P, {optional: true}>;
+type OmitSubType<Base, Condition> = Omit<Base, {
+    [Key in keyof Base]: Base[Key] extends Condition ? Key : never
+}[keyof Base]>;
+
+type ExtractOptional<P> = PickSubType<P, {optional: true}>;
+
+type ExcludeOptional<P> = OmitSubType<P, {optional: true}>;
 
 
 export type AtomBook = {

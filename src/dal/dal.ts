@@ -12,13 +12,9 @@ import * as urn_rel from '../rel/';
 
 import * as urn_validators from '../vali/';
 
-// import * as util from '../util/';
-
 import {QueryOptions, FilterType, AtomName, AtomShape, Atom, KeyOfAtom} from '../types';
 
 import {core_config} from '../config/defaults';
-
-// import {atom_book} from '../book'
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -68,13 +64,15 @@ export class DAL<A extends AtomName> {
 	
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
-		await this._check_unique(atom_shape);
+		// vim ts compiler was giving an unusal error
+		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
 		return await this._insert_one(atom_shape);
 	}
 	
 	public async alter_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
-		return await this.alter_by_id(atom._id, atom);
+		// vim ts compiler was giving an unusal error
+		return await this.alter_by_id(atom._id, atom as Partial<AtomShape<A>>);
 		// await this._check_unique(atom);
 		// return await this._alter_one(atom);
 	}
@@ -126,20 +124,20 @@ export class DAL<A extends AtomName> {
 		return await this._insert_one(atom, true);
 	}
 	
-	// public async trash_update_one(atom:Atom<A>)
-	//     :Promise<Atom<A>>{
-	//   return await this._alter_one(atom, true);
-	// }
+	public async trash_alter_one(atom:Atom<A>)
+			:Promise<Atom<A>>{
+		return await this._alter_by_id(atom._id, atom, true);
+	}
 	
-	public async trash_update_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
+	public async trash_alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
 		return await this._alter_by_id(id, partial_atom, true);
 	}
 	
-	// public async trash_delete_one(atom:Atom<A>)
-	//     :Promise<Atom<A>>{
-	//   return await this._delete_one(atom, true);
-	// }
+	public async trash_delete_one(atom:Atom<A>)
+			:Promise<Atom<A>>{
+		return await this._delete_by_id(atom._id, true);
+	}
 	
 	public async trash_delete_by_id(id:string)
 			:Promise<Atom<A>>{
