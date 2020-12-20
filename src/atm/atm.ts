@@ -161,32 +161,42 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 		case AtomPropertyType.ENCRYPTED:
 		case AtomPropertyType.EMAIL:{
 			if(typeof prop_value !== 'string'){
-				throw urn_exc.create('INVALID_PROP', `Invalid property [${prop_key}]`);
+				let err_msg = `Invalid property [${prop_key}]. Property should be a string.`;
+				err_msg += ` Type ${typeof prop_value} given.`;
+				throw urn_exc.create('INVALID_PROP', err_msg);
 			}
 			return true;
 		}
 		case AtomPropertyType.INTEGER:
 		case AtomPropertyType.FLOAT:{
 			if(typeof prop_value !== 'number'){
-				throw urn_exc.create('INVALID_PROP', `Invalid property [${prop_key}]`);
+				let err_msg = `Invalid property [${prop_key}]. Property should be a number.`;
+				err_msg += ` Type ${typeof prop_value} given.`;
+				throw urn_exc.create('INVALID_PROP', err_msg);
 			}
 			return true;
 		}
 		case AtomPropertyType.BINARY:{
 			if(typeof prop_value !== 'boolean'){
-				throw urn_exc.create('INVALID_PROP', `Invalid property [${prop_key}]`);
+				let err_msg = `Invalid property [${prop_key}]. Property should be a boolean.`;
+				err_msg += ` Type ${typeof prop_value} given.`;
+				throw urn_exc.create('INVALID_PROP', err_msg);
 			}
 			return true;
 		}
 		case AtomPropertyType.TIME:{
 			if(!urn_util.is.date(prop_value)){
-				throw urn_exc.create('INVALID_PROP', `Invalid property [${prop_key}]`);
+				let err_msg = `Invalid property [${prop_key}]. Property should be a Date.`;
+				err_msg += ` Type ${typeof prop_value} given.`;
+				throw urn_exc.create('INVALID_PROP', err_msg);
 			}
 			return true;
 		}
 		case AtomPropertyType.SET:{
 			if(!Array.isArray(prop_value)){
-				throw urn_exc.create('INVALID_PROP', `Invalid property [${prop_key}]`);
+				let err_msg = `Invalid property [${prop_key}]. Property should be an Array.`;
+				err_msg += ` Type ${typeof prop_value} given.`;
+				throw urn_exc.create('INVALID_PROP', err_msg);
 			}
 			return true;
 		}

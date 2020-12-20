@@ -22,32 +22,31 @@ export default urn_core;
 //   console.log(data);
 // });
 
-const pro_bll = urn_core.bll.create('product');
+// const pro_bll = urn_core.bll.create('product');
 
 // pro_bll.find({}).then(function(data){
 //   console.log(data);
 // });
 
-pro_bll.save_one({title: 'Product title', barcode: '98923084023', active: false}).then(function(data){
-	console.log(data);
-});
-
-// const obi_bll = urn_core.bll.create('obi');
-
-// const obi_one = {
-//   other_id: '92348njkhds8fsdnusoda',
-//   label: 'OBIONW8',
-//   mail: 'dddd',
-//   age: -1,
-//   price: 888.0099,
-//   active: 3,
-//   password: 6,
-//   confirmation_date: '2020-12-0',
-//   categories: ['w','2'],
-//   media: {}
-// };
-
-// obi_bll.save_one(obi_one).then(function(data){
+// pro_bll.save_one({title: 'Product title', barcode: '98923084023', active: false}).then(function(data){
 //   console.log(data);
 // });
+
+const obi_bll = urn_core.bll.create('obi');
+
+const obi_one = {
+	other_id: '92348njkhds8fsdnusoda',
+	label: 'OBIONW8',
+	mail: 'dddd',
+	age: -1,
+	price: 888.0099,
+	active: true,
+	password: '',
+	confirmation_date: new Date('2020-12-0'),
+	categories: ['w','2'],
+	media: {}
+};
+obi_bll.save_one(obi_one).then(function(data){
+	console.log(data);
+});
 

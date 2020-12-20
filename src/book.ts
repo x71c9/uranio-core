@@ -94,6 +94,7 @@ export const atom_book = {
 			confirmation_date: {
 				type: AtomPropertyType.TIME,
 				label: 'Confirmation',
+				default: 'NOW',
 				validation: {
 					min: '1986-03-22',
 					max: '2020-12-15'

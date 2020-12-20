@@ -13,7 +13,8 @@ export const atom_hard_properties = {
 	},
 	_date: {
 		type: AtomPropertyType.TIME,
-		label: '_date'
+		label: '_date',
+		default: 'NOW'
 	}
 } as const;
 
@@ -141,6 +142,8 @@ export type AtomPropertyDefinition =
 	AtomPropertyEncrypted |
 	AtomPropertyTime |
 	AtomPropertySet |
+	AtomPropertyStringEnum |
+	AtomPropertyNumberEnum |
 	AtomPropertyAtom;
 
 export const enum AtomPropertyType {
@@ -153,6 +156,8 @@ export const enum AtomPropertyType {
 	BINARY = 'BINARY',
 	ENCRYPTED = 'ENCRYPTED',
 	TIME = 'TIME',
+	STRING_ENUM = 'STRING_ENUM',
+	NUMBER_ENUM = 'NUMBER_ENUM',
 	SET = 'SET',
 	ATOM = 'ATOM'
 }
@@ -168,69 +173,97 @@ type RealTypeAtomProperty<AT extends AtomPropertyType> =
 	AT extends AtomPropertyType.ENCRYPTED ? string :
 	AT extends AtomPropertyType.TIME ? Date :
 	AT extends AtomPropertyType.SET ? Array<string | number> :
+	AT extends AtomPropertyType.STRING_ENUM ? string :
+	AT extends AtomPropertyType.NUMBER_ENUM ? number :
 	AT extends AtomPropertyType.ATOM ? any :
 	never;
 
-interface AtomFiledShared {
+interface AtomFieldShared {
 	type: AtomPropertyType,
 	label: string,
 	optional?: boolean,
 	unique?: boolean
 }
 
-interface AtomPropertyID extends AtomFiledShared {
+interface AtomPropertyID extends AtomFieldShared {
 	type: AtomPropertyType.ID,
 	validation?: AtomPropertyStringValidation
 }
 
-interface AtomPropertyText extends AtomFiledShared {
+interface AtomPropertyText extends AtomFieldShared {
 	type: AtomPropertyType.TEXT,
 	validation?: AtomPropertyStringValidation
 }
 
-interface AtomPropertyLongText extends AtomFiledShared {
+interface AtomPropertyLongText extends AtomFieldShared {
 	type: AtomPropertyType.LONG_TEXT,
 	validation?: AtomPropertyStringValidation
 }
 
-interface AtomPropertyEmail extends AtomFiledShared {
+export type AtomPropertyString =
+	AtomPropertyText |
+	AtomPropertyLongText |
+	AtomPropertyEncrypted;
+
+export type AtomPropertyNumber =
+	AtomPropertyInteger |
+	AtomPropertyFloat;
+
+export type AtomPropertyEnum =
+	AtomPropertyStringEnum |
+	AtomPropertyNumberEnum;
+
+interface AtomPropertyEmail extends AtomFieldShared {
 	type: AtomPropertyType.EMAIL
 }
 
-interface AtomPropertyInteger extends AtomFiledShared {
+interface AtomPropertyInteger extends AtomFieldShared {
 	type: AtomPropertyType.INTEGER,
 	validation?: AtomPropertyNumberValidation
 }
 
-interface AtomPropertyFloat extends AtomFiledShared {
+interface AtomPropertyFloat extends AtomFieldShared {
 	type: AtomPropertyType.FLOAT,
 	validation?: AtomPropertyNumberValidation
 	format?: AtomPropertyFloatFormat
 }
 
-interface AtomPropertyBinary extends AtomFiledShared {
+interface AtomPropertyBinary extends AtomFieldShared {
 	type: AtomPropertyType.BINARY
 	default?: false | true,
 	values?: [string, string]
 }
 
-interface AtomPropertyEncrypted extends AtomFiledShared {
+interface AtomPropertyEncrypted extends AtomFieldShared {
 	type: AtomPropertyType.ENCRYPTED,
 	validation?: AtomPropertyStringValidation
 }
 
-interface AtomPropertyTime extends AtomFiledShared {
+export interface AtomPropertyTime extends AtomFieldShared {
 	type: AtomPropertyType.TIME,
+	default?: Date | 'NOW',
 	validation?: AtomPropertyTimeValidation
 }
 
-interface AtomPropertySet extends AtomFiledShared {
+interface AtomPropertyStringEnum extends AtomFieldShared {
+	type: AtomPropertyType.STRING_ENUM,
+	values: string[],
+	default?: string
+}
+
+interface AtomPropertyNumberEnum extends AtomFieldShared {
+	type: AtomPropertyType.NUMBER_ENUM,
+	values: number[],
+	default?: number
+}
+
+interface AtomPropertySet extends AtomFieldShared {
 	type: AtomPropertyType.SET,
 	values: (string | number)[],
 	validation?: AtomPropertySetValidation
 }
 
-interface AtomPropertyAtom extends AtomFiledShared {
+interface AtomPropertyAtom extends AtomFieldShared {
 	type: AtomPropertyType.ATOM,
 	atom: AtomName,
 	validation?: AtomPropertyAtomValidation
@@ -273,6 +306,14 @@ interface AtomPropertyAtomValidation {
 	date_from?: Date,
 	date_until?: Date
 }
+
+export type AtomPropertyDefinitionValidation =
+	AtomPropertyStringValidation |
+	AtomPropertyNumberValidation |
+	AtomPropertyNumberValidation |
+	AtomPropertyTimeValidation |
+	AtomPropertySetValidation |
+	AtomPropertyAtomValidation;
 
 interface AtomPropertyFloatFormat {
 	decimal?: number,
