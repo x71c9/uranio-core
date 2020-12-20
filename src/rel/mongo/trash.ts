@@ -14,7 +14,7 @@ import {AtomName} from '../../types';
 
 import {Relation} from '../types';
 
-// import {mongo_trash_schemas} from './schemas/';
+// import {generate_mongoose_trash_schema} from './schema';
 
 import * as mongo_connection from './connection';
 
@@ -37,8 +37,8 @@ const mongo_trash_conn = mongo_connection.create(
 export class MongooseTrashRelation<A extends AtomName> extends MongooseRelation<A>
 	implements Relation<A> {
 	
-	constructor(relation_name:A, _mongo_schema:mongoose.SchemaDefinition){
-		super(relation_name, _mongo_schema);
+	constructor(atom_name:A){
+		super(atom_name);
 	}
 	
 	protected _get_connection():mongo_connection.ConnectionInstance{
@@ -46,8 +46,10 @@ export class MongooseTrashRelation<A extends AtomName> extends MongooseRelation<
 	}
 	
 	protected _complie_mongoose_model():mongoose.Model<mongoose.Document>{
-		const mongo_trash_schema = new mongoose.Schema(_allow_duplicate(this._mongo_schema), { versionKey: false });
-		return this._conn.get_model(this.relation_name, mongo_trash_schema);
+		const mongo_trash_schema = new mongoose.Schema(
+			_allow_duplicate(this._mongo_schema_def), { versionKey: false }
+		);
+		return this._conn.get_model(this.atom_name, mongo_trash_schema);
 	}
 	
 }
@@ -65,13 +67,13 @@ function _allow_duplicate(schema_definition:mongoose.SchemaDefinition)
 
 // export type MongooseTrashRelationInstance = InstanceType<typeof MongooseTrashRelation>;
 
-// export function create(relation_name:RelationName):MongooseTrashRelationInstance{
+// export function create(atom_name:RelationName):MongooseTrashRelationInstance{
 //   urn_log.fn_debug(`Create Mongoose Trash Relation`);
-//   return new MongooseTrashRelation(relation_name);
+//   return new MongooseTrashRelation(atom_name);
 // }
 
-export function trash_create<A extends AtomName>(relation_name: A, _mongo_schema:mongoose.SchemaDefinition)
+export function trash_create<A extends AtomName>(atom_name: A)
 		:MongooseRelation<A>{
 	urn_log.fn_debug(`Create MongooseTrashRelation`);
-	return new MongooseTrashRelation<A>(relation_name, _mongo_schema);
+	return new MongooseTrashRelation<A>(atom_name);
 }

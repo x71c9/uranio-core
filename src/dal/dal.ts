@@ -29,14 +29,8 @@ export class DAL<A extends AtomName> {
 	constructor(public atom_name:A) {
 		switch(core_config.db_type){
 			case 'mongo':{
-				this._db_relation = urn_rel.mongo.create<A>(
-					this.atom_name,
-					urn_rel.mongo.generate_mongoose_schema<A>(atom_name)
-				);
-				this._db_trash_relation = urn_rel.mongo.trash_create<A>(
-					this.atom_name,
-					urn_rel.mongo.generate_mongoose_trash_schema<A>(atom_name)
-				);
+				this._db_relation = urn_rel.mongo.create<A>(this.atom_name);
+				this._db_trash_relation = urn_rel.mongo.trash_create<A>(this.atom_name);
 				break;
 			}
 			default:{

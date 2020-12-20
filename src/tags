@@ -4,18 +4,18 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-Atom	types.ts	/^export type Atom<A extends AtomName> = AtomDefaultProperties & AtomShape<A>;$/;"	t
+Atom	types.ts	/^export type Atom<A extends AtomName> = AtomHardProperties & AtomShape<A>;$/;"	t
 AtomBook	types.ts	/^export type AtomBook = {$/;"	t
-AtomDefaultProperties	types.ts	/^type AtomDefaultProperties = {$/;"	t
 AtomDefinition	types.ts	/^export type AtomDefinition = {$/;"	t
 AtomDefinitionPropertyInferType	types.ts	/^type AtomDefinitionPropertyInferType<P> = P extends {type: infer I} ? I : never;$/;"	t
 AtomFiledShared	types.ts	/^interface AtomFiledShared {$/;"	i
+AtomHardProperties	types.ts	/^type AtomHardProperties = {$/;"	t
 AtomName	types.ts	/^export type AtomName = keyof typeof atom_book;$/;"	t
-AtomProperties	types.ts	/^export type AtomProperties = {$/;"	t
-AtomProperty	types.ts	/^export type AtomProperty =$/;"	t
+AtomPropertiesDefinition	types.ts	/^export type AtomPropertiesDefinition = {$/;"	t
 AtomPropertyAtom	types.ts	/^interface AtomPropertyAtom extends AtomFiledShared {$/;"	i
 AtomPropertyAtomValidation	types.ts	/^interface AtomPropertyAtomValidation {$/;"	i
 AtomPropertyBinary	types.ts	/^interface AtomPropertyBinary extends AtomFiledShared {$/;"	i
+AtomPropertyDefinition	types.ts	/^export type AtomPropertyDefinition =$/;"	t
 AtomPropertyEmail	types.ts	/^interface AtomPropertyEmail extends AtomFiledShared {$/;"	i
 AtomPropertyEncrypted	types.ts	/^interface AtomPropertyEncrypted extends AtomFiledShared {$/;"	i
 AtomPropertyFloat	types.ts	/^interface AtomPropertyFloat extends AtomFiledShared {$/;"	i
@@ -23,6 +23,7 @@ AtomPropertyFloatFormat	types.ts	/^interface AtomPropertyFloatFormat {$/;"	i
 AtomPropertyID	types.ts	/^interface AtomPropertyID extends AtomFiledShared {$/;"	i
 AtomPropertyInteger	types.ts	/^interface AtomPropertyInteger extends AtomFiledShared {$/;"	i
 AtomPropertyLongText	types.ts	/^interface AtomPropertyLongText extends AtomFiledShared {$/;"	i
+AtomPropertyNumberValidation	types.ts	/^interface AtomPropertyNumberValidation {$/;"	i
 AtomPropertySet	types.ts	/^interface AtomPropertySet extends AtomFiledShared {$/;"	i
 AtomPropertySetValidation	types.ts	/^interface AtomPropertySetValidation {$/;"	i
 AtomPropertyStringValidation	types.ts	/^interface AtomPropertyStringValidation {$/;"	i
@@ -30,27 +31,46 @@ AtomPropertyText	types.ts	/^interface AtomPropertyText extends AtomFiledShared {
 AtomPropertyTime	types.ts	/^interface AtomPropertyTime extends AtomFiledShared {$/;"	i
 AtomPropertyTimeValidation	types.ts	/^interface AtomPropertyTimeValidation {$/;"	i
 AtomShape	types.ts	/^export type AtomShape<A extends AtomName> = {$/;"	t
-AtomTypeOfProperty	types.ts	/^type AtomTypeOfProperty<A extends AtomName, k extends keyof PropertiesOfAtomDefinition<A>> =$/;"	t
+AtomTypeOfCommonProperty	types.ts	/^type AtomTypeOfCommonProperty<k extends KeyOfCommonProperties> =$/;"	t
+AtomTypeOfHardProperty	types.ts	/^type AtomTypeOfHardProperty<k extends KeyOfHardProperties> =$/;"	t
+AtomTypeOfProperty	types.ts	/^type AtomTypeOfProperty<A extends AtomName, k extends CustomKeyOfAtomShape<A>> =$/;"	t
 BLL	bll/bll.ts	/^class BLL<A extends AtomName> {$/;"	c
 Configuration	types.ts	/^export type Configuration = {$/;"	t
 ConnectionInstance	rel/mongo/connection.ts	/^export type ConnectionInstance = InstanceType<typeof MongooseDBConnection>;$/;"	t
+CustomKeyOfAtomShape	types.ts	/^export type CustomKeyOfAtomShape<A extends AtomName> =$/;"	t
 DAL	dal/dal.ts	/^export class DAL<A extends AtomName> {$/;"	c
 DatabaseType	types.ts	/^export type DatabaseType = 'mongo'; \/\/ | 'mysql'$/;"	t
+ExcludeOptional	types.ts	/^type ExcludeOptional<P> = OmitSubType<P, {optional: true}>;$/;"	t
+ExtractOptional	types.ts	/^type ExtractOptional<P> = PickSubType<P, {optional: true}>;$/;"	t
 FilterLogicType	types.ts	/^type FilterLogicType<A extends AtomName> = {$/;"	t
 FilterType	types.ts	/^export type FilterType<A extends AtomName> = KeyObjectOfAtom<A> & FilterLogicType<A>;$/;"	t
 KeyObjectOfAtom	types.ts	/^type KeyObjectOfAtom<A extends AtomName> = {$/;"	t
+KeyOfAtom	types.ts	/^export type KeyOfAtom<A extends AtomName> =$/;"	t
+KeyOfAtomShape	types.ts	/^export type KeyOfAtomShape<A extends AtomName> =$/;"	t
+KeyOfCommonProperties	types.ts	/^export type KeyOfCommonProperties = keyof typeof atom_common_properties;$/;"	t
+KeyOfHardProperties	types.ts	/^export type KeyOfHardProperties = keyof typeof atom_hard_properties;$/;"	t
 MongooseDBConnection	rel/mongo/connection.ts	/^class MongooseDBConnection {$/;"	c
 MongooseRelation	rel/mongo/relation.ts	/^export class MongooseRelation<A extends AtomName> implements Relation<A> {$/;"	c
 MongooseTrashRelation	rel/mongo/trash.ts	/^export class MongooseTrashRelation<A extends AtomName> extends MongooseRelation<A>$/;"	c
+OmitSubType	types.ts	/^type OmitSubType<Base, Condition> = Omit<Base, {$/;"	t
+OptionalKeyOfAtomCommonProperties	types.ts	/^export type OptionalKeyOfAtomCommonProperties =$/;"	t
+OptionalKeyOfAtomProperties	types.ts	/^export type OptionalKeyOfAtomProperties<A extends AtomName> =$/;"	t
+PickSubType	types.ts	/^type PickSubType<Base, Condition> = Pick<Base, {$/;"	t
 PropertiesOfAtomDefinition	types.ts	/^export type PropertiesOfAtomDefinition<A extends AtomName> = typeof atom_book[A]['properties'];$/;"	t
 QueryOptions	types.ts	/^export type QueryOptions<A extends AtomName> = {$/;"	t
 RealTypeAtomProperty	types.ts	/^type RealTypeAtomProperty<AT extends AtomPropertyType> =$/;"	t
-RealTypeOfAtomProperty	types.ts	/^type RealTypeOfAtomProperty<A extends AtomName, k extends keyof PropertiesOfAtomDefinition<A>> =$/;"	t
+RealTypeOfAtomCommonProperty	types.ts	/^type RealTypeOfAtomCommonProperty<k extends KeyOfCommonProperties> =$/;"	t
+RealTypeOfAtomHardProperty	types.ts	/^type RealTypeOfAtomHardProperty<k extends KeyOfHardProperties> =$/;"	t
+RealTypeOfAtomProperty	types.ts	/^type RealTypeOfAtomProperty<A extends AtomName, k extends CustomKeyOfAtomShape<A>> =$/;"	t
 Relation	rel/types.ts	/^export interface Relation<A extends AtomName> {$/;"	i
+RequiredKeyOfAtomCommonProperties	types.ts	/^export type RequiredKeyOfAtomCommonProperties =$/;"	t
+RequiredKeyOfAtomProperties	types.ts	/^export type RequiredKeyOfAtomProperties<A extends AtomName> =$/;"	t
+_allow_duplicate	rel/mongo/schema.ts	/^function _allow_duplicate(schema_definition:mongoose.SchemaDefinition)$/;"	f
 _allow_duplicate	rel/mongo/trash.ts	/^function _allow_duplicate(schema_definition:mongoose.SchemaDefinition)$/;"	f
 _alter_by_id	dal/dal.ts	/^	private async _alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>, in_trash = false)$/;"	m
-_alter_one	dal/dal.ts	/^	private async _alter_one(atom:Atom<A>, in_trash = false)$/;"	m
-_check_unique	dal/dal.ts	/^	private async _check_unique(partial_atom:Partial<AtomShape<A>>)$/;"	m
+_check_prop_main_type	atm/atm.ts	/^function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: string, prop_value: any)$/;"	f
+_check_unique	dal/dal.ts	/^	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)$/;"	m
+_clean_object	rel/mongo/relation.ts	/^function _clean_object<A extends AtomName>(resource:Atom<A>)$/;"	f
 _complie_mongoose_model	rel/mongo/relation.ts	/^	protected _complie_mongoose_model():mongoose.Model<mongoose.Document>{$/;"	m
 _complie_mongoose_model	rel/mongo/trash.ts	/^	protected _complie_mongoose_model():mongoose.Model<mongoose.Document>{$/;"	m
 _conn	rel/mongo/relation.ts	/^	protected _conn:mongo_connection.ConnectionInstance;$/;"	m
@@ -59,10 +79,13 @@ _dal	bll/bll.ts	/^	protected _dal:urn_dal.DAL<A>;$/;"	m
 _db_relation	dal/dal.ts	/^	protected _db_relation:urn_rel.Relation<A>;$/;"	m
 _db_trash_relation	dal/dal.ts	/^	protected _db_trash_relation:urn_rel.Relation<A> | null;$/;"	m
 _delete_by_id	dal/dal.ts	/^	private async _delete_by_id(id:string, in_trash = false)$/;"	m
-_delete_one	dal/dal.ts	/^	private async _delete_one(atom:Atom<A>, in_trash = false)$/;"	m
+_generate_mongoose_schema_prop	rel/mongo/schema.ts	/^function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_key:string)$/;"	f
 _get_connection	rel/mongo/relation.ts	/^	protected _get_connection():mongo_connection.ConnectionInstance{$/;"	m
 _get_connection	rel/mongo/trash.ts	/^	protected _get_connection():mongo_connection.ConnectionInstance{$/;"	m
+_has_all_properties	atm/atm.ts	/^function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)$/;"	f
+_has_no_other_properties	atm/atm.ts	/^function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)$/;"	f
 _insert_one	dal/dal.ts	/^	private async _insert_one(atom_shape:AtomShape<A>, in_trash = false)$/;"	m
+_is_optional_property	atm/atm.ts	/^function _is_optional_property(prop:AtomPropertyDefinition)$/;"	f
 _on_close	rel/mongo/connection.ts	/^	private _on_close()$/;"	m
 _on_connected	rel/mongo/connection.ts	/^	private _on_connected()$/;"	m
 _on_connecting	rel/mongo/connection.ts	/^	private _on_connecting()$/;"	m
@@ -72,39 +95,47 @@ _on_error	rel/mongo/connection.ts	/^	private _on_error(e:Error)$/;"	m
 _on_reconnect_failed	rel/mongo/connection.ts	/^	private _on_reconnect_failed()$/;"	m
 _on_reconnect_tries	rel/mongo/connection.ts	/^	private _on_reconnect_tries()$/;"	m
 _on_reconnected	rel/mongo/connection.ts	/^	private _on_reconnected()$/;"	m
+_properties_have_correct_type	atm/atm.ts	/^function _properties_have_correct_type<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)$/;"	f
 _raw	rel/mongo/relation.ts	/^	protected _raw:mongoose.Model<mongoose.Document>;$/;"	m
 _select	dal/dal.ts	/^	private async _select(filter:FilterType<A>, options?:QueryOptions<A>, in_trash = false)$/;"	m
 _select_by_id	dal/dal.ts	/^	private async _select_by_id(id:string, in_trash = false)$/;"	m
 _select_one	dal/dal.ts	/^	private async _select_one(filter:FilterType<A>, options?:QueryOptions<A>, in_trash = false)$/;"	m
 _validate_field	vali/query.ts	/^function _validate_field(field:any)$/;"	f
+_validate_hard_properties	atm/atm.ts	/^function _validate_hard_properties<A extends AtomName>(atom:Atom<A>)$/;"	f
 alter_by_id	dal/dal.ts	/^	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)$/;"	m
+alter_by_id	rel/mongo/relation.ts	/^	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)$/;"	m
 alter_one	dal/dal.ts	/^	public async alter_one(atom:Atom<A>)$/;"	m
-alter_one	rel/mongo/relation.ts	/^	public async alter_one(resource:Grain<A>)$/;"	m
+alter_one	rel/mongo/relation.ts	/^	public async alter_one(resource:Atom<A>)$/;"	m
 atom_book	book.ts	/^export const atom_book = {$/;"	v
+atom_common_properties	types.ts	/^export const atom_common_properties = {$/;"	v
+atom_hard_properties	types.ts	/^export const atom_hard_properties = {$/;"	v
 close	rel/mongo/connection.ts	/^	public async close()$/;"	m
 core_config	config/defaults.ts	/^export const core_config:Configuration = {$/;"	v
 create	bll/bll.ts	/^export function create<A extends AtomName>(atom_name:A):BLL<A>{$/;"	f
 create	dal/dal.ts	/^export function create<A extends AtomName>(atom_name:A):DAL<A>{$/;"	f
 create	rel/mongo/connection.ts	/^export function create(con_name:string, db_host:string, db_port:number, db_name:string)$/;"	f
-create	rel/mongo/relation.ts	/^export function create<A extends AtomName>(relation_name: A, _mongo_schema:mongoose.SchemaDefinition)$/;"	f
+create	rel/mongo/relation.ts	/^export function create<A extends AtomName>(atom_name: A)$/;"	f
 delete_by_id	dal/dal.ts	/^	public async delete_by_id(id:string)$/;"	m
-delete_one	dal/dal.ts	/^	public async delete_one(atom_shape:AtomShape<A>)$/;"	m
-delete_one	rel/mongo/relation.ts	/^	public async delete_one(resource:Grain<A>)$/;"	m
+delete_by_id	rel/mongo/relation.ts	/^	public async delete_by_id(id:string)$/;"	m
+delete_one	dal/dal.ts	/^	public async delete_one(atom:Atom<A>)$/;"	m
+delete_one	rel/mongo/relation.ts	/^	public async delete_one(resource:Atom<A>)$/;"	m
 enum	types.ts	/^export const enum AtomPropertyType {$/;"	v
 find	bll/bll.ts	/^	public async find(filter:FilterType<A>, options?:QueryOptions<A>)$/;"	m
 find_by_id	bll/bll.ts	/^	public async find_by_id(id:string)$/;"	m
 find_one	bll/bll.ts	/^	public async find_one(filter:FilterType<A>, options?:QueryOptions<A>)$/;"	m
+generate_mongoose_schema	rel/mongo/schema.ts	/^export function generate_mongoose_schema<A extends AtomName>(atom_name:A)$/;"	f
+generate_mongoose_trash_schema	rel/mongo/schema.ts	/^export function generate_mongoose_trash_schema<A extends AtomName>(atom_name:A)$/;"	f
 get_model	rel/mongo/connection.ts	/^	public get_model(relation_name:AtomName, schema:mongoose.Schema)$/;"	m
-get_unique_keys	util/book.ts	/^export function get_unique_keys<A extends AtomName>(atom_name:A)$/;"	f
+get_unique_keys	atm/atm.ts	/^export function get_unique_keys<A extends AtomName>(atom_name:A)$/;"	f
 init	main.ts	/^export function init(config:Configuration)$/;"	f
 insert_one	dal/dal.ts	/^	public async insert_one(atom_shape:AtomShape<A>)$/;"	m
-insert_one	rel/mongo/relation.ts	/^	public async insert_one(resource:Grain<A>)$/;"	m
+insert_one	rel/mongo/relation.ts	/^	public async insert_one(resource:AtomShape<A>)$/;"	m
 is_valid_id	rel/mongo/connection.ts	/^	public is_valid_id(id:string)$/;"	m
 is_valid_id	rel/mongo/relation.ts	/^	public is_valid_id(id:string)$/;"	m
 mongoose	rel/mongo/connection.ts	/^import mongoose from 'mongoose';$/;"	I
 mongoose	rel/mongo/relation.ts	/^import mongoose from 'mongoose';$/;"	I
+mongoose	rel/mongo/schema.ts	/^import mongoose from 'mongoose';$/;"	I
 mongoose	rel/mongo/trash.ts	/^import mongoose from 'mongoose';$/;"	I
-mongoose	types.ts	/^import mongoose from 'mongoose';$/;"	I
 name	rel/mongo/connection.ts	/^	public name:string;$/;"	m
 readyState	rel/mongo/connection.ts	/^	public readyState:number;$/;"	m
 remove_by_id	bll/bll.ts	/^	public async remove_by_id(id:string)$/;"	m
@@ -116,17 +147,22 @@ select_by_id	dal/dal.ts	/^	public async select_by_id(id:string)$/;"	m
 select_by_id	rel/mongo/relation.ts	/^	public async select_by_id(id:string)$/;"	m
 select_one	dal/dal.ts	/^	public async select_one(filter:FilterType<A>, options?:QueryOptions<A>)$/;"	m
 select_one	rel/mongo/relation.ts	/^	public async select_one(filter:FilterType<A>, options?:QueryOptions<A>)$/;"	m
-string_id	rel/mongo/relation.ts	/^function string_id<A extends AtomName>(resource:Grain<A>)$/;"	f
-trash_create	rel/mongo/trash.ts	/^export function trash_create<A extends AtomName>(relation_name: A, _mongo_schema:mongoose.SchemaDefinition)$/;"	f
+trash_alter_by_id	dal/dal.ts	/^	public async trash_alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)$/;"	m
+trash_alter_one	dal/dal.ts	/^	public async trash_alter_one(atom:Atom<A>)$/;"	m
+trash_create	rel/mongo/trash.ts	/^export function trash_create<A extends AtomName>(atom_name: A)$/;"	f
+trash_delete_by_id	dal/dal.ts	/^	public async trash_delete_by_id(id:string)$/;"	m
 trash_delete_one	dal/dal.ts	/^	public async trash_delete_one(atom:Atom<A>)$/;"	m
 trash_insert_one	dal/dal.ts	/^	public async trash_insert_one(atom:Atom<A>)$/;"	m
 trash_select	dal/dal.ts	/^	public async trash_select(filter:FilterType<A>, options?:QueryOptions<A>)$/;"	m
 trash_select_by_id	dal/dal.ts	/^	public async trash_select_by_id(id:string)$/;"	m
 trash_select_one	dal/dal.ts	/^	public async trash_select_one(filter:FilterType<A>, options?:QueryOptions<A>)$/;"	m
-trash_update_one	dal/dal.ts	/^	public async trash_update_one(atom:Atom<A>)$/;"	m
 update_by_id	bll/bll.ts	/^	public async update_by_id(id:string, partial_atom:Partial<AtomShape<A>>)$/;"	m
 update_one	bll/bll.ts	/^	public async update_one(atom:Atom<A>)$/;"	m
 uri	rel/mongo/connection.ts	/^	public uri:string;$/;"	m
+user_schema_definition	rel/mongo/schema.ts	/^export const user_schema_definition:mongoose.SchemaDefinition = {$/;"	v
+validate	atm/atm.ts	/^export function validate<A extends AtomName>(atom_name:A, atom:Atom<A>)$/;"	f
 validate_filter	vali/query.ts	/^function validate_filter<A extends AtomName>$/;"	f
 validate_filter_options_params	vali/query.ts	/^export function validate_filter_options_params<A extends AtomName>$/;"	f
 validate_options	vali/query.ts	/^function validate_options<A extends AtomName>$/;"	f
+validate_partial	atm/atm.ts	/^export function validate_partial<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)$/;"	f
+validate_shape	atm/atm.ts	/^export function validate_shape<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)$/;"	f

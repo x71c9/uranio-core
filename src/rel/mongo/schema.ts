@@ -29,7 +29,7 @@ const hard_atom_schema = {
 	}
 };
 
-export function generate_mongoose_schema<A extends AtomName>(atom_name:A)
+export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{
 	const props_def = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
 	let mongoose_schema = {...hard_atom_schema};
@@ -55,14 +55,13 @@ export function generate_mongoose_schema<A extends AtomName>(atom_name:A)
 			..._generate_mongoose_schema_prop(atom_prop_def, m)
 		};
 	}
-	console.log(mongoose_schema);
 	return mongoose_schema;
 }
 
-export function generate_mongoose_trash_schema<A extends AtomName>(atom_name:A)
-		:mongoose.SchemaDefinition{
-	return _allow_duplicate(generate_mongoose_schema(atom_name));
-}
+// export function generate_mongoose_trash_schema<A extends AtomName>(atom_name:A)
+//     :mongoose.SchemaDefinition{
+//   return _allow_duplicate(generate_mongo_schema_def(atom_name));
+// }
 
 function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_key:string)
 		:mongoose.SchemaDefinition{
@@ -175,83 +174,83 @@ function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_ke
 	throw urn_exc.create('CREATE_PROP_SCHEMA_INVALID_TYPE', err_msg);
 }
 
-function _allow_duplicate(schema_definition:mongoose.SchemaDefinition)
-		:mongoose.SchemaDefinition{
-	const schema_without_unique:mongoose.SchemaDefinition = {...schema_definition};
-	for(const [k] of Object.entries(schema_without_unique)){
-		if(urn_util.object.has_key(schema_without_unique[k], 'unique')){
-			delete (schema_without_unique[k] as any).unique;
-		}
-	}
-	return schema_without_unique;
-}
+// function _allow_duplicate(schema_definition:mongoose.SchemaDefinition)
+//     :mongoose.SchemaDefinition{
+//   const schema_without_unique:mongoose.SchemaDefinition = {...schema_definition};
+//   for(const [k] of Object.entries(schema_without_unique)){
+//     if(urn_util.object.has_key(schema_without_unique[k], 'unique')){
+//       delete (schema_without_unique[k] as any).unique;
+//     }
+//   }
+//   return schema_without_unique;
+// }
 
 
-export const user_schema_definition:mongoose.SchemaDefinition = {
-	// ...default_atom_schema,
-	first_name: {
-		type: String,
-		trim: true,
-		match: /^[a-zA-z -]+$/,
-		set: (v:string):string =>
-			(v + '').toLowerCase().replace(/^(.)|\s+(.)/g, function ($1){
-				return $1.toUpperCase();
-			}),
-		minlenght: 2,
-		maxlenght: 255,
-		required: true
-	},
-	last_name: {
-		type: String,
-		trim: true,
-		match: /^[a-zA-z -]+$/,
-		set: (v:string):string =>
-			(v + '').toLowerCase().replace(/^(.)|\s+(.)/g, function ($1){
-				return $1.toUpperCase();
-			}),
-		minlenght: 2,
-		maxlenght: 255,
-		required: true
-	},
-	username: {
-		type: String,
-		trim: true,
-		lowercase: true,
-		match: /^[a-z0-9_-]+$/,
-		minlenght: 3,
-		maxlenght: 255,
-		unique: true,
-		required: true
-	},
-	email:{
-		type: String,
-		trim: true,
-		lowercase: true,
-		// match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-		match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-		maxlenght: 255,
-		unique: true,
-		required: true
-	},
-	type:{
-		type: String,
-		default: 'default',
-		enum: ['default','pro'],
-		required: true
-	},
-	active: {
-		type: Boolean,
-		default: false,
-		required: true
-	},
-	password:{
-		type: String,
-		trim: true,
-		match: /^[^ \t\r+]+$/,
-		minlenght: 8,
-		maxlenght: 255,
-		required: true
-	}
-};
+// export const user_schema_definition:mongoose.SchemaDefinition = {
+//   // ...default_atom_schema,
+//   first_name: {
+//     type: String,
+//     trim: true,
+//     match: /^[a-zA-z -]+$/,
+//     set: (v:string):string =>
+//       (v + '').toLowerCase().replace(/^(.)|\s+(.)/g, function ($1){
+//         return $1.toUpperCase();
+//       }),
+//     minlenght: 2,
+//     maxlenght: 255,
+//     required: true
+//   },
+//   last_name: {
+//     type: String,
+//     trim: true,
+//     match: /^[a-zA-z -]+$/,
+//     set: (v:string):string =>
+//       (v + '').toLowerCase().replace(/^(.)|\s+(.)/g, function ($1){
+//         return $1.toUpperCase();
+//       }),
+//     minlenght: 2,
+//     maxlenght: 255,
+//     required: true
+//   },
+//   username: {
+//     type: String,
+//     trim: true,
+//     lowercase: true,
+//     match: /^[a-z0-9_-]+$/,
+//     minlenght: 3,
+//     maxlenght: 255,
+//     unique: true,
+//     required: true
+//   },
+//   email:{
+//     type: String,
+//     trim: true,
+//     lowercase: true,
+//     // match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+//     match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+//     maxlenght: 255,
+//     unique: true,
+//     required: true
+//   },
+//   type:{
+//     type: String,
+//     default: 'default',
+//     enum: ['default','pro'],
+//     required: true
+//   },
+//   active: {
+//     type: Boolean,
+//     default: false,
+//     required: true
+//   },
+//   password:{
+//     type: String,
+//     trim: true,
+//     match: /^[^ \t\r+]+$/,
+//     minlenght: 8,
+//     maxlenght: 255,
+//     required: true
+//   }
+// };
 
 
