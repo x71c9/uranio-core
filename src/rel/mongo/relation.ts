@@ -12,9 +12,9 @@ import {FilterType, QueryOptions, AtomName, Atom, AtomShape} from '../../types';
 
 import {Relation} from '../types';
 
-import * as mongo_connection from './connection';
+import {generate_mongo_schema_def} from './schema';
 
-// import {mongo_schemas} from './schemas/';
+import * as mongo_connection from './connection';
 
 // import * as urn_atm from '../../atm/';
 
@@ -40,9 +40,13 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 	protected _raw:mongoose.Model<mongoose.Document>;
 	
-	constructor(public relation_name:A, protected _mongo_schema:mongoose.SchemaDefinition){
+	protected _mongo_schema_def:mongoose.SchemaDefinition;
+	
+	constructor(public atom_name:A) {
 		
 		this._conn = this._get_connection();
+		
+		this._mongo_schema_def = generate_mongo_schema_def<A>(this.atom_name);
 		
 		this._raw = this._complie_mongoose_model();
 		
@@ -53,8 +57,8 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	}
 	
 	protected _complie_mongoose_model():mongoose.Model<mongoose.Document>{
-		const mongo_schema = new mongoose.Schema(this._mongo_schema, { versionKey: false });
-		return this._conn.get_model(this.relation_name, mongo_schema);
+		const mongo_schema = new mongoose.Schema(this._mongo_schema_def, { versionKey: false });
+		return this._conn.get_model(this.atom_name, mongo_schema);
 	}
 	
 	public async select(filter:FilterType<A>, options?:QueryOptions<A>)
@@ -188,9 +192,9 @@ function _clean_object<A extends AtomName>(resource:Atom<A>)
 	return resource;
 }
 
-export function create<A extends AtomName>(relation_name: A, _mongo_schema:mongoose.SchemaDefinition)
+export function create<A extends AtomName>(atom_name: A)
 		:MongooseRelation<A>{
 	urn_log.fn_debug(`Create MongooseRelation`);
-	return new MongooseRelation<A>(relation_name, _mongo_schema);
+	return new MongooseRelation<A>(atom_name);
 }
 
