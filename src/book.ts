@@ -52,7 +52,7 @@ export const atom_book = {
 				label: 'Bio',
 				optional: true
 			},
-			mail: {
+			mail: { 
 				type: AtomPropertyType.EMAIL,
 				label: 'Mail'
 			},
@@ -101,16 +101,23 @@ export const atom_book = {
 				}
 			},
 			categories: {
-				type: AtomPropertyType.SET,
-				values: ['CatA', 'CatB', 2],
-				label: 'Categories',
+				type: AtomPropertyType.SET_STRING,
 				validation: {
-					length: 1
+					values: ['CatA', 'CatB', 'AAA'],
+					length: 2
+				}
+			},
+			type: {
+				type: AtomPropertyType.SET_NUMBER,
+				validation: {
+					values: [1, 2, 3, 4, 5],
+					min: 3
 				}
 			},
 			media: {
 				type: AtomPropertyType.ATOM,
 				atom: 'superuser',
+				optional: true,
 				label: 'Media',
 				validation: {
 					date_from: '1986-03-22',

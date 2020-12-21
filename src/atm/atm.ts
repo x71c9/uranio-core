@@ -5,6 +5,8 @@
  * @packageDocumentation
  */
 
+import bcrypt from 'bcrypt';
+
 import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init(`ATM`, `Atom module`);
@@ -16,12 +18,27 @@ import {
 	KeyOfAtom,
 	AtomPropertiesDefinition,
 	AtomPropertyDefinition,
+	AtomPropertyEncrypted,
+	AtomPropertyString,
 	Atom,
 	AtomShape,
 	AtomPropertyType
 } from '../types';
 
 import {atom_book} from '../book';
+
+export async function encrypt_properties<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
+		:Promise<Partial<AtomShape<A>>>{
+	const atom_props = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
+	for(const k in partial_atom){
+		if(urn_util.object.has_key(atom_props, k) && atom_props[k].type === AtomPropertyType.ENCRYPTED){
+			_validate_encrypt_property((partial_atom as any)[k], atom_props[k] as AtomPropertyEncrypted);
+			const salt = await bcrypt.genSalt(12);
+			(partial_atom as any)[k] = await bcrypt.hash((partial_atom as any)[k], salt);
+		}
+	}
+	return partial_atom;
+}
 
 export function get_unique_keys<A extends AtomName>(atom_name:A)
 		:Set<KeyOfAtom<A>>{
@@ -62,6 +79,20 @@ export function validate_partial<A extends AtomName>(atom_name:A, partial_atom:P
 		:true{
 	_has_no_other_properties(atom_name, partial_atom);
 	_properties_have_correct_type(atom_name, partial_atom);
+	return true;
+}
+
+function _validate_encrypt_property(prop_value:string, prop_def:AtomPropertyEncrypted)
+		:true{
+	if(urn_util.object.has_key(prop_def, 'validation')){
+		_validate_atom_string(prop_value, prop_def);
+	}
+	return true;
+}
+
+function _validate_atom_string(prop_value:string, prop_def:AtomPropertyString)
+		:true{
+	//TODO
 	return true;
 }
 
@@ -192,11 +223,45 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 			}
 			return true;
 		}
-		case AtomPropertyType.SET:{
+		case AtomPropertyType.SET_STRING:{
 			if(!Array.isArray(prop_value)){
-				let err_msg = `Invalid property [${prop_key}]. Property should be an Array.`;
+				let err_msg = `Invalid property [${prop_key}]. Property should be a string array.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create('INVALID_PROP', err_msg);
+			}
+			return true;
+		}
+		case AtomPropertyType.SET_NUMBER:{
+			if(!Array.isArray(prop_value)){
+				let err_msg = `Invalid property [${prop_key}]. Property should be a number array.`;
+				err_msg += ` Type ${typeof prop_value} given.`;
+				throw urn_exc.create('INVALID_PROP', err_msg);
+			}
+			return true;
+		}
+		case AtomPropertyType.ENUM_STRING:{
+			if(typeof prop_value !== 'string'){
+				let err_msg = `Invalid property [${prop_key}]. Property should be a string.`;
+				err_msg += ` Type ${typeof prop_value} given.`;
+				throw urn_exc.create('INVALID_PROP', err_msg);
+			}
+			if(!prop_def.values.includes(prop_value)){
+				let err_msg = `Invalid property [${prop_key}]. Property should be a one of these`;
+				err_msg += ` ['${prop_def.values.join("','")}']`;
+				throw urn_exc.create('INVALID_ENUM_PROP', err_msg);
+			}
+			return true;
+		}
+		case AtomPropertyType.ENUM_NUMBER:{
+			if(typeof prop_value !== 'number'){
+				let err_msg = `Invalid property [${prop_key}]. Property should be a number.`;
+				err_msg += ` Type ${typeof prop_value} given.`;
+				throw urn_exc.create('INVALID_PROP', err_msg);
+			}
+			if(!prop_def.values.includes(prop_value)){
+				let err_msg = `Invalid property [${prop_key}]. Property should be a one of these`;
+				err_msg += ` ['${prop_def.values.join("','")}']`;
+				throw urn_exc.create('INVALID_ENUM_PROP', err_msg);
 			}
 			return true;
 		}
@@ -204,8 +269,8 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 			return true;
 		}
 	}
-	const err_msg = `Invalid Atom type definition.`;
-	throw urn_exc.create('CHECK_PROP_MAIN_TYPE_INVALID_ATM_TYPE',err_msg);
+	// const err_msg = `Invalid Atom type definition.`;
+	// throw urn_exc.create('CHECK_PROP_MAIN_TYPE_INVALID_ATM_TYPE',err_msg);
 }
 
 
