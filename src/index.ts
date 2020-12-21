@@ -37,13 +37,14 @@ const obi_bll = urn_core.bll.create('obi');
 const obi_one = {
 	other_id: '92348njkhds8fsdnusoda',
 	label: 'OBIONW8',
-	mail: 'dddd',
-	age: -1,
+	mail: 'ddd@d.com',
+	age: 18,
 	price: 888.0099,
 	active: true,
-	password: '',
-	confirmation_date: new Date('2020-12-0'),
+	password: 'dskjfhdkhfks',
+	confirmation_date: new Date('2020-12-01'),
 	categories: ['w','2'],
+	type: [1,1,1],
 	media: {}
 };
 obi_bll.save_one(obi_one).then(function(data){

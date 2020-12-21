@@ -45,37 +45,8 @@ export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 		};
 	}
 	console.log(mongoose_schema_def);
-	// let k:keyof typeof atom_hard_properties;
-	// for(k in atom_hard_properties){
-	//   if(k === '_id')
-	//     continue;
-	//   const atom_prop_def:AtomPropertyDefinition = atom_hard_properties[k];
-	//   mongoose_schema = {
-	//     ..._generate_mongoose_schema_prop(atom_prop_def, k)
-	//   };
-	// }
-	// let l:keyof typeof atom_common_properties;
-	// for(l in atom_common_properties){
-	//   const atom_prop_def:AtomPropertyDefinition = atom_common_properties[l];
-	//   mongoose_schema = {
-	//     ...mongoose_schema,
-	//     ..._generate_mongoose_schema_prop(atom_prop_def, l)
-	//   };
-	// }
-	// for(const m in props_def){
-	//   const atom_prop_def:AtomPropertyDefinition = props_def[m];
-	//   mongoose_schema = {
-	//     ...mongoose_schema,
-	//     ..._generate_mongoose_schema_prop(atom_prop_def, m)
-	//   };
-	// }
 	return mongoose_schema_def;
 }
-
-// export function generate_mongoose_trash_schema<A extends AtomName>(atom_name:A)
-//     :mongoose.SchemaDefinition{
-//   return _allow_duplicate(generate_mongo_schema_def(atom_name));
-// }
 
 function _generate_mongoose_schema_prop<A extends AtomName>
 (prop_def:AtomPropertyDefinition, prop_key:KeyOfAtom<A>)
@@ -114,7 +85,13 @@ function _generate_mongoose_schema_prop<A extends AtomName>
 			return _generate_string_schema_def(prop_def, prop_key, schema_prop);
 		}
 		case AtomPropertyType.ENCRYPTED:{
-			return _generate_string_schema_def(prop_def, prop_key, schema_prop);
+			schema_prop[prop_key] = {
+				...schema_prop[prop_key],
+				type: String,
+				minlength: 60,
+				maxlenght: 60
+			};
+			return schema_prop;
 		}
 		case AtomPropertyType.EMAIL:{
 			schema_prop[prop_key] = {
@@ -134,24 +111,30 @@ function _generate_mongoose_schema_prop<A extends AtomName>
 		case AtomPropertyType.BINARY:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
-				type: Boolean,
-				trim: true
+				type: Boolean
 			};
 			return schema_prop;
 		}
 		case AtomPropertyType.TIME:{
 			return _generate_date_schema_def(prop_def, prop_key, schema_prop);
 		}
-		case AtomPropertyType.STRING_ENUM:{
+		case AtomPropertyType.ENUM_STRING:{
 			return _generate_enum_schema_def(prop_def, prop_key, schema_prop, 'string');
 		}
-		case AtomPropertyType.NUMBER_ENUM:{
+		case AtomPropertyType.ENUM_NUMBER:{
 			return _generate_enum_schema_def(prop_def, prop_key, schema_prop, 'number');
 		}
-		case AtomPropertyType.SET:{
+		case AtomPropertyType.SET_STRING:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
-				type: Array
+				type: [String]
+			};
+			return schema_prop;
+		}
+		case AtomPropertyType.SET_NUMBER:{
+			schema_prop[prop_key] = {
+				...schema_prop[prop_key],
+				type: [Number]
 			};
 			return schema_prop;
 		}

@@ -141,9 +141,10 @@ export type AtomPropertyDefinition =
 	AtomPropertyBinary |
 	AtomPropertyEncrypted |
 	AtomPropertyTime |
-	AtomPropertySet |
-	AtomPropertyStringEnum |
-	AtomPropertyNumberEnum |
+	AtomPropertySetString |
+	AtomPropertySetNumber |
+	AtomPropertyEnumString |
+	AtomPropertyEnumNumber |
 	AtomPropertyAtom;
 
 export const enum AtomPropertyType {
@@ -156,9 +157,10 @@ export const enum AtomPropertyType {
 	BINARY = 'BINARY',
 	ENCRYPTED = 'ENCRYPTED',
 	TIME = 'TIME',
-	STRING_ENUM = 'STRING_ENUM',
-	NUMBER_ENUM = 'NUMBER_ENUM',
-	SET = 'SET',
+	ENUM_STRING = 'ENUM_STRING',
+	ENUM_NUMBER = 'ENUM_NUMBER',
+	SET_STRING = 'SET_STRING',
+	SET_NUMBER = 'SET_NUMBER',
 	ATOM = 'ATOM'
 }
 
@@ -172,9 +174,10 @@ type RealTypeAtomProperty<AT extends AtomPropertyType> =
 	AT extends AtomPropertyType.BINARY ? boolean :
 	AT extends AtomPropertyType.ENCRYPTED ? string :
 	AT extends AtomPropertyType.TIME ? Date :
-	AT extends AtomPropertyType.SET ? Array<string | number> :
-	AT extends AtomPropertyType.STRING_ENUM ? string :
-	AT extends AtomPropertyType.NUMBER_ENUM ? number :
+	AT extends AtomPropertyType.SET_STRING ? Array<string> :
+	AT extends AtomPropertyType.SET_NUMBER ? Array<number> :
+	AT extends AtomPropertyType.ENUM_STRING ? string :
+	AT extends AtomPropertyType.ENUM_NUMBER ? number :
 	AT extends AtomPropertyType.ATOM ? any :
 	never;
 
@@ -210,8 +213,8 @@ export type AtomPropertyNumber =
 	AtomPropertyFloat;
 
 export type AtomPropertyEnum =
-	AtomPropertyStringEnum |
-	AtomPropertyNumberEnum;
+	AtomPropertyEnumString |
+	AtomPropertyEnumNumber;
 
 interface AtomPropertyEmail extends AtomFieldShared {
 	type: AtomPropertyType.EMAIL
@@ -234,7 +237,7 @@ interface AtomPropertyBinary extends AtomFieldShared {
 	values?: [string, string]
 }
 
-interface AtomPropertyEncrypted extends AtomFieldShared {
+export interface AtomPropertyEncrypted extends AtomFieldShared {
 	type: AtomPropertyType.ENCRYPTED,
 	validation?: AtomPropertyStringValidation
 }
@@ -245,22 +248,26 @@ export interface AtomPropertyTime extends AtomFieldShared {
 	validation?: AtomPropertyTimeValidation
 }
 
-interface AtomPropertyStringEnum extends AtomFieldShared {
-	type: AtomPropertyType.STRING_ENUM,
+interface AtomPropertyEnumString extends AtomFieldShared {
+	type: AtomPropertyType.ENUM_STRING,
 	values: string[],
 	default?: string
 }
 
-interface AtomPropertyNumberEnum extends AtomFieldShared {
-	type: AtomPropertyType.NUMBER_ENUM,
+interface AtomPropertyEnumNumber extends AtomFieldShared {
+	type: AtomPropertyType.ENUM_NUMBER,
 	values: number[],
 	default?: number
 }
 
-interface AtomPropertySet extends AtomFieldShared {
-	type: AtomPropertyType.SET,
-	values: (string | number)[],
-	validation?: AtomPropertySetValidation
+interface AtomPropertySetString extends AtomFieldShared {
+	type: AtomPropertyType.SET_STRING,
+	validation?: AtomPropertySetStringValidation
+}
+
+interface AtomPropertySetNumber extends AtomFieldShared {
+	type: AtomPropertyType.SET_NUMBER,
+	validation?: AtomPropertySetNumberValidation
 }
 
 interface AtomPropertyAtom extends AtomFieldShared {
@@ -296,10 +303,18 @@ interface AtomPropertyTimeValidation {
 	eq?: Date
 }
 
-interface AtomPropertySetValidation {
+interface AtomPropertySetNumberValidation {
 	min?: number,
 	max?: number,
 	length?: number
+	values?: number[],
+}
+
+interface AtomPropertySetStringValidation {
+	min?: number,
+	max?: number,
+	length?: number
+	values?: string[],
 }
 
 interface AtomPropertyAtomValidation {
@@ -312,7 +327,8 @@ export type AtomPropertyDefinitionValidation =
 	AtomPropertyNumberValidation |
 	AtomPropertyNumberValidation |
 	AtomPropertyTimeValidation |
-	AtomPropertySetValidation |
+	AtomPropertySetStringValidation |
+	AtomPropertySetNumberValidation |
 	AtomPropertyAtomValidation;
 
 interface AtomPropertyFloatFormat {
