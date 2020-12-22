@@ -32,25 +32,33 @@ export default urn_core;
 //   console.log(data);
 // });
 
-const obi_bll = urn_core.bll.create('obi');
+// const obi_bll = urn_core.bll.create('obi');
 
-const obi_one = {
-	other_id: '92348njkhds8fsdnusoda',
-	label: 'OBIONW8',
-	mail: 'ddd@d.com',
-	age: 18,
-	price: 888.0099,
-	active: true,
-	password: 'dskjfhdkhfUks9',
-	confirmation_date: new Date('2020-12-01'),
-	categories: ['w','2'],
-	type: [1,1,1],
-	string: 'OSJKSJLSK',
-	media: {}
-};
-obi_bll.save_one(obi_one).then(function(data){
-	console.log(data);
-});
+// obi_bll.find(
+//   {$or: [
+//     {password: {$eq: '$2b$12$V/Jc65hjG6BqxbcanxvpFukIt2.r0AMjKcLmjMINOmxozVuom8THC'}},
+//     {_date: {$lt: new Date('2021-11-02')}},
+//   ]}).then((data) => {
+//   console.log(data);
+// });
+
+// const obi_one = {
+//   other_id: '92348njkhds8fsdnusoda',
+//   label: 'OBIONW8',
+//   mail: 'ddd@d.com',
+//   age: 18,
+//   price: 888.0099,
+//   active: true,
+//   password: 'dskjfhdkhfUks9',
+//   confirmation_date: new Date('2020-12-01'),
+//   categories: ['w','2'],
+//   type: [1,1,1],
+//   string: 'OSJKSJLSK',
+//   media: {}
+// };
+// obi_bll.save_one(obi_one).then(function(data){
+//   console.log(data);
+// });
 
 // obi_bll.find_by_id('5fe1c63dc54db8444cfdabc0').then(function(data){
 //   console.log(data);
