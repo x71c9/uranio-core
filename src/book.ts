@@ -52,7 +52,7 @@ export const atom_book = {
 				label: 'Bio',
 				optional: true
 			},
-			mail: { 
+			mail: {
 				type: AtomPropertyType.EMAIL,
 				label: 'Mail'
 			},
@@ -85,10 +85,20 @@ export const atom_book = {
 				type: AtomPropertyType.ENCRYPTED,
 				label: 'Password',
 				validation: {
-					contain_number: true,
+					contain_digit: true,
 					contain_lowercase: true,
 					contain_uppercase: true,
 					min: 8
+				}
+			},
+			string: {
+				type: AtomPropertyType.ENCRYPTED,
+				label: 'String',
+				validation: {
+					letters_only: true,
+					// uppercase: true,
+					min: 5,
+					// reg_ex: /[0-9]/g
 				}
 			},
 			confirmation_date: {

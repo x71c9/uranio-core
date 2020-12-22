@@ -12,9 +12,21 @@ import * as urn_rel from '../rel/';
 
 import * as urn_validators from '../vali/';
 
-import {QueryOptions, FilterType, AtomName, AtomShape, Atom, KeyOfAtom} from '../types';
+import {
+	QueryOptions,
+	FilterType,
+	AtomName,
+	AtomShape,
+	Atom,
+	KeyOfAtom,
+	// QueryLogical
+} from '../types';
 
 import {core_config} from '../config/defaults';
+
+// import {AtomPropertiesDefinition, AtomPropertyType} from '../types';
+
+// import {atom_book} from '../book';
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -58,28 +70,40 @@ export class DAL<A extends AtomName> {
 	
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
-		urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
+		
+		await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
+		
 		await this._check_unique(atom_shape);
 		return await this._insert_one(atom_shape);
 	}
 	
-	public async alter_one(atom:Atom<A>)
-			:Promise<Atom<A>>{
-		return await this.alter_by_id(atom._id, atom);
-	}
+	// public async alter_and_encrypt_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
+	//     :Promise<Atom<A>>{
+		
+	//   await urn_atm.encrypt_properties<A>(this.atom_name, partial_atom);
+		
+	//   await this._check_unique(partial_atom, id);
+	//   return await this._alter_by_id(id, partial_atom);
+	// }
 	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
 		
-		urn_atm.encrypt_properties<A>(this.atom_name, partial_atom);
+		// await this._check_encrypted_properties(this.atom_name, id, partial_atom);
+		// await urn_atm.encrypt_properties<A>(this.atom_name, partial_atom);
 		
 		await this._check_unique(partial_atom, id);
 		return await this._alter_by_id(id, partial_atom);
 	}
 	
-	public async delete_one(atom:Atom<A>)
+	// public async alter_and_encrypt_one(atom:Atom<A>)
+	//     :Promise<Atom<A>>{
+	//   return await this.alter_and_encrypt_by_id(atom._id, atom);
+	// }
+	
+	public async alter_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
-		return await this.delete_by_id(atom._id);
+		return await this.alter_by_id(atom._id, atom);
 	}
 	
 	public async delete_by_id(id:string)
@@ -90,6 +114,11 @@ export class DAL<A extends AtomName> {
 			return await this.trash_insert_one(db_res_delete);
 		}
 		return db_res_delete;
+	}
+	
+	public async delete_one(atom:Atom<A>)
+			:Promise<Atom<A>>{
+		return await this.delete_by_id(atom._id);
 	}
 	
 	public async trash_select(filter:FilterType<A>, options?:QueryOptions<A>)
@@ -202,6 +231,7 @@ export class DAL<A extends AtomName> {
 		
 		return db_res_insert;
 	}
+	
 	private async _alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>, in_trash = false)
 			:Promise<Atom<A>>{
 		if(in_trash === true && this._db_trash_relation === null){
@@ -235,23 +265,34 @@ export class DAL<A extends AtomName> {
 		return db_res_delete;
 	}
 	
-	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
-			:Promise<void>{
+	// protected async _check_encrypted_properties(id:string, partial_atom:Partial<AtomShape<A>>)
+	//     :Promise<true>{
+	//   const encrypted_keys = urn_atm.get_encrypted_keys(this.atom_name);
+	//   for(const k of encrypted_keys){
+	//     if(urn_util.object.has_key(partial_atom, k)){
+	//       if(partial_atom[k].length !== 60){
+	//         partial_atom[k] = await urn_atm.encrypt_property(this.atom_name, k, partial_atom[k]);
+	//       }
+	//     }
+	//   }
+	//   return partial_atom;
+	// }
+	
+	protected async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
+			:Promise<true>{
 		
 		urn_atm.validate_partial<A>(this.atom_name, partial_atom);
 		
-		const filter:FilterType<A> = {};
-		if(id !== false && this._db_relation.is_valid_id(id)){
-			filter.$and = [{$not:{_id: id}}];
+		const filter:FilterType<A> = {$and: [{$not: {_id: id}}]};
+		if(id === false || !this._db_relation.is_valid_id(id)){
+			delete filter.$and;
 		}
 		const $or = [];
 		for(const k of urn_atm.get_unique_keys(this.atom_name)){
-			const filter_object:{[P in KeyOfAtom<A>]?:any} = {};
-			filter_object[k] = partial_atom[k];
-			$or.push(filter_object);
+			$or.push({k: partial_atom[k]});
 		}
 		if($or.length === 0){
-			return;
+			return true;
 		}
 		if(filter.$and){
 			filter.$and.push($or);
@@ -275,6 +316,7 @@ export class DAL<A extends AtomName> {
 				throw err;
 			}
 		}
+		return true;
 	}
 	
 }

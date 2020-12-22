@@ -16,23 +16,36 @@ import {
 	atom_common_properties,
 	AtomName,
 	KeyOfAtom,
+	KeyOfAtomShape,
 	AtomPropertiesDefinition,
 	AtomPropertyDefinition,
 	AtomPropertyEncrypted,
 	AtomPropertyString,
 	Atom,
 	AtomShape,
-	AtomPropertyType
+	AtomPropertyType,
 } from '../types';
 
 import {atom_book} from '../book';
+
+// export async function encrypt_property<A extends AtomName>
+// (atom_name:A, prop_key:KeyOfAtom<A>, prop_value:string)
+//     :Promise<string>{
+	
+//   const prop_def = atom_book[atom_name]['properties'][prop_key];
+	
+//   _validate_encrypt_property(prop_key, prop_value, prop_def);
+	
+//   const salt = await bcrypt.genSalt(12);
+//   return await bcrypt.hash(prop_value, salt);
+// }
 
 export async function encrypt_properties<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:Promise<Partial<AtomShape<A>>>{
 	const atom_props = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
 	for(const k in partial_atom){
 		if(urn_util.object.has_key(atom_props, k) && atom_props[k].type === AtomPropertyType.ENCRYPTED){
-			_validate_encrypt_property((partial_atom as any)[k], atom_props[k] as AtomPropertyEncrypted);
+			_validate_encrypt_property(k, (partial_atom as any)[k], atom_props[k] as AtomPropertyEncrypted);
 			const salt = await bcrypt.genSalt(12);
 			(partial_atom as any)[k] = await bcrypt.hash((partial_atom as any)[k], salt);
 		}
@@ -40,21 +53,40 @@ export async function encrypt_properties<A extends AtomName>(atom_name:A, partia
 	return partial_atom;
 }
 
-export function get_unique_keys<A extends AtomName>(atom_name:A)
+export function get_encrypted_keys<A extends AtomName>(atom_name:A)
 		:Set<KeyOfAtom<A>>{
-	const unique_keys = new Set<KeyOfAtom<A>>();
+	const encrypt_keys = new Set<KeyOfAtom<A>>();
+	const atom_properties = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
+	for(const k in atom_properties){
+		const prop:AtomPropertyDefinition = atom_properties[k];
+		if(urn_util.object.has_key(prop, 'type') && prop.type === AtomPropertyType.ENCRYPTED){
+			encrypt_keys.add(k as KeyOfAtom<A>);
+		}
+	}
+	// let k:keyof typeof atom_common_properties;
+	// for(k in atom_common_properties){
+	//   const prop:AtomPropertyDefinition = atom_common_properties[k];
+	//   if(urn_util.object.has_key(prop, 'type') && prop.type === AtomPropertyType.ENCRYPTED){
+	//     encrypt_keys.add(k as KeyOfAtom<A>);
+	//   }
+	// }
+	return encrypt_keys;
+}
+export function get_unique_keys<A extends AtomName>(atom_name:A)
+		:Set<KeyOfAtomShape<A>>{
+	const unique_keys = new Set<KeyOfAtomShape<A>>();
 	const atom_properties = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
 	for(const k in atom_properties){
 		const prop:AtomPropertyDefinition = atom_properties[k];
 		if(urn_util.object.has_key(prop, 'unique') && prop.unique === true){
-			unique_keys.add(k as KeyOfAtom<A>);
+			unique_keys.add(k as KeyOfAtomShape<A>);
 		}
 	}
 	let k:keyof typeof atom_common_properties;
 	for(k in atom_common_properties){
 		const prop:AtomPropertyDefinition = atom_common_properties[k];
 		if(urn_util.object.has_key(prop, 'unique') && prop.unique === true){
-			unique_keys.add(k as KeyOfAtom<A>);
+			unique_keys.add(k as KeyOfAtomShape<A>);
 		}
 	}
 	return unique_keys;
@@ -82,17 +114,90 @@ export function validate_partial<A extends AtomName>(atom_name:A, partial_atom:P
 	return true;
 }
 
-function _validate_encrypt_property(prop_value:string, prop_def:AtomPropertyEncrypted)
+function _validate_encrypt_property(prop_key: string, prop_value:string, prop_def:AtomPropertyEncrypted)
 		:true{
-	if(urn_util.object.has_key(prop_def, 'validation')){
-		_validate_atom_string(prop_value, prop_def);
-	}
+	_validate_atom_string(prop_key, prop_value, prop_def);
 	return true;
 }
 
-function _validate_atom_string(prop_value:string, prop_def:AtomPropertyString)
+function _validate_atom_string(prop_key:string, prop_value:string, prop_def:AtomPropertyString)
 		:true{
-	//TODO
+	if(urn_util.object.has_key(prop_def, 'validation')){
+		const vali = prop_def.validation!;
+		if(urn_util.object.has_key(vali, 'alphanum') && vali.alphanum === true){
+			if(!/0-9a-zA-Z/.test(prop_value)){
+				const err_msg = `Invalid [${prop_key}]. Must be alphanumeric [/0-9a-zA-Z/].`;
+				throw urn_exc.create('VALIDATE_STRING_INVALID_ALPHANUM', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'contain_digit') && vali.contain_digit === true){
+			if(!/\d/.test(prop_value)){
+				const err_msg = `Invalid [${prop_key}]. Must be contain a digit.`;
+				throw urn_exc.create('VALIDATE_STRING_NOT_CONTAIN_DIGIT', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'contain_lowercase') && vali.contain_lowercase === true){
+			if(prop_value.toUpperCase() === prop_value){
+				const err_msg = `Invalid [${prop_key}]. Must be contain a lowercase character.`;
+				throw urn_exc.create('VALIDATE_STRING_NOT_CONTAIN_LOWERCASE', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'contain_uppercase') && vali.contain_uppercase === true){
+			if(prop_value.toLowerCase() === prop_value){
+				const err_msg = `Invalid [${prop_key}]. Must be contain an uppercase character.`;
+				throw urn_exc.create('VALIDATE_STRING_NOT_CONTAIN_UPPERCASE', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'length')){
+			if(prop_value.length !== vali.length){
+				let err_msg = `Invalid [${prop_key}]. String length must be equal to ${vali.length}.`;
+				err_msg += ` Length given ${prop_value.length}`;
+				throw urn_exc.create('VALIDATE_STRING_INVALI_LENGTH', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'lowercase') && vali.lowercase === true){
+			if(prop_value.toLowerCase() !== prop_value){
+				const err_msg = `Invalid [${prop_key}]. Must be lowercase.`;
+				throw urn_exc.create('VALIDATE_STRING_NOT_LOWERCASE', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'max')){
+			if(prop_value.length > vali.max!){
+				const err_msg = `Invalid [${prop_key}]. Length must be maximum ${vali.max} characters long.`;
+				throw urn_exc.create('VALIDATE_STRING_MAX_LENGTH', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'min')){
+			if(prop_value.length < vali.min!){
+				const err_msg = `Invalid [${prop_key}]. Length must be minimum ${vali.min} characters long.`;
+				throw urn_exc.create('VALIDATE_STRING_MIN_LENGTH', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'only_letters') && vali.only_letters === true){
+			if(!/^[A-Za-z]+$/.test(prop_value)){
+				const err_msg = `Invalid [${prop_key}]. Must be contain only letters.`;
+				throw urn_exc.create('VALIDATE_STRING_NOT_ONLY_LETTERS', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'only_numbers')){
+			if(!/^[0-9]+$/.test(prop_value)){
+				const err_msg = `Invalid [${prop_key}]. Must be contain only numbers.`;
+				throw urn_exc.create('VALIDATE_STRING_NOT_ONLY_NUMBERS', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'reg_ex')){
+			if(!vali.reg_ex!.test(prop_value)){
+				const err_msg = `Invalid [${prop_key}]. Does not satisfy regular expression ${vali.reg_ex}.`;
+				throw urn_exc.create('VALIDATE_STRING_INVALID_REG_EX', err_msg);
+			}
+		}
+		if(urn_util.object.has_key(vali, 'uppercase') && vali.uppercase === true){
+			if(prop_value.toUpperCase() !== prop_value){
+				const err_msg = `Invalid [${prop_key}]. Must be uppercase.`;
+				throw urn_exc.create('VALIDATE_STRING_NOT_UPPERCASE', err_msg);
+			}
+		}
+	}
 	return true;
 }
 

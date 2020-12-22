@@ -97,6 +97,8 @@ export type CustomKeyOfAtomShape<A extends AtomName> =
 	RequiredKeyOfAtomProperties<A> |
 	OptionalKeyOfAtomProperties<A>
 
+
+
 export type KeyOfAtomShape<A extends AtomName> =
 	CustomKeyOfAtomShape<A> |
 	RequiredKeyOfAtomCommonProperties |
@@ -113,7 +115,7 @@ export type AtomShape<A extends AtomName> = {
 };
 
 export type KeyOfAtom<A extends AtomName> =
-	KeyOfAtomShape<A> & KeyOfHardProperties & KeyOfCommonProperties;
+	KeyOfAtomShape<A> | KeyOfHardProperties | KeyOfCommonProperties;
 
 export type Atom<A extends AtomName> = AtomHardProperties & AtomShape<A>;
 
@@ -278,15 +280,15 @@ interface AtomPropertyAtom extends AtomFieldShared {
 
 interface AtomPropertyStringValidation {
 	alphanum?: boolean,
+	contain_digit?: boolean,
 	contain_lowercase?: boolean,
-	contain_number?: boolean,
 	contain_uppercase?: boolean,
 	length?: number,
-	letters_only?: boolean,
 	lowercase?: boolean,
 	max?: number,
 	min?: number,
-	numbers_only?: boolean,
+	only_letters?: boolean,
+	only_numbers?: boolean,
 	reg_ex?: RegExp,
 	uppercase?: boolean
 }
@@ -338,24 +340,44 @@ interface AtomPropertyFloatFormat {
 }
 
 
-type KeyObjectOfAtom<A extends AtomName> = {
+type QueryEqual<A extends AtomName> = {
 	[P in KeyOfAtom<A>]?: any;
 }
 
+type QueryComparsion =
+	{ $eq?: any } |
+	{ $gt?: any } |
+	{ $gte?: any } |
+	{ $in?: any[] } |
+	{ $lt?: any } |
+	{ $lte?: any } |
+	{ $ne?: any } |
+	{ $nin?: any[] }
+
+type QueryWithComparsion<A extends AtomName> = {
+	[P in KeyOfAtom<A>]?: QueryComparsion;
+}
+
+export type QueryExpression<A extends AtomName> = QueryEqual<A> | QueryWithComparsion<A>;
+
+export type QueryLogical<A extends AtomName> = {
+	$and?: (QueryExpression<A> | any)[],
+	$not?: QueryExpression<A>,
+	$nor?: (QueryExpression<A> | any)[],
+	$or?: (QueryExpression<A>  | any)[]
+}
+
+const t:FilterType<'superuser'> = {$and: []};
+t.$and = [];
+console.log(t);
+
+export type FilterType<A extends AtomName> = QueryExpression<A> | QueryLogical<A>;
+
 export type QueryOptions<A extends AtomName> = {
-	sort?: string | KeyObjectOfAtom<A>;
+	sort?: string | QueryEqual<A>;
 	limit?: number;
 	skip?: number;
 }
-
-type FilterLogicType<A extends AtomName> = {
-	$and?: KeyObjectOfAtom<A>[],
-	$or?: KeyObjectOfAtom<A>[],
-	$nor?: KeyObjectOfAtom<A>[],
-	$not?: KeyObjectOfAtom<A>[]
-};
-
-export type FilterType<A extends AtomName> = KeyObjectOfAtom<A> & FilterLogicType<A>;
 
 export type DatabaseType = 'mongo'; // | 'mysql'
 
