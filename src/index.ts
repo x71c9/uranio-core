@@ -41,13 +41,22 @@ const obi_one = {
 	age: 18,
 	price: 888.0099,
 	active: true,
-	password: 'dskjfhdkhfks',
+	password: 'dskjfhdkhfUks9',
 	confirmation_date: new Date('2020-12-01'),
 	categories: ['w','2'],
 	type: [1,1,1],
+	string: 'OSJKSJLSK',
 	media: {}
 };
 obi_bll.save_one(obi_one).then(function(data){
 	console.log(data);
 });
+
+// obi_bll.find_by_id('5fe1c63dc54db8444cfdabc0').then(function(data){
+//   console.log(data);
+//   data.password = 'VAFFANCU8L';
+//   obi_bll.update_and_encrypt_one(data).then(function(data){
+//     console.log(data);
+//   });
+// });
 

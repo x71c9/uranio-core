@@ -39,37 +39,39 @@ class BLL<A extends AtomName> {
 	
 	public async save_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
-		// urn_atm.validate_shape(atom_shape);
 		return await this._dal.insert_one(atom_shape);
 	}
 	
-	public async update_one(atom:Atom<A>)
-			:Promise<Atom<A>>{
-		// urn_atm.validate(atom);
-		return await this.update_by_id(atom._id, atom);
-		// return await this._dal.alter_one(atom);
-	}
+	// public async update_and_encrypt_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
+	//     :Promise<Atom<A>>{
+	//   return await this._dal.alter_and_encrypt_by_id(id, partial_atom);
+	// }
 	
 	public async update_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
-		// urn_atm.validate_partial(partial_atom);
-		// const atom = await this._dal.select_by_id(id);
-		// urn_atm.assign_partial(atom, partial_atom);
 		return await this._dal.alter_by_id(id, partial_atom);
 	}
 	
-	public async remove_one(atom:Atom<A>)
+	// public async update_and_encrypt_one(atom:Atom<A>)
+	//     :Promise<Atom<A>>{
+	//   return await this.update_and_encrypt_by_id(atom._id, atom);
+	// }
+	
+	public async update_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
-		// urn_atm.validate(atom);
-		return await this.remove_by_id(atom._id);
-		// return await this._dal.delete_one(atom);
+		return await this.update_by_id(atom._id, atom);
 	}
 	
 	public async remove_by_id(id:string)
 			:Promise<Atom<A>>{
-		// const atom = await this._dal.select_by_id(id);
 		return await this._dal.delete_by_id(id);
 	}
+	
+	public async remove_one(atom:Atom<A>)
+			:Promise<Atom<A>>{
+		return await this.remove_by_id(atom._id);
+	}
+	
 }
 
 // export type BllInstance = InstanceType<typeof BLL>;

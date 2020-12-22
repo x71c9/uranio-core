@@ -7,27 +7,15 @@
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-import {QueryOptions, FilterType, AtomName} from '../types';
+import {QueryOptions, FilterType, AtomName, QueryExpression} from '../types';
 
 import {atom_book} from '../book';
 
-const _queryop = {
-	andornor: {
-		$and: null,
-		$or: null,
-		$nor: null,
-		$not: null
-	},
-	comparsion: {
-		$eq: null,
-		$gt: null,
-		$gte: null,
-		$in: null,
-		$lt: null,
-		$lte: null,
-		$ne: null,
-		$nin: null
-	}
+
+const _query_op_keys = {
+	array_op: ['$and', '$nor', '$or'],
+	equal_op: ['$not'],
+	compa_op: ['$eq', '$gt', '$gte', '$in', '$lt', '$lte', '$ne', '$nin']
 };
 
 const urn_exc = urn_exception.init('QUERY_VALIDATE','Query Validator');
@@ -55,43 +43,54 @@ export function validate_filter_options_params<A extends AtomName>
  * @param field - The field to validate
  *
  */
-function _validate_field(field:any)
+function _validate_expression<A extends AtomName>(field:QueryExpression<A>)
 		:true{
-	if(field === null){
-		const err_msg = `Cannot _validate_field. Invalid argument "field". "field" is null.`;
-		throw urn_exc.create('FIELD_NULL', err_msg);
+	if(!field || typeof field !== 'object'){
+		const err_msg = `Cannot _validate_expression. Invalid expression type.`;
+		throw urn_exc.create('INVALID_EXPRESSION_TYPE', err_msg);
 	}
-	switch(typeof field){
-		case 'string':
-		case 'number':
-			return true;
-		case 'object':{
-			for(const k in field){
-				// if(_queryop.comparsion.indexOf(k) === -1){
-				if(urn_util.object.has_key(_queryop.comparsion, k)){
-					const err_msg = `Filter value comparsion not valid [${k}].`;
-					throw urn_exc.create('FIELD_INVALID_COMP', err_msg);
-				}
-				if(typeof field[k] != 'string' && field[k] != 'number' && !Array.isArray(field[k])){
-					const err_msg = `Filter comparsion value type must be a string, a number, on an Array [${k}]`;
-					throw urn_exc.create('FIELD_INVALID_COMP_TYPE', err_msg);
-				}
-				if(Array.isArray(field[k])){
-					for(const v of field[k]){
-						if(typeof v !== 'string' && typeof v !== 'number'){
-							const err_msg = `Invalid filter comparsion value type.`;
-							throw urn_exc.create('FIELD_INVALID_VAL_TYPE', err_msg);
+	if(Object.keys(field).length > 1){
+		const err_msg = `Invalid expression. Expression must have only one key set.`;
+		throw urn_exc.create('INVALID_EXPRESSION_MULTIPLE_KEYS', err_msg);
+	}
+	for(const [k,v] of Object.entries(field)){
+		if(urn_util.object.has_key(_query_op_keys.equal_op, k)){
+			return _validate_expression<A>(v);
+		}else{
+			switch(typeof v){
+				case 'string':
+				case 'number':
+					return true;
+				case 'object':{
+					for(const [l,u] of Object.entries(v)){
+						if(urn_util.object.has_key(_query_op_keys.compa_op, l)){
+							const err_msg = `Filter value comparsion not valid [${l}].`;
+							throw urn_exc.create('FIELD_INVALID_COMP', err_msg);
+						}
+						if(typeof u != 'string' && u != 'number' && !Array.isArray(u)){
+							const err_msg = `Filter comparsion value type must be a string, a number, on an Array [${l}]`;
+							throw urn_exc.create('FIELD_INVALID_COMP_TYPE', err_msg);
+						}
+						if(Array.isArray(u)){
+							const are_all_valid_values = u.every((val) => {
+								return (typeof val === 'string' || typeof val === 'number');
+							});
+							if(!are_all_valid_values){
+								const err_msg = `Invalid filter comparsion value type.`;
+								throw urn_exc.create('FIELD_INVALID_VAL_TYPE', err_msg);
+							}
 						}
 					}
+					return true;
+				}
+				default:{
+					const err_msg = `Filter filed type not valid.`;
+					throw urn_exc.create('FIELD_INVALID_TYPE', err_msg);
 				}
 			}
-			return true;
-		}
-		default:{
-			const err_msg = `Filter filed type not valid.`;
-			throw urn_exc.create('FIELD_INVALID_TYPE', err_msg);
 		}
 	}
+	return true;
 }
 
 /**
@@ -104,30 +103,25 @@ function _validate_field(field:any)
  *
  * @param filter - The filter to validate
  */
-function validate_filter<A extends AtomName>
-(filter:FilterType<A>, atom_name:A)
+function validate_filter<A extends AtomName>(filter:FilterType<A>, atom_name:A)
 		:true{
 	if(typeof filter !== 'object' || filter === null){
 		const err_msg = `Invalid filter format.`;
 		throw urn_exc.create('FILTER_INVALID_TYPE', err_msg);
 	}
-	let key:keyof FilterType<A>;
-	for(key in filter){
-		if(urn_util.object.has_key(_queryop.andornor, key)){
-		// if(_queryop.andornor.indexOf(key) !== -1){
-			if(!Array.isArray(filter[key])){
+	// let key:keyof FilterType<A>;
+	for(const [key, value] of Object.entries(filter)){
+		if(urn_util.object.has_key(_query_op_keys.array_op, key)){
+			if(!Array.isArray(value)){
 				const err_msg = `Invalid filter format. Filter value for [${key}] must be an array.`;
 				throw urn_exc.create('FILTER_OP_VAL_NOT_ARRAY', err_msg);
-			}
-			for(let i=0; i < filter[key]!.length; i++){
-				validate_filter(filter[key]![i], atom_name);
+			}else{
+				for(let i=0; i < value.length; i++){
+					validate_filter(value[i], atom_name);
+				}
 			}
 		}else{
-			if(!urn_util.object.has_key(atom_book[atom_name].properties, key)){
-				const err_msg = `Filter field not valid [${key}].`;
-				throw urn_exc.create('FILTER_INVALID_KEY', err_msg);
-			}
-			_validate_field(filter[key]);
+			_validate_expression<A>(value);
 		}
 	}
 	return true;
@@ -139,8 +133,7 @@ function validate_filter<A extends AtomName>
  * @param object - The object or the string to validate as option
  *
  */
-function validate_options<A extends AtomName>
-(options:QueryOptions<A>, atom_name:A)
+function validate_options<A extends AtomName>(options:QueryOptions<A>, atom_name:A)
 		:true{
 	if(urn_util.object.has_key(options, 'sort')){
 		switch(typeof options.sort){

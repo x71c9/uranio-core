@@ -20,7 +20,6 @@ import {
 	AtomPropertyNumber,
 	AtomPropertyEnum,
 	AtomPropertyTime,
-	KeyOfAtom,
 	atom_hard_properties,
 	atom_common_properties
 } from '../../types';
@@ -41,21 +40,21 @@ export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 			continue;
 		mongoose_schema_def = {
 			...mongoose_schema_def,
-			..._generate_mongoose_schema_prop<A>(v, k as KeyOfAtom<A>)
+			..._generate_mongoose_schema_prop(v, k)
 		};
 	}
 	console.log(mongoose_schema_def);
 	return mongoose_schema_def;
 }
 
-function _generate_mongoose_schema_prop<A extends AtomName>
-(prop_def:AtomPropertyDefinition, prop_key:KeyOfAtom<A>)
+function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_key:string)
 		:mongoose.SchemaDefinition{
 	let is_required = true;
 	if(urn_util.object.has_key(prop_def,'optional') && prop_def.optional === true){
 		is_required = false;
 	}
-	if(prop_key in atom_hard_properties){
+	// if(prop_key in atom_hard_properties){
+	if(urn_util.object.has_key(atom_hard_properties, prop_key)){
 		is_required = false;
 	}
 	const schema_prop = {
