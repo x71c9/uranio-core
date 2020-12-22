@@ -10,7 +10,7 @@ import {urn_log} from 'urn-lib';
 
 import * as urn_dal from '../dal/';
 
-import {QueryOptions, FilterType, AtomName, Atom, AtomShape} from '../types';
+import {QueryOptions, Query, AtomName, Atom, AtomShape} from '../types';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
@@ -22,9 +22,9 @@ class BLL<A extends AtomName> {
 		this._dal = urn_dal.create<A>(atom_name);
 	}
 	
-	public async find(filter:FilterType<A>, options?:QueryOptions<A>)
+	public async find(query:Query<A>, options?:QueryOptions<A>)
 			:Promise<Atom<A>[]>{
-		return await this._dal.select(filter, options);
+		return await this._dal.select(query, options);
 	}
 	
 	public async find_by_id(id:string)
@@ -32,9 +32,9 @@ class BLL<A extends AtomName> {
 		return await this._dal.select_by_id(id);
 	}
 	
-	public async find_one(filter:FilterType<A>, options?:QueryOptions<A>)
+	public async find_one(query:Query<A>, options?:QueryOptions<A>)
 			:Promise<Atom<A>>{
-		return await this._dal.select_one(filter, options);
+		return await this._dal.select_one(query, options);
 	}
 	
 	public async save_one(atom_shape:AtomShape<A>)

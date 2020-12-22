@@ -98,7 +98,6 @@ export type CustomKeyOfAtomShape<A extends AtomName> =
 	OptionalKeyOfAtomProperties<A>
 
 
-
 export type KeyOfAtomShape<A extends AtomName> =
 	CustomKeyOfAtomShape<A> |
 	RequiredKeyOfAtomCommonProperties |
@@ -118,7 +117,6 @@ export type KeyOfAtom<A extends AtomName> =
 	KeyOfAtomShape<A> | KeyOfHardProperties | KeyOfCommonProperties;
 
 export type Atom<A extends AtomName> = AtomHardProperties & AtomShape<A>;
-
 
 
 export type AtomBook = {
@@ -340,19 +338,21 @@ interface AtomPropertyFloatFormat {
 }
 
 
+type QueryBase = string | number | boolean | Date;
+
 type QueryEqual<A extends AtomName> = {
-	[P in KeyOfAtom<A>]?: any;
+	[P in KeyOfAtom<A>]?: QueryBase;
 }
 
 type QueryComparsion =
-	{ $eq?: any } |
-	{ $gt?: any } |
-	{ $gte?: any } |
-	{ $in?: any[] } |
-	{ $lt?: any } |
-	{ $lte?: any } |
-	{ $ne?: any } |
-	{ $nin?: any[] }
+	{ $eq?: QueryBase } |
+	{ $gt?: QueryBase } |
+	{ $gte?: QueryBase } |
+	{ $in?: QueryBase[] } |
+	{ $lt?: QueryBase } |
+	{ $lte?: QueryBase } |
+	{ $ne?: QueryBase } |
+	{ $nin?: QueryBase[] }
 
 type QueryWithComparsion<A extends AtomName> = {
 	[P in KeyOfAtom<A>]?: QueryComparsion;
@@ -360,14 +360,23 @@ type QueryWithComparsion<A extends AtomName> = {
 
 export type QueryExpression<A extends AtomName> = QueryEqual<A> | QueryWithComparsion<A>;
 
-export type QueryLogical<A extends AtomName> = {
-	$and?: (QueryExpression<A> | any)[],
-	$not?: QueryExpression<A>,
-	$nor?: (QueryExpression<A> | any)[],
-	$or?: (QueryExpression<A>  | any)[]
-}
+export type QueryLogical<A extends AtomName> =
+	{ $and?: (QueryExpression<A> | QueryLogical<A>)[] } |
+	{ $not?: QueryExpression<A> | QueryLogical<A> } |
+	{ $nor?: (QueryExpression<A> | QueryLogical<A>)[] } |
+	{ $or?: (QueryExpression<A>  | QueryLogical<A>)[] }
 
-export type FilterType<A extends AtomName> = QueryExpression<A> | QueryLogical<A>;
+export type Query<A extends AtomName> = QueryExpression<A> | QueryLogical<A>;
+
+// const a1:Query<'superuser'> = {email: ''};
+// const a2:Query<'superuser'> = {email: {$eq: ''}};
+// const a3:Query<'superuser'> = {$and: [{email: ''}, {password: {$lte: 3}}]};
+// const a4:Query<'superuser'> = {$or: []};
+// const a5:Query<'superuser'> = {$nor: [{$and: []}]};
+// const a6:Query<'superuser'> = {$not: {email: ''}};
+// const a7:Query<'superuser'> = {$nor:[{$not: {$and:[{password: {$nin: ['']}}]}}]};
+// console.log(a1,a2,a3,a4,a5,a6,a7);
+
 
 export type QueryOptions<A extends AtomName> = {
 	sort?: string | QueryEqual<A>;

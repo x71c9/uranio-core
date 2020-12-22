@@ -14,7 +14,7 @@ import * as urn_validators from '../vali/';
 
 import {
 	QueryOptions,
-	FilterType,
+	Query,
 	AtomName,
 	AtomShape,
 	Atom,
@@ -52,9 +52,9 @@ export class DAL<A extends AtomName> {
 		}
 	}
 	
-	public async select(filter:FilterType<A>, options?:QueryOptions<A>)
+	public async select(query:Query<A>, options?:QueryOptions<A>)
 			:Promise<Atom<A>[]>{
-		return await this._select(filter, options);
+		return await this._select(query, options);
 	}
 	
 	public async select_by_id(id:string)
@@ -62,9 +62,9 @@ export class DAL<A extends AtomName> {
 		return await this._select_by_id(id);
 	}
 	
-	public async select_one(filter:FilterType<A>, options?:QueryOptions<A>)
+	public async select_one(query:Query<A>, options?:QueryOptions<A>)
 			:Promise<Atom<A>>{
-		return await this._select_one(filter, options);
+		return await this._select_one(query, options);
 	}
 	
 	public async insert_one(atom_shape:AtomShape<A>)
@@ -120,9 +120,9 @@ export class DAL<A extends AtomName> {
 		return await this.delete_by_id(atom._id);
 	}
 	
-	public async trash_select(filter:FilterType<A>, options?:QueryOptions<A>)
+	public async trash_select(query:Query<A>, options?:QueryOptions<A>)
 			:Promise<Atom<A>[]>{
-		return await this._select(filter, options, true);
+		return await this._select(query, options, true);
 	}
 	
 	public async trash_select_by_id(id:string)
@@ -130,9 +130,9 @@ export class DAL<A extends AtomName> {
 		return await this._select_by_id(id, true);
 	}
 	
-	public async trash_select_one(filter:FilterType<A>, options?:QueryOptions<A>)
+	public async trash_select_one(query:Query<A>, options?:QueryOptions<A>)
 			:Promise<Atom<A>>{
-		return await this._select_one(filter, options, true);
+		return await this._select_one(query, options, true);
 	}
 	
 	public async trash_insert_one(atom:Atom<A>)
@@ -160,15 +160,15 @@ export class DAL<A extends AtomName> {
 		return await this._delete_by_id(id, true);
 	}
 	
-	private async _select(filter:FilterType<A>, options?:QueryOptions<A>, in_trash = false)
+	private async _select(query:Query<A>, options?:QueryOptions<A>, in_trash = false)
 			:Promise<Atom<A>[]>{
 		if(in_trash === true && this._db_trash_relation === null){
 			return [];
 		}
-		urn_validators.query.validate_filter_options_params(this.atom_name, filter, options);
+		urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
-		const db_res_select = await _relation.select(filter, options);
+		const db_res_select = await _relation.select(query, options);
 		const atom_array = db_res_select.reduce<Atom<A>[]>((result, db_record) => {
 			
 			urn_atm.validate<A>(this.atom_name, db_record);
@@ -197,7 +197,7 @@ export class DAL<A extends AtomName> {
 		return db_res_select_by_id;
 	}
 	
-	private async _select_one(filter:FilterType<A>, options?:QueryOptions<A>, in_trash = false)
+	private async _select_one(query:Query<A>, options?:QueryOptions<A>, in_trash = false)
 			:Promise<Atom<A>>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _select_one [in_trash=true]. Trash DB not found.`;
@@ -205,8 +205,8 @@ export class DAL<A extends AtomName> {
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
-		urn_validators.query.validate_filter_options_params(this.atom_name, filter, options);
-		const db_res_select_one = await _relation.select_one(filter, options);
+		urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
+		const db_res_select_one = await _relation.select_one(query, options);
 		
 		urn_atm.validate<A>(this.atom_name, db_res_select_one);
 		
@@ -282,25 +282,21 @@ export class DAL<A extends AtomName> {
 		
 		urn_atm.validate_partial<A>(this.atom_name, partial_atom);
 		
-		const filter:FilterType<A> = {$and: [{$not: {_id: id}}]};
-		if(id === false || !this._db_relation.is_valid_id(id)){
-			delete filter.$and;
-		}
 		const $or = [];
 		for(const k of urn_atm.get_unique_keys(this.atom_name)){
-			$or.push({k: partial_atom[k]});
+			$or.push({[k]: partial_atom[k]});
 		}
 		if($or.length === 0){
 			return true;
 		}
-		if(filter.$and){
-			filter.$and.push($or);
+		let query:Query<A> = {} as Query<A>;
+		if(id === false || !this._db_relation.is_valid_id(id)){
+			query = {$and: [{$not: {_id: id}}, {$or: $or}]};
 		}else{
-			filter.$or = $or;
+			query = {$or: $or};
 		}
-		console.log(filter);
 		try{
-			const res_select_one = await this._select_one(filter);
+			const res_select_one = await this._select_one(query);
 			const equal_values:Set<KeyOfAtom<A>> = new Set();
 			for(const k of urn_atm.get_unique_keys(this.atom_name)){
 				if(partial_atom[k] === res_select_one[k]){
