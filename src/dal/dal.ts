@@ -19,7 +19,6 @@ import {
 	AtomShape,
 	Atom,
 	KeyOfAtom,
-	// QueryLogical
 } from '../types';
 
 import {core_config} from '../config/defaults';

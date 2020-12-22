@@ -45,7 +45,7 @@ export function validate_filter_options_params<A extends AtomName>
  */
 function _validate_expression<A extends AtomName>(field:QueryExpression<A>)
 		:true{
-	if(!field || typeof field !== 'object'){
+	if(field === undefined || field === null || typeof field !== 'object'){
 		const err_msg = `Cannot _validate_expression. Invalid expression type.`;
 		throw urn_exc.create('INVALID_EXPRESSION_TYPE', err_msg);
 	}
@@ -54,7 +54,7 @@ function _validate_expression<A extends AtomName>(field:QueryExpression<A>)
 		throw urn_exc.create('INVALID_EXPRESSION_MULTIPLE_KEYS', err_msg);
 	}
 	for(const [k,v] of Object.entries(field)){
-		if(urn_util.object.has_key(_query_op_keys.equal_op, k)){
+		if(_query_op_keys.equal_op.includes(k)){
 			return _validate_expression<A>(v);
 		}else{
 			switch(typeof v){
@@ -63,17 +63,18 @@ function _validate_expression<A extends AtomName>(field:QueryExpression<A>)
 					return true;
 				case 'object':{
 					for(const [l,u] of Object.entries(v)){
-						if(urn_util.object.has_key(_query_op_keys.compa_op, l)){
+						if(!_query_op_keys.compa_op.includes(l)){
 							const err_msg = `Filter value comparsion not valid [${l}].`;
 							throw urn_exc.create('FIELD_INVALID_COMP', err_msg);
 						}
-						if(typeof u != 'string' && u != 'number' && !Array.isArray(u)){
-							const err_msg = `Filter comparsion value type must be a string, a number, on an Array [${l}]`;
+						if(typeof u != 'string' && u != 'number' && !Array.isArray(u) && !urn_util.is.date(u)){
+							let err_msg = `Filter comparsion value type must be`;
+							err_msg += ` a string, a number, a date or an Array [${l}]`;
 							throw urn_exc.create('FIELD_INVALID_COMP_TYPE', err_msg);
 						}
 						if(Array.isArray(u)){
 							const are_all_valid_values = u.every((val) => {
-								return (typeof val === 'string' || typeof val === 'number');
+								return (typeof val === 'string' || typeof val === 'number' || urn_util.is.date(val));
 							});
 							if(!are_all_valid_values){
 								const err_msg = `Invalid filter comparsion value type.`;
@@ -105,13 +106,12 @@ function _validate_expression<A extends AtomName>(field:QueryExpression<A>)
  */
 function validate_filter<A extends AtomName>(filter:FilterType<A>, atom_name:A)
 		:true{
-	if(typeof filter !== 'object' || filter === null){
+	if(typeof filter !== 'object' || filter === null || filter === undefined){
 		const err_msg = `Invalid filter format.`;
 		throw urn_exc.create('FILTER_INVALID_TYPE', err_msg);
 	}
-	// let key:keyof FilterType<A>;
 	for(const [key, value] of Object.entries(filter)){
-		if(urn_util.object.has_key(_query_op_keys.array_op, key)){
+		if(_query_op_keys.array_op.includes(key)){
 			if(!Array.isArray(value)){
 				const err_msg = `Invalid filter format. Filter value for [${key}] must be an array.`;
 				throw urn_exc.create('FILTER_OP_VAL_NOT_ARRAY', err_msg);
@@ -121,7 +121,7 @@ function validate_filter<A extends AtomName>(filter:FilterType<A>, atom_name:A)
 				}
 			}
 		}else{
-			_validate_expression<A>(value);
+			_validate_expression<A>({[key]: value} as any);
 		}
 	}
 	return true;

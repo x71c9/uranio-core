@@ -43,7 +43,7 @@ export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 			..._generate_mongoose_schema_prop(v, k)
 		};
 	}
-	console.log(mongoose_schema_def);
+	// console.log(mongoose_schema_def);
 	return mongoose_schema_def;
 }
 

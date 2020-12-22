@@ -367,10 +367,6 @@ export type QueryLogical<A extends AtomName> = {
 	$or?: (QueryExpression<A>  | any)[]
 }
 
-const t:FilterType<'superuser'> = {$and: []};
-t.$and = [];
-console.log(t);
-
 export type FilterType<A extends AtomName> = QueryExpression<A> | QueryLogical<A>;
 
 export type QueryOptions<A extends AtomName> = {
