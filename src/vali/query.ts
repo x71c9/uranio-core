@@ -7,7 +7,7 @@
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-import {QueryOptions, FilterType, AtomName, QueryExpression} from '../types';
+import {QueryOptions, Query, AtomName, QueryExpression} from '../types';
 
 import {atom_book} from '../book';
 
@@ -21,16 +21,16 @@ const _query_op_keys = {
 const urn_exc = urn_exception.init('QUERY_VALIDATE','Query Validator');
 
 /**
- * Validate `filter` and `options` paramaters
+ * Validate `query` and `options` paramaters
  *
  * @param atom_name - The Atom module that is needed to check the keys
- * @param filter - the filter object
+ * @param query - the query object
  * @param options- the options object
  */
 export function validate_filter_options_params<A extends AtomName>
-(atom_name:A, filter:FilterType<A>, options?:QueryOptions<A>)
+(atom_name:A, query:Query<A>, options?:QueryOptions<A>)
 		:true{
-	validate_filter<A>(filter, atom_name);
+	validate_filter<A>(query, atom_name);
 	if(options){
 		validate_options(options, atom_name);
 	}
@@ -38,7 +38,7 @@ export function validate_filter_options_params<A extends AtomName>
 }
 
 /**
- * Validate single field of a filter object
+ * Validate single field of a query object
  *
  * @param field - The field to validate
  *
@@ -67,17 +67,17 @@ function _validate_expression<A extends AtomName>(field:QueryExpression<A>)
 							const err_msg = `Filter value comparsion not valid [${l}].`;
 							throw urn_exc.create('FIELD_INVALID_COMP', err_msg);
 						}
-						if(typeof u != 'string' && u != 'number' && !Array.isArray(u) && !urn_util.is.date(u)){
+						if(!Array.isArray(u) && !_is_base_query_type(u)){
 							let err_msg = `Filter comparsion value type must be`;
 							err_msg += ` a string, a number, a date or an Array [${l}]`;
 							throw urn_exc.create('FIELD_INVALID_COMP_TYPE', err_msg);
 						}
 						if(Array.isArray(u)){
 							const are_all_valid_values = u.every((val) => {
-								return (typeof val === 'string' || typeof val === 'number' || urn_util.is.date(val));
+								return _is_base_query_type(val);
 							});
 							if(!are_all_valid_values){
-								const err_msg = `Invalid filter comparsion value type.`;
+								const err_msg = `Invalid query comparsion value type.`;
 								throw urn_exc.create('FIELD_INVALID_VAL_TYPE', err_msg);
 							}
 						}
@@ -94,26 +94,31 @@ function _validate_expression<A extends AtomName>(field:QueryExpression<A>)
 	return true;
 }
 
+function _is_base_query_type(val:any)
+		:boolean{
+	return (typeof val === 'string' || val === 'number' ||  urn_util.is.date(val));
+}
+
 /**
- * Validate filter object for querying Relation. used in find, find_one, ...
+ * Validate query object for querying Relation. used in find, find_one, ...
  *
- * filter must be in format:
+ * query must be in format:
  * - {key: value} where key is key of R
  * - {$and|$or|$nor: [{key: value},{key: value}, ...]}
  * - {$and|$or|$nor: [{$and|$or|$nor: [...], ...]}
  *
- * @param filter - The filter to validate
+ * @param query - The query to validate
  */
-function validate_filter<A extends AtomName>(filter:FilterType<A>, atom_name:A)
+function validate_filter<A extends AtomName>(query:Query<A>, atom_name:A)
 		:true{
-	if(typeof filter !== 'object' || filter === null || filter === undefined){
-		const err_msg = `Invalid filter format.`;
+	if(typeof query !== 'object' || query === null || query === undefined){
+		const err_msg = `Invalid query format.`;
 		throw urn_exc.create('FILTER_INVALID_TYPE', err_msg);
 	}
-	for(const [key, value] of Object.entries(filter)){
+	for(const [key, value] of Object.entries(query)){
 		if(_query_op_keys.array_op.includes(key)){
 			if(!Array.isArray(value)){
-				const err_msg = `Invalid filter format. Filter value for [${key}] must be an array.`;
+				const err_msg = `Invalid query format. Filter value for [${key}] must be an array.`;
 				throw urn_exc.create('FILTER_OP_VAL_NOT_ARRAY', err_msg);
 			}else{
 				for(let i=0; i < value.length; i++){
@@ -181,7 +186,7 @@ function validate_options<A extends AtomName>(options:QueryOptions<A>, atom_name
  * @param projection - The projection to validate
  *
  */
-// _validate_projection(projection:FilterType<R> | string)
+// _validate_projection(projection:Query<R> | string)
 //     :true | never{
 //   switch(typeof projection){
 //     case 'string':{

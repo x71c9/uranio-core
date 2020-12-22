@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 
 import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
-import {FilterType, QueryOptions, AtomName, Atom, AtomShape} from '../../types';
+import {Query, QueryOptions, AtomName, Atom, AtomShape} from '../../types';
 
 import {Relation} from '../types';
 
@@ -61,11 +61,11 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		return this._conn.get_model(this.atom_name, mongo_schema);
 	}
 	
-	public async select(filter:FilterType<A>, options?:QueryOptions<A>)
+	public async select(query:Query<A>, options?:QueryOptions<A>)
 			:Promise<Atom<A>[]>{
 		const mon_find_res = (options) ?
-			await this._raw.find(filter, null, options).lean<Atom<A>>():
-			await this._raw.find(filter).lean<Atom<A>>();
+			await this._raw.find(query, null, options).lean<Atom<A>>():
+			await this._raw.find(query).lean<Atom<A>>();
 		return mon_find_res.map((mon_doc:Atom<A>) => {
 			return _clean_object(mon_doc);
 		});
@@ -80,11 +80,11 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		return _clean_object(mon_find_by_id_res);
 	}
 	
-	public async select_one(filter:FilterType<A>, options?:QueryOptions<A>)
+	public async select_one(query:Query<A>, options?:QueryOptions<A>)
 			:Promise<Atom<A>>{
 		const mon_find_one_res = (typeof options !== 'undefined' && options.sort) ?
-			await this._raw.findOne(filter).sort(options.sort).lean<Atom<A>>() :
-			await this._raw.findOne(filter).lean<Atom<A>>();
+			await this._raw.findOne(query).sort(options.sort).lean<Atom<A>>() :
+			await this._raw.findOne(query).lean<Atom<A>>();
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
 		}

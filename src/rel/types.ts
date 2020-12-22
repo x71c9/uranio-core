@@ -4,15 +4,15 @@
  * @packageDocumentation
  */
 
-import {QueryOptions, FilterType, AtomName, Atom, AtomShape} from '../types';
+import {QueryOptions, Query, AtomName, Atom, AtomShape} from '../types';
 
 export interface Relation<A extends AtomName> {
 	
-	select(filter:FilterType<A>, options?:QueryOptions<A>):Promise<Atom<A>[]>;
+	select(query:Query<A>, options?:QueryOptions<A>):Promise<Atom<A>[]>;
 	
 	select_by_id(id:string):Promise<Atom<A>>;
 	
-	select_one(filter:FilterType<A>, options?:QueryOptions<A>):Promise<Atom<A>>;
+	select_one(query:Query<A>, options?:QueryOptions<A>):Promise<Atom<A>>;
 	
 	insert_one(atom_shape:AtomShape<A>):Promise<Atom<A>>;
 	
