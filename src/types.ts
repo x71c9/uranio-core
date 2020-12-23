@@ -77,10 +77,6 @@ type AtomHardProperties = {
 	[k in KeyOfHardProperties]: RealTypeOfAtomHardProperty<k>
 }
 
-// type AtomCommonProperties = {
-//   [k in KeyOfCommonProperties]: RealTypeOfAtomCommonProperty<k>
-// }
-
 export type OptionalKeyOfAtomProperties<A extends AtomName> =
 	keyof ExtractOptional<PropertiesOfAtomDefinition<A>>;
 
@@ -216,6 +212,10 @@ export type AtomPropertyEnum =
 	AtomPropertyEnumString |
 	AtomPropertyEnumNumber;
 
+export type AtomPropertySet =
+	AtomPropertySetString |
+	AtomPropertySetNumber;
+
 interface AtomPropertyEmail extends AtomFieldShared {
 	type: AtomPropertyType.EMAIL
 }
@@ -248,24 +248,24 @@ export interface AtomPropertyTime extends AtomFieldShared {
 	validation?: AtomPropertyTimeValidation
 }
 
-interface AtomPropertyEnumString extends AtomFieldShared {
+export interface AtomPropertyEnumString extends AtomFieldShared {
 	type: AtomPropertyType.ENUM_STRING,
 	values: string[],
 	default?: string
 }
 
-interface AtomPropertyEnumNumber extends AtomFieldShared {
+export interface AtomPropertyEnumNumber extends AtomFieldShared {
 	type: AtomPropertyType.ENUM_NUMBER,
 	values: number[],
 	default?: number
 }
 
-interface AtomPropertySetString extends AtomFieldShared {
+export interface AtomPropertySetString extends AtomFieldShared {
 	type: AtomPropertyType.SET_STRING,
 	validation?: AtomPropertySetStringValidation
 }
 
-interface AtomPropertySetNumber extends AtomFieldShared {
+export interface AtomPropertySetNumber extends AtomFieldShared {
 	type: AtomPropertyType.SET_NUMBER,
 	validation?: AtomPropertySetNumberValidation
 }
@@ -303,18 +303,18 @@ interface AtomPropertyTimeValidation {
 	eq?: Date
 }
 
-interface AtomPropertySetNumberValidation {
-	min?: number,
-	max?: number,
-	length?: number
-	values?: number[],
-}
-
 interface AtomPropertySetStringValidation {
 	min?: number,
 	max?: number,
 	length?: number
 	values?: string[],
+}
+
+interface AtomPropertySetNumberValidation {
+	min?: number,
+	max?: number,
+	length?: number
+	values?: number[],
 }
 
 interface AtomPropertyAtomValidation {
@@ -401,6 +401,10 @@ export type Configuration = {
 	db_log_name: string;
 	
 	jwt_private_key: string;
+	
+	encryption_round: number;
+	
+	max_password_length: number;
 	
 }
 

@@ -20,6 +20,10 @@ export const core_config:Configuration = {
 	
 	db_log_name: 'uranio_log_dev',
 	
-	jwt_private_key: 'A_KEY_THAT_NEED_TO_BE_CHANGED'
+	jwt_private_key: 'A_KEY_THAT_NEED_TO_BE_CHANGED',
+	
+	encryption_round: 12,
+	
+	max_password_length: 58 // It should be less than 60. 60 are the hashed string.
 	
 };

@@ -37,7 +37,7 @@ class BLL<A extends AtomName> {
 		return await this._dal.select_one(query, options);
 	}
 	
-	public async save_one(atom_shape:AtomShape<A>)
+	public async add_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		return await this._dal.insert_one(atom_shape);
 	}

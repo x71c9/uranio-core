@@ -32,33 +32,37 @@ export default urn_core;
 //   console.log(data);
 // });
 
-// const obi_bll = urn_core.bll.create('obi');
+// import bcrypt from 'bcrypt';
 
-// obi_bll.find(
-//   {$or: [
-//     {password: {$eq: '$2b$12$V/Jc65hjG6BqxbcanxvpFukIt2.r0AMjKcLmjMINOmxozVuom8THC'}},
-//     {_date: {$lt: new Date('2021-11-02')}},
-//   ]}).then((data) => {
-//   console.log(data);
+const obi_bll = urn_core.bll.create('obi');
+
+// obi_bll.find_one({age: 55}).then((data) => {
+//   data.active = false;
+//   data.age = 55;
+//   // data.password = 'STOxAZZO6';
+//   obi_bll.update_one(data).then((resp) => {
+//     console.log(resp);
+//     bcrypt.compare('STOxAZZO6', resp.password).then((is_eq) => console.log(is_eq));
+//   });
 // });
 
-// const obi_one = {
-//   other_id: '92348njkhds8fsdnusoda',
-//   label: 'OBIONW8',
-//   mail: 'ddd@d.com',
-//   age: 18,
-//   price: 888.0099,
-//   active: true,
-//   password: 'dskjfhdkhfUks9',
-//   confirmation_date: new Date('2020-12-01'),
-//   categories: ['w','2'],
-//   type: [1,1,1],
-//   string: 'OSJKSJLSK',
-//   media: {}
-// };
-// obi_bll.save_one(obi_one).then(function(data){
-//   console.log(data);
-// });
+const obi_one = {
+	other_id: '92348njkhds8fsdnusoda',
+	label: 'a8',
+	mail: 'ddd@d.com',
+	age: 18,
+	price: 1800.99,
+	active: true,
+	password: 'dskjfhdkhfUks9',
+	confirmation_date: new Date('2020-12-01'),
+	categories: ['CatA', 'CatB'],
+	type: 1,
+	string: 'OSJKSJLSK',
+	media: {}
+};
+obi_bll.add_one(obi_one).then(function(data){
+	console.log(data);
+});
 
 // obi_bll.find_by_id('5fe1c63dc54db8444cfdabc0').then(function(data){
 //   console.log(data);

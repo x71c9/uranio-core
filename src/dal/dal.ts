@@ -19,13 +19,14 @@ import {
 	AtomShape,
 	Atom,
 	KeyOfAtom,
+	KeyOfAtomShape,
+	AtomPropertyType,
+	AtomPropertiesDefinition
 } from '../types';
 
 import {core_config} from '../config/defaults';
 
-// import {AtomPropertiesDefinition, AtomPropertyType} from '../types';
-
-// import {atom_book} from '../book';
+import {atom_book} from '../book';
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -70,7 +71,7 @@ export class DAL<A extends AtomName> {
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		
-		await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
+		atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
 		
 		await this._check_unique(atom_shape);
 		return await this._insert_one(atom_shape);
@@ -87,10 +88,6 @@ export class DAL<A extends AtomName> {
 	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
-		
-		// await this._check_encrypted_properties(this.atom_name, id, partial_atom);
-		// await urn_atm.encrypt_properties<A>(this.atom_name, partial_atom);
-		
 		await this._check_unique(partial_atom, id);
 		return await this._alter_by_id(id, partial_atom);
 	}
@@ -238,6 +235,8 @@ export class DAL<A extends AtomName> {
 			throw urn_exc.create('ALTER_BY_ID_TRASH_NOT_FOUND', err_msg);
 		}
 		
+		partial_atom = await this._encrypt_changed_properties(id, partial_atom);
+		
 		urn_atm.validate_partial<A>(this.atom_name, partial_atom);
 		
 		const _relation = (in_trash === true && this._db_trash_relation) ?
@@ -264,18 +263,26 @@ export class DAL<A extends AtomName> {
 		return db_res_delete;
 	}
 	
-	// protected async _check_encrypted_properties(id:string, partial_atom:Partial<AtomShape<A>>)
-	//     :Promise<true>{
-	//   const encrypted_keys = urn_atm.get_encrypted_keys(this.atom_name);
-	//   for(const k of encrypted_keys){
-	//     if(urn_util.object.has_key(partial_atom, k)){
-	//       if(partial_atom[k].length !== 60){
-	//         partial_atom[k] = await urn_atm.encrypt_property(this.atom_name, k, partial_atom[k]);
-	//       }
-	//     }
-	//   }
-	//   return partial_atom;
-	// }
+	private async _encrypt_changed_properties(id:string, partial_atom:Partial<AtomShape<A>>)
+			:Promise<Partial<AtomShape<A>>>{
+		const atom_props = atom_book[this.atom_name]['properties'] as AtomPropertiesDefinition;
+		let k:KeyOfAtomShape<A>;
+		for(k in partial_atom){
+			if(urn_util.object.has_key(atom_props, k) && atom_props[k].type === AtomPropertyType.ENCRYPTED){
+				let value = partial_atom[k] as string;
+				if(value.length !== 60 || !value.startsWith('$2')){
+					value = await urn_atm.encrypt_property(this.atom_name, k, value);
+				}else{
+					const res_select = await this._select_by_id(id);
+					if(res_select[k] !== value){
+						value = await urn_atm.encrypt_property(this.atom_name, k, value);
+					}
+				}
+				partial_atom[k] = value as any;
+			}
+		}
+		return partial_atom;
+	}
 	
 	protected async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
 			:Promise<true>{

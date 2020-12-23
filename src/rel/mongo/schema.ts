@@ -50,10 +50,9 @@ export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_key:string)
 		:mongoose.SchemaDefinition{
 	let is_required = true;
-	if(urn_util.object.has_key(prop_def,'optional') && prop_def.optional === true){
+	if(prop_def.optional && prop_def.optional === true){
 		is_required = false;
 	}
-	// if(prop_key in atom_hard_properties){
 	if(urn_util.object.has_key(atom_hard_properties, prop_key)){
 		is_required = false;
 	}
@@ -62,7 +61,7 @@ function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_ke
 			required: is_required
 		}
 	} as mongoose.SchemaDefinition;
-	if(urn_util.object.has_key(prop_def,'unique') && prop_def.unique === true){
+	if(prop_def.unique && prop_def.unique === true){
 		schema_prop[prop_key] = {
 			...schema_prop[prop_key],
 			unique: true
@@ -158,28 +157,28 @@ function _generate_date_schema_def(
 		...schema_prop[prop_key],
 		type: Date
 	};
-	if(urn_util.object.has_key(prop_def, 'default')){
+	if(prop_def.default){
 		schema_prop[prop_key] = {
 			...schema_prop[prop_key],
 			default: (prop_def.default === 'NOW') ? Date.now : prop_def.default
 		};
 	}
-	if(urn_util.object.has_key(prop_def, 'validation') && typeof prop_def.validation === 'object'){
+	if(prop_def.validation){
 		const vali = prop_def.validation;
-		if(urn_util.object.has_key(vali, 'eq')){
+		if(vali.eq){
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				min: vali.eq,
 				max: vali.eq
 			};
 		}else{
-			if(urn_util.object.has_key(vali, 'min')){
+			if(vali.min){
 				schema_prop[prop_key] = {
 					...schema_prop[prop_key],
 					min: vali.min
 				};
 			}
-			if(urn_util.object.has_key(vali, 'max')){
+			if(vali.max){
 				schema_prop[prop_key] = {
 					...schema_prop[prop_key],
 					max: vali.max
@@ -201,9 +200,9 @@ function _generate_enum_schema_def(
 		type: (type === 'number') ? Number : String,
 		enum: prop_def.values
 	};
-	if(urn_util.object.has_key(prop_def, 'default')){
+	if(prop_def.default){
 		schema_prop[prop_key] = {
-			...schema_prop,
+			...schema_prop[prop_key],
 			default: prop_def.default
 		};
 	}
@@ -219,22 +218,22 @@ function _generate_number_schema_def(
 		...schema_prop[prop_key],
 		type: Number
 	};
-	if(urn_util.object.has_key(prop_def, 'validation') && typeof prop_def.validation === 'object'){
+	if(prop_def.validation){
 		const vali = prop_def.validation;
-		if(urn_util.object.has_key(vali, 'length')){
+		if(vali.eq){
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				min: vali.eq,
 				max: vali.eq
 			};
 		}else{
-			if(urn_util.object.has_key(vali, 'min')){
+			if(vali.min){
 				schema_prop[prop_key] = {
 					...schema_prop[prop_key],
 					min: vali.min
 				};
 			}
-			if(urn_util.object.has_key(vali, 'max')){
+			if(vali.max){
 				schema_prop[prop_key] = {
 					...schema_prop[prop_key],
 					max: vali.max
@@ -255,29 +254,29 @@ function _generate_string_schema_def(
 		type: String,
 		trim: true
 	};
-	if(urn_util.object.has_key(prop_def, 'validation') && typeof prop_def.validation === 'object'){
+	if(prop_def.validation){
 		const vali = prop_def.validation;
-		if(urn_util.object.has_key(vali, 'length')){
+		if(vali.length){
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				minlength: vali.length,
 				maxlenght: vali.length
 			};
 		}else{
-			if(urn_util.object.has_key(vali, 'min')){
+			if(vali.min){
 				schema_prop[prop_key] = {
 					...schema_prop[prop_key],
 					minlength: vali.min
 				};
 			}
-			if(urn_util.object.has_key(vali, 'max')){
+			if(vali.max){
 				schema_prop[prop_key] = {
 					...schema_prop[prop_key],
 					maxlength: vali.max
 				};
 			}
 		}
-		if(urn_util.object.has_key(vali, 'reg_ex')){
+		if(vali.reg_ex){
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				match: vali.reg_ex

@@ -27,7 +27,7 @@ const mongo_main_conn = mongo_connection.create(
 	core_config.db_name
 );
 
-const urn_exc = urn_exception.init('REL_M', 'Mongoose Relation');
+const urn_exc = urn_exception.init('REL_MONGO', 'Mongoose Relation');
 
 /**
  * Mongoose Relation class
