@@ -118,11 +118,9 @@ export const atom_book = {
 				}
 			},
 			type: {
-				type: AtomPropertyType.SET_NUMBER,
-				validation: {
-					values: [1, 2, 3, 4, 5],
-					min: 3
-				}
+				type: AtomPropertyType.ENUM_NUMBER,
+				values: [1, 2, 3, 4, 5],
+				default: 67
 			},
 			media: {
 				type: AtomPropertyType.ATOM,
