@@ -124,7 +124,7 @@ export type AtomDefinition = {
 }
 
 export type AtomPropertiesDefinition = {
-	[k:string]: AtomPropertyDefinition,
+	[k:string]: AtomPropertyDefinition
 }
 
 export type AtomPropertyDefinition =
