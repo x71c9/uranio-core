@@ -17,19 +17,10 @@ import {
 	AtomName,
 	KeyOfAtom,
 	KeyOfAtomShape,
-	AtomPropertiesDefinition,
-	AtomPropertyDefinition,
-	AtomPropertyEncrypted,
-	AtomPropertyString,
-	AtomPropertyNumber,
-	// AtomPropertyEnumString,
-	// AtomPropertyEnumNumber,
-	AtomPropertyTime,
-	AtomPropertySetString,
-	AtomPropertySetNumber,
 	Atom,
 	AtomShape,
-	AtomPropertyType,
+	Book,
+	BookPropertyType
 } from '../types';
 
 import {atom_book} from '../book';
@@ -52,13 +43,13 @@ export async function encrypt_property<A extends AtomName>
 export async function encrypt_properties<A extends AtomName>(atom_name:A, atom:AtomShape<A>):Promise<AtomShape<A>>
 export async function encrypt_properties<A extends AtomName>(atom_name:A, atom:Partial<AtomShape<A>>)
 		:Promise<Partial<AtomShape<A>>>{
-	const atom_props = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	let k:KeyOfAtomShape<A>;
 	for(k in atom){
 		if(
 			urn_util.object.has_key(atom_props, k) &&
 			atom_props[k] &&
-			atom_props[k].type === AtomPropertyType.ENCRYPTED
+			atom_props[k].type === BookPropertyType.ENCRYPTED
 		){
 			atom[k] = await encrypt_property<A>(atom_name, k, atom[k] as string) as any;
 		}
@@ -69,10 +60,10 @@ export async function encrypt_properties<A extends AtomName>(atom_name:A, atom:P
 export function get_encrypted_keys<A extends AtomName>(atom_name:A)
 		:Set<KeyOfAtom<A>>{
 	const encrypt_keys = new Set<KeyOfAtom<A>>();
-	const atom_props = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	for(const k in atom_props){
-		const prop:AtomPropertyDefinition = atom_props[k];
-		if(urn_util.object.has_key(prop, 'type') && prop.type === AtomPropertyType.ENCRYPTED){
+		const prop:Book.Definition.Property = atom_props[k];
+		if(urn_util.object.has_key(prop, 'type') && prop.type === BookPropertyType.ENCRYPTED){
 			encrypt_keys.add(k as KeyOfAtom<A>);
 		}
 	}
@@ -82,16 +73,16 @@ export function get_encrypted_keys<A extends AtomName>(atom_name:A)
 export function get_unique_keys<A extends AtomName>(atom_name:A)
 		:Set<KeyOfAtomShape<A>>{
 	const unique_keys = new Set<KeyOfAtomShape<A>>();
-	const atom_props = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	for(const k in atom_props){
-		const prop:AtomPropertyDefinition = atom_props[k];
+		const prop:Book.Definition.Property = atom_props[k];
 		if(urn_util.object.has_key(prop, 'unique') && prop.unique === true){
 			unique_keys.add(k as KeyOfAtomShape<A>);
 		}
 	}
 	let k:keyof typeof atom_common_properties;
 	for(k in atom_common_properties){
-		const prop:AtomPropertyDefinition = atom_common_properties[k];
+		const prop:Book.Definition.Property = atom_common_properties[k];
 		if(urn_util.object.has_key(prop, 'unique') && prop.unique === true){
 			unique_keys.add(k as KeyOfAtomShape<A>);
 		}
@@ -131,33 +122,33 @@ function _custom_validation<A extends AtomName>(atom_name:A, partial_atom:Partia
 	};
 	for(const [k,v] of Object.entries(all_props)){
 		switch(v.type){
-			case AtomPropertyType.TEXT:
-			case AtomPropertyType.LONG_TEXT:{
+			case BookPropertyType.TEXT:
+			case BookPropertyType.LONG_TEXT:{
 				_validate_atom_string(k, (partial_atom as any)[k], v);
 				break;
 			}
-			case AtomPropertyType.INTEGER:
-			case AtomPropertyType.FLOAT:{
+			case BookPropertyType.INTEGER:
+			case BookPropertyType.FLOAT:{
 				_validate_atom_number(k, (partial_atom as any)[k], v);
 				break;
 			}
-			case AtomPropertyType.TIME:{
+			case BookPropertyType.TIME:{
 				_validate_atom_time(k, (partial_atom as any)[k], v);
 				break;
 			}
-			// case AtomPropertyType.ENUM_STRING:{
+			// case BookPropertyType.ENUM_STRING:{
 			//   _validate_atom_enum_string(k, (partial_atom as any)[k], v);
 			//   break;
 			// }
-			// case AtomPropertyType.ENUM_NUMBER:{
+			// case BookPropertyType.ENUM_NUMBER:{
 			//   _validate_atom_enum_number(k, (partial_atom as any)[k], v);
 			//   break;
 			// }
-			case AtomPropertyType.SET_STRING:{
+			case BookPropertyType.SET_STRING:{
 				_validate_atom_set_string(k, (partial_atom as any)[k], v);
 				break;
 			}
-			case AtomPropertyType.SET_NUMBER:{
+			case BookPropertyType.SET_NUMBER:{
 				_validate_atom_set_number(k, (partial_atom as any)[k], v);
 				break;
 			}
@@ -166,8 +157,11 @@ function _custom_validation<A extends AtomName>(atom_name:A, partial_atom:Partia
 	return true;
 }
 
-function _validate_encrypt_property(prop_key: string, prop_value:string, prop_def:AtomPropertyEncrypted)
-		:true{
+function _validate_encrypt_property(
+	prop_key: string,
+	prop_value:string,
+	prop_def:Book.Definition.Property.Encrypted
+):true{
 	if(prop_def && prop_def.validation && prop_def.validation.max &&
 		prop_def.validation.max > core_config.max_password_length){
 		prop_def.validation.max = core_config.max_password_length;
@@ -176,8 +170,11 @@ function _validate_encrypt_property(prop_key: string, prop_value:string, prop_de
 	return true;
 }
 
-function _validate_atom_string(prop_key:string, prop_value:string, prop_def:AtomPropertyString)
-		:true{
+function _validate_atom_string(
+	prop_key:string,
+	prop_value:string,
+	prop_def:Book.Definition.Property.String
+):true{
 	if(prop_def.validation){
 		const vali = prop_def.validation;
 		if(vali.alphanum && vali.alphanum === true){
@@ -257,8 +254,11 @@ function _validate_atom_string(prop_key:string, prop_value:string, prop_def:Atom
 	return true;
 }
 
-function _validate_atom_number(prop_key:string, prop_value:number, prop_def:AtomPropertyNumber)
-		:true{
+function _validate_atom_number(
+	prop_key:string,
+	prop_value:number,
+	prop_def:Book.Definition.Property.Number
+):true{
 	if(prop_def.validation){
 		const vali = prop_def.validation;
 		if(vali.eq){
@@ -283,8 +283,11 @@ function _validate_atom_number(prop_key:string, prop_value:number, prop_def:Atom
 	return true;
 }
 
-function _validate_atom_time(prop_key:string, prop_value:Date, prop_def:AtomPropertyTime)
-		:true{
+function _validate_atom_time(
+	prop_key:string,
+	prop_value:Date,
+	prop_def:Book.Definition.Property.Time
+):true{
 	if(prop_def.validation){
 		const vali = prop_def.validation;
 		if(vali.eq){
@@ -329,8 +332,11 @@ function _validate_atom_time(prop_key:string, prop_value:Date, prop_def:AtomProp
 //   return true;
 // }
 
-function _validate_atom_set_string(prop_key:string, prop_value:string[], prop_def:AtomPropertySetString)
-		:true{
+function _validate_atom_set_string(
+	prop_key: string,
+	prop_value: string[],
+	prop_def: Book.Definition.Property.SetString
+):true{
 	if(prop_def.validation){
 		const vali = prop_def.validation;
 		if(vali.length){
@@ -364,8 +370,11 @@ function _validate_atom_set_string(prop_key:string, prop_value:string[], prop_de
 	return true;
 }
 
-function _validate_atom_set_number(prop_key:string, prop_value:number[], prop_def:AtomPropertySetNumber)
-		:true{
+function _validate_atom_set_number(
+	prop_key:string,
+	prop_value:number[],
+	prop_def:Book.Definition.Property.SetNumber
+):true{
 	if(prop_def.validation){
 		const vali = prop_def.validation;
 		if(vali.length){
@@ -399,7 +408,7 @@ function _validate_atom_set_number(prop_key:string, prop_value:number[], prop_de
 	return true;
 }
 
-function _is_optional_property(prop:AtomPropertyDefinition)
+function _is_optional_property(prop:Book.Definition.Property)
 		:boolean{
 	return (urn_util.object.has_key(prop, 'optional') && prop.optional === true);
 }
@@ -480,7 +489,7 @@ function _properties_have_correct_type<A extends AtomName>(atom_name:A, partial_
 	return true;
 }
 
-function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: string, prop_value: any)
+function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: string, prop_value: any)
 		:true{
 	if(urn_util.object.has_key(prop_def,'optional') &&
 		prop_def.optional === true &&
@@ -489,11 +498,11 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 		return true;
 	}
 	switch(prop_def.type){
-		case AtomPropertyType.ID:
-		case AtomPropertyType.TEXT:
-		case AtomPropertyType.LONG_TEXT:
-		case AtomPropertyType.ENCRYPTED:
-		case AtomPropertyType.EMAIL:{
+		case BookPropertyType.ID:
+		case BookPropertyType.TEXT:
+		case BookPropertyType.LONG_TEXT:
+		case BookPropertyType.ENCRYPTED:
+		case BookPropertyType.EMAIL:{
 			if(typeof prop_value !== 'string'){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a string.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
@@ -501,8 +510,8 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 			}
 			return true;
 		}
-		case AtomPropertyType.INTEGER:
-		case AtomPropertyType.FLOAT:{
+		case BookPropertyType.INTEGER:
+		case BookPropertyType.FLOAT:{
 			if(typeof prop_value !== 'number'){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a number.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
@@ -510,7 +519,7 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 			}
 			return true;
 		}
-		case AtomPropertyType.BINARY:{
+		case BookPropertyType.BINARY:{
 			if(typeof prop_value !== 'boolean'){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a boolean.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
@@ -518,7 +527,7 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 			}
 			return true;
 		}
-		case AtomPropertyType.TIME:{
+		case BookPropertyType.TIME:{
 			if(!urn_util.is.date(prop_value)){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a Date.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
@@ -526,7 +535,7 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 			}
 			return true;
 		}
-		case AtomPropertyType.SET_STRING:{
+		case BookPropertyType.SET_STRING:{
 			if(!Array.isArray(prop_value)){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a string array.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
@@ -534,7 +543,7 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 			}
 			return true;
 		}
-		case AtomPropertyType.SET_NUMBER:{
+		case BookPropertyType.SET_NUMBER:{
 			if(!Array.isArray(prop_value)){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a number array.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
@@ -542,7 +551,7 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 			}
 			return true;
 		}
-		case AtomPropertyType.ENUM_STRING:{
+		case BookPropertyType.ENUM_STRING:{
 			if(typeof prop_value !== 'string'){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a string.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
@@ -555,7 +564,7 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 			}
 			return true;
 		}
-		case AtomPropertyType.ENUM_NUMBER:{
+		case BookPropertyType.ENUM_NUMBER:{
 			if(typeof prop_value !== 'number'){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a number.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
@@ -568,7 +577,7 @@ function _check_prop_main_type(prop_def: AtomPropertyDefinition, prop_key: strin
 			}
 			return true;
 		}
-		case AtomPropertyType.ATOM:{
+		case BookPropertyType.ATOM:{
 			return true;
 		}
 	}

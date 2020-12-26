@@ -13,15 +13,14 @@ import * as urn_rel from '../rel/';
 import * as urn_validators from '../vali/';
 
 import {
-	QueryOptions,
 	Query,
 	AtomName,
 	AtomShape,
 	Atom,
 	KeyOfAtom,
 	KeyOfAtomShape,
-	AtomPropertyType,
-	AtomPropertiesDefinition
+	Book,
+	BookPropertyType
 } from '../types';
 
 import {core_config} from '../config/defaults';
@@ -53,7 +52,7 @@ export class DAL<A extends AtomName> {
 		}
 	}
 	
-	public async select(query:Query<A>, options?:QueryOptions<A>)
+	public async select(query:Query<A>, options?:Query.Options<A>)
 			:Promise<Atom<A>[]>{
 		return await this._select(query, options);
 	}
@@ -63,7 +62,7 @@ export class DAL<A extends AtomName> {
 		return await this._select_by_id(id);
 	}
 	
-	public async select_one(query:Query<A>, options?:QueryOptions<A>)
+	public async select_one(query:Query<A>, options?:Query.Options<A>)
 			:Promise<Atom<A>>{
 		return await this._select_one(query, options);
 	}
@@ -117,7 +116,7 @@ export class DAL<A extends AtomName> {
 		return await this.delete_by_id(atom._id);
 	}
 	
-	public async trash_select(query:Query<A>, options?:QueryOptions<A>)
+	public async trash_select(query:Query<A>, options?:Query.Options<A>)
 			:Promise<Atom<A>[]>{
 		return await this._select(query, options, true);
 	}
@@ -127,7 +126,7 @@ export class DAL<A extends AtomName> {
 		return await this._select_by_id(id, true);
 	}
 	
-	public async trash_select_one(query:Query<A>, options?:QueryOptions<A>)
+	public async trash_select_one(query:Query<A>, options?:Query.Options<A>)
 			:Promise<Atom<A>>{
 		return await this._select_one(query, options, true);
 	}
@@ -157,7 +156,7 @@ export class DAL<A extends AtomName> {
 		return await this._delete_by_id(id, true);
 	}
 	
-	private async _select(query:Query<A>, options?:QueryOptions<A>, in_trash = false)
+	private async _select(query:Query<A>, options?:Query.Options<A>, in_trash = false)
 			:Promise<Atom<A>[]>{
 		if(in_trash === true && this._db_trash_relation === null){
 			return [];
@@ -194,7 +193,7 @@ export class DAL<A extends AtomName> {
 		return db_res_select_by_id;
 	}
 	
-	private async _select_one(query:Query<A>, options?:QueryOptions<A>, in_trash = false)
+	private async _select_one(query:Query<A>, options?:Query.Options<A>, in_trash = false)
 			:Promise<Atom<A>>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _select_one [in_trash=true]. Trash DB not found.`;
@@ -265,10 +264,13 @@ export class DAL<A extends AtomName> {
 	
 	private async _encrypt_changed_properties(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Partial<AtomShape<A>>>{
-		const atom_props = atom_book[this.atom_name]['properties'] as AtomPropertiesDefinition;
+		const atom_props = atom_book[this.atom_name]['properties'] as Book.Definition.Properties;
 		let k:KeyOfAtomShape<A>;
 		for(k in partial_atom){
-			if(urn_util.object.has_key(atom_props, k) && atom_props[k].type === AtomPropertyType.ENCRYPTED){
+			if(
+				urn_util.object.has_key(atom_props, k) &&
+				atom_props[k].type === BookPropertyType.ENCRYPTED
+			){
 				let value = partial_atom[k] as string;
 				if(value.length !== 60 || !value.startsWith('$2')){
 					value = await urn_atm.encrypt_property(this.atom_name, k, value);

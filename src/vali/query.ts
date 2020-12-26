@@ -7,7 +7,7 @@
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-import {QueryOptions, Query, AtomName, QueryExpression} from '../types';
+import {Query, AtomName} from '../types';
 
 import {atom_book} from '../book';
 
@@ -28,7 +28,7 @@ const urn_exc = urn_exception.init('QUERY_VALIDATE','Query Validator');
  * @param options- the options object
  */
 export function validate_filter_options_params<A extends AtomName>
-(atom_name:A, query:Query<A>, options?:QueryOptions<A>)
+(atom_name:A, query:Query<A>, options?:Query.Options<A>)
 		:true{
 	validate_filter<A>(query, atom_name);
 	if(options){
@@ -43,7 +43,7 @@ export function validate_filter_options_params<A extends AtomName>
  * @param field - The field to validate
  *
  */
-function _validate_expression<A extends AtomName>(field:QueryExpression<A>)
+function _validate_expression<A extends AtomName>(field:Query.Expression<A>)
 		:true{
 	if(field === undefined || field === null || typeof field !== 'object'){
 		const err_msg = `Cannot _validate_expression. Invalid expression type.`;
@@ -138,7 +138,7 @@ function validate_filter<A extends AtomName>(query:Query<A>, atom_name:A)
  * @param object - The object or the string to validate as option
  *
  */
-function validate_options<A extends AtomName>(options:QueryOptions<A>, atom_name:A)
+function validate_options<A extends AtomName>(options:Query.Options<A>, atom_name:A)
 		:true{
 	if(urn_util.object.has_key(options, 'sort')){
 		switch(typeof options.sort){

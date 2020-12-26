@@ -12,14 +12,9 @@ import {urn_util} from 'urn-lib';
 // const urn_exc = urn_exception.init('MONGO_SCHEMA', 'Mongoose Schema Definition');
 
 import {
+	BookPropertyType,
+	Book,
 	AtomName,
-	AtomPropertyDefinition,
-	AtomPropertiesDefinition,
-	AtomPropertyType,
-	AtomPropertyString,
-	AtomPropertyNumber,
-	AtomPropertyEnum,
-	AtomPropertyTime,
 	atom_hard_properties,
 	atom_common_properties
 } from '../../types';
@@ -28,7 +23,7 @@ import {atom_book} from '../../book';
 
 export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{
-	const props_def = atom_book[atom_name]['properties'] as AtomPropertiesDefinition;
+	const props_def = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const properties = {
 		...atom_hard_properties,
 		...atom_common_properties,
@@ -47,7 +42,7 @@ export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 	return mongoose_schema_def;
 }
 
-function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_key:string)
+function _generate_mongoose_schema_prop(prop_def:Book.Definition.Property, prop_key:string)
 		:mongoose.SchemaDefinition{
 	let is_required = true;
 	if(prop_def.optional && prop_def.optional === true){
@@ -68,7 +63,7 @@ function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_ke
 		};
 	}
 	switch(prop_def.type){
-		case AtomPropertyType.ID:{
+		case BookPropertyType.ID:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				type: String,
@@ -76,13 +71,13 @@ function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_ke
 			};
 			return schema_prop;
 		}
-		case AtomPropertyType.TEXT:{
+		case BookPropertyType.TEXT:{
 			return _generate_string_schema_def(prop_def, prop_key, schema_prop);
 		}
-		case AtomPropertyType.LONG_TEXT:{
+		case BookPropertyType.LONG_TEXT:{
 			return _generate_string_schema_def(prop_def, prop_key, schema_prop);
 		}
-		case AtomPropertyType.ENCRYPTED:{
+		case BookPropertyType.ENCRYPTED:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				type: String,
@@ -91,7 +86,7 @@ function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_ke
 			};
 			return schema_prop;
 		}
-		case AtomPropertyType.EMAIL:{
+		case BookPropertyType.EMAIL:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
@@ -100,43 +95,43 @@ function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_ke
 			};
 			return schema_prop;
 		}
-		case AtomPropertyType.INTEGER:{
+		case BookPropertyType.INTEGER:{
 			return _generate_number_schema_def(prop_def, prop_key, schema_prop);
 		}
-		case AtomPropertyType.FLOAT:{
+		case BookPropertyType.FLOAT:{
 			return _generate_number_schema_def(prop_def, prop_key, schema_prop);
 		}
-		case AtomPropertyType.BINARY:{
+		case BookPropertyType.BINARY:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				type: Boolean
 			};
 			return schema_prop;
 		}
-		case AtomPropertyType.TIME:{
+		case BookPropertyType.TIME:{
 			return _generate_date_schema_def(prop_def, prop_key, schema_prop);
 		}
-		case AtomPropertyType.ENUM_STRING:{
+		case BookPropertyType.ENUM_STRING:{
 			return _generate_enum_schema_def(prop_def, prop_key, schema_prop, 'string');
 		}
-		case AtomPropertyType.ENUM_NUMBER:{
+		case BookPropertyType.ENUM_NUMBER:{
 			return _generate_enum_schema_def(prop_def, prop_key, schema_prop, 'number');
 		}
-		case AtomPropertyType.SET_STRING:{
+		case BookPropertyType.SET_STRING:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				type: [String]
 			};
 			return schema_prop;
 		}
-		case AtomPropertyType.SET_NUMBER:{
+		case BookPropertyType.SET_NUMBER:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				type: [Number]
 			};
 			return schema_prop;
 		}
-		case AtomPropertyType.ATOM:{
+		case BookPropertyType.ATOM:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key],
 				type: 'Mixed'
@@ -149,7 +144,7 @@ function _generate_mongoose_schema_prop(prop_def:AtomPropertyDefinition, prop_ke
 }
 
 function _generate_date_schema_def(
-	prop_def: AtomPropertyTime,
+	prop_def: Book.Definition.Property.Time,
 	prop_key: string,
 	schema_prop: mongoose.SchemaDefinition
 ):mongoose.SchemaDefinition{
@@ -190,7 +185,7 @@ function _generate_date_schema_def(
 }
 
 function _generate_enum_schema_def(
-	prop_def: AtomPropertyEnum,
+	prop_def: Book.Definition.Property.Enum,
 	prop_key: string,
 	schema_prop: mongoose.SchemaDefinition,
 	type: 'string' | 'number'
@@ -210,7 +205,7 @@ function _generate_enum_schema_def(
 }
 
 function _generate_number_schema_def(
-	prop_def:AtomPropertyNumber,
+	prop_def:Book.Definition.Property.Number,
 	prop_key: string,
 	schema_prop:mongoose.SchemaDefinition
 ):mongoose.SchemaDefinition{
@@ -245,7 +240,7 @@ function _generate_number_schema_def(
 }
 
 function _generate_string_schema_def(
-	prop_def: AtomPropertyString,
+	prop_def: Book.Definition.Property.String,
 	prop_key: string,
 	schema_prop: mongoose.SchemaDefinition
 ):mongoose.SchemaDefinition{
