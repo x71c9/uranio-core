@@ -1,16 +1,16 @@
 
-import {AtomPropertyType} from './types';
+import {BookPropertyType} from './types';
 
 const core_atoms_book = {
 	superuser: {
 		properties: {
 			email: {
-				type: AtomPropertyType.EMAIL,
+				type: BookPropertyType.EMAIL,
 				label: 'Email',
 				unique: true
 			},
 			password: {
-				type: AtomPropertyType.ENCRYPTED,
+				type: BookPropertyType.ENCRYPTED,
 				label: 'Email'
 			}
 		}
@@ -22,11 +22,11 @@ export const atom_book = {
 	product: {
 		properties: {
 			title: {
-				type: AtomPropertyType.TEXT,
+				type: BookPropertyType.TEXT,
 				label: 'Title'
 			},
 			barcode: {
-				type: AtomPropertyType.TEXT,
+				type: BookPropertyType.TEXT,
 				label: 'Barcode',
 				optional: true
 			}
@@ -35,11 +35,11 @@ export const atom_book = {
 	obi: {
 		properties: {
 			other_id: {
-				type: AtomPropertyType.ID,
+				type: BookPropertyType.ID,
 				label: 'Other ID'
 			},
 			label: {
-				type: AtomPropertyType.TEXT,
+				type: BookPropertyType.TEXT,
 				label: 'Label',
 				validation: {
 					alphanum: true,
@@ -48,23 +48,23 @@ export const atom_book = {
 				}
 			},
 			bio: {
-				type: AtomPropertyType.LONG_TEXT,
+				type: BookPropertyType.LONG_TEXT,
 				label: 'Bio',
 				optional: true
 			},
 			mail: {
-				type: AtomPropertyType.EMAIL,
+				type: BookPropertyType.EMAIL,
 				label: 'Mail'
 			},
 			age: {
-				type: AtomPropertyType.INTEGER,
+				type: BookPropertyType.INTEGER,
 				label: 'Age',
 				validation: {
 					min: 18
 				}
 			},
 			price: {
-				type: AtomPropertyType.FLOAT,
+				type: BookPropertyType.FLOAT,
 				label: 'Price',
 				format: {
 					decimal: 2,
@@ -76,13 +76,13 @@ export const atom_book = {
 				}
 			},
 			active: {
-				type: AtomPropertyType.BINARY,
+				type: BookPropertyType.BINARY,
 				label: 'Active',
 				default: true,
 				values: ['Inactive', 'Active']
 			},
 			password: {
-				type: AtomPropertyType.ENCRYPTED,
+				type: BookPropertyType.ENCRYPTED,
 				label: 'Password',
 				validation: {
 					contain_digit: true,
@@ -92,7 +92,7 @@ export const atom_book = {
 				}
 			},
 			string: {
-				type: AtomPropertyType.ENCRYPTED,
+				type: BookPropertyType.ENCRYPTED,
 				label: 'String',
 				validation: {
 					letters_only: true,
@@ -102,7 +102,7 @@ export const atom_book = {
 				}
 			},
 			confirmation_date: {
-				type: AtomPropertyType.TIME,
+				type: BookPropertyType.TIME,
 				label: 'Confirmation',
 				default: 'NOW',
 				validation: {
@@ -111,19 +111,19 @@ export const atom_book = {
 				}
 			},
 			categories: {
-				type: AtomPropertyType.SET_STRING,
+				type: BookPropertyType.SET_STRING,
 				validation: {
 					values: ['CatA', 'CatB', 'AAA'],
 					length: 2
 				}
 			},
 			type: {
-				type: AtomPropertyType.ENUM_NUMBER,
+				type: BookPropertyType.ENUM_NUMBER,
 				values: [1, 2, 3, 4, 5],
 				default: 67
 			},
 			media: {
-				type: AtomPropertyType.ATOM,
+				type: BookPropertyType.ATOM,
 				atom: 'superuser',
 				optional: true,
 				label: 'Media',
