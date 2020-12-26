@@ -102,14 +102,14 @@ export function get_unique_keys<A extends AtomName>(atom_name:A)
 export function validate<A extends AtomName>(atom_name:A, atom:Atom<A>)
 		:true{
 	_validate_hard_properties(atom);
-	validate_shape<A>(atom_name, atom);
+	validate_shape(atom_name, atom);
 	return true;
 }
 
 export function validate_shape<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
-	_has_all_properties<A>(atom_name, atom_shape);
-	validate_partial<A>(atom_name, atom_shape);
+	_has_all_properties(atom_name, atom_shape);
+	validate_partial(atom_name, atom_shape);
 	return true;
 }
 
