@@ -101,7 +101,7 @@ export function fix_atom_key<A extends AtomName>(
 	key:string
 ):Atom<A>{
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	if(atom_props[key] && typeof atom_props[key].on_error === 'function'){
+	if(atom_props[key] && atom_props[key].on_error && typeof atom_props[key].on_error === 'function'){
 		(atom as any)[key] = atom_props[key].on_error!((atom as any)[key]);
 	}else if(atom_props[key] && atom_props[key].default){
 		(atom as any)[key] = atom_props[key].default;

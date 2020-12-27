@@ -80,7 +80,7 @@ export namespace Book {
 				optional?: boolean,
 				unique?: boolean,
 				default?: any,
-				on_error?: (old_value: any) => void
+				on_error?: (old_value: any) => any
 			}
 			
 			export interface ID extends SharedFields {
