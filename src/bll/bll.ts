@@ -42,20 +42,10 @@ class BLL<A extends AtomName> {
 		return await this._dal.insert_one(atom_shape);
 	}
 	
-	// public async update_and_encrypt_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
-	//     :Promise<Atom<A>>{
-	//   return await this._dal.alter_and_encrypt_by_id(id, partial_atom);
-	// }
-	
 	public async update_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
 		return await this._dal.alter_by_id(id, partial_atom);
 	}
-	
-	// public async update_and_encrypt_one(atom:Atom<A>)
-	//     :Promise<Atom<A>>{
-	//   return await this.update_and_encrypt_by_id(atom._id, atom);
-	// }
 	
 	public async update_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
