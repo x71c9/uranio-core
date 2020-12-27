@@ -56,13 +56,13 @@ export const atom_book = {
 				type: BookPropertyType.EMAIL,
 				label: 'Mail'
 			},
-			age: {
-				type: BookPropertyType.INTEGER,
-				label: 'Age',
-				validation: {
-					min: 18
-				}
-			},
+			// age: {
+			//   type: BookPropertyType.INTEGER,
+			//   label: 'Age',
+			//   validation: {
+			//     min: 18
+			//   }
+			// },
 			price: {
 				type: BookPropertyType.FLOAT,
 				label: 'Price',

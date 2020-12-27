@@ -23,6 +23,23 @@ export const enum BookPropertyType {
 	ATOM = 'ATOM'
 }
 
+export type RealType<AT extends BookPropertyType> =
+	AT extends BookPropertyType.ID ? string :
+	AT extends BookPropertyType.TEXT ? string :
+	AT extends BookPropertyType.LONG_TEXT ? string :
+	AT extends BookPropertyType.EMAIL ? string :
+	AT extends BookPropertyType.INTEGER ? number :
+	AT extends BookPropertyType.FLOAT ? number :
+	AT extends BookPropertyType.BINARY ? boolean :
+	AT extends BookPropertyType.ENCRYPTED ? string :
+	AT extends BookPropertyType.TIME ? Date :
+	AT extends BookPropertyType.SET_STRING ? Array<string> :
+	AT extends BookPropertyType.SET_NUMBER ? Array<number> :
+	AT extends BookPropertyType.ENUM_STRING ? string :
+	AT extends BookPropertyType.ENUM_NUMBER ? number :
+	AT extends BookPropertyType.ATOM ? any :
+	never;
+
 export type Book = {
 	[k:string]: Book.Definition
 };
@@ -57,28 +74,13 @@ export namespace Book {
 		
 		export namespace Property {
 		
-			export type RealType<AT extends BookPropertyType> =
-				AT extends BookPropertyType.ID ? string :
-				AT extends BookPropertyType.TEXT ? string :
-				AT extends BookPropertyType.LONG_TEXT ? string :
-				AT extends BookPropertyType.EMAIL ? string :
-				AT extends BookPropertyType.INTEGER ? number :
-				AT extends BookPropertyType.FLOAT ? number :
-				AT extends BookPropertyType.BINARY ? boolean :
-				AT extends BookPropertyType.ENCRYPTED ? string :
-				AT extends BookPropertyType.TIME ? Date :
-				AT extends BookPropertyType.SET_STRING ? Array<string> :
-				AT extends BookPropertyType.SET_NUMBER ? Array<number> :
-				AT extends BookPropertyType.ENUM_STRING ? string :
-				AT extends BookPropertyType.ENUM_NUMBER ? number :
-				AT extends BookPropertyType.ATOM ? any :
-				never;
-			
 			interface SharedFields {
 				type: BookPropertyType,
 				label: string,
 				optional?: boolean,
-				unique?: boolean
+				unique?: boolean,
+				default?: any,
+				on_error?: (old_value: any) => void
 			}
 			
 			export interface ID extends SharedFields {

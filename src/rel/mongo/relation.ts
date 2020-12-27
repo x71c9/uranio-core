@@ -77,7 +77,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_find_by_id_res === null){
 			throw urn_exc.create_not_found('FIND_ID_NOT_FOUND', `Record not found.`);
 		}
-		return _clean_object(mon_find_by_id_res);
+		return _clean_object(mon_find_by_id_res as Atom<A>);
 	}
 	
 	public async select_one(query:Query<A>, options?:Query.Options<A>)
@@ -88,7 +88,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
 		}
-		return _clean_object(mon_find_one_res);
+		return _clean_object(mon_find_one_res as Atom<A>);
 	}
 	
 	public async insert_one(atom_shape:AtomShape<A>)
@@ -101,29 +101,29 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		const str_id = mon_res_doc._id.toString();
 		const mon_obj = mon_res_doc.toObject();
 		mon_obj._id = str_id;
-		return mon_obj;
+		return mon_obj as Atom<A>;
 	}
 	
-	public async alter_one(atom:Atom<A>)
-			:Promise<Atom<A>>{
-		return await this.alter_by_id(atom._id, atom);
-		// if(!urn_util.object.has_key(atom, '_id')){
-		//   const err_msg = `Cannot alter_one. Argument has no _id.`;
-		//   throw urn_exc.create('ALTER_ONE_NO_ID', err_msg);
-		// }
-		// if(typeof atom._id !== 'string' || atom._id === '' || !this.is_valid_id(atom._id)){
-		//   const err_msg = `Cannot alter_one. Argument has invalid _id.`;
-		//   throw urn_exc.create('ALTER_ONE_INVALID_ID', err_msg);
-		// }
-		// const mon_update_res =
-		//   await this._raw.findOneAndUpdate({_id:atom._id}, atom, {new: true, lean: true});
-		// if(mon_update_res === null){
-		//   throw urn_exc.create('ALTER_ONE_NOT_FOUND', `Cannot alter_one. Record not found.`);
-		// }
-		// return _clean_object(mon_update_res as Atom<A>);
-		// // const mon_obj = mon_update_res.toObject();
-		// // return _clean_object(mon_obj);
-	}
+	// public async alter_one(atom:Atom<A>)
+	//     :Promise<Atom<A>>{
+	//   return await this.alter_by_id(atom._id, atom);
+	//   // if(!urn_util.object.has_key(atom, '_id')){
+	//   //   const err_msg = `Cannot alter_one. Argument has no _id.`;
+	//   //   throw urn_exc.create('ALTER_ONE_NO_ID', err_msg);
+	//   // }
+	//   // if(typeof atom._id !== 'string' || atom._id === '' || !this.is_valid_id(atom._id)){
+	//   //   const err_msg = `Cannot alter_one. Argument has invalid _id.`;
+	//   //   throw urn_exc.create('ALTER_ONE_INVALID_ID', err_msg);
+	//   // }
+	//   // const mon_update_res =
+	//   //   await this._raw.findOneAndUpdate({_id:atom._id}, atom, {new: true, lean: true});
+	//   // if(mon_update_res === null){
+	//   //   throw urn_exc.create('ALTER_ONE_NOT_FOUND', `Cannot alter_one. Record not found.`);
+	//   // }
+	//   // return _clean_object(mon_update_res as Atom<A>);
+	//   // // const mon_obj = mon_update_res.toObject();
+	//   // // return _clean_object(mon_obj);
+	// }
 	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
@@ -132,7 +132,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 			throw urn_exc.create('ALTER_BY_ID_INVALID_ID', err_msg);
 		}
 		const mon_update_res =
-			await this._raw.findOneAndUpdate({_id:id}, partial_atom, {new: true, lean: true});
+			await this._raw.findByIdAndUpdate({_id:id}, partial_atom, {new: true, lean: true});
 		if(mon_update_res === null){
 			throw urn_exc.create('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
 		}
@@ -141,24 +141,40 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		// return _clean_object(mon_obj);
 	}
 	
-	public async delete_one(atom:Atom<A>)
+	public async replace_by_id(id:string, atom:Atom<A>)
 			:Promise<Atom<A>>{
-		return await this.delete_by_id(atom._id);
-		// if(!urn_util.object.has_key(atom, '_id')){
-		//   const err_msg = `Cannot delete_one. Argument has no _id.`;
-		//   throw urn_exc.create('DEL_ONE_NO_ID', err_msg);
-		// }
-		// if(typeof atom._id !== 'string' || atom._id === '' || !this.is_valid_id(atom._id)){
-		//   const err_msg = `Cannot delete_one. Argument has invalid _id.`;
-		//   throw urn_exc.create('DEL_ONE_INVALID_ID', err_msg);
-		// }
-		// const mon_delete_res =
-		//   await this._raw.findOneAndDelete({_id:atom._id});
-		// if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
-		//   throw urn_exc.create_not_found('DEL_ONE_NOT_FOUND', `Cannot delete_one. Record not found.`);
-		// }
-		// return _clean_object(mon_delete_res.toObject() as Atom<A>);
+		if(typeof id !== 'string' || id === '' || !this.is_valid_id(id)){
+			const err_msg = `Cannot replace_by_id. Invalid id param.`;
+			throw urn_exc.create('REPLACE_BY_ID_INVALID_ID', err_msg);
+		}
+		const mon_update_res =
+			await this._raw.findByIdAndUpdate({_id:id}, atom, {new: true, lean: true, overwrite: true});
+		if(mon_update_res === null){
+			throw urn_exc.create('REPLACE_BY_ID_NOT_FOUND', `Cannot replace_by_id. Record not found.`);
+		}
+		return _clean_object(mon_update_res as Atom<A>);
+		// const mon_obj = mon_update_res.toObject();
+		// return _clean_object(mon_obj);
 	}
+	
+	// public async delete_one(atom:Atom<A>)
+	//     :Promise<Atom<A>>{
+	//   return await this.delete_by_id(atom._id);
+	//   // if(!urn_util.object.has_key(atom, '_id')){
+	//   //   const err_msg = `Cannot delete_one. Argument has no _id.`;
+	//   //   throw urn_exc.create('DEL_ONE_NO_ID', err_msg);
+	//   // }
+	//   // if(typeof atom._id !== 'string' || atom._id === '' || !this.is_valid_id(atom._id)){
+	//   //   const err_msg = `Cannot delete_one. Argument has invalid _id.`;
+	//   //   throw urn_exc.create('DEL_ONE_INVALID_ID', err_msg);
+	//   // }
+	//   // const mon_delete_res =
+	//   //   await this._raw.findOneAndDelete({_id:atom._id});
+	//   // if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
+	//   //   throw urn_exc.create_not_found('DEL_ONE_NOT_FOUND', `Cannot delete_one. Record not found.`);
+	//   // }
+	//   // return _clean_object(mon_delete_res.toObject() as Atom<A>);
+	// }
 	
 	public async delete_by_id(id:string)
 			:Promise<Atom<A>>{

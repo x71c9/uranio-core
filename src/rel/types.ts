@@ -16,11 +16,13 @@ export interface Relation<A extends AtomName> {
 	
 	insert_one(atom_shape:AtomShape<A>):Promise<Atom<A>>;
 	
-	alter_one(atom:Atom<A>):Promise<Atom<A>>;
+	// alter_one(atom:Atom<A>):Promise<Atom<A>>;
 	
 	alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>):Promise<Atom<A>>;
 	
-	delete_one(atom:Atom<A>):Promise<Atom<A>>;
+	replace_by_id(id:string, atom:Atom<A>):Promise<Atom<A>>;
+	
+	// delete_one(atom:Atom<A>):Promise<Atom<A>>;
 	
 	delete_by_id(id:string):Promise<Atom<A>>;
 	
