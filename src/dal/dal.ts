@@ -18,7 +18,7 @@ import {
 	AtomShape,
 	Atom,
 	KeyOfAtom,
-	KeyOfAtomShape,
+	// KeyOfAtomShape,
 	Book,
 	BookPropertyType
 } from '../types';
@@ -26,6 +26,7 @@ import {
 import {core_config} from '../config/defaults';
 
 import {atom_book} from '../book';
+import { atom_hard_properties, atom_common_properties } from '../typ/atom';
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -234,7 +235,7 @@ export class DAL<A extends AtomName> {
 			throw urn_exc.create('ALTER_BY_ID_TRASH_NOT_FOUND', err_msg);
 		}
 		if(fix === true){
-			partial_atom = await this._encrypt_changed_properties(id, partial_atom);
+			partial_atom = await this._encrypt_partial_atom_changed_properties(id, partial_atom);
 		}
 		urn_atm.validate_partial<A>(this.atom_name, partial_atom);
 		
@@ -250,25 +251,27 @@ export class DAL<A extends AtomName> {
 		return db_res_insert;
 	}
 	
-	private async _replace_by_id(id:string, atom:Atom<A>, in_trash = false)
+	private async _replace_by_id(id:string, atom:Atom<A>, in_trash = false, fix = true)
 			:Promise<Atom<A>>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _replace_by_id [in_trash=true]. Trash DB not found.`;
 			throw urn_exc.create('REPLACE_BY_ID_TRASH_NOT_FOUND', err_msg);
 		}
-		// if(fix === true){
-		//   atom = await this._encrypt_changed_properties(id, atom);
-		// }
+		if(fix === true){
+			atom = await this._encrypt_atom_changed_properties(id, atom);
+		}
+		
 		urn_atm.validate_partial<A>(this.atom_name, atom);
 		
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
-		const db_res_insert = await _relation.replace_by_id(id, atom);
-		// if(fix === false || in_trash === true){
-		urn_atm.validate<A>(this.atom_name, db_res_insert);
-		// }else{
-		//   db_res_insert = await this._fix_on_validation_error(db_res_insert);
-		// }
+		let db_res_insert = await _relation.replace_by_id(id, atom);
+		
+		if(fix === false || in_trash === true){
+			urn_atm.validate<A>(this.atom_name, db_res_insert);
+		}else{
+			db_res_insert = await this._fix_on_validation_error(db_res_insert);
+		}
 		
 		return db_res_insert;
 	}
@@ -292,17 +295,50 @@ export class DAL<A extends AtomName> {
 		return db_res_delete;
 	}
 	
-	private async _encrypt_changed_properties(id:string, partial_atom:Partial<AtomShape<A>>)
+	private async _encrypt_atom_changed_properties(id:string, atom:Atom<A>)
+			:Promise<Atom<A>>{
+		const atom_props = atom_book[this.atom_name]['properties'] as Book.Definition.Properties;
+		const all_props = {
+			...atom_hard_properties,
+			...atom_common_properties,
+			...atom_props
+		};
+		for(const k in atom){
+			if(
+				urn_util.object.has_key(all_props, k) &&
+				all_props[k].type &&
+				(all_props[k].type as any) === BookPropertyType.ENCRYPTED
+			){
+				let value = atom[k];
+				if(value && typeof value === 'string' && (value.length !== 60 || value.startsWith('$2'))){
+					value = await urn_atm.encrypt_property(this.atom_name, k, value);
+				}else{
+					const res_select = await this._select_by_id(id);
+					if(res_select[k] !== value){
+						value = await urn_atm.encrypt_property(this.atom_name, k, value as string);
+					}
+				}
+				(atom as any)[k] = value;
+			}
+		}
+		return atom;
+	}
+	
+	private async _encrypt_partial_atom_changed_properties(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Partial<AtomShape<A>>>{
 		const atom_props = atom_book[this.atom_name]['properties'] as Book.Definition.Properties;
-		let k:KeyOfAtomShape<A>;
-		for(k in partial_atom){
+		const all_props = {
+			...atom_common_properties,
+			...atom_props
+		};
+		for(const k in partial_atom){
 			if(
-				urn_util.object.has_key(atom_props, k) &&
-				atom_props[k].type === BookPropertyType.ENCRYPTED
+				urn_util.object.has_key(all_props, k) &&
+				all_props[k].type &&
+				(all_props[k].type as any) === BookPropertyType.ENCRYPTED
 			){
 				let value = partial_atom[k] as string;
-				if(value.length !== 60 || !value.startsWith('$2')){
+				if(value && typeof value === 'string' && (value.length !== 60 || value.startsWith('$2'))){
 					value = await urn_atm.encrypt_property(this.atom_name, k, value);
 				}else{
 					const res_select = await this._select_by_id(id);
@@ -364,15 +400,13 @@ export class DAL<A extends AtomName> {
 				throw exc;
 			}
 			for(const k of exc.keys){
-				if(atom[k as KeyOfAtom<A>]){
-					if(!urn_atm.is_valid_key<A>(this.atom_name, k)){
-						delete atom[k as KeyOfAtom<A>];
-					}else{
-						atom = urn_atm.fix_atom_key<A>(this.atom_name, atom, k);
-					}
+				if(atom[k as KeyOfAtom<A>] && !urn_atm.is_valid_key<A>(this.atom_name, k)){
+					delete atom[k as KeyOfAtom<A>];
+				}else{
+					atom = urn_atm.fix_atom_key<A>(this.atom_name, atom, k);
 				}
 			}
-			atom = await this._replace_by_id(atom._id, atom);
+			atom = await this._replace_by_id(atom._id, atom, false, false);
 		}
 		return atom;
 	}

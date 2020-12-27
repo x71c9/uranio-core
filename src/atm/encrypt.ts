@@ -16,6 +16,7 @@ import {_validate_encrypt_property} from './validate';
 
 import {
 	AtomName,
+	KeyOfAtom,
 	KeyOfAtomShape,
 	AtomShape,
 	Book,
@@ -23,7 +24,7 @@ import {
 } from '../types';
 
 export async function encrypt_property<A extends AtomName>
-(atom_name:A, prop_key:KeyOfAtomShape<A>, prop_value:string)
+(atom_name:A, prop_key:KeyOfAtom<A>, prop_value:string)
 		:Promise<string>{
 	const atom_props = atom_book[atom_name]['properties'];
 	_validate_encrypt_property(prop_key as string, prop_value, (atom_props as any)[prop_key]);
