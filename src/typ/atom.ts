@@ -6,7 +6,7 @@
 
 import {atom_book} from '../book';
 
-import {Book, BookPropertyType} from './book';
+import {BookPropertyType, RealType} from './book';
 
 export const atom_hard_properties = {
 	_id: {
@@ -61,7 +61,7 @@ type AtomTypeOfProperty<A extends AtomName, k extends CustomKeyOfAtomShape<A>> =
 
 type RealTypeOfAtomProperty<A extends AtomName, k extends CustomKeyOfAtomShape<A>> =
 	AtomTypeOfProperty<A,k> extends BookPropertyType ?
-		Book.Definition.Property.RealType<AtomTypeOfProperty<A,k>> : never;
+		RealType<AtomTypeOfProperty<A,k>> : never;
 
 type AtomTypeOfHardProperty<k extends KeyOfHardProperties> =
 	AtomDefinitionPropertyInferType<typeof atom_hard_properties[k]>;
@@ -70,10 +70,10 @@ type AtomTypeOfCommonProperty<k extends KeyOfCommonProperties> =
 	AtomDefinitionPropertyInferType<typeof atom_common_properties[k]>;
 
 type RealTypeOfAtomHardProperty<k extends KeyOfHardProperties> =
-	Book.Definition.Property.RealType<AtomTypeOfHardProperty<k>>;
+	RealType<AtomTypeOfHardProperty<k>>;
 
 type RealTypeOfAtomCommonProperty<k extends KeyOfCommonProperties> =
-	Book.Definition.Property.RealType<AtomTypeOfCommonProperty<k>>;
+	RealType<AtomTypeOfCommonProperty<k>>;
 
 type AtomHardProperties = {
 	[k in KeyOfHardProperties]: RealTypeOfAtomHardProperty<k>
@@ -115,8 +115,6 @@ export type KeyOfAtom<A extends AtomName> =
 	KeyOfAtomShape<A> | KeyOfHardProperties | KeyOfCommonProperties;
 
 export type Atom<A extends AtomName> = AtomHardProperties & AtomShape<A>;
-
-// export const a:Book.Properties.Binary
 
 
 

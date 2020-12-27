@@ -76,25 +76,11 @@ export class DAL<A extends AtomName> {
 		return await this._insert_one(atom_shape);
 	}
 	
-	// public async alter_and_encrypt_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
-	//     :Promise<Atom<A>>{
-		
-	//   await urn_atm.encrypt_properties<A>(this.atom_name, partial_atom);
-		
-	//   await this._check_unique(partial_atom, id);
-	//   return await this._alter_by_id(id, partial_atom);
-	// }
-	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
 		await this._check_unique(partial_atom, id);
 		return await this._alter_by_id(id, partial_atom);
 	}
-	
-	// public async alter_and_encrypt_one(atom:Atom<A>)
-	//     :Promise<Atom<A>>{
-	//   return await this.alter_and_encrypt_by_id(atom._id, atom);
-	// }
 	
 	public async alter_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
@@ -165,13 +151,15 @@ export class DAL<A extends AtomName> {
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		const db_res_select = await _relation.select(query, options);
-		const atom_array = db_res_select.reduce<Atom<A>[]>((result, db_record) => {
-			
-			urn_atm.validate<A>(this.atom_name, db_record);
-			
-			result.push(db_record);
-			return result;
-		}, []);
+		const atom_array:Atom<A>[] = [];
+		for(let db_record of db_res_select){
+			if(in_trash){
+				urn_atm.validate<A>(this.atom_name, db_record);
+			}else{
+				db_record = await this._fix_on_validation_error(db_record);
+			}
+			atom_array.push(db_record);
+		}
 		return atom_array;
 	}
 	
@@ -186,9 +174,13 @@ export class DAL<A extends AtomName> {
 		if(!this._db_relation.is_valid_id(id)){
 			throw urn_exc.create('FIND_ID_INVALID_ID', `Cannot _select_by_id. Invalid argument id.`);
 		}
-		const db_res_select_by_id = await _relation.select_by_id(id);
+		let db_res_select_by_id = await _relation.select_by_id(id);
 		
-		urn_atm.validate<A>(this.atom_name, db_res_select_by_id);
+		if(in_trash){
+			urn_atm.validate<A>(this.atom_name, db_res_select_by_id);
+		}else{
+			db_res_select_by_id = await this._fix_on_validation_error(db_res_select_by_id);
+		}
 		
 		return db_res_select_by_id;
 	}
@@ -202,13 +194,17 @@ export class DAL<A extends AtomName> {
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
-		const db_res_select_one = await _relation.select_one(query, options);
+		let db_res_select_one = await _relation.select_one(query, options);
 		
-		urn_atm.validate<A>(this.atom_name, db_res_select_one);
+		if(in_trash){
+			urn_atm.validate<A>(this.atom_name, db_res_select_one);
+		}else{
+			db_res_select_one = await this._fix_on_validation_error(db_res_select_one);
+		}
 		
 		return db_res_select_one;
 	}
-
+	
 	private async _insert_one(atom_shape:AtomShape<A>, in_trash = false)
 			:Promise<Atom<A>>{
 		if(in_trash === true && this._db_trash_relation === null){
@@ -220,29 +216,59 @@ export class DAL<A extends AtomName> {
 		
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
-		const db_res_insert = await _relation.insert_one(atom_shape);
+		let db_res_insert = await _relation.insert_one(atom_shape);
 		
-		urn_atm.validate<A>(this.atom_name, db_res_insert);
+		if(in_trash){
+			urn_atm.validate<A>(this.atom_name, db_res_insert);
+		}else{
+			db_res_insert = await this._fix_on_validation_error(db_res_insert);
+		}
 		
 		return db_res_insert;
 	}
 	
-	private async _alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>, in_trash = false)
+	private async _alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>, in_trash = false, fix = true)
 			:Promise<Atom<A>>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _alter_by_id [in_trash=true]. Trash DB not found.`;
 			throw urn_exc.create('ALTER_BY_ID_TRASH_NOT_FOUND', err_msg);
 		}
-		
-		partial_atom = await this._encrypt_changed_properties(id, partial_atom);
-		
+		if(fix === true){
+			partial_atom = await this._encrypt_changed_properties(id, partial_atom);
+		}
 		urn_atm.validate_partial<A>(this.atom_name, partial_atom);
 		
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
-		const db_res_insert = await _relation.alter_by_id(id, partial_atom);
+		let db_res_insert = await _relation.alter_by_id(id, partial_atom);
+		if(fix === false || in_trash === true){
+			urn_atm.validate<A>(this.atom_name, db_res_insert);
+		}else{
+			db_res_insert = await this._fix_on_validation_error(db_res_insert);
+		}
 		
+		return db_res_insert;
+	}
+	
+	private async _replace_by_id(id:string, atom:Atom<A>, in_trash = false)
+			:Promise<Atom<A>>{
+		if(in_trash === true && this._db_trash_relation === null){
+			const err_msg = `Cannot _replace_by_id [in_trash=true]. Trash DB not found.`;
+			throw urn_exc.create('REPLACE_BY_ID_TRASH_NOT_FOUND', err_msg);
+		}
+		// if(fix === true){
+		//   atom = await this._encrypt_changed_properties(id, atom);
+		// }
+		urn_atm.validate_partial<A>(this.atom_name, atom);
+		
+		const _relation = (in_trash === true && this._db_trash_relation) ?
+			this._db_trash_relation : this._db_relation;
+		const db_res_insert = await _relation.replace_by_id(id, atom);
+		// if(fix === false || in_trash === true){
 		urn_atm.validate<A>(this.atom_name, db_res_insert);
+		// }else{
+		//   db_res_insert = await this._fix_on_validation_error(db_res_insert);
+		// }
 		
 		return db_res_insert;
 	}
@@ -255,9 +281,13 @@ export class DAL<A extends AtomName> {
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
-		const db_res_delete = await _relation.delete_by_id(id);
+		let db_res_delete = await _relation.delete_by_id(id);
 		
-		urn_atm.validate<A>(this.atom_name, db_res_delete);
+		if(in_trash){
+			urn_atm.validate<A>(this.atom_name, db_res_delete);
+		}else{
+			db_res_delete = await this._fix_on_validation_error(db_res_delete);
+		}
 		
 		return db_res_delete;
 	}
@@ -286,7 +316,7 @@ export class DAL<A extends AtomName> {
 		return partial_atom;
 	}
 	
-	protected async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
+	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
 			:Promise<true>{
 		
 		urn_atm.validate_partial<A>(this.atom_name, partial_atom);
@@ -321,6 +351,30 @@ export class DAL<A extends AtomName> {
 			}
 		}
 		return true;
+	}
+	
+	private async _fix_on_validation_error(atom:Atom<A>)
+			:Promise<Atom<A>>{
+		try{
+			
+			urn_atm.validate<A>(this.atom_name, atom);
+			
+		}catch(exc){
+			if(exc.type !== urn_exception.ExceptionType.INVALID){
+				throw exc;
+			}
+			for(const k of exc.keys){
+				if(atom[k as KeyOfAtom<A>]){
+					if(!urn_atm.is_valid_key<A>(this.atom_name, k)){
+						delete atom[k as KeyOfAtom<A>];
+					}else{
+						atom = urn_atm.fix_atom_key<A>(this.atom_name, atom, k);
+					}
+				}
+			}
+			atom = await this._replace_by_id(atom._id, atom);
+		}
+		return atom;
 	}
 	
 }

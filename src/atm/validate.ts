@@ -1,24 +1,21 @@
 /**
- *
- * Module for Atom
+ * Module for Atom Validation
  *
  * @packageDocumentation
  */
 
-import bcrypt from 'bcrypt';
-
 import {urn_exception, urn_util} from 'urn-lib';
 
-const urn_exc = urn_exception.init(`ATM`, `Atom module`);
+const urn_exc = urn_exception.init(`ATOM_VALIDATE`, `Atom validate module`);
 
 import {
 	atom_hard_properties,
 	atom_common_properties,
 	AtomName,
-	KeyOfAtom,
-	KeyOfAtomShape,
 	Atom,
 	AtomShape,
+	// KeyOfAtom,
+	// KeyOfAtomShape,
 	Book,
 	BookPropertyType
 } from '../types';
@@ -26,69 +23,6 @@ import {
 import {atom_book} from '../book';
 
 import {core_config} from '../config/defaults';
-
-export async function encrypt_property<A extends AtomName>
-(atom_name:A, prop_key:KeyOfAtomShape<A>, prop_value:string)
-		:Promise<string>{
-	const atom_props = atom_book[atom_name]['properties'];
-	_validate_encrypt_property(prop_key as string, prop_value, (atom_props as any)[prop_key]);
-	// *********
-	// IMPORTANT - If the encryption method is changed,
-	// *********   DAL._encrypt_changed_properties must be changed too.
-	// *********
-	const salt = await bcrypt.genSalt(core_config.encryption_round);
-	return await bcrypt.hash(prop_value, salt);
-}
-
-export async function encrypt_properties<A extends AtomName>(atom_name:A, atom:AtomShape<A>):Promise<AtomShape<A>>
-export async function encrypt_properties<A extends AtomName>(atom_name:A, atom:Partial<AtomShape<A>>)
-		:Promise<Partial<AtomShape<A>>>{
-	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	let k:KeyOfAtomShape<A>;
-	for(k in atom){
-		if(
-			urn_util.object.has_key(atom_props, k) &&
-			atom_props[k] &&
-			atom_props[k].type === BookPropertyType.ENCRYPTED
-		){
-			atom[k] = await encrypt_property<A>(atom_name, k, atom[k] as string) as any;
-		}
-	}
-	return atom;
-}
-
-export function get_encrypted_keys<A extends AtomName>(atom_name:A)
-		:Set<KeyOfAtom<A>>{
-	const encrypt_keys = new Set<KeyOfAtom<A>>();
-	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	for(const k in atom_props){
-		const prop:Book.Definition.Property = atom_props[k];
-		if(urn_util.object.has_key(prop, 'type') && prop.type === BookPropertyType.ENCRYPTED){
-			encrypt_keys.add(k as KeyOfAtom<A>);
-		}
-	}
-	return encrypt_keys;
-}
-
-export function get_unique_keys<A extends AtomName>(atom_name:A)
-		:Set<KeyOfAtomShape<A>>{
-	const unique_keys = new Set<KeyOfAtomShape<A>>();
-	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	for(const k in atom_props){
-		const prop:Book.Definition.Property = atom_props[k];
-		if(urn_util.object.has_key(prop, 'unique') && prop.unique === true){
-			unique_keys.add(k as KeyOfAtomShape<A>);
-		}
-	}
-	let k:keyof typeof atom_common_properties;
-	for(k in atom_common_properties){
-		const prop:Book.Definition.Property = atom_common_properties[k];
-		if(urn_util.object.has_key(prop, 'unique') && prop.unique === true){
-			unique_keys.add(k as KeyOfAtomShape<A>);
-		}
-	}
-	return unique_keys;
-}
 
 export function validate<A extends AtomName>(atom_name:A, atom:Atom<A>)
 		:true{
@@ -121,43 +55,65 @@ function _custom_validation<A extends AtomName>(atom_name:A, partial_atom:Partia
 		...atom_props
 	};
 	for(const [k,v] of Object.entries(all_props)){
-		switch(v.type){
-			case BookPropertyType.TEXT:
-			case BookPropertyType.LONG_TEXT:{
-				_validate_atom_string(k, (partial_atom as any)[k], v);
-				break;
+		try{
+			switch(v.type){
+				case BookPropertyType.TEXT:
+				case BookPropertyType.LONG_TEXT:{
+					_validate_atom_string(k, (partial_atom as any)[k], v);
+					break;
+				}
+				case BookPropertyType.INTEGER:
+				case BookPropertyType.FLOAT:{
+					_validate_atom_number(k, (partial_atom as any)[k], v);
+					break;
+				}
+				case BookPropertyType.TIME:{
+					_validate_atom_time(k, (partial_atom as any)[k], v);
+					break;
+				}
+				case BookPropertyType.SET_STRING:{
+					_validate_atom_set_string(k, (partial_atom as any)[k], v);
+					break;
+				}
+				case BookPropertyType.SET_NUMBER:{
+					_validate_atom_set_number(k, (partial_atom as any)[k], v);
+					break;
+				}
 			}
-			case BookPropertyType.INTEGER:
-			case BookPropertyType.FLOAT:{
-				_validate_atom_number(k, (partial_atom as any)[k], v);
-				break;
+		}catch(exc){
+			if(exc.type === urn_exception.ExceptionType.INVALID){
+				throw urn_exc.create_invalid(exc.code, exc.msg, partial_atom, [k], exc);
 			}
-			case BookPropertyType.TIME:{
-				_validate_atom_time(k, (partial_atom as any)[k], v);
-				break;
-			}
-			// case BookPropertyType.ENUM_STRING:{
-			//   _validate_atom_enum_string(k, (partial_atom as any)[k], v);
-			//   break;
-			// }
-			// case BookPropertyType.ENUM_NUMBER:{
-			//   _validate_atom_enum_number(k, (partial_atom as any)[k], v);
-			//   break;
-			// }
-			case BookPropertyType.SET_STRING:{
-				_validate_atom_set_string(k, (partial_atom as any)[k], v);
-				break;
-			}
-			case BookPropertyType.SET_NUMBER:{
-				_validate_atom_set_number(k, (partial_atom as any)[k], v);
-				break;
-			}
+			throw exc;
 		}
 	}
 	return true;
 }
 
-function _validate_encrypt_property(
+export function is_valid_key<A extends AtomName>(atom_name:A, key:string)
+		:boolean{
+	return (urn_util.object.has_key(atom_book[atom_name]['properties'], key));
+}
+
+export function fix_atom_key<A extends AtomName>(
+	atom_name:A,
+	atom:Atom<A>,
+	key:string
+):Atom<A>{
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	if(atom_props[key] && typeof atom_props[key].on_error === 'function'){
+		(atom as any)[key] = atom_props[key].on_error!((atom as any)[key]);
+	}else if(atom_props[key] && atom_props[key].default){
+		(atom as any)[key] = atom_props[key].default;
+	}else{
+		let err_msg = `Cannot fix property of Atom. Missing 'on_error' function in atom_book`;
+		err_msg += ` for Atom [${atom_name}] property [${key}]`;
+		throw urn_exc.create('CANNOT_FIX', err_msg);
+	}
+	return atom;
+}
+
+export function _validate_encrypt_property(
 	prop_key: string,
 	prop_value:string,
 	prop_def:Book.Definition.Property.Encrypted
@@ -180,74 +136,74 @@ function _validate_atom_string(
 		if(vali.alphanum && vali.alphanum === true){
 			if(!/[0-9a-zA-Z]/.test(prop_value)){
 				const err_msg = `Invalid [${prop_key}]. Must be alphanumeric /[0-9a-zA-Z]/.`;
-				throw urn_exc.create('VALIDATE_STRING_INVALID_ALPHANUM', err_msg);
+				throw urn_exc.create_invalid('STRING_INVALID_ALPHANUM', err_msg);
 			}
 		}
 		if(vali.contain_digit && vali.contain_digit === true){
 			if(!/\d/.test(prop_value)){
 				const err_msg = `Invalid [${prop_key}]. Must be contain a digit.`;
-				throw urn_exc.create('VALIDATE_STRING_NOT_CONTAIN_DIGIT', err_msg);
+				throw urn_exc.create_invalid('STRING_NOT_CONTAIN_DIGIT', err_msg);
 			}
 		}
 		if(vali.contain_lowercase && vali.contain_lowercase === true){
 			if(prop_value.toUpperCase() === prop_value){
 				const err_msg = `Invalid [${prop_key}]. Must be contain a lowercase character.`;
-				throw urn_exc.create('VALIDATE_STRING_NOT_CONTAIN_LOWERCASE', err_msg);
+				throw urn_exc.create_invalid('STRING_NOT_CONTAIN_LOWERCASE', err_msg);
 			}
 		}
 		if(vali.contain_uppercase && vali.contain_uppercase === true){
 			if(prop_value.toLowerCase() === prop_value){
 				const err_msg = `Invalid [${prop_key}]. Must be contain an uppercase character.`;
-				throw urn_exc.create('VALIDATE_STRING_NOT_CONTAIN_UPPERCASE', err_msg);
+				throw urn_exc.create_invalid('STRING_NOT_CONTAIN_UPPERCASE', err_msg);
 			}
 		}
 		if(vali.length){
 			if(vali.length !== prop_value.length){
 				let err_msg = `Invalid [${prop_key}]. String length must be equal to ${vali.length}.`;
 				err_msg += ` Length given ${prop_value.length}`;
-				throw urn_exc.create('VALIDATE_STRING_INVALI_LENGTH', err_msg);
+				throw urn_exc.create_invalid('STRING_INVALI_LENGTH', err_msg);
 			}
 		}
 		if(vali.lowercase && vali.lowercase === true){
 			if(prop_value.toLowerCase() !== prop_value){
 				const err_msg = `Invalid [${prop_key}]. Must be lowercase.`;
-				throw urn_exc.create('VALIDATE_STRING_NOT_LOWERCASE', err_msg);
+				throw urn_exc.create_invalid('STRING_NOT_LOWERCASE', err_msg);
 			}
 		}
 		if(vali.max){
 			if(prop_value.length > vali.max!){
 				const err_msg = `Invalid [${prop_key}]. Length must be maximum ${vali.max} characters long.`;
-				throw urn_exc.create('VALIDATE_STRING_MAX_LENGTH', err_msg);
+				throw urn_exc.create_invalid('STRING_MAX_LENGTH', err_msg);
 			}
 		}
 		if(vali.min){
 			if(prop_value.length < vali.min!){
 				const err_msg = `Invalid [${prop_key}]. Length must be minimum ${vali.min} characters long.`;
-				throw urn_exc.create('VALIDATE_STRING_MIN_LENGTH', err_msg);
+				throw urn_exc.create_invalid('STRING_MIN_LENGTH', err_msg);
 			}
 		}
 		if(vali.only_letters && vali.only_letters === true){
 			if(!/^[A-Za-z]+$/.test(prop_value)){
 				const err_msg = `Invalid [${prop_key}]. Must be contain only letters.`;
-				throw urn_exc.create('VALIDATE_STRING_NOT_ONLY_LETTERS', err_msg);
+				throw urn_exc.create_invalid('STRING_NOT_ONLY_LETTERS', err_msg);
 			}
 		}
 		if(vali.only_numbers){
 			if(!/^[0-9]+$/.test(prop_value)){
 				const err_msg = `Invalid [${prop_key}]. Must be contain only numbers.`;
-				throw urn_exc.create('VALIDATE_STRING_NOT_ONLY_NUMBERS', err_msg);
+				throw urn_exc.create_invalid('STRING_NOT_ONLY_NUMBERS', err_msg);
 			}
 		}
 		if(vali.reg_ex){
 			if(!vali.reg_ex!.test(prop_value)){
 				const err_msg = `Invalid [${prop_key}]. Does not satisfy regular expression ${vali.reg_ex}.`;
-				throw urn_exc.create('VALIDATE_STRING_INVALID_REG_EX', err_msg);
+				throw urn_exc.create_invalid('STRING_INVALID_REG_EX', err_msg);
 			}
 		}
 		if(vali.uppercase && vali.uppercase === true){
 			if(prop_value.toUpperCase() !== prop_value){
 				const err_msg = `Invalid [${prop_key}]. Must be uppercase.`;
-				throw urn_exc.create('VALIDATE_STRING_NOT_UPPERCASE', err_msg);
+				throw urn_exc.create_invalid('STRING_NOT_UPPERCASE', err_msg);
 			}
 		}
 	}
@@ -264,19 +220,19 @@ function _validate_atom_number(
 		if(vali.eq){
 			if(prop_value != vali.eq){
 				const err_msg = `Invalid [${prop_key}]. Must be equal to ${vali.eq}.`;
-				throw urn_exc.create('VALIDATE_NUMBER_NOTEQ_TO', err_msg);
+				throw urn_exc.create_invalid('NUMBER_NOTEQ_TO', err_msg);
 			}
 		}
 		if(vali.min){
 			if(prop_value < vali.min){
 				const err_msg = `Invalid [${prop_key}]. Must be grater than ${vali.min}.`;
-				throw urn_exc.create('VALIDATE_NUMBER_LOWER_THAN_MIN', err_msg);
+				throw urn_exc.create_invalid('NUMBER_LOWER_THAN_MIN', err_msg);
 			}
 		}
 		if(vali.max){
 			if(prop_value > vali.max){
 				const err_msg = `Invalid [${prop_key}]. Must be lower than ${vali.max}.`;
-				throw urn_exc.create('VALIDATE_NUMBER_GRATER_THAN_MAX', err_msg);
+				throw urn_exc.create_invalid('NUMBER_GRATER_THAN_MAX', err_msg);
 			}
 		}
 	}
@@ -293,19 +249,19 @@ function _validate_atom_time(
 		if(vali.eq){
 			if(prop_value != vali.eq){
 				const err_msg = `Invalid [${prop_key}]. Must be equal to ${vali.eq}.`;
-				throw urn_exc.create('VALIDATE_DATE_NOT_EQ_TO', err_msg);
+				throw urn_exc.create_invalid('DATE_NOT_EQ_TO', err_msg);
 			}
 		}
 		if(vali.min){
 			if(prop_value < vali.min){
 				const err_msg = `Invalid [${prop_key}]. Must be grater than ${vali.min}.`;
-				throw urn_exc.create('VALIDATE_DATE_LOWER_THAN_MIN', err_msg);
+				throw urn_exc.create_invalid('DATE_LOWER_THAN_MIN', err_msg);
 			}
 		}
 		if(vali.max){
 			if(prop_value > vali.max){
 				const err_msg = `Invalid [${prop_key}]. Must be lower than ${vali.max}.`;
-				throw urn_exc.create('VALIDATE_DATE_GRATER_THAN_MAX', err_msg);
+				throw urn_exc.create_invalid('DATE_GRATER_THAN_MAX', err_msg);
 			}
 		}
 	}
@@ -317,7 +273,7 @@ function _validate_atom_time(
 //   if(prop_def.values && !prop_def.values.includes(prop_value)){
 //     let err_msg = `Invalid [${prop_key}]. Must be one of the following`;
 //     err_msg += ` [${prop_def.values.join(',')}]`;
-//     throw urn_exc.create('VALIDATE_ENUM_INVALID', err_msg);
+//     throw urn_exc.create_invalid('ENUM_INVALID', err_msg);
 //   }
 //   return true;
 // }
@@ -327,7 +283,7 @@ function _validate_atom_time(
 //   if(prop_def.values && !prop_def.values.includes(prop_value)){
 //     let err_msg = `Invalid [${prop_key}]. Must be one of the following`;
 //     err_msg += ` [${prop_def.values.join(',')}]`;
-//     throw urn_exc.create('VALIDATE_ENUM_INVALID', err_msg);
+//     throw urn_exc.create_invalid('ENUM_INVALID', err_msg);
 //   }
 //   return true;
 // }
@@ -342,19 +298,19 @@ function _validate_atom_set_string(
 		if(vali.length){
 			if(prop_value.length != vali.length){
 				const err_msg = `Invalid [${prop_key}]. Array length must be equal to ${vali.length}.`;
-				throw urn_exc.create('VALIDATE_SET_LENGTH_NOT_EQ_TO', err_msg);
+				throw urn_exc.create_invalid('SET_LENGTH_NOT_EQ_TO', err_msg);
 			}
 		}
 		if(vali.min){
 			if(prop_value.length < vali.min){
 				const err_msg = `Invalid [${prop_key}]. Array length must be greater than ${vali.min}.`;
-				throw urn_exc.create('VALIDATE_SET_LENGTH_LOWER_THAN', err_msg);
+				throw urn_exc.create_invalid('SET_LENGTH_LOWER_THAN', err_msg);
 			}
 		}
 		if(vali.max){
 			if(prop_value.length > vali.max){
 				const err_msg = `Invalid [${prop_key}]. Array length must be lower than ${vali.max}.`;
-				throw urn_exc.create('VALIDATE_SET_LENGTH_GRATER_THAN', err_msg);
+				throw urn_exc.create_invalid('SET_LENGTH_GRATER_THAN', err_msg);
 			}
 		}
 		if(vali.values){
@@ -362,7 +318,7 @@ function _validate_atom_set_string(
 				if(!vali.values.includes(v)){
 					let err_msg = `Invalid [${prop_key}]. Invalid element. Element must be one of the following:`;
 					err_msg += ` ['${vali.values.join("', '")}']`;
-					throw urn_exc.create('VALIDATE_SET_LENGTH_GRATER_THAN', err_msg);
+					throw urn_exc.create_invalid('SET_LENGTH_GRATER_THAN', err_msg);
 				}
 			}
 		}
@@ -380,19 +336,19 @@ function _validate_atom_set_number(
 		if(vali.length){
 			if(prop_value.length != vali.length){
 				const err_msg = `Invalid [${prop_key}]. Array length must be equal to ${vali.length}.`;
-				throw urn_exc.create('VALIDATE_SET_LENGTH_NOT_EQ_TO', err_msg);
+				throw urn_exc.create_invalid('SET_LENGTH_NOT_EQ_TO', err_msg);
 			}
 		}
 		if(vali.min){
 			if(prop_value.length < vali.min){
 				const err_msg = `Invalid [${prop_key}]. Array length must be greater than ${vali.min}.`;
-				throw urn_exc.create('VALIDATE_SET_LENGTH_LOWER_THAN', err_msg);
+				throw urn_exc.create_invalid('SET_LENGTH_LOWER_THAN', err_msg);
 			}
 		}
 		if(vali.max){
 			if(prop_value.length > vali.max){
 				const err_msg = `Invalid [${prop_key}]. Array length must be lower than ${vali.max}.`;
-				throw urn_exc.create('VALIDATE_SET_LENGTH_GRATER_THAN', err_msg);
+				throw urn_exc.create_invalid('SET_LENGTH_GRATER_THAN', err_msg);
 			}
 		}
 		if(vali.values){
@@ -400,7 +356,7 @@ function _validate_atom_set_number(
 				if(!vali.values.includes(v)){
 					let err_msg = `Invalid [${prop_key}]. Invalid element. Element must be one of the following:`;
 					err_msg += ` [${vali.values.join(', ')}]`;
-					throw urn_exc.create('VALIDATE_SET_LENGTH_GRATER_THAN', err_msg);
+					throw urn_exc.create_invalid('SET_LENGTH_GRATER_THAN', err_msg);
 				}
 			}
 		}
@@ -417,7 +373,14 @@ function _validate_hard_properties<A extends AtomName>(atom:Atom<A>)
 		:true{
 	let k: keyof typeof atom_hard_properties;
 	for(k in atom_hard_properties){
-		_check_prop_main_type(atom_hard_properties[k], k, atom[k]);
+		try{
+			_check_prop_main_type(atom_hard_properties[k], k, atom[k]);
+		}catch(exc){
+			if(exc.type === urn_exception.ExceptionType.INVALID){
+				throw urn_exc.create_invalid(exc.code, exc.msg, atom, [k], exc);
+			}
+			throw exc;
+		}
 	}
 	return true;
 }
@@ -439,7 +402,7 @@ function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomSha
 	if(missin_props.length > 0){
 		let err_msg = `Atom is missing the following properties:`;
 		err_msg += ` [${missin_props.join(', ')}]`;
-		throw urn_exc.create('VALIDATE_MISSING_PROP', err_msg);
+		throw urn_exc.create_invalid('MISSING_PROP', err_msg, atom_shape, missin_props);
 	}
 	return true;
 }
@@ -462,7 +425,7 @@ function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:
 	if(extra_props.length > 0){
 		let err_msg = `Atom has invalid properties:`;
 		err_msg += ` [${extra_props.join(', ')}]`;
-		throw urn_exc.create('VALIDATE_INVALID_PROP', err_msg);
+		throw urn_exc.create_invalid('INVALID_EXTRA_PROP', err_msg, partial_atom, extra_props);
 	}
 	return true;
 }
@@ -484,7 +447,14 @@ function _properties_have_correct_type<A extends AtomName>(atom_name:A, partial_
 			const err_msg = `Atom property definition missing for atom [${atom_name}] property [${k}]`;
 			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
 		}
-		_check_prop_main_type(prop_def, k as string, partial_atom[k]);
+		try{
+			_check_prop_main_type(prop_def, k as string, partial_atom[k]);
+		}catch(exc){
+			if(exc.type === urn_exception.ExceptionType.INVALID){
+				throw urn_exc.create_invalid(exc.code, exc.msg, partial_atom, [k], exc);
+			}
+			throw exc;
+		}
 	}
 	return true;
 }
@@ -506,7 +476,7 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 			if(typeof prop_value !== 'string'){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a string.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
-				throw urn_exc.create('INVALID_PROP', err_msg);
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
 			}
 			return true;
 		}
@@ -515,7 +485,7 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 			if(typeof prop_value !== 'number'){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a number.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
-				throw urn_exc.create('INVALID_PROP', err_msg);
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
 			}
 			return true;
 		}
@@ -523,7 +493,7 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 			if(typeof prop_value !== 'boolean'){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a boolean.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
-				throw urn_exc.create('INVALID_PROP', err_msg);
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
 			}
 			return true;
 		}
@@ -531,7 +501,7 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 			if(!urn_util.is.date(prop_value)){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a Date.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
-				throw urn_exc.create('INVALID_PROP', err_msg);
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
 			}
 			return true;
 		}
@@ -539,7 +509,7 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 			if(!Array.isArray(prop_value)){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a string array.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
-				throw urn_exc.create('INVALID_PROP', err_msg);
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
 			}
 			return true;
 		}
@@ -547,7 +517,7 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 			if(!Array.isArray(prop_value)){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a number array.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
-				throw urn_exc.create('INVALID_PROP', err_msg);
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
 			}
 			return true;
 		}
@@ -555,12 +525,12 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 			if(typeof prop_value !== 'string'){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a string.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
-				throw urn_exc.create('INVALID_PROP', err_msg);
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
 			}
 			if(!prop_def.values.includes(prop_value)){
-				let err_msg = `Invalid property [${prop_key}]. Property should be a one of following:`;
+				let err_msg = `Invalid property [${prop_key}]. Property should be one of following:`;
 				err_msg += ` ['${prop_def.values.join("','")}']`;
-				throw urn_exc.create('INVALID_ENUM_PROP', err_msg);
+				throw urn_exc.create_invalid('INVALID_ENUM_PROP', err_msg);
 			}
 			return true;
 		}
@@ -568,12 +538,12 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 			if(typeof prop_value !== 'number'){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a number.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
-				throw urn_exc.create('INVALID_PROP', err_msg);
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
 			}
 			if(!prop_def.values.includes(prop_value)){
-				let err_msg = `Invalid property [${prop_key}]. Property should be a one of the following:`;
+				let err_msg = `Invalid property [${prop_key}]. Property should be one of the following:`;
 				err_msg += ` [${prop_def.values.join(', ')}]`;
-				throw urn_exc.create('INVALID_ENUM_PROP', err_msg);
+				throw urn_exc.create_invalid('INVALID_ENUM_PROP', err_msg);
 			}
 			return true;
 		}
@@ -584,5 +554,4 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 	// const err_msg = `Invalid Atom type definition.`;
 	// throw urn_exc.create('CHECK_PROP_MAIN_TYPE_INVALID_ATM_TYPE',err_msg);
 }
-
 
