@@ -59,7 +59,9 @@ export const atom_book = {
 			age: {
 				type: BookPropertyType.INTEGER,
 				label: 'Age',
-				default: 88,
+				on_error: (old_value:unknown) => {
+					return (typeof old_value === 'string') ? parseInt(old_value) : 3000;
+				},
 				validation: {
 					min: 18
 				}
