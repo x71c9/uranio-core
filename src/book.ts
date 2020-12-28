@@ -11,7 +11,7 @@ const core_atoms_book = {
 			},
 			password: {
 				type: BookPropertyType.ENCRYPTED,
-				label: 'Email'
+				label: 'Password'
 			}
 		}
 	}
@@ -25,10 +25,32 @@ export const atom_book = {
 				type: BookPropertyType.TEXT,
 				label: 'Title'
 			},
-			barcode: {
+			price: {
+				type: BookPropertyType.FLOAT,
+				format: {
+					decimal: 2,
+					decimal_point: '.',
+					thousands_step: ','
+				},
+				validation: {
+					
+				}
+			},
+			cover: {
+				type: BookPropertyType.ATOM,
+				atom: 'media'
+			}
+		}
+	},
+	media: {
+		properties: {
+			src: {
 				type: BookPropertyType.TEXT,
-				label: 'Barcode',
-				optional: true
+				label: 'SRC'
+			},
+			type: {
+				type: BookPropertyType.ENUM_STRING,
+				values: ['video', 'image', 'pdf']
 			}
 		}
 	},

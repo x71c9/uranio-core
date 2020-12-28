@@ -26,7 +26,8 @@ import {
 import {core_config} from '../config/defaults';
 
 import {atom_book} from '../book';
-import { atom_hard_properties, atom_common_properties } from '../typ/atom';
+
+import {atom_hard_properties, atom_common_properties} from '../typ/atom';
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -73,7 +74,7 @@ export class DAL<A extends AtomName> {
 		
 		atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
 		
-		await this._check_unique(atom_shape);
+		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
 		return await this._insert_one(atom_shape);
 	}
 	
@@ -85,8 +86,13 @@ export class DAL<A extends AtomName> {
 	
 	public async alter_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
-		return await this.alter_by_id(atom._id, atom);
+		return await this.alter_by_id(atom._id, atom as Partial<AtomShape<A>>);
 	}
+	
+	// public async substitute_one(atom:Atom<A>)
+	//     :Promise<Atom<A>>{
+	//   return await this._substitute_by_id(atom._id, atom);
+	// }
 	
 	public async delete_by_id(id:string)
 			:Promise<Atom<A>>{
@@ -123,15 +129,15 @@ export class DAL<A extends AtomName> {
 		return await this._insert_one(atom, true);
 	}
 	
-	public async trash_alter_one(atom:Atom<A>)
-			:Promise<Atom<A>>{
-		return await this._alter_by_id(atom._id, atom, true);
-	}
+	// public async trash_alter_one(atom:Atom<A>)
+	//     :Promise<Atom<A>>{
+	//   return await this._alter_by_id(atom._id, atom as Partial<AtomShape<A>>, true);
+	// }
 	
-	public async trash_alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
-			:Promise<Atom<A>>{
-		return await this._alter_by_id(id, partial_atom, true);
-	}
+	// public async trash_alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
+	//     :Promise<Atom<A>>{
+	//   return await this._alter_by_id(id, partial_atom, true);
+	// }
 	
 	public async trash_delete_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
@@ -251,6 +257,7 @@ export class DAL<A extends AtomName> {
 		return db_res_insert;
 	}
 	
+	// private async _substitute_by_id(id:string, atom:Atom<A>, in_trash = false, fix = true)
 	private async _replace_by_id(id:string, atom:Atom<A>, in_trash = false, fix = true)
 			:Promise<Atom<A>>{
 		if(in_trash === true && this._db_trash_relation === null){
@@ -261,7 +268,7 @@ export class DAL<A extends AtomName> {
 			atom = await this._encrypt_atom_changed_properties(id, atom);
 		}
 		
-		urn_atm.validate_partial<A>(this.atom_name, atom);
+		urn_atm.validate_partial<A>(this.atom_name, atom as Partial<AtomShape<A>>);
 		
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;

@@ -37,7 +37,7 @@ class BLL<A extends AtomName> {
 		return await this._dal.select_one(query, options);
 	}
 	
-	public async add_one(atom_shape:AtomShape<A>)
+	public async insert_new(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		return await this._dal.insert_one(atom_shape);
 	}
@@ -49,8 +49,13 @@ class BLL<A extends AtomName> {
 	
 	public async update_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
-		return await this.update_by_id(atom._id, atom);
+		return await this.update_by_id(atom._id, atom as Partial<AtomShape<A>>);
 	}
+	
+	// public async replace_one(atom:Atom<A>)
+	//     :Promise<Atom<A>>{
+	//   return await this._dal.substitute_one(atom);
+	// }
 	
 	public async remove_by_id(id:string)
 			:Promise<Atom<A>>{
