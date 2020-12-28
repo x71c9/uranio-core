@@ -285,7 +285,7 @@ function _generate_string_schema_def(
 // type JSTypes = 'string' | 'number' | 'boolean' | 'object' | Date;
 
 // function _check_string_validation_property<A extends AtomName>
-// (prop_key:KeyOfAtom<A>, prop_validation:AtomPropertyDefinitionValidation)
+// (prop_key:keyof Atom<A>, prop_validation:AtomPropertyDefinitionValidation)
 //     :true{
 //   if(urn_util.object.has_key(prop_validation, 'min')){
 //     _check_validation_property_type<A>(prop_key, 'min', 'number');
@@ -330,7 +330,7 @@ function _generate_string_schema_def(
 // }
 
 // function _check_validation_property_type<A extends AtomName>
-// (prop_key:KeyOfAtom<A>, key:string, type:JSTypes)
+// (prop_key:keyof Atom<A>, key:string, type:JSTypes)
 //     :true{
 //   if(typeof key !== type){
 //     let err_msg = `Invalid validation object for key [${prop_key}].`;
