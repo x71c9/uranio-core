@@ -4,7 +4,11 @@
  * @packageDocumentation
  */
 
-import {AtomName, KeyOfAtom} from './atom';
+import {
+	AtomName,
+	// KeyOfAtom
+	Atom
+} from './atom';
 
 export type Query<A extends AtomName> = Query.Expression<A> | Query.Logical<A>;
 
@@ -13,7 +17,7 @@ export namespace Query {
 	type Base = string | number | boolean | Date;
 
 	type Equal<A extends AtomName> = {
-		[P in KeyOfAtom<A>]?: Base;
+		[P in keyof Atom<A>]?: Base;
 	}
 
 	type Comparsion =
@@ -27,7 +31,7 @@ export namespace Query {
 		{ $nin?: Base[] }
 
 	type WithComparsion<A extends AtomName> = {
-		[P in KeyOfAtom<A>]?: Comparsion;
+		[P in keyof Atom<A>]?: Comparsion;
 	}
 
 	export type Expression<A extends AtomName> = Equal<A> | WithComparsion<A>;

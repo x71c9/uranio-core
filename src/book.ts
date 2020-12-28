@@ -51,6 +51,11 @@ export const atom_book = {
 			type: {
 				type: BookPropertyType.ENUM_STRING,
 				values: ['video', 'image', 'pdf']
+			},
+			superuser: {
+				type: BookPropertyType.ATOM,
+				atom: 'superuser',
+				// optional: true
 			}
 		}
 	},

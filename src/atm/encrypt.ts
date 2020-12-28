@@ -16,15 +16,16 @@ import {_validate_encrypt_property} from './validate';
 
 import {
 	AtomName,
-	KeyOfAtom,
-	KeyOfAtomShape,
+	// KeyOfAtom,
+	// KeyOfAtomShape,
+	Atom,
 	AtomShape,
 	Book,
 	BookPropertyType
 } from '../types';
 
 export async function encrypt_property<A extends AtomName>
-(atom_name:A, prop_key:KeyOfAtom<A>, prop_value:string)
+(atom_name:A, prop_key:keyof Atom<A>, prop_value:string)
 		:Promise<string>{
 	const atom_props = atom_book[atom_name]['properties'];
 	_validate_encrypt_property(prop_key as string, prop_value, (atom_props as any)[prop_key]);
@@ -40,7 +41,7 @@ export async function encrypt_properties<A extends AtomName>(atom_name:A, atom:A
 export async function encrypt_properties<A extends AtomName>(atom_name:A, atom:Partial<AtomShape<A>>)
 		:Promise<Partial<AtomShape<A>>>{
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	let k:KeyOfAtomShape<A>;
+	let k:keyof AtomShape<A>;
 	for(k in atom){
 		if(
 			urn_util.object.has_key(atom_props, k) &&

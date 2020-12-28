@@ -17,7 +17,7 @@ import {
 	AtomName,
 	AtomShape,
 	Atom,
-	KeyOfAtom,
+	// KeyOfAtom,
 	// KeyOfAtomShape,
 	Book,
 	BookPropertyType
@@ -379,7 +379,7 @@ export class DAL<A extends AtomName> {
 		}
 		try{
 			const res_select_one = await this._select_one(query);
-			const equal_values:Set<KeyOfAtom<A>> = new Set();
+			const equal_values:Set<keyof Atom<A>> = new Set();
 			for(const k of urn_atm.get_unique_keys(this.atom_name)){
 				if(partial_atom[k] === res_select_one[k]){
 					equal_values.add(k);
@@ -407,8 +407,8 @@ export class DAL<A extends AtomName> {
 				throw exc;
 			}
 			for(const k of exc.keys){
-				if(atom[k as KeyOfAtom<A>] && !urn_atm.is_valid_key<A>(this.atom_name, k)){
-					delete atom[k as KeyOfAtom<A>];
+				if(atom[k as keyof Atom<A>] && !urn_atm.is_valid_key<A>(this.atom_name, k)){
+					delete atom[k as keyof Atom<A>];
 				}else{
 					atom = urn_atm.fix_atom_key<A>(this.atom_name, atom, k);
 				}
