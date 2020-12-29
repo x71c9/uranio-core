@@ -141,7 +141,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		// return _clean_object(mon_obj);
 	}
 	
-	public async replace_by_id(id:string, atom:Atom<A>)
+	public async replace_by_id(id:string, atom:AtomShape<A>)
 			:Promise<Atom<A>>{
 		if(typeof id !== 'string' || id === '' || !this.is_valid_id(id)){
 			const err_msg = `Cannot replace_by_id. Invalid id param.`;

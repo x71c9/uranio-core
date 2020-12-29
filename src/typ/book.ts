@@ -37,6 +37,7 @@ export type RealType<AT extends BookPropertyType> =
 	AT extends BookPropertyType.SET_NUMBER ? Array<number> :
 	AT extends BookPropertyType.ENUM_STRING ? string :
 	AT extends BookPropertyType.ENUM_NUMBER ? number :
+	AT extends BookPropertyType.ATOM ? string :
 	never;
 
 export type Book = {
