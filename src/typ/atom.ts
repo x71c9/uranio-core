@@ -71,9 +71,16 @@ type AtomDefinitionPropertyInferSubType<P> = P extends {type: BookPropertyType.A
 type AtomTypeOfProperty<A extends AtomName, k extends CustomKeyOfAtomShape<A>> =
 	AtomDefinitionPropertyInferType<PropertiesOfAtomDefinition<A>[k]>;
 
+type SubAtomIDTypeOfProperty<A extends AtomName, k extends SubAtomKeyOfAtomShape<A>> =
+	AtomDefinitionPropertyInferType<PropertiesOfAtomDefinition<A>[k]>;
+
 type RealTypeOfAtomProperty<A extends AtomName, k extends CustomKeyOfAtomShape<A>> =
 	AtomTypeOfProperty<A,k> extends BookPropertyType ?
 		RealType<AtomTypeOfProperty<A,k>> : never;
+
+type IDTypeOfSubAtom<A extends AtomName, k extends SubAtomKeyOfAtomShape<A>> =
+	SubAtomIDTypeOfProperty<A,k> extends BookPropertyType ?
+		RealType<SubAtomIDTypeOfProperty<A,k>> : never;
 
 type AtomTypeOfHardProperty<k extends KeyOfHardProperties> =
 	AtomDefinitionPropertyInferType<typeof atom_hard_properties[k]>;
@@ -134,13 +141,17 @@ type AtomShapePrimitives<A extends AtomName> = {
 	[k in RequiredKeyOfAtomCommonProperties]: RealTypeOfAtomCommonProperty<k>
 } & {
 	[k in OptionalKeyOfAtomCommonProperties]?: RealTypeOfAtomCommonProperty<k>
+} & {
+	[k in RequiredSubAtomKeyOfAtomProperties<A>]: IDTypeOfSubAtom<A,k>
+} & {
+	[k in OptionalSubAtomKeyOfAtomProperties<A>]?: IDTypeOfSubAtom<A,k>
 };
 
-type AtomShapeSubAtoms<A extends AtomName> = {
-	[k in RequiredSubAtomKeyOfAtomProperties<A>]: RealSubAtomShapeType<A,k>
-} & {
-	[k in OptionalSubAtomKeyOfAtomProperties<A>]?: RealSubAtomShapeType<A,k>
-};
+// type AtomShapeSubAtoms<A extends AtomName> = {
+//   [k in RequiredSubAtomKeyOfAtomProperties<A>]: RealSubAtomShapeType<A,k>
+// } & {
+//   [k in OptionalSubAtomKeyOfAtomProperties<A>]?: RealSubAtomShapeType<A,k>
+// };
 
 type AtomSubAtoms<A extends AtomName> = {
 	[k in RequiredSubAtomKeyOfAtomProperties<A>]: RealSubAtomType<A,k>
@@ -148,21 +159,36 @@ type AtomSubAtoms<A extends AtomName> = {
 	[k in OptionalSubAtomKeyOfAtomProperties<A>]?: RealSubAtomType<A,k>
 };
 
+type AtomPrimitives<A extends AtomName> = {
+	[k in RequiredKeyOfAtomProperties<A>]: RealTypeOfAtomProperty<A,k>
+} & {
+	[k in OptionalKeyOfAtomProperties<A>]?: RealTypeOfAtomProperty<A,k>
+} & {
+	[k in RequiredKeyOfAtomCommonProperties]: RealTypeOfAtomCommonProperty<k>
+} & {
+	[k in OptionalKeyOfAtomCommonProperties]?: RealTypeOfAtomCommonProperty<k>
+};
+
+// export type AtomShape<A extends AtomName> =
+//   AtomShapePrimitives<A> &
+//   AtomShapeSubAtoms<A>;
+
 export type AtomShape<A extends AtomName> =
-	AtomShapePrimitives<A> &
-	AtomShapeSubAtoms<A>;
+	AtomShapePrimitives<A>
 
 export type Atom<A extends AtomName> =
 	AtomHardProperties &
-	AtomShapePrimitives<A> &
+	AtomPrimitives<A> &
 	AtomSubAtoms<A>
 
 export const a:Atom<'product'> = {
+	_id: '',
 	_date: new Date('2020-01-01'),
 	title: '',
 	price: 0,
 	active: true,
 	cover: {
+		_id: '',
 		_date: new Date(),
 		src: '',
 		type: '',
@@ -177,16 +203,12 @@ export const a:Atom<'product'> = {
 	}
 };
 
-// export const b:AtomShape<'product'> = {
-//   title: '',
-//   price: 0,
-//   active: true,
-//   cover: {
-//     src: '',
-//     type: '',
-//     active: false
-//   }
-// };
+export const b:AtomShape<'product'> = {
+	title: '',
+	price: 0,
+	active: true,
+	cover: ''
+};
 
 // export type KeyOfAtomShape<A extends AtomName> =
 //   CustomKeyOfAtomShape<A> |

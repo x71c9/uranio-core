@@ -14,8 +14,6 @@ import {
 	AtomName,
 	Atom,
 	AtomShape,
-	// KeyOfAtom,
-	// KeyOfAtomShape,
 	Book,
 	BookPropertyType
 } from '../types';
