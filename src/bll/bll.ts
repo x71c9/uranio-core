@@ -10,7 +10,14 @@ import {urn_log} from 'urn-lib';
 
 import * as urn_dal from '../dal/';
 
-import {Query, AtomName, Atom, AtomShape} from '../types';
+import {
+	Query,
+	AtomName,
+	Atom,
+	AtomShape,
+	Depth,
+	Element
+} from '../types';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
@@ -22,8 +29,8 @@ class BLL<A extends AtomName> {
 		this._dal = urn_dal.create<A>(atom_name);
 	}
 	
-	public async find(query:Query<A>, options?:Query.Options<A>)
-			:Promise<Atom<A>[]>{
+	public async find<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
+			:Promise<Element<A,D>[]>{
 		return await this._dal.select(query, options);
 	}
 	

@@ -15,17 +15,21 @@ import {
 	Atom,
 	AtomShape,
 	Book,
-	BookPropertyType
+	BookPropertyType,
+	Depth,
+	Element
 } from '../types';
 
 import {atom_book} from '../book';
 
 import {core_config} from '../config/defaults';
 
-export function validate<A extends AtomName>(atom_name:A, atom:Atom<A>)
+export function validate<A extends AtomName, D extends Depth>(atom_name:A, atom:Element<A,D>)
 		:true{
-	_validate_hard_properties(atom);
-	validate_shape(atom_name, atom);
+	console.log(atom_name, atom);
+	return true;
+	// _validate_hard_properties(atom);
+	// validate_shape(atom_name, atom);
 	return true;
 }
 
@@ -367,21 +371,21 @@ function _is_optional_property(prop:Book.Definition.Property)
 	return (urn_util.object.has_key(prop, 'optional') && prop.optional === true);
 }
 
-function _validate_hard_properties<A extends AtomName>(atom:Atom<A>)
-		:true{
-	let k: keyof typeof atom_hard_properties;
-	for(k in atom_hard_properties){
-		try{
-			_check_prop_main_type(atom_hard_properties[k], k, atom[k]);
-		}catch(exc){
-			if(exc.type === urn_exception.ExceptionType.INVALID){
-				throw urn_exc.create_invalid(exc.code, exc.msg, atom, [k], exc);
-			}
-			throw exc;
-		}
-	}
-	return true;
-}
+// function _validate_hard_properties<A extends AtomName>(atom:Atom<A>)
+//     :true{
+//   let k: keyof typeof atom_hard_properties;
+//   for(k in atom_hard_properties){
+//     try{
+//       _check_prop_main_type(atom_hard_properties[k], k, atom[k]);
+//     }catch(exc){
+//       if(exc.type === urn_exception.ExceptionType.INVALID){
+//         throw urn_exc.create_invalid(exc.code, exc.msg, atom, [k], exc);
+//       }
+//       throw exc;
+//     }
+//   }
+//   return true;
+// }
 
 function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{

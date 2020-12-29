@@ -6,8 +6,8 @@
 
 import {
 	AtomName,
-	// KeyOfAtom
-	Atom
+	Atom,
+	Depth
 } from './atom';
 
 export type Query<A extends AtomName> = Query.Expression<A> | Query.Logical<A>;
@@ -51,7 +51,8 @@ export namespace Query {
 	// const a7:Query<'superuser'> = {$nor:[{$not: {$and:[{password: {$nin: ['']}}]}}]};
 	// console.log(a1,a2,a3,a4,a5,a6,a7);
 
-	export type Options<A extends AtomName> = {
+	export type Options<A extends AtomName, D extends Depth = 0> = {
+		depth?: D,
 		sort?: string | Equal<A>;
 		limit?: number;
 		skip?: number;
