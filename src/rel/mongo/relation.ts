@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 
 import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
-import {Query, AtomName, Atom, AtomShape} from '../../types';
+import {Query, AtomName, Atom, AtomShape, Depth, Element} from '../../types';
 
 import {Relation} from '../types';
 
@@ -61,13 +61,21 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		return this._conn.get_model(this.atom_name, mongo_schema);
 	}
 	
-	public async select(query:Query<A>, options?:Query.Options<A>)
-			:Promise<Atom<A>[]>{
+	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
+			:Promise<Element<A,D>[]>{
+		
+		// if(options && options.depth && options.depth > 0 && options.depth < 4){
+		//   const subatom_keys = urn_atm.get_subatom_keys(this.atom_name);
+		//   const populate_paths = [];
+		//   for(let i = 0;)
+		// }
+		
 		const mon_find_res = (options) ?
-			await this._raw.find(query, null, options).lean<Atom<A>>():
-			await this._raw.find(query).lean<Atom<A>>();
-		return mon_find_res.map((mon_doc:Atom<A>) => {
-			return _clean_object(mon_doc);
+			await this._raw.find(query, null, options).lean<Element<A,D>>():
+			await this._raw.find(query).lean<Element<A,D>>();
+		return mon_find_res.map((mon_doc:Element<A,D>) => {
+			// return _clean_object(mon_doc);
+			return _clean_element(mon_doc);
 		});
 	}
 	
@@ -208,6 +216,16 @@ function _clean_object<A extends AtomName>(atom:Atom<A>)
 	return atom;
 }
 
+function _clean_element<A extends AtomName, D extends Depth>(atom:Element<A,D>)
+		:Element<A,D>{
+	// if(urn_util.object.has_key(atom,'_id')){
+	//   atom._id = atom._id.toString();
+	// }
+	// if(urn_util.object.has_key(atom,'__v')){
+	//   delete (atom as any).__v;
+	// }
+	return atom;
+}
 export function create<A extends AtomName>(atom_name: A)
 		:MongooseRelation<A>{
 	urn_log.fn_debug(`Create MongooseRelation`);
