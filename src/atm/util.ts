@@ -16,7 +16,7 @@ import {
 	BookPropertyType
 } from '../types';
 
-export function get_atom_name<A extends AtomName>(atom_name:A ,atom_key:string)
+export function get_subatom_name<A extends AtomName>(atom_name:A ,atom_key:string)
 		:AtomName{
 	const atom_def = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	if(atom_def[atom_key]){

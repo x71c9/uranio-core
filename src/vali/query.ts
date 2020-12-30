@@ -7,7 +7,9 @@
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-import {Query, AtomName} from '../types';
+import {core_config} from '../config/defaults';
+
+import {Depth, Query, AtomName} from '../types';
 
 import {atom_book} from '../book';
 
@@ -27,8 +29,8 @@ const urn_exc = urn_exception.init('QUERY_VALIDATE','Query Validator');
  * @param query - the query object
  * @param options- the options object
  */
-export function validate_filter_options_params<A extends AtomName>
-(atom_name:A, query:Query<A>, options?:Query.Options<A>)
+export function validate_filter_options_params<A extends AtomName, D extends Depth>
+(atom_name:A, query:Query<A>, options?:Query.Options<A,D>)
 		:true{
 	validate_filter<A>(query, atom_name);
 	if(options){
@@ -138,9 +140,9 @@ function validate_filter<A extends AtomName>(query:Query<A>, atom_name:A)
  * @param object - The object or the string to validate as option
  *
  */
-function validate_options<A extends AtomName>(options:Query.Options<A>, atom_name:A)
+function validate_options<A extends AtomName, D extends Depth>(options:Query.Options<A,D>, atom_name:A)
 		:true{
-	if(urn_util.object.has_key(options, 'sort')){
+	if(options.sort){
 		switch(typeof options.sort){
 			case 'string':{
 				let sort_value = options.sort;
@@ -169,13 +171,24 @@ function validate_options<A extends AtomName>(options:Query.Options<A>, atom_nam
 			}
 		}
 	}
-	if(urn_util.object.has_key(options,'limit') && typeof options.limit != 'number'){
-		const err_msg = `Limit value type must be number.`;
+	if(options.limit && typeof options.limit != 'number'){
+		const err_msg = `options.limit value type must be number.`;
 		throw urn_exc.create('OPTIONS_INVALID_LIMIT_VAL', err_msg);
 	}
-	if(urn_util.object.has_key(options,'skip') && typeof options.skip != 'number'){
-		const err_msg = `Skip value type must be number.`;
+	if(options.skip && typeof options.skip != 'number'){
+		const err_msg = `option.skip value type must be number.`;
 		throw urn_exc.create('OPTIONS_INVALID_SKIP_VAL', err_msg);
+	}
+	if(options.depth){
+		if(typeof options.depth != 'number'){
+			const err_msg = `options.depth value type must be number.`;
+			throw urn_exc.create('OPTIONS_INVALID_DEPTH_TYPE', err_msg);
+		}
+		if(options.depth > core_config.max_query_depth_allowed){
+			let err_msg = `options.depth is gratern than maximun allowed`;
+			err_msg += ` [${core_config.max_password_length}]`;
+			throw urn_exc.create('OPTIONS_INVALID_DEPTH_VAL', err_msg);
+		}
 	}
 	return true;
 }

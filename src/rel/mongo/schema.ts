@@ -11,6 +11,8 @@ import {urn_util} from 'urn-lib';
 
 // const urn_exc = urn_exception.init('MONGO_SCHEMA', 'Mongoose Schema Definition');
 
+import * as urn_atm from '../../atm/';
+
 import {
 	BookPropertyType,
 	Book,
@@ -35,14 +37,14 @@ export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 			continue;
 		mongoose_schema_def = {
 			...mongoose_schema_def,
-			..._generate_mongoose_schema_prop(v, k)
+			..._generate_mongoose_schema_prop(atom_name, v, k)
 		};
 	}
 	// console.log(mongoose_schema_def);
 	return mongoose_schema_def;
 }
 
-function _generate_mongoose_schema_prop(prop_def:Book.Definition.Property, prop_key:string)
+function _generate_mongoose_schema_prop(atom_name: AtomName, prop_def:Book.Definition.Property, prop_key:string)
 		:mongoose.SchemaDefinition{
 	let is_required = true;
 	if(prop_def.optional && prop_def.optional === true){
@@ -134,14 +136,16 @@ function _generate_mongoose_schema_prop(prop_def:Book.Definition.Property, prop_
 		case BookPropertyType.ATOM:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key] as mongoose.SchemaDefinition,
-				type: 'Mixed'
+				type: mongoose.Schema.Types.ObjectId,
+				ref: urn_atm.get_subatom_name(atom_name, prop_key)
 			};
 			return schema_prop;
 		}
 		case BookPropertyType.ATOM_ARRAY:{
 			schema_prop[prop_key] = {
 				...schema_prop[prop_key] as mongoose.SchemaDefinition,
-				type: 'Mixed'
+				type: [mongoose.Schema.Types.ObjectId],
+				ref: urn_atm.get_subatom_name(atom_name, prop_key)
 			};
 			return schema_prop;
 		}
