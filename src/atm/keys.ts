@@ -54,7 +54,7 @@ export function get_subatom_keys<A extends AtomName>(atom_name:A)
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	for(const k in atom_props){
 		const prop:Book.Definition.Property = atom_props[k];
-		if(prop.type && prop.type === BookPropertyType.ATOM){
+		if(prop.type && prop.type === BookPropertyType.ATOM || prop.type === BookPropertyType.ATOM_ARRAY){
 			subatom_keys.add(k as keyof AtomShape<A>);
 		}
 	}

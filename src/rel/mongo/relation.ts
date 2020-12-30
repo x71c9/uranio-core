@@ -77,7 +77,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 				const subatom_keys = urn_atm.get_subatom_keys(this.atom_name);
 				const populate_paths = [];
 				for(const k of subatom_keys){
-					const pop_path = {path: k, model: urn_atm.get_atom_name(this.atom_name, k as string)};
+					const pop_path = {path: k, model: urn_atm.get_subatom_name(this.atom_name, k as string)};
 					populate_paths.push(pop_path);
 				}
 				mon_find_res =

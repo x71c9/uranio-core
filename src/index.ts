@@ -28,7 +28,11 @@ export default urn_core;
 //   console.log(data);
 // });
 
-// const media_bll = urn_core.bll.create('media');
+const media_bll = urn_core.bll.create('media');
+
+media_bll.find({}).then((a) => {
+	console.log('MEDIA', a);
+});
 
 // const media:urn_core.types.AtomShape<'media'> = {
 //   superuser: '5fec6e2324edbf3bc8a130f4',
@@ -41,11 +45,28 @@ export default urn_core;
 //   console.log(data);
 // });
 
-// const pro_bll = urn_core.bll.create('product');
+const pro_bll = urn_core.bll.create('product');
 
-// pro_bll.find({}).then(function(data){
+// const pro:urn_core.types.AtomShape<'product'> = {
+//   active: true,
+//   title: 'aa',
+//   price: 100.22,
+//   cover: ['5fecac1499dafa75be5950bb']
+// };
+
+pro_bll.find({}, {depth: 1}).then(function(data){
+	console.log('PRO', data);
+	// data[0].cover[0].superuser
+});
+
+// pro_bll.insert_new(pro).then((data) => {
 //   console.log(data);
+//   pro_bll.find({}, {depth: 1}).then(function(data){
+//     console.log(data);
+//   });
 // });
+
+
 
 // pro_bll.save_one({title: 'Product title', barcode: '98923084023', active: false}).then(function(data){
 //   console.log(data);

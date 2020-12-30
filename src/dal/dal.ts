@@ -10,7 +10,7 @@ import * as urn_atm from '../atm/';
 
 import * as urn_rel from '../rel/';
 
-// import * as urn_validators from '../vali/';
+import * as urn_validators from '../vali/';
 
 import {
 	Depth,
@@ -58,7 +58,6 @@ export class DAL<A extends AtomName> {
 	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A, D>)
 			:Promise<Molecule<A, D>[]>{
 		const atom_array = await this._select(query, options);
-		// const fixed_atom_array:Atom<A>[] = [];
 		const fixed_atom_array:Molecule<A,D>[] = [];
 		for(let db_record of atom_array){
 			db_record = await this._fix_on_validation_error(db_record);
@@ -84,7 +83,7 @@ export class DAL<A extends AtomName> {
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		
-		// atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
+		atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
 		
 		// await this._check_unique(atom_shape as Partial<AtomShape<A>>);
 		
@@ -168,11 +167,10 @@ export class DAL<A extends AtomName> {
 			const err_msg = `Cannot _select [in_trash=true]. Trash DB not found.`;
 			throw urn_exc.create('SELECT_IN_TRASH_NO_TRASH', err_msg);
 		}
-		// urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
+		urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		const db_res_select = await _relation.select(query, options);
-		// const atom_array:Atom<A>[] = [];
 		const atom_array:Molecule<A,D>[] = [];
 		for(const db_record of db_res_select){
 			atom_array.push(db_record);
@@ -204,7 +202,7 @@ export class DAL<A extends AtomName> {
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		
-		// urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
+		urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
 		
 		const db_res_select_one = await _relation.select_one(query, options);
 		return db_res_select_one;
