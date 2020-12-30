@@ -23,13 +23,12 @@
 	"devDependencies": {
 		"@types/bcrypt": "^3.0.0",
 		"@types/jsonwebtoken": "^8.5.0",
-		"@types/mongoose": "^5.10.3",
 		"urn-dev": "git+ssh://git@bitbucket.org/nbl7/urn-dev.git"
 	},
 	"dependencies": {
 		"bcrypt": "^5.0.0",
 		"jsonwebtoken": "^8.5.1",
-		"mongoose": "^5.11.8",
+		"mongoose": "^5.11.9",
 		"urn-lib": "file:../urn-lib/",
 		"urn-mdls": "file:../urn-mdls/"
 	}

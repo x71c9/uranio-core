@@ -20,7 +20,8 @@ export const enum BookPropertyType {
 	ENUM_NUMBER = 'ENUM_NUMBER',
 	SET_STRING = 'SET_STRING',
 	SET_NUMBER = 'SET_NUMBER',
-	ATOM = 'ATOM'
+	ATOM = 'ATOM',
+	ATOM_ARRAY = 'ATOM_ARRAY'
 }
 
 export type RealType<AT extends BookPropertyType> =
@@ -38,6 +39,7 @@ export type RealType<AT extends BookPropertyType> =
 	AT extends BookPropertyType.ENUM_STRING ? string :
 	AT extends BookPropertyType.ENUM_NUMBER ? number :
 	AT extends BookPropertyType.ATOM ? string :
+	AT extends BookPropertyType.ATOM_ARRAY ? string[] :
 	never;
 
 export type Book = {
@@ -70,7 +72,8 @@ export namespace Book {
 			Property.SetNumber |
 			Property.EnumString |
 			Property.EnumNumber |
-			Property.Atom;
+			Property.Atom |
+			Property.AtomArray;
 		
 		export namespace Property {
 		
@@ -171,6 +174,12 @@ export namespace Book {
 			
 			export interface Atom extends SharedFields {
 				type: BookPropertyType.ATOM,
+				atom: AtomName,
+				validation?: Validation.Atom
+			}
+			
+			export interface AtomArray extends SharedFields {
+				type: BookPropertyType.ATOM_ARRAY,
 				atom: AtomName,
 				validation?: Validation.Atom
 			}

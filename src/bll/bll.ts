@@ -16,7 +16,7 @@ import {
 	Atom,
 	AtomShape,
 	Depth,
-	Element
+	Molecule
 } from '../types';
 
 @urn_log.decorators.debug_constructor
@@ -30,17 +30,17 @@ class BLL<A extends AtomName> {
 	}
 	
 	public async find<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
-			:Promise<Element<A,D>[]>{
+			:Promise<Molecule<A,D>[]>{
 		return await this._dal.select(query, options);
 	}
 	
-	public async find_by_id(id:string)
-			:Promise<Atom<A>>{
-		return await this._dal.select_by_id(id);
+	public async find_by_id<D extends Depth>(id:string, depth?:D)
+			:Promise<Molecule<A,D>>{
+		return await this._dal.select_by_id(id, depth);
 	}
 	
-	public async find_one(query:Query<A>, options?:Query.Options<A>)
-			:Promise<Atom<A>>{
+	public async find_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
+			:Promise<Molecule<A,D>>{
 		return await this._dal.select_one(query, options);
 	}
 	
@@ -56,22 +56,17 @@ class BLL<A extends AtomName> {
 	
 	public async update_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
-		return await this.update_by_id(atom._id, atom as Partial<AtomShape<A>>);
+		return await this.update_by_id(atom._id, atom);
 	}
-	
-	// public async replace_one(atom:Atom<A>)
-	//     :Promise<Atom<A>>{
-	//   return await this._dal.substitute_one(atom);
-	// }
 	
 	public async remove_by_id(id:string)
 			:Promise<Atom<A>>{
 		return await this._dal.delete_by_id(id);
 	}
 	
-	public async remove_one(atom:Atom<A>)
+	public async remove_one(molecule:Molecule<A>)
 			:Promise<Atom<A>>{
-		return await this.remove_by_id(atom._id);
+		return await this.remove_by_id(molecule._id);
 	}
 	
 }
@@ -82,4 +77,6 @@ export function create<A extends AtomName>(atom_name:A):BLL<A>{
 	urn_log.fn_debug(`Create BLL [${atom_name}]`);
 	return new BLL<A>(atom_name);
 }
+
+
 

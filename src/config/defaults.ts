@@ -4,9 +4,9 @@
  * @packageDocumentation
  */
 
-import {Configuration} from '../types';
+import {FullConfiguration} from '../types';
 
-export const core_config:Configuration = {
+export const core_config:FullConfiguration = {
 	
 	db_type: 'mongo',
 	
@@ -24,6 +24,8 @@ export const core_config:Configuration = {
 	
 	encryption_round: 12,
 	
-	max_password_length: 58 // It should be less than 60. 60 are the hashed string.
+	max_password_length: 58, // It should be less than 60. 60 are the hashed string.
+	
+	max_query_depth_allowed: 7
 	
 };

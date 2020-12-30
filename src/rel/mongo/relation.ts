@@ -8,7 +8,14 @@ import mongoose from 'mongoose';
 
 import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
-import {Query, AtomName, Atom, AtomShape, Depth, Element} from '../../types';
+import {
+	Query,
+	AtomName,
+	Atom,
+	AtomShape,
+	Depth,
+	Molecule
+} from '../../types';
 
 import {Relation} from '../types';
 
@@ -16,7 +23,7 @@ import {generate_mongo_schema_def} from './schema';
 
 import * as mongo_connection from './connection';
 
-// import * as urn_atm from '../../atm/';
+import * as urn_atm from '../../atm/';
 
 import {core_config} from '../../config/defaults';
 
@@ -62,41 +69,57 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	}
 	
 	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
-			:Promise<Element<A,D>[]>{
-		
-		// if(options && options.depth && options.depth > 0 && options.depth < 4){
-		//   const subatom_keys = urn_atm.get_subatom_keys(this.atom_name);
-		//   const populate_paths = [];
-		//   for(let i = 0;)
-		// }
-		
-		const mon_find_res = (options) ?
-			await this._raw.find(query, null, options).lean<Element<A,D>>():
-			await this._raw.find(query).lean<Element<A,D>>();
-		return mon_find_res.map((mon_doc:Element<A,D>) => {
+			:Promise<Molecule<A,D>[]>{
+		// TODO implement DEPTH
+		let mon_find_res:Molecule<A,D>[] = [];
+		if(options){
+			if(options.depth && options.depth > 0 && options.depth < core_config.max_query_depth_allowed){
+				const subatom_keys = urn_atm.get_subatom_keys(this.atom_name);
+				const populate_paths = [];
+				for(const k of subatom_keys){
+					const pop_path = {path: k, model: urn_atm.get_atom_name(this.atom_name, k as string)};
+					populate_paths.push(pop_path);
+				}
+				mon_find_res =
+					await this._raw.find(query, null, options).populate(populate_paths).lean<Molecule<A,D>[]>();
+			}else{
+				mon_find_res =
+					await this._raw.find(query, null, options).lean<Molecule<A,D>[]>();
+			}
+		}else{
+			mon_find_res = await this._raw.find(query).lean<Molecule<A,D>[]>();
+		}
+		return mon_find_res.map((mon_doc:Molecule<A,D>) => {
 			// return _clean_object(mon_doc);
 			return _clean_element(mon_doc);
 		});
 	}
 	
-	public async select_by_id(id:string)
-			:Promise<Atom<A>>{
-		const mon_find_by_id_res = await this._raw.findById(id).lean<Atom<A>>();
+	public async select_by_id<D extends Depth>(id:string, depth?:D)
+			:Promise<Molecule<A,D>>{
+		
+		// TODO implement DEPTH
+		
+		console.log(depth);
+		
+		const mon_find_by_id_res = await this._raw.findById(id).lean<Molecule<A,D>>();
 		if(mon_find_by_id_res === null){
 			throw urn_exc.create_not_found('FIND_ID_NOT_FOUND', `Record not found.`);
 		}
-		return _clean_object(mon_find_by_id_res as Atom<A>);
+		// return _clean_object(mon_find_by_id_res as Atom<A>);
+		return _clean_element(mon_find_by_id_res as Molecule<A,D>);
 	}
 	
-	public async select_one(query:Query<A>, options?:Query.Options<A>)
-			:Promise<Atom<A>>{
+	public async select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
+			:Promise<Molecule<A,D>>{
 		const mon_find_one_res = (typeof options !== 'undefined' && options.sort) ?
-			await this._raw.findOne(query).sort(options.sort).lean<Atom<A>>() :
-			await this._raw.findOne(query).lean<Atom<A>>();
+			await this._raw.findOne(query).sort(options.sort).lean<Molecule<A,D>>() :
+			await this._raw.findOne(query).lean<Molecule<A,D>>();
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
 		}
-		return _clean_object(mon_find_one_res as Atom<A>);
+		// return _clean_object(mon_find_one_res as Atom<A>);
+		return _clean_element(mon_find_one_res as Molecule<A,D>);
 	}
 	
 	public async insert_one(atom_shape:AtomShape<A>)
@@ -140,7 +163,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 			throw urn_exc.create('ALTER_BY_ID_INVALID_ID', err_msg);
 		}
 		const mon_update_res =
-			await this._raw.findByIdAndUpdate({_id:id}, partial_atom, {new: true, lean: true});
+			await this._raw.findByIdAndUpdate({_id:id}, partial_atom, {new: true, lean: true}) as unknown;
 		if(mon_update_res === null){
 			throw urn_exc.create('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
 		}
@@ -156,7 +179,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 			throw urn_exc.create('REPLACE_BY_ID_INVALID_ID', err_msg);
 		}
 		const mon_update_res =
-			await this._raw.findByIdAndUpdate({_id:id}, atom, {new: true, lean: true, overwrite: true});
+			await this._raw.findByIdAndUpdate({_id:id}, atom, {new: true, lean: true, overwrite: true}) as unknown;
 		if(mon_update_res === null){
 			throw urn_exc.create('REPLACE_BY_ID_NOT_FOUND', `Cannot replace_by_id. Record not found.`);
 		}
@@ -216,8 +239,11 @@ function _clean_object<A extends AtomName>(atom:Atom<A>)
 	return atom;
 }
 
-function _clean_element<A extends AtomName, D extends Depth>(atom:Element<A,D>)
-		:Element<A,D>{
+function _clean_element<A extends AtomName, D extends Depth>(atom:Molecule<A,D>)
+		:Molecule<A,D>{
+		
+	// TODO implement
+		
 	// if(urn_util.object.has_key(atom,'_id')){
 	//   atom._id = atom._id.toString();
 	// }

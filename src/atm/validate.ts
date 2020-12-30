@@ -17,14 +17,14 @@ import {
 	Book,
 	BookPropertyType,
 	Depth,
-	Element
+	Molecule
 } from '../types';
 
 import {atom_book} from '../book';
 
 import {core_config} from '../config/defaults';
 
-export function validate<A extends AtomName, D extends Depth>(atom_name:A, atom:Element<A,D>)
+export function validate<A extends AtomName, D extends Depth>(atom_name:A, atom:Molecule<A,D>)
 		:true{
 	console.log(atom_name, atom);
 	return true;
@@ -549,6 +549,7 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 			}
 			return true;
 		}
+		case BookPropertyType.ATOM_ARRAY:
 		case BookPropertyType.ATOM:{
 			return true;
 		}

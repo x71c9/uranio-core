@@ -4,15 +4,22 @@
  * @packageDocumentation
  */
 
-import {Depth, Query, AtomName, Atom, AtomShape, Element} from '../types';
+import {
+	Query,
+	AtomName,
+	Atom,
+	AtomShape,
+	Depth,
+	Molecule
+} from '../types';
 
 export interface Relation<A extends AtomName> {
 	
-	select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>):Promise<Element<A,D>[]>;
+	select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>):Promise<Molecule<A,D>[]>;
 	
-	select_by_id(id:string):Promise<Atom<A>>;
+	select_by_id<D extends Depth>(id:string, depth?:D):Promise<Molecule<A,D>>;
 	
-	select_one(query:Query<A>, options?:Query.Options<A>):Promise<Atom<A>>;
+	select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>):Promise<Molecule<A,D>>;
 	
 	insert_one(atom_shape:AtomShape<A>):Promise<Atom<A>>;
 	
