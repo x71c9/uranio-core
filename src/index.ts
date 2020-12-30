@@ -4,6 +4,8 @@
  * @packageDocumentation
  */
 
+import util from 'util';
+
 import {urn_log} from 'urn-lib';
 
 urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
@@ -28,11 +30,11 @@ export default urn_core;
 //   console.log(data);
 // });
 
-const media_bll = urn_core.bll.create('media');
+// const media_bll = urn_core.bll.create('media');
 
-media_bll.find({}).then((a) => {
-	console.log('MEDIA', a);
-});
+// media_bll.find({}).then((a) => {
+//   console.log('MEDIA', a);
+// });
 
 // const media:urn_core.types.AtomShape<'media'> = {
 //   superuser: '5fec6e2324edbf3bc8a130f4',
@@ -54,8 +56,9 @@ const pro_bll = urn_core.bll.create('product');
 //   cover: ['5fecac1499dafa75be5950bb']
 // };
 
-pro_bll.find({}, {depth: 1}).then(function(data){
-	console.log('PRO', data);
+pro_bll.find({}, {depth: 2}).then(function(data){
+	urn_log.debug('PRO', data);
+	console.log('PRO', util.inspect(data, false, null, true));
 	// data[0].cover[0].superuser
 });
 

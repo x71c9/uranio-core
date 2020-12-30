@@ -36,6 +36,12 @@ const mongo_main_conn = mongo_connection.create(
 
 const urn_exc = urn_exception.init('REL_MONGO', 'Mongoose Relation');
 
+type PopulateObject = {
+	path: string,
+	model: string,
+	populate?: PopulateObject[]
+}
+
 /**
  * Mongoose Relation class
  */
@@ -68,23 +74,39 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		return this._conn.get_model(this.atom_name, mongo_schema);
 	}
 	
+	private _generate_populate_object<A extends AtomName>(atom_name:A, subatom_key:string, depth:number)
+				:PopulateObject{
+		const subatom_name = urn_atm.get_subatom_name(atom_name, subatom_key);
+		const path_model:PopulateObject = {path: subatom_key, model: subatom_name};
+		const subsubatom_keys = urn_atm.get_subatom_keys(subatom_name);
+		if(subsubatom_keys.size === 0 || depth == 0)
+			return path_model;
+		const subpops:PopulateObject[] = [];
+		for(const subsubkey of subsubatom_keys){
+			subpops.push(this._generate_populate_object(subatom_name, subsubkey, depth - 1));
+		}
+		const populate_object:PopulateObject = {
+			...path_model,
+			populate: subpops
+		};
+		return populate_object;
+	}
+	
 	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>[]>{
 		// TODO implement DEPTH
 		let mon_find_res:Molecule<A,D>[] = [];
 		if(options){
-			if(options.depth && options.depth > 0 && options.depth < core_config.max_query_depth_allowed){
-				const subatom_keys = urn_atm.get_subatom_keys(this.atom_name);
-				const populate_paths = [];
+			const subatom_keys = urn_atm.get_subatom_keys(this.atom_name);
+			const populate_object = [];
+			if(options.depth && options.depth > 0 && options.depth < core_config.max_query_depth_allowed && subatom_keys.size){
 				for(const k of subatom_keys){
-					const pop_path = {path: k, model: urn_atm.get_subatom_name(this.atom_name, k as string)};
-					populate_paths.push(pop_path);
+					populate_object.push(this._generate_populate_object(this.atom_name, k as string, (options.depth as number) - 1));
 				}
-				mon_find_res =
-					await this._raw.find(query, null, options).populate(populate_paths).lean<Molecule<A,D>[]>();
+				mon_find_res = await this._raw.find(query, null, options)
+					.populate(populate_object).lean<Molecule<A,D>[]>();
 			}else{
-				mon_find_res =
-					await this._raw.find(query, null, options).lean<Molecule<A,D>[]>();
+				mon_find_res = await this._raw.find(query, null, options).lean<Molecule<A,D>[]>();
 			}
 		}else{
 			mon_find_res = await this._raw.find(query).lean<Molecule<A,D>[]>();
@@ -252,9 +274,28 @@ function _clean_element<A extends AtomName, D extends Depth>(atom:Molecule<A,D>)
 	// }
 	return atom;
 }
+
+const already_initialized:AtomName[] = [];
+
+function _create_dependency_relations<A extends AtomName>(atom_name:A){
+	
+	urn_log.fn_debug(`Create Dependency MongooseRelations`);
+	
+	const subatom_keys = urn_atm.get_subatom_keys(atom_name);
+	for(const k of subatom_keys){
+		const subatom_name = urn_atm.get_subatom_name(atom_name, k as string);
+		if(!already_initialized.includes(subatom_name)){
+			create(subatom_name);
+		}
+	}
+}
+
 export function create<A extends AtomName>(atom_name: A)
 		:MongooseRelation<A>{
+	
 	urn_log.fn_debug(`Create MongooseRelation`);
+	
+	_create_dependency_relations(atom_name);
 	return new MongooseRelation<A>(atom_name);
 }
 
