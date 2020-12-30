@@ -7,7 +7,7 @@
 
 export type DatabaseType = 'mongo'; // | 'mysql'
 
-export type Configuration = {
+type RequiredConfigParams = {
 	
 	db_type: DatabaseType;
 	
@@ -23,8 +23,18 @@ export type Configuration = {
 	
 	jwt_private_key: string;
 	
+}
+
+type OptionalConfigParam = {
+
 	encryption_round: number;
 	
 	max_password_length: number;
 	
+	max_query_depth_allowed: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+	
 }
+
+export type Configuration = RequiredConfigParams & Partial<OptionalConfigParam>;
+
+export type FullConfiguration = RequiredConfigParams & OptionalConfigParam;

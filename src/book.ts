@@ -37,7 +37,7 @@ export const atom_book = {
 				}
 			},
 			cover: {
-				type: BookPropertyType.ATOM,
+				type: BookPropertyType.ATOM_ARRAY,
 				atom: 'media'
 			}
 		}

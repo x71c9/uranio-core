@@ -58,14 +58,14 @@ function _generate_mongoose_schema_prop(prop_def:Book.Definition.Property, prop_
 	} as mongoose.SchemaDefinition;
 	if(prop_def.unique && prop_def.unique === true){
 		schema_prop[prop_key] = {
-			...schema_prop[prop_key],
+			...schema_prop[prop_key] as mongoose.SchemaDefinition,
 			unique: true
 		};
 	}
 	switch(prop_def.type){
 		case BookPropertyType.ID:{
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				type: String,
 				trim: true
 			};
@@ -79,7 +79,7 @@ function _generate_mongoose_schema_prop(prop_def:Book.Definition.Property, prop_
 		}
 		case BookPropertyType.ENCRYPTED:{
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				type: String,
 				minlength: 60,
 				maxlenght: 60
@@ -88,7 +88,7 @@ function _generate_mongoose_schema_prop(prop_def:Book.Definition.Property, prop_
 		}
 		case BookPropertyType.EMAIL:{
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
 				type: String,
 				trim: true
@@ -103,7 +103,7 @@ function _generate_mongoose_schema_prop(prop_def:Book.Definition.Property, prop_
 		}
 		case BookPropertyType.BINARY:{
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				type: Boolean
 			};
 			return schema_prop;
@@ -119,21 +119,28 @@ function _generate_mongoose_schema_prop(prop_def:Book.Definition.Property, prop_
 		}
 		case BookPropertyType.SET_STRING:{
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				type: [String]
 			};
 			return schema_prop;
 		}
 		case BookPropertyType.SET_NUMBER:{
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				type: [Number]
 			};
 			return schema_prop;
 		}
 		case BookPropertyType.ATOM:{
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
+				type: 'Mixed'
+			};
+			return schema_prop;
+		}
+		case BookPropertyType.ATOM_ARRAY:{
+			schema_prop[prop_key] = {
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				type: 'Mixed'
 			};
 			return schema_prop;
@@ -149,12 +156,12 @@ function _generate_date_schema_def(
 	schema_prop: mongoose.SchemaDefinition
 ):mongoose.SchemaDefinition{
 	schema_prop[prop_key] = {
-		...schema_prop[prop_key],
+		...schema_prop[prop_key] as mongoose.SchemaDefinition,
 		type: Date
 	};
 	if(prop_def.default){
 		schema_prop[prop_key] = {
-			...schema_prop[prop_key],
+			...schema_prop[prop_key] as mongoose.SchemaDefinition,
 			default: (prop_def.default === 'NOW') ? Date.now : prop_def.default
 		};
 	}
@@ -162,20 +169,20 @@ function _generate_date_schema_def(
 		const vali = prop_def.validation;
 		if(vali.eq){
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				min: vali.eq,
 				max: vali.eq
 			};
 		}else{
 			if(vali.min){
 				schema_prop[prop_key] = {
-					...schema_prop[prop_key],
+					...schema_prop[prop_key] as mongoose.SchemaDefinition,
 					min: vali.min
 				};
 			}
 			if(vali.max){
 				schema_prop[prop_key] = {
-					...schema_prop[prop_key],
+					...schema_prop[prop_key] as mongoose.SchemaDefinition,
 					max: vali.max
 				};
 			}
@@ -197,7 +204,7 @@ function _generate_enum_schema_def(
 	};
 	if(prop_def.default){
 		schema_prop[prop_key] = {
-			...schema_prop[prop_key],
+			...schema_prop[prop_key] as mongoose.SchemaDefinition,
 			default: prop_def.default
 		};
 	}
@@ -210,27 +217,27 @@ function _generate_number_schema_def(
 	schema_prop:mongoose.SchemaDefinition
 ):mongoose.SchemaDefinition{
 	schema_prop[prop_key] = {
-		...schema_prop[prop_key],
+		...schema_prop[prop_key] as mongoose.SchemaDefinition,
 		type: Number
 	};
 	if(prop_def.validation){
 		const vali = prop_def.validation;
 		if(vali.eq){
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				min: vali.eq,
 				max: vali.eq
 			};
 		}else{
 			if(vali.min){
 				schema_prop[prop_key] = {
-					...schema_prop[prop_key],
+					...schema_prop[prop_key] as mongoose.SchemaDefinition,
 					min: vali.min
 				};
 			}
 			if(vali.max){
 				schema_prop[prop_key] = {
-					...schema_prop[prop_key],
+					...schema_prop[prop_key] as mongoose.SchemaDefinition,
 					max: vali.max
 				};
 			}
@@ -245,7 +252,7 @@ function _generate_string_schema_def(
 	schema_prop: mongoose.SchemaDefinition
 ):mongoose.SchemaDefinition{
 	schema_prop[prop_key] = {
-		...schema_prop[prop_key],
+		...schema_prop[prop_key] as mongoose.SchemaDefinition,
 		type: String,
 		trim: true
 	};
@@ -253,27 +260,27 @@ function _generate_string_schema_def(
 		const vali = prop_def.validation;
 		if(vali.length){
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				minlength: vali.length,
 				maxlenght: vali.length
 			};
 		}else{
 			if(vali.min){
 				schema_prop[prop_key] = {
-					...schema_prop[prop_key],
+					...schema_prop[prop_key] as mongoose.SchemaDefinition,
 					minlength: vali.min
 				};
 			}
 			if(vali.max){
 				schema_prop[prop_key] = {
-					...schema_prop[prop_key],
+					...schema_prop[prop_key] as mongoose.SchemaDefinition,
 					maxlength: vali.max
 				};
 			}
 		}
 		if(vali.reg_ex){
 			schema_prop[prop_key] = {
-				...schema_prop[prop_key],
+				...schema_prop[prop_key] as mongoose.SchemaDefinition,
 				match: vali.reg_ex
 			};
 		}

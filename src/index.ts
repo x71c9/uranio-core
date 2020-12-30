@@ -18,7 +18,26 @@ export default urn_core;
 //   console.log(data);
 // });
 
-// superuser_bll.save_one({email: 'adjdd@a.com', password: 'sadkjsklad'}).then(function(data){
+// const su:urn_core.types.Atom<'superuser'> = {
+//   email: 'a@a.com',
+//   password: '123456789012345678901234567890123456789012345678901234567890',
+//   active: true
+// };
+
+// superuser_bll.insert_new(su).then(function(data){
+//   console.log(data);
+// });
+
+// const media_bll = urn_core.bll.create('media');
+
+// const media:urn_core.types.AtomShape<'media'> = {
+//   superuser: '5fec6e2324edbf3bc8a130f4',
+//   src: 'https://',
+//   type: 'image',
+//   active: true
+// };
+
+// media_bll.insert_new(media).then((data) => {
 //   console.log(data);
 // });
 
@@ -34,20 +53,20 @@ export default urn_core;
 
 // import bcrypt from 'bcrypt';
 
-const obi_bll = urn_core.bll.create('obi');
-obi_bll.find_one({_id: '5fe851637b02c733da9d1e8a'}).then((data) => {
-	console.log('FIND');
-	console.log(data);
-	// data.active = false;
-	// data.age = 55;
-	// // data.password = 'STOxAZZO6';
-	// obi_bll.update_one(data).then((resp) => {
-	//   console.log(resp);
-	//   bcrypt.compare('STOxAZZO6', resp.password).then((is_eq) => console.log(is_eq));
-	// });
-}).catch((err) => {
-	console.log(err);
-});
+// const obi_bll = urn_core.bll.create('obi');
+// obi_bll.find_one({_id: '5fe851637b02c733da9d1e8a'}, {depth: 0}).then((data) => {
+//   console.log('FIND');
+//   console.log(data);
+//   // data.active = false;
+//   // data.age = 55;
+//   // // data.password = 'STOxAZZO6';
+//   // obi_bll.update_one(data).then((resp) => {
+//   //   console.log(resp);
+//   //   bcrypt.compare('STOxAZZO6', resp.password).then((is_eq) => console.log(is_eq));
+//   // });
+// }).catch((err) => {
+//   console.log(err);
+// });
 
 // const obi_one = {
 //   other_id: '92348njkhds8fsdnusoda',

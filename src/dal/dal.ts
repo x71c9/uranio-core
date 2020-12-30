@@ -10,7 +10,7 @@ import * as urn_atm from '../atm/';
 
 import * as urn_rel from '../rel/';
 
-import * as urn_validators from '../vali/';
+// import * as urn_validators from '../vali/';
 
 import {
 	Depth,
@@ -20,7 +20,7 @@ import {
 	Atom,
 	Book,
 	BookPropertyType,
-	Element
+	Molecule
 } from '../types';
 
 import {core_config} from '../config/defaults';
@@ -56,10 +56,10 @@ export class DAL<A extends AtomName> {
 	}
 	
 	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A, D>)
-			:Promise<Element<A, D>[]>{
+			:Promise<Molecule<A, D>[]>{
 		const atom_array = await this._select(query, options);
 		// const fixed_atom_array:Atom<A>[] = [];
-		const fixed_atom_array:Element<A,D>[] = [];
+		const fixed_atom_array:Molecule<A,D>[] = [];
 		for(let db_record of atom_array){
 			db_record = await this._fix_on_validation_error(db_record);
 			fixed_atom_array.push(db_record);
@@ -67,15 +67,15 @@ export class DAL<A extends AtomName> {
 		return fixed_atom_array;
 	}
 	
-	public async select_by_id(id:string)
-			:Promise<Atom<A>>{
-		const db_record = await this._select_by_id(id);
+	public async select_by_id<D extends Depth>(id:string, depth?:D)
+			:Promise<Molecule<A,D>>{
+		const db_record = await this._select_by_id(id, depth);
 		return db_record;
 		// return await this._fix_on_validation_error(db_record);
 	}
 	
-	public async select_one(query:Query<A>, options?:Query.Options<A>)
-			:Promise<Atom<A>>{
+	public async select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
+			:Promise<Molecule<A,D>>{
 		const db_record = await this._select_one(query, options);
 		return db_record;
 		// return await this._fix_on_validation_error(db_record);
@@ -84,9 +84,10 @@ export class DAL<A extends AtomName> {
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		
-		atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
+		// atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
 		
-		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
+		// await this._check_unique(atom_shape as Partial<AtomShape<A>>);
+		
 		const db_record = await this._insert_one(atom_shape);
 		return db_record;
 		// return await this._fix_on_validation_error(db_record);
@@ -94,7 +95,9 @@ export class DAL<A extends AtomName> {
 	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
-		await this._check_unique(partial_atom, id);
+		
+		// await this._check_unique(partial_atom, id);
+		
 		const db_record = await this._alter_by_id(id, partial_atom);
 		return db_record;
 		// return await this._fix_on_validation_error(db_record);
@@ -110,10 +113,13 @@ export class DAL<A extends AtomName> {
 	public async delete_by_id(id:string)
 			:Promise<Atom<A>>{
 		const db_res_delete = await this._delete_by_id(id);
-		if(db_res_delete && this._db_trash_relation){
-			db_res_delete._deleted_from = db_res_delete._id;
-			return await this.trash_insert_one(db_res_delete);
-		}
+		
+		// TODO TRASH IT
+		
+		// if(db_res_delete && this._db_trash_relation){
+		//   db_res_delete._deleted_from = db_res_delete._id;
+		//   return await this.trash_insert_one(db_res_delete);
+		// }
 		const db_record = db_res_delete;
 		return db_record;
 		// return await this._fix_on_validation_error(db_record);
@@ -126,38 +132,38 @@ export class DAL<A extends AtomName> {
 		// return await this._fix_on_validation_error(db_record);
 	}
 	
-	public async trash_select(query:Query<A>, options?:Query.Options<A>)
-			:Promise<Atom<A>[]>{
-		return await this._select(query, options, true);
-	}
+	// public async trash_select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
+	//     :Promise<Molecule<A,D>[]>{
+	//   return await this._select(query, options, true);
+	// }
 	
-	public async trash_select_by_id(id:string)
-			:Promise<Atom<A>>{
-		return await this._select_by_id(id, true);
-	}
+	// public async trash_select_by_id<D extends Depth>(id:string, depth?:D)
+	//     :Promise<Molecule<A,D>>{
+	//   return await this._select_by_id(id, depth, true);
+	// }
 	
-	public async trash_select_one(query:Query<A>, options?:Query.Options<A>)
-			:Promise<Atom<A>>{
-		return await this._select_one(query, options, true);
-	}
+	// public async trash_select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
+	//     :Promise<Molecule<A,D>>{
+	//   return await this._select_one(query, options, true);
+	// }
 	
-	public async trash_insert_one(atom:Atom<A>)
-			:Promise<Atom<A>>{
-		return await this._insert_one(atom, true);
-	}
+	// public async trash_insert_one(atom:Atom<A>)
+	//     :Promise<Atom<A>>{
+	//   return await this._insert_one(atom, true);
+	// }
 	
-	public async trash_delete_one(atom:Atom<A>)
-			:Promise<Atom<A>>{
-		return await this._delete_by_id(atom._id, true);
-	}
+	// public async trash_delete_one(atom:Atom<A>)
+	//     :Promise<Atom<A>>{
+	//   return await this._delete_by_id(atom._id, true);
+	// }
 	
-	public async trash_delete_by_id(id:string)
-			:Promise<Atom<A>>{
-		return await this._delete_by_id(id, true);
-	}
+	// public async trash_delete_by_id(id:string)
+	//     :Promise<Atom<A>>{
+	//   return await this._delete_by_id(id, true);
+	// }
 	
 	private async _select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>, in_trash = false)
-			:Promise<Element<A,D>[]>{
+			:Promise<Molecule<A,D>[]>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _select [in_trash=true]. Trash DB not found.`;
 			throw urn_exc.create('SELECT_IN_TRASH_NO_TRASH', err_msg);
@@ -167,15 +173,15 @@ export class DAL<A extends AtomName> {
 			this._db_trash_relation : this._db_relation;
 		const db_res_select = await _relation.select(query, options);
 		// const atom_array:Atom<A>[] = [];
-		const atom_array:Element<A,D>[] = [];
+		const atom_array:Molecule<A,D>[] = [];
 		for(const db_record of db_res_select){
 			atom_array.push(db_record);
 		}
 		return atom_array;
 	}
 	
-	private async _select_by_id(id:string, in_trash = false)
-			:Promise<Atom<A>>{
+	private async _select_by_id<D extends Depth>(id:string, depth?:D, in_trash = false)
+			:Promise<Molecule<A,D>>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _select_by_id [in_trash=true]. Trash DB not found.`;
 			throw urn_exc.create('SELECT_ID_TRASH_NOT_FOUND', err_msg);
@@ -185,19 +191,21 @@ export class DAL<A extends AtomName> {
 		if(!this._db_relation.is_valid_id(id)){
 			throw urn_exc.create('SELECT_ID_INVALID_ID', `Cannot _select_by_id. Invalid argument id.`);
 		}
-		const db_res_select_by_id = await _relation.select_by_id(id);
+		const db_res_select_by_id = await _relation.select_by_id(id, depth);
 		return db_res_select_by_id;
 	}
 	
-	private async _select_one(query:Query<A>, options?:Query.Options<A>, in_trash = false)
-			:Promise<Atom<A>>{
+	private async _select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>, in_trash = false)
+			:Promise<Molecule<A,D>>{
 		if(in_trash === true && this._db_trash_relation === null){
 			const err_msg = `Cannot _select_one [in_trash=true]. Trash DB not found.`;
 			throw urn_exc.create('SELECT_ONE_TRASH_NOT_FOUND', err_msg);
 		}
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
-		urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
+		
+		// urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
+		
 		const db_res_select_one = await _relation.select_one(query, options);
 		return db_res_select_one;
 	}
@@ -209,7 +217,7 @@ export class DAL<A extends AtomName> {
 			throw urn_exc.create('INS_ONE_TRASH_NOT_FOUND', err_msg);
 		}
 		
-		urn_atm.validate_shape<A>(this.atom_name, atom_shape);
+		// urn_atm.validate_shape<A>(this.atom_name, atom_shape);
 		
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
@@ -315,45 +323,50 @@ export class DAL<A extends AtomName> {
 		return partial_atom;
 	}
 	
-	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
-			:Promise<true>{
-		
-		urn_atm.validate_partial<A>(this.atom_name, partial_atom);
-		
-		const $or = [];
-		for(const k of urn_atm.get_unique_keys(this.atom_name)){
-			$or.push({[k]: partial_atom[k]});
-		}
-		if($or.length === 0){
-			return true;
-		}
-		let query:Query<A> = {} as Query<A>;
-		if(id === false || !this._db_relation.is_valid_id(id)){
-			query = {$and: [{$not: {_id: id}}, {$or: $or}]};
-		}else{
-			query = {$or: $or};
-		}
-		try{
-			const res_select_one = await this._select_one(query);
-			const equal_values:Set<keyof Atom<A>> = new Set();
-			for(const k of urn_atm.get_unique_keys(this.atom_name)){
-				if(partial_atom[k] === res_select_one[k]){
-					equal_values.add(k);
-				}
-			}
-			let err_msg = `Atom unique fields are already in the database.`;
-			err_msg += ` Duplicate fields: ${urn_util.formatter.json_one_line(equal_values)}.`;
-			throw urn_exc.create('CHECK_UNIQUE_DUPLICATE', err_msg);
-		}catch(err){
-			if(!err.type || err.type !== urn_exception.ExceptionType.NOT_FOUND){
-				throw err;
-			}
-		}
-		return true;
-	}
+	// private async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
+	//     :Promise<true>{
 	
-	private async _fix_on_validation_error<D extends Depth>(atom:Element<A,D>)
-			:Promise<Element<A,D>>{
+	// TODO Check unique
+
+	//   urn_atm.validate_partial<A>(this.atom_name, partial_atom);
+		
+	//   const $or = [];
+	//   for(const k of urn_atm.get_unique_keys(this.atom_name)){
+	//     $or.push({[k]: partial_atom[k]});
+	//   }
+	//   if($or.length === 0){
+	//     return true;
+	//   }
+	//   let query:Query<A> = {} as Query<A>;
+	//   if(id === false || !this._db_relation.is_valid_id(id)){
+	//     query = {$and: [{$not: {_id: id}}, {$or: $or}]};
+	//   }else{
+	//     query = {$or: $or};
+	//   }
+	//   try{
+	//     const res_select_one = await this._select_one(query);
+	//     const equal_values:Set<keyof Atom<A>> = new Set();
+	//     for(const k of urn_atm.get_unique_keys(this.atom_name)){
+	//       if(partial_atom[k] === res_select_one[k]){
+	//         equal_values.add(k);
+	//       }
+	//     }
+	//     let err_msg = `Atom unique fields are already in the database.`;
+	//     err_msg += ` Duplicate fields: ${urn_util.formatter.json_one_line(equal_values)}.`;
+	//     throw urn_exc.create('CHECK_UNIQUE_DUPLICATE', err_msg);
+	//   }catch(err){
+	//     if(!err.type || err.type !== urn_exception.ExceptionType.NOT_FOUND){
+	//       throw err;
+	//     }
+	//   }
+	//   return true;
+	// }
+	
+	private async _fix_on_validation_error<D extends Depth>(atom:Molecule<A,D>)
+			:Promise<Molecule<A,D>>{
+		
+		// TODO
+		
 		// try{
 			
 		//   urn_atm.validate<A,D>(this.atom_name, atom);
