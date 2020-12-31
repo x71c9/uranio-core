@@ -10,6 +10,8 @@ import {urn_log,  urn_exception} from 'urn-lib';
 
 import {AtomName} from '../../types';
 
+import {ConnectionName} from './types';
+
 const urn_exc = urn_exception.init('DBC_M', 'Mongoose DB Connection');
 
 /*
@@ -37,7 +39,7 @@ class MongooseDBConnection {
 	/*
 	 * Connection name
 	 */
-	public name:string;
+	public name:ConnectionName;
 	
 	/*
 	 * Connection ready state
@@ -61,7 +63,7 @@ class MongooseDBConnection {
 	 * @param db_port - database port number
 	 * @param db_name - database name
 	 */
-	constructor(con_name:string, public db_host:string, public db_port:number, public db_name:string){
+	constructor(con_name:ConnectionName, public db_host:string, public db_port:number, public db_name:string){
 		
 		this.name = con_name;
 		this.uri = `mongodb://${this.db_host}:${this.db_port}/${this.db_name}`;
@@ -86,7 +88,7 @@ class MongooseDBConnection {
 	 *
 	 * @returns a Relation
 	 */
-	public get_model<A extends AtomName>(relation_name:A, schema:mongoose.Schema)
+	public create_model<A extends AtomName>(relation_name:A, schema:mongoose.Schema)
 			:mongoose.Model<mongoose.Document>{
 		return this._connection.model(relation_name, schema);
 	}
@@ -106,10 +108,10 @@ class MongooseDBConnection {
 		return this;
 	}
 	
-	public is_valid_id(id:string)
-			:boolean{
-		return mongoose.Types.ObjectId.isValid(id);
-	}
+	// public is_valid_id(id:string)
+	//     :boolean{
+	//   return mongoose.Types.ObjectId.isValid(id);
+	// }
 	
 	/**
 	 * Function called when event onConnecting is fired
@@ -199,7 +201,7 @@ class MongooseDBConnection {
 
 export type ConnectionInstance = InstanceType<typeof MongooseDBConnection>;
 
-export function create(con_name:string, db_host:string, db_port:number, db_name:string)
+export function create(con_name:ConnectionName, db_host:string, db_port:number, db_name:string)
 		:ConnectionInstance{
 	urn_log.debug(`Create MongooseDBConnection`);
 	return new MongooseDBConnection(con_name, db_host, db_port, db_name);
