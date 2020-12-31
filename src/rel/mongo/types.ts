@@ -1,11 +1,14 @@
 /**
- * Types for DB module
+ * Types for Mongo Module
  *
  * @packageDocumentation
  */
 
-// import mongoose from 'mongoose';
+export type ConnectionName = 'main' | 'trash';
 
-// export class Schema extends mongoose.Schema{}
+export type PopulateObject = {
+	path: string,
+	model: string,
+	populate?: PopulateObject[]
+}
 
-// export interface SchemaDefinition extends mongoose.SchemaDefinition{}
