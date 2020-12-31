@@ -219,12 +219,21 @@ function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molec
 	if(urn_util.object.has_key(molecule,'__v')){
 		delete (molecule as any).__v;
 	}
-	const subatom_keys = urn_atm.get_subatom_keys<A>(atom_name) as Set<keyof Molecule<A,D>>;
+	const subatom_keys = urn_atm.get_subatom_keys<A>(atom_name) as Set<keyof Molecule<A, D>>;
 	if(subatom_keys.size > 0){
 		for(const subkey of subatom_keys){
 			const subatom_name = urn_atm.get_subatom_name<A>(atom_name, subkey as string);
-			if(molecule[subkey] && molecule[subkey] !== 'string'){
-				molecule[subkey] = _clean_molecule(subatom_name, molecule[subkey] as any) as any;
+			if(molecule[subkey]){
+				if(Array.isArray(molecule[subkey])){
+					for(let i = 0; i < (molecule[subkey] as []).length; i++){
+						if(typeof (molecule[subkey] as [])[i] === 'object'){
+							(molecule[subkey] as Array<any>)[i] =
+								_clean_molecule(subatom_name, (molecule[subkey] as [])[i]);
+						}
+					}
+				}else if(typeof molecule[subkey] === 'object'){
+					molecule[subkey] = _clean_molecule(subatom_name, molecule[subkey] as any) as any;
+				}
 			}
 		}
 	}

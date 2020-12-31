@@ -55,9 +55,9 @@ export class DAL<A extends AtomName> {
 		}
 	}
 	
-	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A, D>)
+	public async select<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A, D>)
 			:Promise<Molecule<A, D>[]>{
-		const atom_array = await this._select(query, options);
+		const atom_array = await this._select<D>(query, options);
 		const fixed_atom_array:Molecule<A,D>[] = [];
 		for(let db_record of atom_array){
 			db_record = await this._fix_on_validation_error(db_record);
@@ -66,14 +66,14 @@ export class DAL<A extends AtomName> {
 		return fixed_atom_array;
 	}
 	
-	public async select_by_id<D extends Depth>(id:string, depth?:D)
+	public async select_by_id<D extends Depth = 0>(id:string, depth?:D)
 			:Promise<Molecule<A,D>>{
 		const db_record = await this._select_by_id(id, depth);
 		return db_record;
 		// return await this._fix_on_validation_error(db_record);
 	}
 	
-	public async select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
+	public async select_one<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
 		const db_record = await this._select_one(query, options);
 		return db_record;
@@ -85,7 +85,7 @@ export class DAL<A extends AtomName> {
 		
 		atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
 		
-		// await this._check_unique(atom_shape as Partial<AtomShape<A>>);
+		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
 		
 		const db_record = await this._insert_one(atom_shape);
 		return db_record;
@@ -321,44 +321,42 @@ export class DAL<A extends AtomName> {
 		return partial_atom;
 	}
 	
-	// private async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
-	//     :Promise<true>{
+	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
+			:Promise<true>{
 	
-	// TODO Check unique
-
-	//   urn_atm.validate_partial<A>(this.atom_name, partial_atom);
+		urn_atm.validate_partial<A>(this.atom_name, partial_atom);
 		
-	//   const $or = [];
-	//   for(const k of urn_atm.get_unique_keys(this.atom_name)){
-	//     $or.push({[k]: partial_atom[k]});
-	//   }
-	//   if($or.length === 0){
-	//     return true;
-	//   }
-	//   let query:Query<A> = {} as Query<A>;
-	//   if(id === false || !this._db_relation.is_valid_id(id)){
-	//     query = {$and: [{$not: {_id: id}}, {$or: $or}]};
-	//   }else{
-	//     query = {$or: $or};
-	//   }
-	//   try{
-	//     const res_select_one = await this._select_one(query);
-	//     const equal_values:Set<keyof Atom<A>> = new Set();
-	//     for(const k of urn_atm.get_unique_keys(this.atom_name)){
-	//       if(partial_atom[k] === res_select_one[k]){
-	//         equal_values.add(k);
-	//       }
-	//     }
-	//     let err_msg = `Atom unique fields are already in the database.`;
-	//     err_msg += ` Duplicate fields: ${urn_util.formatter.json_one_line(equal_values)}.`;
-	//     throw urn_exc.create('CHECK_UNIQUE_DUPLICATE', err_msg);
-	//   }catch(err){
-	//     if(!err.type || err.type !== urn_exception.ExceptionType.NOT_FOUND){
-	//       throw err;
-	//     }
-	//   }
-	//   return true;
-	// }
+		const $or = [];
+		for(const k of urn_atm.get_unique_keys(this.atom_name)){
+			$or.push({[k]: partial_atom[k]});
+		}
+		if($or.length === 0){
+			return true;
+		}
+		let query:Query<A> = {} as Query<A>;
+		if(id === false || !this._db_relation.is_valid_id(id)){
+			query = {$and: [{$not: {_id: id}}, {$or: $or}]};
+		}else{
+			query = {$or: $or};
+		}
+		try{
+			const res_select_one = await this._select_one<0>(query);
+			const equal_values:Set<keyof Atom<A>> = new Set();
+			for(const k of urn_atm.get_unique_keys<A>(this.atom_name)){
+				if(partial_atom[k] === res_select_one[k]){
+					equal_values.add(k);
+				}
+			}
+			let err_msg = `Atom unique fields are already in the database.`;
+			err_msg += ` Duplicate fields: ${urn_util.formatter.json_one_line(equal_values)}.`;
+			throw urn_exc.create('CHECK_UNIQUE_DUPLICATE', err_msg);
+		}catch(err){
+			if(!err.type || err.type !== urn_exception.ExceptionType.NOT_FOUND){
+				throw err;
+			}
+		}
+		return true;
+	}
 	
 	private async _fix_on_validation_error<D extends Depth>(atom:Molecule<A,D>)
 			:Promise<Molecule<A,D>>{

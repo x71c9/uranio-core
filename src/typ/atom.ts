@@ -187,7 +187,6 @@ export type MoleculeShape<A extends AtomName> =
 	{ [k in RequiredKeyOfSubAtomArrayProperties<A>]: RealSubAtomShapeType<A,k>[] } &
 	{ [k in OptionalKeyOfSubAtomArrayProperties<A>]?: RealSubAtomShapeType<A,k>[] }
 
-
 export type Molecule<A extends AtomName, D extends Depth = 0> =
 	D extends (0 | undefined) ? Atom<A> :
 	AtomHardProperties & MoleculePrimitive<A> &
