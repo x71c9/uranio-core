@@ -195,7 +195,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 	public is_valid_id(id:string)
 		:boolean{
-		return mongoose.Types.ObjectId.isValid(id);
+		return _is_valid_id(id);
 	}
 	
 }
@@ -209,6 +209,11 @@ function _clean_atom<A extends AtomName>(atom:Atom<A>)
 		delete (atom as any).__v;
 	}
 	return atom;
+}
+
+function _is_valid_id(id:string)
+		:boolean{
+	return mongoose.Types.ObjectId.isValid(id);
 }
 
 function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
@@ -226,7 +231,9 @@ function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molec
 			if(molecule[subkey]){
 				if(Array.isArray(molecule[subkey])){
 					for(let i = 0; i < (molecule[subkey] as []).length; i++){
-						if(typeof (molecule[subkey] as [])[i] === 'object'){
+						if(_is_valid_id((molecule[subkey] as [])[i])){
+							(molecule[subkey] as Array<any>)[i] = ((molecule[subkey] as [])[i] as any).toString();
+						}else if(typeof (molecule[subkey] as [])[i] === 'object'){
 							(molecule[subkey] as Array<any>)[i] =
 								_clean_molecule(subatom_name, (molecule[subkey] as [])[i]);
 						}
