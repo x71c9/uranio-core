@@ -107,8 +107,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 			mon_find_res = await this._raw.find(query).lean<Molecule<A,D>[]>();
 		}
 		return mon_find_res.map((mon_doc:Molecule<A,D>) => {
-			// return _clean_object(mon_doc);
-			return _clean_element(mon_doc);
+			return _clean_molecule<A,D>(this.atom_name, mon_doc);
 		});
 	}
 	
@@ -123,8 +122,8 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_find_by_id_res === null){
 			throw urn_exc.create_not_found('FIND_ID_NOT_FOUND', `Record not found.`);
 		}
-		// return _clean_object(mon_find_by_id_res as Atom<A>);
-		return _clean_element(mon_find_by_id_res as Molecule<A,D>);
+		// return _clean_atom(mon_find_by_id_res as Atom<A>);
+		return _clean_molecule<A,D>(this.atom_name, mon_find_by_id_res);
 	}
 	
 	public async select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
@@ -135,8 +134,8 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
 		}
-		// return _clean_object(mon_find_one_res as Atom<A>);
-		return _clean_element(mon_find_one_res as Molecule<A,D>);
+		// return _clean_atom(mon_find_one_res as Atom<A>);
+		return _clean_molecule<A,D>(this.atom_name, mon_find_one_res);
 	}
 	
 	public async insert_one(atom_shape:AtomShape<A>)
@@ -163,9 +162,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_update_res === null){
 			throw urn_exc.create('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
 		}
-		return _clean_object(mon_update_res as Atom<A>);
-		// const mon_obj = mon_update_res.toObject();
-		// return _clean_object(mon_obj);
+		return _clean_atom<A>(mon_update_res as Atom<A>);
 	}
 	
 	public async replace_by_id(id:string, atom:AtomShape<A>)
@@ -179,9 +176,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_update_res === null){
 			throw urn_exc.create('REPLACE_BY_ID_NOT_FOUND', `Cannot replace_by_id. Record not found.`);
 		}
-		return _clean_object(mon_update_res as Atom<A>);
-		// const mon_obj = mon_update_res.toObject();
-		// return _clean_object(mon_obj);
+		return _clean_atom(mon_update_res as Atom<A>);
 	}
 	
 	public async delete_by_id(id:string)
@@ -195,7 +190,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
 			throw urn_exc.create_not_found('DEL_BY_ID_NOT_FOUND', `Cannot delete_by_id. Record not found.`);
 		}
-		return _clean_object(mon_delete_res.toObject() as Atom<A>);
+		return _clean_atom(mon_delete_res.toObject() as Atom<A>);
 	}
 	
 	public is_valid_id(id:string)
@@ -205,9 +200,9 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 }
 
-function _clean_object<A extends AtomName>(atom:Atom<A>)
+function _clean_atom<A extends AtomName>(atom:Atom<A>)
 		:Atom<A>{
-	if(urn_util.object.has_key(atom,'_id')){
+	if(atom._id){
 		atom._id = atom._id.toString();
 	}
 	if(urn_util.object.has_key(atom,'__v')){
@@ -216,18 +211,24 @@ function _clean_object<A extends AtomName>(atom:Atom<A>)
 	return atom;
 }
 
-function _clean_element<A extends AtomName, D extends Depth>(atom:Molecule<A,D>)
+function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
 		:Molecule<A,D>{
-		
-	// TODO implement
-		
-	// if(urn_util.object.has_key(atom,'_id')){
-	//   atom._id = atom._id.toString();
-	// }
-	// if(urn_util.object.has_key(atom,'__v')){
-	//   delete (atom as any).__v;
-	// }
-	return atom;
+	if(molecule._id){
+		molecule._id = molecule._id.toString();
+	}
+	if(urn_util.object.has_key(molecule,'__v')){
+		delete (molecule as any).__v;
+	}
+	const subatom_keys = urn_atm.get_subatom_keys<A>(atom_name) as Set<keyof Molecule<A,D>>;
+	if(subatom_keys.size > 0){
+		for(const subkey of subatom_keys){
+			const subatom_name = urn_atm.get_subatom_name<A>(atom_name, subkey as string);
+			if(molecule[subkey] && molecule[subkey] !== 'string'){
+				molecule[subkey] = _clean_molecule(subatom_name, molecule[subkey] as any) as any;
+			}
+		}
+	}
+	return molecule;
 }
 
 export function create<A extends AtomName>(atom_name: A)
