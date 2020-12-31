@@ -24,31 +24,48 @@ import {atom_book} from '../book';
 
 import {core_config} from '../config/defaults';
 
-export function validate<A extends AtomName, D extends Depth>(atom_name:A, atom:Molecule<A,D>)
+import {is_atom, get_subatom_name} from './util';
+
+
+export function validate_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
 		:true{
-	console.log(atom_name, atom);
-	return true;
-	// _validate_hard_properties(atom);
-	// validate_shape(atom_name, atom);
+	_validate_hard_properties(molecule);
+	_validate_molecule_shape(atom_name, molecule);
 	return true;
 }
 
-export function validate_shape<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
+function _validate_molecule_shape<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
+		:true{
+	_has_no_other_properties(atom_name, molecule as Partial<AtomShape<A>>);
+	_primitive_properties_have_correct_type(atom_name, molecule as any);
+	_subatom_properties_have_correct_type(atom_name, molecule);
+	return true;
+}
+
+export function validate_atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
+		:true{
+	_validate_hard_properties(atom);
+	validate_atom_shape(atom_name, atom);
+	return true;
+}
+
+export function validate_atom_shape<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
 	_has_all_properties(atom_name, atom_shape);
-	validate_partial(atom_name, atom_shape);
+	validate_atom_partial(atom_name, atom_shape);
 	return true;
 }
 
-export function validate_partial<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
+export function validate_atom_partial<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
 	_has_no_other_properties(atom_name, partial_atom);
-	_properties_have_correct_type(atom_name, partial_atom);
-	_custom_validation(atom_name, partial_atom);
+	_atom_properties_have_correct_type(atom_name, partial_atom);
+	_custom_atom_validation(atom_name, partial_atom);
 	return true;
 }
 
-function _custom_validation<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
+
+function _custom_atom_validation<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
 	const atom_props = atom_book[atom_name]['properties'];
 	const all_props = {
@@ -371,21 +388,21 @@ function _is_optional_property(prop:Book.Definition.Property)
 	return (urn_util.object.has_key(prop, 'optional') && prop.optional === true);
 }
 
-// function _validate_hard_properties<A extends AtomName>(atom:Atom<A>)
-//     :true{
-//   let k: keyof typeof atom_hard_properties;
-//   for(k in atom_hard_properties){
-//     try{
-//       _check_prop_main_type(atom_hard_properties[k], k, atom[k]);
-//     }catch(exc){
-//       if(exc.type === urn_exception.ExceptionType.INVALID){
-//         throw urn_exc.create_invalid(exc.code, exc.msg, atom, [k], exc);
-//       }
-//       throw exc;
-//     }
-//   }
-//   return true;
-// }
+function _validate_hard_properties<A extends AtomName>(atom:Atom<A>)
+		:true{
+	let k: keyof typeof atom_hard_properties;
+	for(k in atom_hard_properties){
+		try{
+			_check_prop_main_type(atom_hard_properties[k], k, atom[k]);
+		}catch(exc){
+			if(exc.type === urn_exception.ExceptionType.INVALID){
+				throw urn_exc.create_invalid(exc.code, exc.msg, atom, [k], exc);
+			}
+			throw exc;
+		}
+	}
+	return true;
+}
 
 function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
@@ -432,7 +449,81 @@ function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:
 	return true;
 }
 
-function _properties_have_correct_type<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
+function _primitive_properties_have_correct_type<A extends AtomName, D extends Depth>(
+	atom_name:A,
+	molecule:Molecule<A,D>
+):true{
+	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	let k:keyof typeof molecule;
+	for(k in molecule){
+		let prop_def = undefined;
+		if(urn_util.object.has_key(atom_hard_properties, k)){
+			prop_def = atom_hard_properties[k];
+		}else if(urn_util.object.has_key(atom_common_properties, k)){
+			prop_def = atom_common_properties[k];
+		}else if(urn_util.object.has_key(props, k)){
+			prop_def = props[k];
+		}
+		if(!prop_def){
+			const err_msg = `Atom property definition missing for atom [${atom_name}] property [${k}]`;
+			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
+		}
+		
+		if(prop_def.type === BookPropertyType.ATOM || prop_def.type === BookPropertyType.ATOM_ARRAY){
+			return true;
+		}
+		
+		try{
+			_check_prop_main_type(prop_def, k as string, molecule[k]);
+		}catch(exc){
+			if(exc.type === urn_exception.ExceptionType.INVALID){
+				throw urn_exc.create_invalid(exc.code, exc.msg, molecule, [k], exc);
+			}
+			throw exc;
+		}
+	}
+	return true;
+}
+
+function _subatom_properties_have_correct_type<A extends AtomName, D extends Depth>(
+	atom_name:A,
+	molecule:Molecule<A,D>
+):true{
+	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	let k:keyof typeof molecule;
+	for(k in molecule){
+		let prop_def = undefined;
+		if(urn_util.object.has_key(atom_hard_properties, k)){
+			prop_def = atom_hard_properties[k];
+		}else if(urn_util.object.has_key(atom_common_properties, k)){
+			prop_def = atom_common_properties[k];
+		}else if(urn_util.object.has_key(props, k)){
+			prop_def = props[k];
+		}
+		if(!prop_def){
+			const err_msg = `Atom property definition missing for atom [${atom_name}] property [${k}]`;
+			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
+		}
+		
+		if(prop_def.type !== BookPropertyType.ATOM && prop_def.type !== BookPropertyType.ATOM_ARRAY){
+			return true;
+		}
+		
+		const subatom_name = get_subatom_name(atom_name, k as string);
+		
+		try{
+			_check_prop_subtype(subatom_name, molecule[k]);
+		}catch(exc){
+			if(exc.type === urn_exception.ExceptionType.INVALID){
+				throw urn_exc.create_invalid(exc.code, exc.msg, molecule, [k], exc);
+			}
+			throw exc;
+		}
+	}
+	return true;
+}
+
+function _atom_properties_have_correct_type<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
 	const props = atom_book[atom_name]['properties'];
 	let k:keyof typeof partial_atom;
@@ -457,6 +548,18 @@ function _properties_have_correct_type<A extends AtomName>(atom_name:A, partial_
 			}
 			throw exc;
 		}
+	}
+	return true;
+}
+
+function _check_prop_subtype<A extends AtomName>(
+	subatom_name:A,
+	subatom: any
+):true{
+	if(is_atom(subatom_name, subatom)){
+		validate_atom(subatom_name, subatom);
+	}else{
+		validate_molecule(subatom_name, subatom);
 	}
 	return true;
 }
@@ -549,8 +652,23 @@ function _check_prop_main_type(prop_def: Book.Definition.Property, prop_key: str
 			}
 			return true;
 		}
-		case BookPropertyType.ATOM_ARRAY:
+		case BookPropertyType.ATOM_ARRAY:{
+			if(!Array.isArray(prop_value)){
+				let err_msg = `Invalid property [${prop_key}]. Property should be an Array.`;
+				err_msg += ` Type ${typeof prop_value} given.`;
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
+			}else if(!prop_value.every((id) => typeof id === 'string')){
+				const err_msg = `Invalid property [${prop_key}]. Property should be an Array of string.`;
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
+			}
+			return true;
+		}
 		case BookPropertyType.ATOM:{
+			if(typeof prop_value !== 'string'){
+				let err_msg = `Invalid property [${prop_key}]. Property should be a string.`;
+				err_msg += ` Type ${typeof prop_value} given.`;
+				throw urn_exc.create_invalid('INVALID_PROP', err_msg);
+			}
 			return true;
 		}
 	}
