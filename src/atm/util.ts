@@ -12,6 +12,8 @@ import {atom_book} from '../book';
 
 import {get_subatom_keys} from './keys';
 
+import {validate_atom_property} from './validate';
+
 import {
 	Atom,
 	AtomName,
@@ -76,3 +78,34 @@ export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, mo
 	}
 	return true;
 }
+
+export function fix_atom_property<A extends AtomName>(
+	atom_name:A,
+	atom:Atom<A>,
+	key:string
+):Atom<A>{
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	if(!atom_props[key]){
+		const err_msg = `Missing or invalid key [${key}] in atom_book`;
+		throw urn_exc.create('FIX_ATOM_KEY', err_msg);
+	}
+	const prop_def = atom_props[key];
+	let fixed_value = null;
+	if(prop_def.on_error && typeof prop_def.on_error === 'function'){
+		fixed_value = prop_def.on_error!((atom as any)[key]);
+	}else if(prop_def.default){
+		fixed_value = prop_def.default;
+	}
+	try{
+
+		validate_atom_property(key, prop_def, fixed_value, atom);
+		(atom as any)[key] = fixed_value;
+
+	}catch(err){
+		let err_msg = `Cannot fix property of Atom. Default value or on_error result is invalid.`;
+		err_msg += ` for Atom [${atom_name}] property [${key}]`;
+		throw urn_exc.create('CANNOT_FIX', err_msg);
+	}
+	return atom;
+}
+

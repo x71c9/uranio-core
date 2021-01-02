@@ -57,52 +57,12 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		
 	}
 	
-	protected _generate_subatomkey_populate_obj<A extends AtomName>(atom_name:A, subatom_key:string, depth:number)
-				:PopulateObject{
-		const subatom_name = urn_atm.get_subatom_name(atom_name, subatom_key);
-		let populate_object:PopulateObject = {path: subatom_key, model: subatom_name};
-		const subsubatom_keys = urn_atm.get_subatom_keys(subatom_name);
-		if(subsubatom_keys.size === 0 || depth == 0)
-			return populate_object;
-		const subpops:PopulateObject[] = [];
-		for(const subsubkey of subsubatom_keys){
-			subpops.push(
-				this._generate_subatomkey_populate_obj(subatom_name, subsubkey, depth - 1)
-			);
-		}
-		populate_object = {
-			...populate_object,
-			populate: subpops
-		};
-		return populate_object;
-	}
-	
 	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>[]>{
 		let mon_find_res:Molecule<A,D>[] = [];
 		if(options){
-			const subatom_keys = urn_atm.get_subatom_keys(this.atom_name);
-			const populate_object = [];
-			if(
-				options.depth &&
-				options.depth > 0 &&
-				options.depth < core_config.max_query_depth_allowed &&
-				subatom_keys.size
-			){
-				for(const k of subatom_keys){
-					populate_object.push(
-						this._generate_subatomkey_populate_obj(
-							this.atom_name, k as string, 
-							(options.depth as number) - 1
-						)
-					);
-				}
-				mon_find_res = await this._raw.find(query, null, options)
-					.populate(populate_object).lean<Molecule<A,D>[]>();
-			}else{
-				mon_find_res = await this._raw.find(query, null, options)
-					.lean<Molecule<A,D>[]>();
-			}
+			mon_find_res = await this._raw.find(query, null, options)
+				.populate(_generate_populate_obj(this.atom_name, options.depth)).lean<Molecule<A,D>[]>();
 		}else{
 			mon_find_res = await this._raw.find(query).lean<Molecule<A,D>[]>();
 		}
@@ -113,28 +73,35 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 	public async select_by_id<D extends Depth>(id:string, depth?:D)
 			:Promise<Molecule<A,D>>{
-		
-		// TODO implement DEPTH
-		
-		console.log(depth);
-		
-		const mon_find_by_id_res = await this._raw.findById(id).lean<Molecule<A,D>>();
+		if(typeof depth !== 'undefined' && typeof depth !== 'number'){
+			const err_msg = `Invalid depth type, Depth should be a number.`;
+			throw urn_exc.create('SELECT_BY_ID_INVALID_DEPTH', err_msg);
+		}
+		let mon_find_by_id_res= {} as Molecule<A,D>;
+		if(depth && depth > 0){
+			mon_find_by_id_res = await this._raw.findById(id)
+				.populate(_generate_populate_obj(this.atom_name, depth)).lean<Molecule<A,D>>();
+		}else{
+			mon_find_by_id_res = await this._raw.findById(id).lean<Molecule<A,D>>();
+		}
 		if(mon_find_by_id_res === null){
 			throw urn_exc.create_not_found('FIND_ID_NOT_FOUND', `Record not found.`);
 		}
-		// return _clean_atom(mon_find_by_id_res as Atom<A>);
 		return _clean_molecule<A,D>(this.atom_name, mon_find_by_id_res);
 	}
 	
 	public async select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
-		const mon_find_one_res = (typeof options !== 'undefined' && options.sort) ?
-			await this._raw.findOne(query).sort(options.sort).lean<Molecule<A,D>>() :
-			await this._raw.findOne(query).lean<Molecule<A,D>>();
+		let mon_find_one_res= {} as Molecule<A,D>;
+		if(options){
+			mon_find_one_res = await this._raw.findOne(query).sort(options.sort)
+				.populate(_generate_populate_obj(this.atom_name, options.depth)).lean<Molecule<A,D>>();
+		}else{
+			mon_find_one_res = await this._raw.findOne(query).lean<Molecule<A,D>>();
+		}
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
 		}
-		// return _clean_atom(mon_find_one_res as Atom<A>);
 		return _clean_molecule<A,D>(this.atom_name, mon_find_one_res);
 	}
 	
@@ -200,6 +167,44 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 }
 
+function _is_valid_id(id:string)
+		:boolean{
+	return mongoose.Types.ObjectId.isValid(id);
+}
+
+function _generate_subatomkey_populate_obj<A extends AtomName>(atom_name:A, subatom_key:string, depth:number)
+			:PopulateObject{
+	const subatom_name = urn_atm.get_subatom_name(atom_name, subatom_key);
+	let populate_object:PopulateObject = {path: subatom_key, model: subatom_name};
+	const subsubatom_keys = urn_atm.get_subatom_keys(subatom_name);
+	if(subsubatom_keys.size === 0 || depth == 0)
+		return populate_object;
+	const subpops:PopulateObject[] = [];
+	for(const subsubkey of subsubatom_keys){
+		subpops.push(
+			_generate_subatomkey_populate_obj(subatom_name, subsubkey, depth - 1)
+		);
+	}
+	populate_object = {
+		...populate_object,
+		populate: subpops
+	};
+	return populate_object;
+}
+
+function _generate_populate_obj<A extends AtomName>(atom_name:A, depth?:number):PopulateObject[]{
+	const subatom_keys = urn_atm.get_subatom_keys(atom_name);
+	const populate_object = [];
+	if(depth && depth > 0 && depth < core_config.max_query_depth_allowed && subatom_keys.size){
+		for(const k of subatom_keys){
+			populate_object.push(
+				_generate_subatomkey_populate_obj(atom_name, k as string, depth - 1)
+			);
+		}
+	}
+	return populate_object;
+}
+	
 function _clean_atom<A extends AtomName>(atom:Atom<A>)
 		:Atom<A>{
 	if(atom._id){
@@ -211,11 +216,6 @@ function _clean_atom<A extends AtomName>(atom:Atom<A>)
 	return atom;
 }
 
-function _is_valid_id(id:string)
-		:boolean{
-	return mongoose.Types.ObjectId.isValid(id);
-}
-
 function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
 		:Molecule<A,D>{
 	if(molecule._id){
@@ -224,22 +224,25 @@ function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molec
 	if(urn_util.object.has_key(molecule,'__v')){
 		delete (molecule as any).__v;
 	}
-	const subatom_keys = urn_atm.get_subatom_keys<A>(atom_name) as Set<keyof Molecule<A, D>>;
+	const subatom_keys = urn_atm.get_subatom_keys<A>(atom_name) as Set<keyof Molecule<A,D>>;
+	
 	if(subatom_keys.size > 0){
 		for(const subkey of subatom_keys){
 			const subatom_name = urn_atm.get_subatom_name<A>(atom_name, subkey as string);
-			if(molecule[subkey]){
-				if(Array.isArray(molecule[subkey])){
-					for(let i = 0; i < (molecule[subkey] as []).length; i++){
-						if(_is_valid_id((molecule[subkey] as [])[i])){
-							(molecule[subkey] as Array<any>)[i] = ((molecule[subkey] as [])[i] as any).toString();
-						}else if(typeof (molecule[subkey] as [])[i] === 'object'){
-							(molecule[subkey] as Array<any>)[i] =
-								_clean_molecule(subatom_name, (molecule[subkey] as [])[i]);
+			let prop = molecule[subkey];
+			if(prop){
+				if(Array.isArray(prop)){
+					for(let i = 0; i < prop.length; i++){
+						if(_is_valid_id(prop[i])){
+							prop[i] = prop[i].toString();
+						}else if(typeof prop[i] === 'object'){
+							prop[i] = _clean_molecule(subatom_name, prop[i]);
 						}
 					}
-				}else if(typeof molecule[subkey] === 'object'){
-					molecule[subkey] = _clean_molecule(subatom_name, molecule[subkey] as any) as any;
+				}else if(_is_valid_id(prop as any)){
+					prop = prop.toString() as any;
+				}else if(typeof prop === 'object'){
+					prop = _clean_molecule(subatom_name, prop as any) as any;
 				}
 			}
 		}

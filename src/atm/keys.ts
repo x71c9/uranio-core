@@ -62,28 +62,28 @@ export function get_subatom_keys<A extends AtomName>(atom_name:A)
 	return subatom_keys;
 }
 
-// export function get_subatom_array_keys<A extends AtomName>(atom_name:A)
-//     :Set<keyof AtomShape<A>>{
-//   const subatom_keys = new Set<keyof AtomShape<A>>();
-//   const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-//   for(const k in atom_props){
-//     const prop:Book.Definition.Property = atom_props[k];
-//     if(prop.type === BookPropertyType.ATOM_ARRAY){
-//       subatom_keys.add(k as keyof AtomShape<A>);
-//     }
-//   }
-//   return subatom_keys;
-// }
+export function get_subatom_array_keys<A extends AtomName>(atom_name:A)
+		:Set<keyof AtomShape<A>>{
+	const subatom_keys = new Set<keyof AtomShape<A>>();
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	for(const k in atom_props){
+		const prop:Book.Definition.Property = atom_props[k];
+		if(prop.type === BookPropertyType.ATOM_ARRAY){
+			subatom_keys.add(k as keyof AtomShape<A>);
+		}
+	}
+	return subatom_keys;
+}
 
-// export function get_subatom_non_array_keys<A extends AtomName>(atom_name:A)
-//     :Set<keyof AtomShape<A>>{
-//   const subatom_keys = new Set<keyof AtomShape<A>>();
-//   const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-//   for(const k in atom_props){
-//     const prop:Book.Definition.Property = atom_props[k];
-//     if(prop.type === BookPropertyType.ATOM){
-//       subatom_keys.add(k as keyof AtomShape<A>);
-//     }
-//   }
-//   return subatom_keys;
-// }
+export function get_subatom_non_array_keys<A extends AtomName>(atom_name:A)
+		:Set<keyof AtomShape<A>>{
+	const subatom_keys = new Set<keyof AtomShape<A>>();
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	for(const k in atom_props){
+		const prop:Book.Definition.Property = atom_props[k];
+		if(prop.type === BookPropertyType.ATOM){
+			subatom_keys.add(k as keyof AtomShape<A>);
+		}
+	}
+	return subatom_keys;
+}
