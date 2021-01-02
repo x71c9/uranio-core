@@ -10,7 +10,7 @@ const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util modul`);
 
 import {atom_book} from '../book';
 
-import {get_subatom_keys} from './keys';
+import {get_bond_keys} from './keys';
 
 import {validate_atom_property} from './validate';
 
@@ -51,7 +51,7 @@ export function get_subatom_name<A extends AtomName>(atom_name:A ,atom_key:strin
 }
 
 export function is_atom<A extends AtomName>(atom_name:A, atom:Atom<A>): atom is Atom<A>{
-	const subatom_keys = get_subatom_keys(atom_name);
+	const subatom_keys = get_bond_keys(atom_name);
 	for(const subkey of subatom_keys){
 		if(Array.isArray(atom[subkey])){
 			if(typeof (atom[subkey] as Array<any>)[0] === 'object'){
@@ -66,7 +66,7 @@ export function is_atom<A extends AtomName>(atom_name:A, atom:Atom<A>): atom is 
 
 export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
 		:molecule is Molecule<A,D>{
-	const subatom_keys = get_subatom_keys(atom_name) as Set<keyof Molecule<A,D>>;
+	const subatom_keys = get_bond_keys(atom_name) as Set<keyof Molecule<A,D>>;
 	for(const subkey of subatom_keys){
 		if(Array.isArray(molecule[subkey])){
 			if(typeof (molecule[subkey] as Array<any>)[0] === 'string'){
