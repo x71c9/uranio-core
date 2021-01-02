@@ -16,19 +16,16 @@ import {_validate_encrypt_property} from './validate';
 
 import {
 	AtomName,
-	// KeyOfAtom,
-	// KeyOfAtomShape,
-	Atom,
 	AtomShape,
 	Book,
 	BookPropertyType
 } from '../types';
 
 export async function encrypt_property<A extends AtomName>
-(atom_name:A, prop_key:keyof Atom<A>, prop_value:string)
+(atom_name:A, prop_key:string, prop_value:string)
 		:Promise<string>{
-	const atom_props = atom_book[atom_name]['properties'];
-	_validate_encrypt_property(prop_key as string, prop_value, (atom_props as any)[prop_key]);
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	_validate_encrypt_property(prop_key, atom_props[prop_key] as Book.Definition.Property.Encrypted, prop_value);
 	// *********
 	// IMPORTANT - If the encryption method is changed,
 	// *********   DAL._encrypt_changed_properties must be changed too.

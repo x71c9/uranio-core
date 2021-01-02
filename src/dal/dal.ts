@@ -358,9 +358,20 @@ export class DAL<A extends AtomName> {
 		return true;
 	}
 	
+	private async _fix_molecule_primitive_properties_on_error<D extends Depth>(molecule:Molecule<A,D>)
+			:Promise<Molecule<A,D>>{
+		return molecule;
+	}
+	
+	private async _fix_molecule_bond_properties_on_error<D extends Depth>(molecule:Molecule<A,D>)
+			:Promise<Molecule<A,D>>{
+		return molecule;
+	}
+	
 	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>)
 			:Promise<Molecule<A,D>>{
-		urn_atm.validate_molecule(this.atom_name, molecule);
+		molecule = await this._fix_molecule_primitive_properties_on_error(molecule);
+		molecule = await this._fix_molecule_bond_properties_on_error(molecule);
 		return molecule;
 	}
 	
@@ -378,10 +389,10 @@ export class DAL<A extends AtomName> {
 				await this._db_trash_relation.insert_one(atom);
 			}
 			for(const k of exc.keys){
-				if(atom[k as keyof Atom<A>] && !urn_atm.is_valid_key<A>(this.atom_name, k)){
+				if(atom[k as keyof Atom<A>] && !urn_atm._is_valid_property(this.atom_name, k)){
 					delete atom[k as keyof Atom<A>];
 				}else{
-					atom = urn_atm.fix_atom_key<A>(this.atom_name, atom, k);
+					atom = urn_atm.fix_atom_property<A>(this.atom_name, atom, k);
 				}
 			}
 			atom = await this._replace_on_error(atom._id, atom);
