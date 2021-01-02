@@ -176,7 +176,7 @@ function _generate_subatomkey_populate_obj<A extends AtomName>(atom_name:A, suba
 			:PopulateObject{
 	const subatom_name = urn_atm.get_subatom_name(atom_name, subatom_key);
 	let populate_object:PopulateObject = {path: subatom_key, model: subatom_name};
-	const subsubatom_keys = urn_atm.get_subatom_keys(subatom_name);
+	const subsubatom_keys = urn_atm.get_bond_keys(subatom_name);
 	if(subsubatom_keys.size === 0 || depth == 0)
 		return populate_object;
 	const subpops:PopulateObject[] = [];
@@ -193,7 +193,7 @@ function _generate_subatomkey_populate_obj<A extends AtomName>(atom_name:A, suba
 }
 
 function _generate_populate_obj<A extends AtomName>(atom_name:A, depth?:number):PopulateObject[]{
-	const subatom_keys = urn_atm.get_subatom_keys(atom_name);
+	const subatom_keys = urn_atm.get_bond_keys(atom_name);
 	const populate_object = [];
 	if(depth && depth > 0 && depth < core_config.max_query_depth_allowed && subatom_keys.size){
 		for(const k of subatom_keys){
@@ -224,7 +224,7 @@ function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molec
 	if(urn_util.object.has_key(molecule,'__v')){
 		delete (molecule as any).__v;
 	}
-	const subatom_keys = urn_atm.get_subatom_keys<A>(atom_name) as Set<keyof Molecule<A,D>>;
+	const subatom_keys = urn_atm.get_bond_keys<A>(atom_name) as Set<keyof Molecule<A,D>>;
 	
 	if(subatom_keys.size > 0){
 		for(const subkey of subatom_keys){

@@ -26,7 +26,7 @@ import {core_config} from '../config/defaults';
 
 import {get_subatom_name} from './util';
 
-import {get_subatom_keys} from './keys';
+import {get_bond_keys} from './keys';
 
 export function is_valid_property<A extends AtomName>(atom_name:A, key:string)
 		:boolean{
@@ -43,13 +43,13 @@ export function is_optional_property<A extends AtomName>(atom_name:A, key:string
 	return false;
 }
 
-export function validate_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
+export function validate_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>, depth?:D)
 		:true{
 	_validate_hard_properties(molecule);
 	_has_all_properties(atom_name, molecule as AtomShape<A>);
 	_has_no_other_properties(atom_name, molecule as Partial<AtomShape<A>>);
 	_validate_primitive_properties(atom_name, molecule as Partial<AtomShape<A>>);
-	_validate_molecule_bond_properties(atom_name, molecule);
+	_validate_molecule_bond_properties(atom_name, molecule, depth);
 	return true;
 }
 
@@ -246,10 +246,11 @@ function _validate_partial_atom_bond_properties<A extends AtomName>(
 
 function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>(
 	atom_name:A,
-	molecule: Molecule<A,D>
+	molecule: Molecule<A,D>,
+	depth:D
 ):true{
 	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const bond_keys = get_subatom_keys(atom_name);
+	const bond_keys = get_bond_keys(atom_name);
 	for(const k in bond_keys){
 		let prop_def = undefined;
 		if(urn_util.object.has_key(atom_hard_properties, k)){
@@ -271,8 +272,13 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 		const subatom_name = get_subatom_name(atom_name, k as string);
 		
 		try{
-			_validate_bond_type(subatom_name, prop_def, (molecule as any)[k]);
-			_validate_custom_bond_type(k as string, prop_def, (molecule as any)[k]);
+			if(depth === 0){
+				validate_atom(subatom_name, (molecule as any)[k]);
+			}else{
+				_validate_bond_type(subatom_name, prop_def, (molecule as any)[k]);
+				_validate_custom_bond_type(k as string, prop_def, (molecule as any)[k]);
+				validate_molecule(subatom_name, (molecule as any)[k], (depth as number) - 1 as Depth);
+			}
 		}catch(exc){
 			if(exc.type === urn_exception.ExceptionType.INVALID){
 				throw urn_exc.create_invalid(exc.code, exc.msg, molecule, [k], exc);

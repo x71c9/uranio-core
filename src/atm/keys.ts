@@ -49,7 +49,7 @@ export function get_unique_keys<A extends AtomName>(atom_name:A)
 	return unique_keys;
 }
 
-export function get_subatom_keys<A extends AtomName>(atom_name:A)
+export function get_bond_keys<A extends AtomName>(atom_name:A)
 		:Set<keyof Molecule<A>>{
 	const subatom_keys = new Set<keyof Molecule<A>>();
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
