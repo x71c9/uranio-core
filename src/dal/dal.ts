@@ -389,7 +389,7 @@ export class DAL<A extends AtomName> {
 				await this._db_trash_relation.insert_one(atom);
 			}
 			for(const k of exc.keys){
-				if(atom[k as keyof Atom<A>] && !urn_atm._is_valid_property(this.atom_name, k)){
+				if(atom[k as keyof Atom<A>] && !urn_atm.is_valid_property(this.atom_name, k)){
 					delete atom[k as keyof Atom<A>];
 				}else{
 					atom = urn_atm.fix_atom_property<A>(this.atom_name, atom, k);

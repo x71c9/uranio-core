@@ -28,14 +28,19 @@ import {get_subatom_name} from './util';
 
 import {get_subatom_keys} from './keys';
 
-export function _is_valid_property<A extends AtomName>(atom_name:A, key:string)
+export function is_valid_property<A extends AtomName>(atom_name:A, key:string)
 		:boolean{
 	return (urn_util.object.has_key(atom_book[atom_name]['properties'], key));
 }
 
-export function _is_optional_property(prop_def:Book.Definition.Property)
+export function is_optional_property<A extends AtomName>(atom_name:A, key:string)
 		:boolean{
-	return (urn_util.object.has_key(prop_def, 'optional') && prop_def.optional === true);
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	if(atom_props[key]){
+		const prop_def = atom_props[key];
+		return (atom_props[key] && urn_util.object.has_key(prop_def, 'optional') && prop_def.optional === true);
+	}
+	return false;
 }
 
 export function validate_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
@@ -106,13 +111,13 @@ function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomSha
 		:true{
 	const atom_props = atom_book[atom_name]['properties'];
 	const missin_props:string[] = [];
-	for(const [k,v] of Object.entries(atom_props)){
-		if(!_is_optional_property(v) && !urn_util.object.has_key(atom_shape,k)){
+	for(const [k] of Object.entries(atom_props)){
+		if(!is_optional_property(atom_name, k) && !urn_util.object.has_key(atom_shape,k)){
 			missin_props.push(k);
 		}
 	}
-	for(const [k,v] of Object.entries(atom_common_properties)){
-		if(!_is_optional_property(v) && !urn_util.object.has_key(atom_shape,k)){
+	for(const [k] of Object.entries(atom_common_properties)){
+		if(!is_optional_property(atom_name,k) && !urn_util.object.has_key(atom_shape,k)){
 			missin_props.push(k);
 		}
 	}
