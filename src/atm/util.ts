@@ -23,6 +23,22 @@ import {
 	BookPropertyType
 } from '../types';
 
+export function molecule_to_atom<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
+		:Atom<A>{
+	const bond_keys = get_bond_keys(atom_name);
+	for(const k of bond_keys){
+		let prop_value = molecule[k as keyof Molecule<A,D>];
+		if(Array.isArray(prop_value)){
+			for(let i = 0; i < prop_value.length; i++){
+				prop_value[i] = (prop_value[i]._id) ? prop_value[i]._id : null;
+			}
+		}else{
+			prop_value = ((prop_value as any)._id) ? (prop_value as any)._id : null;
+		}
+	}
+	return molecule as Atom<A>;
+}
+
 export function get_subatom_name<A extends AtomName>(atom_name:A ,atom_key:string)
 		:AtomName{
 	const atom_def = atom_book[atom_name]['properties'] as Book.Definition.Properties;
@@ -50,7 +66,8 @@ export function get_subatom_name<A extends AtomName>(atom_name:A ,atom_key:strin
 	}
 }
 
-export function is_atom<A extends AtomName>(atom_name:A, atom:Atom<A>): atom is Atom<A>{
+export function is_atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
+		:atom is Atom<A>{
 	const subatom_keys = get_bond_keys(atom_name);
 	for(const subkey of subatom_keys){
 		if(Array.isArray(atom[subkey])){
@@ -82,25 +99,25 @@ export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, mo
 export function fix_atom_property<A extends AtomName>(
 	atom_name:A,
 	atom:Atom<A>,
-	key:string
+	key:keyof Atom<A>
 ):Atom<A>{
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	if(!atom_props[key]){
+	const prop_def = atom_props[key as string];
+	if(!prop_def){
 		const err_msg = `Missing or invalid key [${key}] in atom_book`;
-		throw urn_exc.create('FIX_ATOM_KEY', err_msg);
+		throw urn_exc.create('FIX_ATOM_KEY_INVALID_KEY', err_msg);
 	}
-	const prop_def = atom_props[key];
 	let fixed_value = null;
 	if(prop_def.on_error && typeof prop_def.on_error === 'function'){
-		fixed_value = prop_def.on_error!((atom as any)[key]);
+		fixed_value = prop_def.on_error!(atom[key]);
 	}else if(prop_def.default){
 		fixed_value = prop_def.default;
 	}
 	try{
-
+		
 		validate_atom_property(key, prop_def, fixed_value, atom);
-		(atom as any)[key] = fixed_value;
-
+		atom[key] = fixed_value;
+		
 	}catch(err){
 		let err_msg = `Cannot fix property of Atom. Default value or on_error result is invalid.`;
 		err_msg += ` for Atom [${atom_name}] property [${key}]`;

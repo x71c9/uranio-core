@@ -60,7 +60,8 @@ export class DAL<A extends AtomName> {
 		const atom_array = await this._select<D>(query, options);
 		const fixed_atom_array:Molecule<A,D>[] = [];
 		for(let db_record of atom_array){
-			db_record = await this._fix_molecule_on_validation_error(db_record);
+			const depth = (options && options.depth) ? options.depth : undefined;
+			db_record = await this._fix_molecule_on_validation_error<D>(db_record, depth);
 			fixed_atom_array.push(db_record);
 		}
 		return fixed_atom_array;
@@ -69,15 +70,14 @@ export class DAL<A extends AtomName> {
 	public async select_by_id<D extends Depth = 0>(id:string, depth?:D)
 			:Promise<Molecule<A,D>>{
 		const db_record = await this._select_by_id(id, depth);
-		return db_record;
-		return await this._fix_molecule_on_validation_error(db_record);
+		return await this._fix_molecule_on_validation_error<D>(db_record, depth);
 	}
 	
 	public async select_one<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
 		const db_record = await this._select_one(query, options);
-		return db_record;
-		return await this._fix_molecule_on_validation_error(db_record);
+		const depth = (options && options.depth) ? options.depth : undefined;
+		return await this._fix_molecule_on_validation_error<D>(db_record, depth);
 	}
 	
 	public async insert_one(atom_shape:AtomShape<A>)
@@ -358,20 +358,20 @@ export class DAL<A extends AtomName> {
 		return true;
 	}
 	
-	private async _fix_molecule_primitive_properties_on_error<D extends Depth>(molecule:Molecule<A,D>)
-			:Promise<Molecule<A,D>>{
-		return molecule;
-	}
+	// private async _fix_molecule_primitive_properties_on_error<D extends Depth>(molecule:Molecule<A,D>)
+	//     :Promise<Molecule<A,D>>{
+	// }
 	
-	private async _fix_molecule_bond_properties_on_error<D extends Depth>(molecule:Molecule<A,D>)
-			:Promise<Molecule<A,D>>{
-		return molecule;
-	}
+	// private async _fix_molecule_bond_properties_on_error<D extends Depth>(molecule:Molecule<A,D>)
+	//     :Promise<Molecule<A,D>>{
+	//   return molecule;
+	// }
 	
-	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>)
+	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>, depth?:D)
 			:Promise<Molecule<A,D>>{
-		molecule = await this._fix_molecule_primitive_properties_on_error(molecule);
-		molecule = await this._fix_molecule_bond_properties_on_error(molecule);
+		console.log(depth);
+		// molecule = await this._fix_molecule_primitive_properties_on_error(molecule);
+		// molecule = await this._fix_molecule_bond_properties_on_error(molecule);
 		return molecule;
 	}
 	
@@ -388,9 +388,10 @@ export class DAL<A extends AtomName> {
 			if(this._db_trash_relation){
 				await this._db_trash_relation.insert_one(atom);
 			}
-			for(const k of exc.keys){
-				if(atom[k as keyof Atom<A>] && !urn_atm.is_valid_property(this.atom_name, k)){
-					delete atom[k as keyof Atom<A>];
+			let k:keyof Atom<A>;
+			for(k of exc.keys){
+				if(atom[k] && !urn_atm.is_valid_property(this.atom_name, k)){
+					delete atom[k];
 				}else{
 					atom = urn_atm.fix_atom_property<A>(this.atom_name, atom, k);
 				}

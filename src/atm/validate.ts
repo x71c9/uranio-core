@@ -28,28 +28,43 @@ import {get_subatom_name} from './util';
 
 import {get_bond_keys} from './keys';
 
-export function is_valid_property<A extends AtomName>(atom_name:A, key:string)
+export function is_valid_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>)
 		:boolean{
 	return (urn_util.object.has_key(atom_book[atom_name]['properties'], key));
 }
 
-export function is_optional_property<A extends AtomName>(atom_name:A, key:string)
+export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>)
 		:boolean{
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	if(atom_props[key]){
-		const prop_def = atom_props[key];
-		return (atom_props[key] && urn_util.object.has_key(prop_def, 'optional') && prop_def.optional === true);
+	const prop_def = atom_props[key as string];
+	if(!prop_def){
+		return false;
 	}
-	return false;
+	return (
+		prop_def &&
+		urn_util.object.has_key(prop_def, 'optional') &&
+		prop_def.optional === true
+	);
 }
 
-export function validate_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>, depth?:D)
-		:true{
+export function validate_molecule<A extends AtomName, D extends Depth>(
+	atom_name:A,
+	molecule:Molecule<A,D>,
+	depth?:D
+):true{
+	validate_molecule_primitive_properties(atom_name, molecule);
+	_validate_molecule_bond_properties(atom_name, molecule, depth);
+	return true;
+}
+
+export function validate_molecule_primitive_properties<A extends AtomName, D extends Depth>(
+	atom_name:A,
+	molecule:Molecule<A,D>
+):true{
 	_validate_hard_properties(molecule);
 	_has_all_properties(atom_name, molecule as AtomShape<A>);
 	_has_no_other_properties(atom_name, molecule as Partial<AtomShape<A>>);
 	_validate_primitive_properties(atom_name, molecule as Partial<AtomShape<A>>);
-	_validate_molecule_bond_properties(atom_name, molecule, depth);
 	return true;
 }
 
@@ -76,14 +91,14 @@ export function validate_atom_partial<A extends AtomName>(atom_name:A, partial_a
 }
 
 export function validate_atom_property<A extends AtomName>(
-	prop_key:string,
+	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property,
 	prop_value:unknown,
 	atom:Atom<A>
 ):true{
 	try{
-		_validate_primitive_type(prop_key as string, prop_def, prop_value);
-		_validate_custom_type(prop_key as string, prop_def, prop_value);
+		_validate_primitive_type(prop_key, prop_def, prop_value);
+		_validate_custom_type(prop_key, prop_def, prop_value);
 	}catch(exc){
 		if(exc.type === urn_exception.ExceptionType.INVALID){
 			throw urn_exc.create_invalid(exc.code, exc.msg, atom, [prop_key], exc);
@@ -93,8 +108,8 @@ export function validate_atom_property<A extends AtomName>(
 	return true;
 }
 
-export function _validate_encrypt_property(
-	prop_key: string,
+export function _validate_encrypt_property<A extends AtomName>(
+	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property.Encrypted,
 	prop_value:string
 ):true{
@@ -112,12 +127,12 @@ function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomSha
 	const atom_props = atom_book[atom_name]['properties'];
 	const missin_props:string[] = [];
 	for(const [k] of Object.entries(atom_props)){
-		if(!is_optional_property(atom_name, k) && !urn_util.object.has_key(atom_shape,k)){
+		if(!is_optional_property(atom_name, k as keyof Atom<A>) && !urn_util.object.has_key(atom_shape,k)){
 			missin_props.push(k);
 		}
 	}
 	for(const [k] of Object.entries(atom_common_properties)){
-		if(!is_optional_property(atom_name,k) && !urn_util.object.has_key(atom_shape,k)){
+		if(!is_optional_property(atom_name, k as keyof Atom<A>) && !urn_util.object.has_key(atom_shape,k)){
 			missin_props.push(k);
 		}
 	}
@@ -196,8 +211,8 @@ function _validate_primitive_properties<A extends AtomName>(
 		}
 		
 		try{
-			_validate_primitive_type(k as string, prop_def, partial_atom[k]);
-			_validate_custom_type(k as string, prop_def, partial_atom[k]);
+			_validate_primitive_type(k, prop_def, partial_atom[k]);
+			_validate_custom_type(k, prop_def, partial_atom[k]);
 		}catch(exc){
 			if(exc.type === urn_exception.ExceptionType.INVALID){
 				throw urn_exc.create_invalid(exc.code, exc.msg, partial_atom, [k], exc);
@@ -233,7 +248,7 @@ function _validate_partial_atom_bond_properties<A extends AtomName>(
 		}
 		
 		try{
-			_validate_primitive_type(k as string, prop_def, partial_atom[k]);
+			_validate_primitive_type(k, prop_def, partial_atom[k]);
 		}catch(exc){
 			if(exc.type === urn_exception.ExceptionType.INVALID){
 				throw urn_exc.create_invalid(exc.code, exc.msg, partial_atom, [k], exc);
@@ -265,18 +280,18 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
 		}
 		
-		if(prop_def.type !== BookPropertyType.ATOM && prop_def.type !== BookPropertyType.ATOM_ARRAY){
-			return true;
-		}
+		// if(prop_def.type !== BookPropertyType.ATOM && prop_def.type !== BookPropertyType.ATOM_ARRAY){
+		//   return true;
+		// }
 		
-		const subatom_name = get_subatom_name(atom_name, k as string);
+		const subatom_name = get_subatom_name(atom_name, k);
 		
 		try{
 			if(depth === 0){
 				validate_atom(subatom_name, (molecule as any)[k]);
 			}else{
-				_validate_bond_type(subatom_name, prop_def, (molecule as any)[k]);
-				_validate_custom_bond_type(k as string, prop_def, (molecule as any)[k]);
+				_validate_bond_type(k as keyof Atom<A>, prop_def, (molecule as any)[k]);
+				_validate_custom_bond_type(k as keyof Atom<A>, prop_def, (molecule as any)[k]);
 				validate_molecule(subatom_name, (molecule as any)[k], (depth as number) - 1 as Depth);
 			}
 		}catch(exc){
@@ -290,8 +305,8 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 }
 
 
-function _validate_primitive_type(
-	prop_key: string,
+function _validate_primitive_type<A extends AtomName>(
+	prop_key: keyof Atom<A>,
 	prop_def: Book.Definition.Property,
 	prop_value: any
 ):true{
@@ -407,7 +422,7 @@ function _validate_primitive_type(
 }
 
 function _validate_custom_type<A extends AtomName>(
-	prop_key:string,
+	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property,
 	prop_value:any,
 	partial_atom?:Partial<AtomShape<A>>
@@ -445,8 +460,8 @@ function _validate_custom_type<A extends AtomName>(
 	}
 }
 
-function _validate_bond_type(
-	prop_key: string,
+function _validate_bond_type<A extends AtomName>(
+	prop_key: keyof Atom<A>,
 	prop_def: Book.Definition.Property,
 	prop_value: any
 ):true{
@@ -483,7 +498,7 @@ function _validate_bond_type(
 }
 
 function _validate_custom_bond_type<A extends AtomName>(
-	prop_key:string,
+	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property,
 	prop_value:any,
 	partial_atom?:Partial<AtomShape<A>>
@@ -511,7 +526,7 @@ function _validate_custom_bond_type<A extends AtomName>(
 
 
 function _custom_validate_bond_atom<A extends AtomName, D extends Depth>(
-	prop_key:string,
+	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property.Atom | Book.Definition.Property.AtomArray,
 	prop_value:Molecule<A,D>
 ):true{
@@ -533,8 +548,8 @@ function _custom_validate_bond_atom<A extends AtomName, D extends Depth>(
 	return true;
 }
 
-function _custom_validate_string(
-	prop_key:string,
+function _custom_validate_string<A extends AtomName>(
+	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property.String,
 	prop_value:string
 ):true{
@@ -617,8 +632,8 @@ function _custom_validate_string(
 	return true;
 }
 
-function _custom_validate_number(
-	prop_key:string,
+function _custom_validate_number<A extends AtomName>(
+	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property.Number,
 	prop_value:number
 ):true{
@@ -646,8 +661,8 @@ function _custom_validate_number(
 	return true;
 }
 
-function _custom_validate_time(
-	prop_key:string,
+function _custom_validate_time<A extends AtomName>(
+	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property.Time,
 	prop_value:Date
 ):true{
@@ -675,10 +690,10 @@ function _custom_validate_time(
 	return true;
 }
 
-function _custom_validate_set_string(
-	prop_key: string,
-	prop_def: Book.Definition.Property.SetString,
-	prop_value: string[]
+function _custom_validate_set_string<A extends AtomName>(
+	prop_key:keyof Atom<A>,
+	prop_def:Book.Definition.Property.SetString,
+	prop_value:string[]
 ):true{
 	if(prop_def.validation){
 		const vali = prop_def.validation;
@@ -713,8 +728,8 @@ function _custom_validate_set_string(
 	return true;
 }
 
-function _custom_validate_set_number(
-	prop_key:string,
+function _custom_validate_set_number<A extends AtomName>(
+	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property.SetNumber,
 	prop_value:number[]
 ):true{
