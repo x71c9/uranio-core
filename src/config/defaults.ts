@@ -26,6 +26,6 @@ export const core_config:FullConfiguration = {
 	
 	max_password_length: 58, // It should be less than 60. 60 are the hashed string.
 	
-	max_query_depth_allowed: 7
+	max_query_depth_allowed: 3
 	
 };

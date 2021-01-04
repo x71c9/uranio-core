@@ -56,7 +56,7 @@ const pro_bll = urn_core.bll.create('product');
 //   cover: ['5fecac1499dafa75be5950bb']
 // };
 
-pro_bll.find({}, {depth: 5}).then(function(data){
+pro_bll.find({}, {depth: 2}).then(function(data){
 	urn_log.debug('PRO', data);
 	console.log('PRO', util.inspect(data, false, null, true));
 	// data[0].cover[0].superuser

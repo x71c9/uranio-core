@@ -38,6 +38,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 	protected _conn_name:ConnectionName = 'main';
 	
+	// protected _raw:mongoose.Model<mongoose.Document<Atom<A>>>;
 	protected _raw:mongoose.Model<mongoose.Document>;
 	
 	constructor(public atom_name:A) {
@@ -77,7 +78,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 			const err_msg = `Invalid depth type, Depth should be a number.`;
 			throw urn_exc.create('SELECT_BY_ID_INVALID_DEPTH', err_msg);
 		}
-		let mon_find_by_id_res= {} as Molecule<A,D>;
+		let mon_find_by_id_res:Molecule<A,D>;
 		if(depth && depth > 0){
 			mon_find_by_id_res = await this._raw.findById(id)
 				.populate(_generate_populate_obj(this.atom_name, depth)).lean<Molecule<A,D>>();
@@ -92,7 +93,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 	public async select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
-		let mon_find_one_res= {} as Molecule<A,D>;
+		let mon_find_one_res:Molecule<A,D>;
 		if(options){
 			mon_find_one_res = await this._raw.findOne(query).sort(options.sort)
 				.populate(_generate_populate_obj(this.atom_name, options.depth)).lean<Molecule<A,D>>();
@@ -195,7 +196,7 @@ function _generate_subatomkey_populate_obj<A extends AtomName>(atom_name:A, suba
 function _generate_populate_obj<A extends AtomName>(atom_name:A, depth?:number):PopulateObject[]{
 	const subatom_keys = urn_atm.get_bond_keys(atom_name);
 	const populate_object = [];
-	if(depth && depth > 0 && depth < core_config.max_query_depth_allowed && subatom_keys.size){
+	if(depth && depth > 0 && depth <= core_config.max_query_depth_allowed && subatom_keys.size){
 		for(const k of subatom_keys){
 			populate_object.push(
 				_generate_subatomkey_populate_obj(atom_name, k as string, depth - 1)

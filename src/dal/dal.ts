@@ -58,13 +58,14 @@ export class DAL<A extends AtomName> {
 	public async select<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A, D>)
 			:Promise<Molecule<A, D>[]>{
 		const atom_array = await this._select<D>(query, options);
-		const fixed_atom_array:Molecule<A,D>[] = [];
+		// const fixed_atom_array:Molecule<A,D>[] = [];
 		for(let db_record of atom_array){
 			const depth = (options && options.depth) ? options.depth : undefined;
 			db_record = await this._fix_molecule_on_validation_error<D>(db_record, depth);
-			fixed_atom_array.push(db_record);
+			// fixed_atom_array.push(db_record);
 		}
-		return fixed_atom_array;
+		// return fixed_atom_array;
+		return atom_array;
 	}
 	
 	public async select_by_id<D extends Depth = 0>(id:string, depth?:D)
@@ -252,7 +253,7 @@ export class DAL<A extends AtomName> {
 		return db_res_delete;
 	}
 	
-	private async _replace_on_error(id:string, atom:Atom<A>)
+	private async _replace_atom_on_error(id:string, atom:Atom<A>)
 			:Promise<Atom<A>>{
 			
 		atom = await this._encrypt_atom_changed_properties(id, atom);
@@ -262,6 +263,13 @@ export class DAL<A extends AtomName> {
 		const db_res_insert = await this._db_relation.replace_by_id(id, atom);
 		urn_atm.validate_atom<A>(this.atom_name, db_res_insert);
 		return db_res_insert;
+	}
+	
+	private async _replace_molecule_on_error<D extends Depth>(id:string, molecule:Molecule<A,D>, depth?:D)
+			:Promise<Molecule<A,D>>{
+		const atom = urn_atm.molecule_to_atom(this.atom_name, molecule);
+		await this._replace_atom_on_error(id, atom);
+		return await this._select_by_id(id, depth);
 	}
 	
 	private async _encrypt_atom_changed_properties(id:string, atom:Atom<A>)
@@ -321,7 +329,7 @@ export class DAL<A extends AtomName> {
 		return partial_atom;
 	}
 	
-	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id:false | string = false)
+	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id?:string)
 			:Promise<true>{
 	
 		urn_atm.validate_atom_partial<A>(this.atom_name, partial_atom);
@@ -333,9 +341,9 @@ export class DAL<A extends AtomName> {
 		if($or.length === 0){
 			return true;
 		}
-		let query:Query<A> = {} as Query<A>;
-		if(id === false || !this._db_relation.is_valid_id(id)){
-			query = {$and: [{$not: {_id: id}}, {$or: $or}]};
+		let query:Query<A> = {};
+		if(typeof id === 'string' && this._db_relation.is_valid_id(id)){
+			query = {$and: [{$not: {_id: id}}, {$or: $or}]} as Query<A>;
 		}else{
 			query = {$or: $or};
 		}
@@ -358,20 +366,49 @@ export class DAL<A extends AtomName> {
 		return true;
 	}
 	
-	// private async _fix_molecule_primitive_properties_on_error<D extends Depth>(molecule:Molecule<A,D>)
-	//     :Promise<Molecule<A,D>>{
-	// }
-	
-	// private async _fix_molecule_bond_properties_on_error<D extends Depth>(molecule:Molecule<A,D>)
-	//     :Promise<Molecule<A,D>>{
-	//   return molecule;
-	// }
-	
 	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>, depth?:D)
 			:Promise<Molecule<A,D>>{
-		console.log(depth);
-		// molecule = await this._fix_molecule_primitive_properties_on_error(molecule);
-		// molecule = await this._fix_molecule_bond_properties_on_error(molecule);
+		if(depth === 0){
+			return (await this._fix_atom_on_validation_error(molecule as Atom<A>)) as Molecule<A,D>;
+		}else{
+			const bond_keys = urn_atm.get_bond_keys(this.atom_name);
+			for(const k of bond_keys){
+				const bond_name = urn_atm.get_subatom_name(this.atom_name, k as string);
+				let prop_value = molecule[k] as any;
+				const subdal = create(bond_name);
+				if(Array.isArray(prop_value)){
+					for(let i = 0; i < prop_value.length; i++){
+						let subatom = prop_value[i];
+						subatom = (urn_atm.is_atom(bond_name, subatom)) ?
+							await subdal._fix_atom_on_validation_error(subatom) :
+							await subdal._fix_molecule_on_validation_error(subatom, ((depth as number) - 1 as Depth));
+					}
+				}else{
+					prop_value = (urn_atm.is_atom(bond_name, prop_value)) ?
+						await subdal._fix_atom_on_validation_error(prop_value) :
+						await subdal._fix_molecule_on_validation_error(prop_value, ((depth as number) - 1 as Depth));
+				}
+			}
+		}
+		try{
+			urn_atm.validate_molecule_primitive_properties(this.atom_name, molecule);
+		}catch(exc){
+			if(exc.type !== urn_exception.ExceptionType.INVALID){
+				throw exc;
+			}
+			// if(this._db_trash_relation){
+			//   await this._db_trash_relation.insert_one(molecule);
+			// }
+			let k:keyof Atom<A>;
+			for(k of exc.keys){
+				if(molecule[k] && !urn_atm.is_valid_property(this.atom_name, k)){
+					delete molecule[k];
+				}else{
+					molecule = urn_atm.fix_molecule_property<A,D>(this.atom_name, molecule, k);
+				}
+			}
+			molecule = await this._replace_molecule_on_error(molecule._id, molecule);
+		}
 		return molecule;
 	}
 	
@@ -382,6 +419,9 @@ export class DAL<A extends AtomName> {
 			urn_atm.validate_atom<A>(this.atom_name, atom);
 			
 		}catch(exc){
+			
+			console.log(exc);
+			
 			if(exc.type !== urn_exception.ExceptionType.INVALID){
 				throw exc;
 			}
@@ -396,7 +436,7 @@ export class DAL<A extends AtomName> {
 					atom = urn_atm.fix_atom_property<A>(this.atom_name, atom, k);
 				}
 			}
-			atom = await this._replace_on_error(atom._id, atom);
+			atom = await this._replace_atom_on_error(atom._id, atom);
 		}
 		return atom;
 	}
