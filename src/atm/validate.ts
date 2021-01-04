@@ -36,14 +36,22 @@ export function is_valid_property<A extends AtomName>(atom_name:A, key:keyof Ato
 export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>)
 		:boolean{
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const prop_def = atom_props[key as string];
+	let prop_def = undefined;
+	if(urn_util.object.has_key(atom_hard_properties, key)){
+		prop_def = atom_hard_properties[key];
+	}else if(urn_util.object.has_key(atom_common_properties, key)){
+		prop_def = atom_common_properties[key];
+	}else if(urn_util.object.has_key(atom_props, key)){
+		prop_def = atom_props[key];
+	}
 	if(!prop_def){
-		return false;
+		const err_msg = `Atom property definition missing for atom [${atom_name}] property [${key}]`;
+		throw urn_exc.create('IS_OPTIONAL_MISSING_ATM_PROP_DEFINITION', err_msg);
 	}
 	return (
 		prop_def &&
 		urn_util.object.has_key(prop_def, 'optional') &&
-		prop_def.optional === true
+		(prop_def as any).optional === true
 	);
 }
 
@@ -90,7 +98,7 @@ export function validate_atom_partial<A extends AtomName>(atom_name:A, partial_a
 	return true;
 }
 
-export function validate_atom_property<A extends AtomName>(
+export function validate_property<A extends AtomName>(
 	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property,
 	prop_value:unknown,
@@ -266,7 +274,7 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 ):true{
 	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const bond_keys = get_bond_keys(atom_name);
-	for(const k in bond_keys){
+	for(const k of bond_keys){
 		let prop_def = undefined;
 		if(urn_util.object.has_key(atom_hard_properties, k)){
 			prop_def = atom_hard_properties[k];
@@ -284,7 +292,7 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 		//   return true;
 		// }
 		
-		const subatom_name = get_subatom_name(atom_name, k);
+		const subatom_name = get_subatom_name(atom_name, k as string);
 		
 		try{
 			if(depth === 0){

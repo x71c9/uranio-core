@@ -31,7 +31,7 @@ type OptionalConfigParam = {
 	
 	max_password_length: number;
 	
-	max_query_depth_allowed: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+	max_query_depth_allowed: 0 | 1 | 2 | 3;
 	
 }
 
