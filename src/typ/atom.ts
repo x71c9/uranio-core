@@ -30,6 +30,7 @@ export const atom_common_properties = {
 	},
 	active: {
 		type: BookPropertyType.BINARY,
+		default: true,
 		label: 'Active'
 	}
 } as const;

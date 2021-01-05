@@ -251,13 +251,10 @@ export class DAL<A extends AtomName> {
 	
 	private async _replace_atom_on_error(id:string, atom:Atom<A>)
 			:Promise<Atom<A>>{
-			
 		atom = await this._encrypt_atom_changed_properties(id, atom);
-
-		urn_atm.validate_atom<A>(this.atom_name, atom);
-
+		// urn_atm.validate_atom<A>(this.atom_name, atom);
+		atom = await this._fix_atom_on_validation_error(atom);
 		const db_res_insert = await this._db_relation.replace_by_id(id, atom);
-		
 		urn_atm.validate_atom<A>(this.atom_name, db_res_insert);
 		return db_res_insert;
 	}
@@ -328,7 +325,7 @@ export class DAL<A extends AtomName> {
 	
 	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id?:string)
 			:Promise<true>{
-	
+		
 		urn_atm.validate_atom_partial<A>(this.atom_name, partial_atom);
 		
 		const $or = [];
@@ -366,17 +363,13 @@ export class DAL<A extends AtomName> {
 	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>, depth?:D)
 			:Promise<Molecule<A,D>>{
 		if(!depth){
-			
 			return (await this._fix_atom_on_validation_error(molecule as Atom<A>)) as Molecule<A,D>;
-			
 		}else{
 			const bond_keys = urn_atm.get_bond_keys(this.atom_name);
 			for(const k of bond_keys){
 				const bond_name = urn_atm.get_subatom_name(this.atom_name, k as string);
 				let prop_value = molecule[k] as any;
-				
 				const SUBDAL = create(bond_name);
-				
 				if(Array.isArray(prop_value)){
 					for(let i = 0; i < prop_value.length; i++){
 						let subatom = prop_value[i];
@@ -390,9 +383,7 @@ export class DAL<A extends AtomName> {
 			}
 		}
 		try{
-			
 			urn_atm.validate_molecule_primitive_properties(this.atom_name, molecule);
-			
 		}catch(exc){
 			if(exc.type !== urn_exception.ExceptionType.INVALID){
 				throw exc;
@@ -403,11 +394,12 @@ export class DAL<A extends AtomName> {
 				await this._db_trash_relation.insert_one(clone_molecule as AtomShape<A>);
 			}
 			let k:keyof Atom<A>;
+			console.log(exc.keys);
 			for(k of exc.keys){
 				if(molecule[k] && !urn_atm.is_valid_property(this.atom_name, k)){
 					delete molecule[k];
 				}else{
-					molecule = urn_atm.fix_molecule_property<A,D>(this.atom_name, molecule, k);
+					molecule = urn_atm.fix_property<A,D>(this.atom_name, molecule, k);
 				}
 			}
 			molecule = await this._replace_molecule_on_error(molecule._id, molecule, depth);
@@ -418,9 +410,7 @@ export class DAL<A extends AtomName> {
 	private async _fix_atom_on_validation_error(atom:Atom<A>)
 			:Promise<Atom<A>>{
 		try{
-			
 			urn_atm.validate_atom<A>(this.atom_name, atom);
-			
 		}catch(exc){
 			if(exc.type !== urn_exception.ExceptionType.INVALID){
 				throw exc;
@@ -435,7 +425,7 @@ export class DAL<A extends AtomName> {
 				if(atom[k] && !urn_atm.is_valid_property(this.atom_name, k)){
 					delete atom[k];
 				}else{
-					atom = urn_atm.fix_atom_property<A>(this.atom_name, atom, k);
+					atom = urn_atm.fix_property<A>(this.atom_name, atom, k);
 				}
 			}
 			atom = await this._replace_atom_on_error(atom._id, atom);
