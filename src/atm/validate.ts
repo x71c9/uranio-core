@@ -6,7 +6,7 @@
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-const urn_exc = urn_exception.init(`ATOM_VALIDATE`, `Atom validate module`);
+const urn_exc = urn_exception.init(`VALIDATION`, `Validate module`);
 
 import {
 	atom_hard_properties,
@@ -109,7 +109,7 @@ export function validate_property<A extends AtomName>(
 		_validate_custom_type(prop_key, prop_def, prop_value);
 	}catch(exc){
 		if(exc.type === urn_exception.ExceptionType.INVALID){
-			throw urn_exc.create_invalid(exc.code, exc.msg, atom, [prop_key], exc);
+			throw urn_exc.create_invalid(exc.err_msg, exc.msg, atom, [prop_key]);
 		}
 		throw exc;
 	}
@@ -184,7 +184,7 @@ function _validate_hard_properties<A extends AtomName>(atom:Atom<A>)
 			_validate_custom_type(k, atom_hard_properties[k], atom[k]);
 		}catch(exc){
 			if(exc.type === urn_exception.ExceptionType.INVALID){
-				throw urn_exc.create_invalid(exc.code, exc.msg, atom, [k], exc);
+				throw urn_exc.create_invalid(exc.error_code, exc.msg, atom, [k]);
 			}
 			throw exc;
 		}
@@ -215,7 +215,7 @@ function _validate_primitive_properties<A extends AtomName>(
 		}
 		
 		if(prop_def.type === BookPropertyType.ATOM || prop_def.type === BookPropertyType.ATOM_ARRAY){
-			return true;
+			continue;
 		}
 		
 		try{
@@ -223,7 +223,7 @@ function _validate_primitive_properties<A extends AtomName>(
 			_validate_custom_type(k, prop_def, partial_atom[k]);
 		}catch(exc){
 			if(exc.type === urn_exception.ExceptionType.INVALID){
-				throw urn_exc.create_invalid(exc.code, exc.msg, partial_atom, [k], exc);
+				throw urn_exc.create_invalid(exc.error_code, exc.msg, partial_atom, [k]);
 			}
 			throw exc;
 		}
@@ -252,14 +252,14 @@ function _validate_partial_atom_bond_properties<A extends AtomName>(
 		}
 		
 		if(prop_def.type !== BookPropertyType.ATOM && prop_def.type !== BookPropertyType.ATOM_ARRAY){
-			return true;
+			continue;
 		}
 		
 		try{
 			_validate_primitive_type(k, prop_def, partial_atom[k]);
 		}catch(exc){
 			if(exc.type === urn_exception.ExceptionType.INVALID){
-				throw urn_exc.create_invalid(exc.code, exc.msg, partial_atom, [k], exc);
+				throw urn_exc.create_invalid(exc.error_code, exc.msg, partial_atom, [k]);
 			}
 			throw exc;
 		}
@@ -304,7 +304,7 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 			}
 		}catch(exc){
 			if(exc.type === urn_exception.ExceptionType.INVALID){
-				throw urn_exc.create_invalid(exc.code, exc.msg, molecule, [k], exc);
+				throw urn_exc.create_invalid(exc.error_code, exc.msg, molecule, [k]);
 			}
 			throw exc;
 		}
@@ -462,7 +462,7 @@ function _validate_custom_type<A extends AtomName>(
 		}
 	}catch(exc){
 		if(exc.type === urn_exception.ExceptionType.INVALID){
-			throw urn_exc.create_invalid(exc.code, exc.msg, partial_atom, [prop_key], exc);
+			throw urn_exc.create_invalid(exc.error_code, exc.msg, partial_atom, [prop_key]);
 		}
 		throw exc;
 	}
@@ -526,7 +526,7 @@ function _validate_custom_bond_type<A extends AtomName>(
 		}
 	}catch(exc){
 		if(exc.type === urn_exception.ExceptionType.INVALID){
-			throw urn_exc.create_invalid(exc.code, exc.msg, partial_atom, [prop_key], exc);
+			throw urn_exc.create_invalid(exc.error_code, exc.msg, partial_atom, [prop_key]);
 		}
 		throw exc;
 	}

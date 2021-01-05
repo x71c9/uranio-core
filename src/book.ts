@@ -7,7 +7,10 @@ const core_atoms_book = {
 			email: {
 				type: BookPropertyType.EMAIL,
 				label: 'Email',
-				unique: true
+				unique: true,
+				on_error: () => {
+					return 'a@a.com';
+				}
 			},
 			password: {
 				type: BookPropertyType.ENCRYPTED,
@@ -23,6 +26,7 @@ export const atom_book = {
 		properties: {
 			title: {
 				type: BookPropertyType.TEXT,
+				default: 'TITLE',
 				label: 'Title'
 			},
 			price: {

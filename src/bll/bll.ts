@@ -56,7 +56,7 @@ class BLL<A extends AtomName> {
 	
 	public async update_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
-		return await this.update_by_id(atom._id, atom);
+		return await this.update_by_id(atom._id, atom as Partial<AtomShape<A>>);
 	}
 	
 	public async remove_by_id(id:string)

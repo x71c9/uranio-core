@@ -106,7 +106,7 @@ export function fix_molecule_property<A extends AtomName, D extends Depth>(
 	const prop_def = atom_props[key as string];
 	if(!prop_def){
 		const err_msg = `Missing or invalid key [${key}] in atom_book`;
-		throw urn_exc.create('FIX_ATOM_KEY_INVALID_KEY', err_msg);
+		throw urn_exc.create('FIX_MOLECULE_KEY_INVALID_KEY', err_msg);
 	}
 	let fixed_value = null;
 	if(prop_def.on_error && typeof prop_def.on_error === 'function'){
