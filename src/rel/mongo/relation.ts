@@ -36,12 +36,13 @@ const urn_exc = urn_exception.init('REL_MONGO', 'Mongoose Relation');
 @urn_log.decorators.debug_methods
 export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
-	protected _conn_name:ConnectionName = 'main';
+	protected _conn_name:ConnectionName;
 	
-	// protected _raw:mongoose.Model<mongoose.Document<Atom<A>>>;
 	protected _raw:mongoose.Model<mongoose.Document>;
 	
 	constructor(public atom_name:A) {
+		
+		this._conn_name = this._get_conn_name();
 		
 		const models_map = models_by_connection.get(this._conn_name);
 		if(!models_map){
@@ -56,6 +57,10 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		}
 		this._raw = model;
 		
+	}
+	
+	protected _get_conn_name():ConnectionName{
+		return 'main';
 	}
 	
 	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
@@ -80,8 +85,9 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		}
 		let mon_find_by_id_res:Molecule<A,D>;
 		if(depth && depth > 0){
+			const populate_object = _generate_populate_obj(this.atom_name, depth);
 			mon_find_by_id_res = await this._raw.findById(id)
-				.populate(_generate_populate_obj(this.atom_name, depth)).lean<Molecule<A,D>>();
+				.populate(populate_object).lean<Molecule<A,D>>();
 		}else{
 			mon_find_by_id_res = await this._raw.findById(id).lean<Molecule<A,D>>();
 		}
@@ -130,7 +136,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_update_res === null){
 			throw urn_exc.create('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
 		}
-		return _clean_atom<A>(mon_update_res as Atom<A>);
+		return _clean_atom<A>(this.atom_name, mon_update_res as Atom<A>);
 	}
 	
 	public async replace_by_id(id:string, atom:AtomShape<A>)
@@ -144,7 +150,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_update_res === null){
 			throw urn_exc.create('REPLACE_BY_ID_NOT_FOUND', `Cannot replace_by_id. Record not found.`);
 		}
-		return _clean_atom(mon_update_res as Atom<A>);
+		return _clean_atom(this.atom_name, mon_update_res as Atom<A>);
 	}
 	
 	public async delete_by_id(id:string)
@@ -158,7 +164,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
 			throw urn_exc.create_not_found('DEL_BY_ID_NOT_FOUND', `Cannot delete_by_id. Record not found.`);
 		}
-		return _clean_atom(mon_delete_res.toObject() as Atom<A>);
+		return _clean_atom(this.atom_name, mon_delete_res.toObject() as Atom<A>);
 	}
 	
 	public is_valid_id(id:string)
@@ -206,13 +212,35 @@ function _generate_populate_obj<A extends AtomName>(atom_name:A, depth?:number):
 	return populate_object;
 }
 	
-function _clean_atom<A extends AtomName>(atom:Atom<A>)
+function _clean_atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
 		:Atom<A>{
 	if(atom._id){
 		atom._id = atom._id.toString();
 	}
 	if(urn_util.object.has_key(atom,'__v')){
 		delete (atom as any).__v;
+	}
+	const subatom_keys = urn_atm.get_bond_keys<A>(atom_name) as Set<keyof Atom<A>>;
+	if(subatom_keys.size > 0){
+		for(const subkey of subatom_keys){
+			const subatom_name = urn_atm.get_subatom_name<A>(atom_name, subkey as string);
+			let prop = atom[subkey];
+			if(prop){
+				if(Array.isArray(prop)){
+					for(let i = 0; i < prop.length; i++){
+						if(_is_valid_id(prop[i])){
+							prop[i] = prop[i].toString();
+						}else if(typeof prop[i] === 'object'){
+							prop[i] = _clean_molecule(subatom_name, prop[i]);
+						}
+					}
+				}else if(_is_valid_id(prop as any)){
+					prop = prop.toString() as any;
+				}else if(typeof prop === 'object'){
+					prop = _clean_molecule(subatom_name, prop as any) as any;
+				}
+			}
+		}
 	}
 	return atom;
 }
@@ -226,7 +254,6 @@ function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molec
 		delete (molecule as any).__v;
 	}
 	const subatom_keys = urn_atm.get_bond_keys<A>(atom_name) as Set<keyof Molecule<A,D>>;
-	
 	if(subatom_keys.size > 0){
 		for(const subkey of subatom_keys){
 			const subatom_name = urn_atm.get_subatom_name<A>(atom_name, subkey as string);

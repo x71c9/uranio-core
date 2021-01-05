@@ -28,7 +28,6 @@ import {core_config} from '../config/defaults';
 import {atom_book} from '../book';
 
 import {atom_hard_properties, atom_common_properties} from '../typ/atom';
-// import {atom_common_properties} from '../typ/atom';
 
 const urn_exc = urn_exception.init('DAL', 'Abstract DAL');
 
@@ -58,13 +57,10 @@ export class DAL<A extends AtomName> {
 	public async select<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A, D>)
 			:Promise<Molecule<A, D>[]>{
 		const atom_array = await this._select<D>(query, options);
-		// const fixed_atom_array:Molecule<A,D>[] = [];
-		for(let db_record of atom_array){
+		for(let i = 0; i < atom_array.length; i++){
 			const depth = (options && options.depth) ? options.depth : undefined;
-			db_record = await this._fix_molecule_on_validation_error<D>(db_record, depth);
-			// fixed_atom_array.push(db_record);
+			atom_array[i] = await this._fix_molecule_on_validation_error<D>(atom_array[i], depth);
 		}
-		// return fixed_atom_array;
 		return atom_array;
 	}
 	
@@ -257,10 +253,11 @@ export class DAL<A extends AtomName> {
 			:Promise<Atom<A>>{
 			
 		atom = await this._encrypt_atom_changed_properties(id, atom);
-		
+
 		urn_atm.validate_atom<A>(this.atom_name, atom);
-		
+
 		const db_res_insert = await this._db_relation.replace_by_id(id, atom);
+		
 		urn_atm.validate_atom<A>(this.atom_name, db_res_insert);
 		return db_res_insert;
 	}
@@ -368,37 +365,43 @@ export class DAL<A extends AtomName> {
 	
 	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>, depth?:D)
 			:Promise<Molecule<A,D>>{
-		if(depth === 0){
+		if(!depth){
+			
 			return (await this._fix_atom_on_validation_error(molecule as Atom<A>)) as Molecule<A,D>;
+			
 		}else{
 			const bond_keys = urn_atm.get_bond_keys(this.atom_name);
 			for(const k of bond_keys){
 				const bond_name = urn_atm.get_subatom_name(this.atom_name, k as string);
 				let prop_value = molecule[k] as any;
-				const subdal = create(bond_name);
+				
+				const SUBDAL = create(bond_name);
+				
 				if(Array.isArray(prop_value)){
 					for(let i = 0; i < prop_value.length; i++){
 						let subatom = prop_value[i];
-						subatom = (urn_atm.is_atom(bond_name, subatom)) ?
-							await subdal._fix_atom_on_validation_error(subatom) :
-							await subdal._fix_molecule_on_validation_error(subatom, ((depth as number) - 1 as Depth));
+						subatom =
+							await SUBDAL._fix_molecule_on_validation_error(subatom, ((depth as number) - 1 as Depth));
 					}
 				}else{
-					prop_value = (urn_atm.is_atom(bond_name, prop_value)) ?
-						await subdal._fix_atom_on_validation_error(prop_value) :
-						await subdal._fix_molecule_on_validation_error(prop_value, ((depth as number) - 1 as Depth));
+					prop_value =
+						await SUBDAL._fix_molecule_on_validation_error(prop_value, ((depth as number) - 1 as Depth));
 				}
 			}
 		}
 		try{
+			
 			urn_atm.validate_molecule_primitive_properties(this.atom_name, molecule);
+			
 		}catch(exc){
 			if(exc.type !== urn_exception.ExceptionType.INVALID){
 				throw exc;
 			}
-			// if(this._db_trash_relation){
-			//   await this._db_trash_relation.insert_one(molecule);
-			// }
+			if(this._db_trash_relation){
+				const clone_molecule = {...molecule};
+				clone_molecule._deleted_from = molecule._id;
+				await this._db_trash_relation.insert_one(clone_molecule as AtomShape<A>);
+			}
 			let k:keyof Atom<A>;
 			for(k of exc.keys){
 				if(molecule[k] && !urn_atm.is_valid_property(this.atom_name, k)){
@@ -407,7 +410,7 @@ export class DAL<A extends AtomName> {
 					molecule = urn_atm.fix_molecule_property<A,D>(this.atom_name, molecule, k);
 				}
 			}
-			molecule = await this._replace_molecule_on_error(molecule._id, molecule);
+			molecule = await this._replace_molecule_on_error(molecule._id, molecule, depth);
 		}
 		return molecule;
 	}
@@ -419,14 +422,13 @@ export class DAL<A extends AtomName> {
 			urn_atm.validate_atom<A>(this.atom_name, atom);
 			
 		}catch(exc){
-			
-			console.log(exc);
-			
 			if(exc.type !== urn_exception.ExceptionType.INVALID){
 				throw exc;
 			}
 			if(this._db_trash_relation){
-				await this._db_trash_relation.insert_one(atom);
+				const clone_atom = {...atom};
+				clone_atom._deleted_from = clone_atom._id;
+				await this._db_trash_relation.insert_one(clone_atom);
 			}
 			let k:keyof Atom<A>;
 			for(k of exc.keys){

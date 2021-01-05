@@ -22,10 +22,12 @@ import {MongooseRelation} from './relation';
 export class MongooseTrashRelation<A extends AtomName> extends MongooseRelation<A>
 	implements Relation<A> {
 	
-	protected _conn_name:ConnectionName = 'trash';
-	
 	constructor(atom_name:A){
 		super(atom_name);
+	}
+	
+	protected _get_conn_name():ConnectionName{
+		return 'trash';
 	}
 	
 }
