@@ -54,6 +54,7 @@ export class DAL<A extends AtomName> {
 		}
 	}
 	
+	
 	public async select<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A, D>)
 			:Promise<Molecule<A, D>[]>{
 		const atom_array = await this._select<D>(query, options);
@@ -109,13 +110,10 @@ export class DAL<A extends AtomName> {
 	public async delete_by_id(id:string)
 			:Promise<Atom<A>>{
 		const db_res_delete = await this._delete_by_id(id);
-		
-		// TODO TRASH IT
-		
-		// if(db_res_delete && this._db_trash_relation){
-		//   db_res_delete._deleted_from = db_res_delete._id;
-		//   return await this.trash_insert_one(db_res_delete);
-		// }
+		if(db_res_delete && this._db_trash_relation){
+			db_res_delete._deleted_from = db_res_delete._id;
+			return await this.trash_insert_one(db_res_delete);
+		}
 		const db_record = db_res_delete;
 		return db_record;
 		return await this._fix_atom_on_validation_error(db_record);
@@ -128,35 +126,37 @@ export class DAL<A extends AtomName> {
 		return await this._fix_atom_on_validation_error(db_record);
 	}
 	
-	// public async trash_select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
-	//     :Promise<Molecule<A,D>[]>{
-	//   return await this._select(query, options, true);
-	// }
 	
-	// public async trash_select_by_id<D extends Depth>(id:string, depth?:D)
-	//     :Promise<Molecule<A,D>>{
-	//   return await this._select_by_id(id, depth, true);
-	// }
+	public async trash_select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
+			:Promise<Molecule<A,D>[]>{
+		return await this._select(query, options, true);
+	}
 	
-	// public async trash_select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
-	//     :Promise<Molecule<A,D>>{
-	//   return await this._select_one(query, options, true);
-	// }
+	public async trash_select_by_id<D extends Depth>(id:string, depth?:D)
+			:Promise<Molecule<A,D>>{
+		return await this._select_by_id(id, depth, true);
+	}
 	
-	// public async trash_insert_one(atom:Atom<A>)
-	//     :Promise<Atom<A>>{
-	//   return await this._insert_one(atom, true);
-	// }
+	public async trash_select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
+			:Promise<Molecule<A,D>>{
+		return await this._select_one(query, options, true);
+	}
 	
-	// public async trash_delete_one(atom:Atom<A>)
-	//     :Promise<Atom<A>>{
-	//   return await this._delete_by_id(atom._id, true);
-	// }
+	public async trash_insert_one(atom:Atom<A>)
+			:Promise<Atom<A>>{
+		return await this._insert_one(atom, true);
+	}
 	
-	// public async trash_delete_by_id(id:string)
-	//     :Promise<Atom<A>>{
-	//   return await this._delete_by_id(id, true);
-	// }
+	public async trash_delete_one(atom:Atom<A>)
+			:Promise<Atom<A>>{
+		return await this._delete_by_id(atom._id, true);
+	}
+	
+	public async trash_delete_by_id(id:string)
+			:Promise<Atom<A>>{
+		return await this._delete_by_id(id, true);
+	}
+	
 	
 	private async _select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>, in_trash = false)
 			:Promise<Molecule<A,D>[]>{
@@ -226,8 +226,9 @@ export class DAL<A extends AtomName> {
 			const err_msg = `Cannot _alter_by_id [in_trash=true]. Trash DB not found.`;
 			throw urn_exc.create('ALTER_BY_ID_TRASH_NOT_FOUND', err_msg);
 		}
+		
 		if(fix === true){
-			partial_atom = await this._encrypt_partial_atom_changed_properties(id, partial_atom);
+			partial_atom = await this._encrypt_changed_properties(id, partial_atom);
 		}
 		urn_atm.validate_atom_partial<A>(this.atom_name, partial_atom);
 		
@@ -251,8 +252,7 @@ export class DAL<A extends AtomName> {
 	
 	private async _replace_atom_on_error(id:string, atom:Atom<A>)
 			:Promise<Atom<A>>{
-		atom = await this._encrypt_atom_changed_properties(id, atom);
-		// urn_atm.validate_atom<A>(this.atom_name, atom);
+		atom = await this._encrypt_changed_properties(id, atom);
 		atom = await this._fix_atom_on_validation_error(atom);
 		const db_res_insert = await this._db_relation.replace_by_id(id, atom);
 		urn_atm.validate_atom<A>(this.atom_name, db_res_insert);
@@ -266,61 +266,32 @@ export class DAL<A extends AtomName> {
 		return await this._select_by_id(id, depth);
 	}
 	
-	private async _encrypt_atom_changed_properties(id:string, atom:Atom<A>)
-			:Promise<Atom<A>>{
-		const atom_props = atom_book[this.atom_name]['properties'] as Book.Definition.Properties;
+	private async _encrypt_changed_properties(id:string, atom:Atom<A>):Promise<Atom<A>>;
+	private async _encrypt_changed_properties(id:string, atom:Partial<AtomShape<A>>):Promise<Partial<AtomShape<A>>>;
+	private async _encrypt_changed_properties(id:string, atom:Atom<A> | Partial<AtomShape<A>>):Promise<Atom<A> | Partial<AtomShape<A>>>{
+		const atom_props = atom_book[this.atom_name]['properties'];
 		const all_props = {
 			...atom_hard_properties,
 			...atom_common_properties,
 			...atom_props
-		};
+		} as Book.Definition.Properties;
 		for(const k in atom){
-			if(
-				urn_util.object.has_key(all_props, k) &&
-				all_props[k].type &&
-				(all_props[k].type as any) === BookPropertyType.ENCRYPTED
-			){
-				let value = atom[k];
+			const prop_def = all_props[k];
+			if(prop_def && prop_def.type && prop_def.type === BookPropertyType.ENCRYPTED){
+				let value = (atom as any)[k];
 				if(value && typeof value === 'string' && (value.length !== 60 || value.startsWith('$2'))){
-					value = await urn_atm.encrypt_property(this.atom_name, k, value);
+					value = await urn_atm.encrypt_property(this.atom_name, k as keyof Atom<A>, value);
 				}else{
 					const res_select = await this._select_by_id(id);
-					if(res_select[k] !== value){
-						value = await urn_atm.encrypt_property(this.atom_name, k, value as string);
+					const db_prop = (res_select as any)[k];
+					if(db_prop && db_prop !== value){
+						value = await urn_atm.encrypt_property(this.atom_name, k as keyof Atom<A>, value);
 					}
 				}
 				(atom as any)[k] = value;
 			}
 		}
 		return atom;
-	}
-	
-	private async _encrypt_partial_atom_changed_properties(id:string, partial_atom:Partial<AtomShape<A>>)
-			:Promise<Partial<AtomShape<A>>>{
-		const atom_props = atom_book[this.atom_name]['properties'] as Book.Definition.Properties;
-		const all_props = {
-			...atom_common_properties,
-			...atom_props
-		};
-		for(const k in partial_atom){
-			if(
-				urn_util.object.has_key(all_props, k) &&
-				all_props[k].type &&
-				(all_props[k].type as any) === BookPropertyType.ENCRYPTED
-			){
-				let value = partial_atom[k] as string;
-				if(value && typeof value === 'string' && (value.length !== 60 || value.startsWith('$2'))){
-					value = await urn_atm.encrypt_property(this.atom_name, k, value);
-				}else{
-					const res_select = await this._select_by_id(id);
-					if(res_select[k] !== value){
-						value = await urn_atm.encrypt_property(this.atom_name, k, value);
-					}
-				}
-				partial_atom[k] = value as any;
-			}
-		}
-		return partial_atom;
 	}
 	
 	private async _check_unique(partial_atom:Partial<AtomShape<A>>, id?:string)
@@ -394,7 +365,6 @@ export class DAL<A extends AtomName> {
 				await this._db_trash_relation.insert_one(clone_molecule as AtomShape<A>);
 			}
 			let k:keyof Atom<A>;
-			console.log(exc.keys);
 			for(k of exc.keys){
 				if(molecule[k] && !urn_atm.is_valid_property(this.atom_name, k)){
 					delete molecule[k];
