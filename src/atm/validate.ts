@@ -279,8 +279,9 @@ function _validate_partial_atom_bond_properties<A extends AtomName>(
 function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>(
 	atom_name:A,
 	molecule: Molecule<A,D>,
-	depth:D
+	depth?:D
 ):true{
+	console.log(molecule);
 	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const bond_keys = get_bond_keys(atom_name);
 	for(const k of bond_keys){
@@ -297,19 +298,26 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
 		}
 		
-		// if(prop_def.type !== BookPropertyType.ATOM && prop_def.type !== BookPropertyType.ATOM_ARRAY){
-		//   return true;
-		// }
-		
 		const subatom_name = get_subatom_name(atom_name, k as string);
-		
-		try{
-			if(depth === 0){
-				validate_atom(subatom_name, (molecule as any)[k]);
+		const number_depth = (!depth) ? 0 : depth as number - 1 as Depth;
+		try {
+			const prop_value = molecule[k];
+			if(!depth){
+				validate_property(k, prop_def, prop_value, molecule as Atom<A>);
 			}else{
-				_validate_bond_type(k as keyof Atom<A>, prop_def, (molecule as any)[k]);
-				_validate_custom_bond_type(k as keyof Atom<A>, prop_def, (molecule as any)[k]);
-				validate_molecule(subatom_name, (molecule as any)[k], (depth as number) - 1 as Depth);
+				_validate_bond_type(k as keyof Atom<A>, prop_def, prop_value);
+				_validate_custom_bond_type(k as keyof Atom<A>, prop_def, prop_value);
+				if(Array.isArray(prop_value)){
+					for(const subatom of prop_value){
+						validate_molecule(subatom_name, subatom, number_depth);
+					}
+				}else{
+					validate_molecule<typeof subatom_name, typeof number_depth>(
+						subatom_name,
+						prop_value as Molecule<A,D>,
+						number_depth
+					);
+				}
 			}
 		}catch(exc){
 			if(exc.type === urn_exception.ExceptionType.INVALID){

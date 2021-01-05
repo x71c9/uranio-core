@@ -150,7 +150,8 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(mon_update_res === null){
 			throw urn_exc.create('REPLACE_BY_ID_NOT_FOUND', `Cannot replace_by_id. Record not found.`);
 		}
-		return _clean_atom(this.atom_name, mon_update_res as Atom<A>);
+		const cleaned = _clean_atom(this.atom_name, mon_update_res as Atom<A>);
+		return cleaned;
 	}
 	
 	public async delete_by_id(id:string)
@@ -224,8 +225,8 @@ function _clean_atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
 	if(subatom_keys.size > 0){
 		for(const subkey of subatom_keys){
 			const subatom_name = urn_atm.get_subatom_name<A>(atom_name, subkey as string);
-			let prop = atom[subkey];
-			if(prop){
+			const prop = atom[subkey];
+			if(atom[subkey]){
 				if(Array.isArray(prop)){
 					for(let i = 0; i < prop.length; i++){
 						if(_is_valid_id(prop[i])){
@@ -235,9 +236,9 @@ function _clean_atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
 						}
 					}
 				}else if(_is_valid_id(prop as any)){
-					prop = prop.toString() as any;
+					atom[subkey] = prop.toString() as any;
 				}else if(typeof prop === 'object'){
-					prop = _clean_molecule(subatom_name, prop as any) as any;
+					atom[subkey] = _clean_molecule(subatom_name, prop as any) as any;
 				}
 			}
 		}

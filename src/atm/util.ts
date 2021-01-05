@@ -28,14 +28,15 @@ import {
 export function molecule_to_atom<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
 		:Atom<A>{
 	const bond_keys = get_bond_keys(atom_name);
-	for(const k of bond_keys){
-		let prop_value = molecule[k as keyof Molecule<A,D>];
+	let k:keyof Molecule<A,D>;
+	for(k of bond_keys){
+		const prop_value = molecule[k];
 		if(Array.isArray(prop_value)){
 			for(let i = 0; i < prop_value.length; i++){
 				prop_value[i] = (prop_value[i]._id) ? prop_value[i]._id : null;
 			}
 		}else{
-			prop_value = ((prop_value as any)._id) ? (prop_value as any)._id : null;
+			molecule[k] = ((prop_value as any)._id) ? (prop_value as any)._id : null;
 		}
 	}
 	return molecule as Atom<A>;
@@ -130,7 +131,7 @@ export function fix_property<A extends AtomName, D extends Depth>(atom_name:A, a
 		
 	}catch(err){
 		let err_msg = `Cannot fix property of Atom. Default value or on_error result is invalid.`;
-		err_msg += ` for Atom [${atom_name}] property [${key}]`;
+		err_msg += ` For Atom [${atom_name}] property [${key}]`;
 		throw urn_exc.create('CANNOT_FIX', err_msg);
 	}
 	return atom;

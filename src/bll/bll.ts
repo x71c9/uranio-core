@@ -26,7 +26,7 @@ class BLL<A extends AtomName> {
 	protected _dal:urn_dal.DAL<A>;
 	
 	constructor(public atom_name:A) {
-		this._dal = urn_dal.create<A>(atom_name);
+		this._dal = urn_dal.create_autofix<A>(atom_name);
 	}
 	
 	public async find<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
