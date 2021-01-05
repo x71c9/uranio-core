@@ -30,7 +30,16 @@ import {get_bond_keys} from './keys';
 
 export function is_valid_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>)
 		:boolean{
-	return (urn_util.object.has_key(atom_book[atom_name]['properties'], key));
+	if(urn_util.object.has_key(atom_hard_properties, key)){
+		return true;
+	}
+	if(urn_util.object.has_key(atom_common_properties, key)){
+		return true;
+	}
+	if(urn_util.object.has_key(atom_book[atom_name]['properties'], key)){
+		return true;
+	}
+	return false;
 }
 
 export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>)

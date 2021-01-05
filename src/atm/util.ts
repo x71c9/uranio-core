@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {urn_exception} from 'urn-lib';
+import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util modul`);
 
@@ -15,6 +15,8 @@ import {get_bond_keys} from './keys';
 import {validate_property} from './validate';
 
 import {
+	atom_hard_properties,
+	atom_common_properties,
 	Atom,
 	AtomName,
 	Molecule,
@@ -97,57 +99,34 @@ export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, mo
 	return true;
 }
 
-export function fix_molecule_property<A extends AtomName, D extends Depth>(
-	atom_name:A,
-	molecule:Molecule<A,D>,
-	key:keyof Molecule<A,D>
-):Molecule<A,D>{
+export function fix_property<A extends AtomName>(atom_name:A, atom:Atom<A>, key:keyof Atom<A>):Atom<A>;
+export function fix_property<A extends AtomName, D extends Depth>(atom_name:A, atom:Molecule<A,D>, key:keyof Molecule<A,D>):Molecule<A,D>;
+export function fix_property<A extends AtomName, D extends Depth>(atom_name:A, atom:Atom<A> | Molecule<A,D>, key: keyof Atom<A> | keyof Molecule<A,D>)
+		:Atom<A> | Molecule<A,D>{
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const prop_def = atom_props[key as string];
+	let prop_def = undefined;
+	if(urn_util.object.has_key(atom_props, key)){
+		prop_def = atom_props[key as string];
+	}else if(urn_util.object.has_key(atom_hard_properties, key)){
+		prop_def = atom_hard_properties[key];
+	}else if(urn_util.object.has_key(atom_common_properties, key)){
+		prop_def = atom_common_properties[key];
+	}
 	if(!prop_def){
 		const err_msg = `Missing or invalid key [${key}] in atom_book`;
 		throw urn_exc.create('FIX_MOLECULE_KEY_INVALID_KEY', err_msg);
 	}
+	const def = prop_def as Book.Definition.Property;
 	let fixed_value = null;
-	if(prop_def.on_error && typeof prop_def.on_error === 'function'){
-		fixed_value = prop_def.on_error!(molecule[key]);
-	}else if(prop_def.default){
-		fixed_value = prop_def.default;
+	if(def.on_error && typeof def.on_error === 'function'){
+		fixed_value = def.on_error((atom as any)[key]);
+	}else if(def.default){
+		fixed_value = def.default;
 	}
 	try{
 		
-		validate_property(key as keyof Atom<A>, prop_def, fixed_value, molecule as Atom<A>);
-		molecule[key] = fixed_value;
-		
-	}catch(err){
-		let err_msg = `Cannot fix property of Atom. Default value or on_error result is invalid.`;
-		err_msg += ` for Atom [${atom_name}] property [${key}]`;
-		throw urn_exc.create('CANNOT_FIX', err_msg);
-	}
-	return molecule;
-}
-
-export function fix_atom_property<A extends AtomName>(
-	atom_name:A,
-	atom:Atom<A>,
-	key:keyof Atom<A>
-):Atom<A>{
-	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const prop_def = atom_props[key as string];
-	if(!prop_def){
-		const err_msg = `Missing or invalid key [${key}] in atom_book`;
-		throw urn_exc.create('FIX_ATOM_KEY_INVALID_KEY', err_msg);
-	}
-	let fixed_value = null;
-	if(prop_def.on_error && typeof prop_def.on_error === 'function'){
-		fixed_value = prop_def.on_error!(atom[key]);
-	}else if(prop_def.default){
-		fixed_value = prop_def.default;
-	}
-	try{
-		
-		validate_property(key as keyof Atom<A>, prop_def, fixed_value, atom);
-		atom[key] = fixed_value;
+		validate_property(key as keyof Atom<A>, prop_def, fixed_value, atom as Atom<A>);
+		(atom as any)[key] = fixed_value;
 		
 	}catch(err){
 		let err_msg = `Cannot fix property of Atom. Default value or on_error result is invalid.`;
@@ -156,4 +135,81 @@ export function fix_atom_property<A extends AtomName>(
 	}
 	return atom;
 }
+
+
+// export function fix_molecule_property<A extends AtomName, D extends Depth>(
+//   atom_name:A,
+//   molecule:Molecule<A,D>,
+//   key:keyof Molecule<A,D>
+// ):Molecule<A,D>{
+//   const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+//   let prop_def = undefined;
+//   if(urn_util.object.has_key(atom_props, key)){
+//     prop_def = atom_props[key as string];
+//   }else if(urn_util.object.has_key(atom_hard_properties, key)){
+//     prop_def = atom_hard_properties[key];
+//   }else if(urn_util.object.has_key(atom_common_properties, key)){
+//     prop_def = atom_common_properties[key];
+//   }
+//   if(!prop_def){
+//     const err_msg = `Missing or invalid key [${key}] in atom_book`;
+//     throw urn_exc.create('FIX_MOLECULE_KEY_INVALID_KEY', err_msg);
+//   }
+//   const def = prop_def as Book.Definition.Property;
+//   let fixed_value = null;
+//   if(def.on_error && typeof def.on_error === 'function'){
+//     fixed_value = def.on_error!(molecule[key]);
+//   }else if(def.default){
+//     fixed_value = def.default;
+//   }
+//   try{
+		
+//     validate_property(key as keyof Atom<A>, prop_def, fixed_value, molecule as Atom<A>);
+//     molecule[key] = fixed_value;
+		
+//   }catch(err){
+//     let err_msg = `Cannot fix property of Atom. Default value or on_error result is invalid.`;
+//     err_msg += ` for Atom [${atom_name}] property [${key}]`;
+//     throw urn_exc.create('CANNOT_FIX', err_msg);
+//   }
+//   return molecule;
+// }
+
+// export function fix_atom_property<A extends AtomName>(
+//   atom_name:A,
+//   atom:Atom<A>,
+//   key:keyof Atom<A>
+// ):Atom<A>{
+//   const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+//   let prop_def = undefined;
+//   if(urn_util.object.has_key(atom_props, key)){
+//     prop_def = atom_props[key as string];
+//   }else if(urn_util.object.has_key(atom_hard_properties, key)){
+//     prop_def = atom_hard_properties[key];
+//   }else if(urn_util.object.has_key(atom_common_properties, key)){
+//     prop_def = atom_common_properties[key];
+//   }
+//   if(!prop_def){
+//     const err_msg = `Missing or invalid key [${key}] in atom_book`;
+//     throw urn_exc.create('FIX_ATOM_KEY_INVALID_KEY', err_msg);
+//   }
+//   let fixed_value = null;
+//   const def = prop_def as Book.Definition.Property;
+//   if(def.on_error && typeof def.on_error === 'function'){
+//     fixed_value = def.on_error!(atom[key]);
+//   }else if(def.default){
+//     fixed_value = def.default;
+//   }
+//   try{
+		
+//     validate_property(key as keyof Atom<A>, prop_def, fixed_value, atom);
+//     atom[key] = fixed_value;
+		
+//   }catch(err){
+//     let err_msg = `Cannot fix property of Atom. Default value or on_error result is invalid.`;
+//     err_msg += ` for Atom [${atom_name}] property [${key}]`;
+//     throw urn_exc.create('CANNOT_FIX', err_msg);
+//   }
+//   return atom;
+// }
 
