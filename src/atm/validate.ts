@@ -64,14 +64,16 @@ export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof 
 	);
 }
 
-export function validate_molecule<A extends AtomName, D extends Depth>(
-	atom_name:A,
-	molecule:Molecule<A,D>,
-	depth?:D
-):true{
-	validate_molecule_primitive_properties(atom_name, molecule);
-	_validate_molecule_bond_properties(atom_name, molecule, depth);
-	return true;
+export function validate_molecule<A extends AtomName>(atom_name:A, molecule:Atom<A>):Atom<A>;
+export function validate_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>, depth?:D):Molecule<A,D>;
+export function validate_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D> | Atom<A>, depth?:D):Molecule<A,D> | Atom<A>{
+	if(!depth){
+		validate_atom(atom_name, molecule as Atom<A>);
+	}else{
+		validate_molecule_primitive_properties(atom_name, molecule);
+		_validate_molecule_bond_properties(atom_name, molecule as Molecule<A,D>, depth);
+	}
+	return molecule;
 }
 
 export function validate_molecule_primitive_properties<A extends AtomName, D extends Depth>(
@@ -86,10 +88,10 @@ export function validate_molecule_primitive_properties<A extends AtomName, D ext
 }
 
 export function validate_atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
-		:true{
+		:Atom<A>{
 	_validate_hard_properties(atom);
 	validate_atom_shape(atom_name, atom);
-	return true;
+	return atom;
 }
 
 export function validate_atom_shape<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)

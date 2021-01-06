@@ -10,7 +10,6 @@ import * as urn_atm from '../atm/';
 
 import {
 	Depth,
-	Query,
 	AtomName,
 	AtomShape,
 	Atom,
@@ -19,74 +18,11 @@ import {
 
 // const urn_exc = urn_exception.init('AutoFixDAL', 'AutoFixDAL module');
 
-import {DAL} from './dal';
+import {WithTrashDAL} from './trash';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class AutoFixDAL<A extends AtomName> extends DAL<A>{
-	
-	public async select<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A, D>)
-			:Promise<Molecule<A, D>[]>{
-		const atom_array = await this._select<D>(query, options);
-		for(let i = 0; i < atom_array.length; i++){
-			const depth = (options && options.depth) ? options.depth : undefined;
-			atom_array[i] = await this._fix_molecule_on_validation_error<D>(atom_array[i], depth);
-		}
-		return atom_array;
-	}
-	
-	public async select_by_id<D extends Depth = 0>(id:string, depth?:D)
-			:Promise<Molecule<A,D>>{
-		const db_record = await this._select_by_id(id, depth);
-		return await this._fix_molecule_on_validation_error<D>(db_record, depth);
-	}
-	
-	public async select_one<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A,D>)
-			:Promise<Molecule<A,D>>{
-		const db_record = await this._select_one(query, options);
-		const depth = (options && options.depth) ? options.depth : undefined;
-		return await this._fix_molecule_on_validation_error<D>(db_record, depth);
-	}
-	
-	public async insert_one(atom_shape:AtomShape<A>)
-			:Promise<Atom<A>>{
-		atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
-		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
-		const db_record = await this._insert_one(atom_shape);
-		return await this._fix_atom_on_validation_error(db_record);
-	}
-	
-	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
-			:Promise<Atom<A>>{
-		await this._check_unique(partial_atom, id);
-		const db_record = await this._alter_by_id(id, partial_atom);
-		return await this._fix_atom_on_validation_error(db_record);
-	}
-	
-	public async alter_one(atom:Atom<A>)
-			:Promise<Atom<A>>{
-		const db_record = await this.alter_by_id(atom._id, atom as Partial<AtomShape<A>>);
-		return await this._fix_atom_on_validation_error(db_record);
-	}
-	
-	public async delete_by_id(id:string)
-			:Promise<Atom<A>>{
-		const db_res_delete = await this._delete_by_id(id);
-		if(db_res_delete && this._db_trash_relation){
-			db_res_delete._deleted_from = db_res_delete._id;
-			return await this.trash_insert_one(db_res_delete);
-		}
-		const db_record = db_res_delete;
-		return db_record;
-		return await this._fix_atom_on_validation_error(db_record);
-	}
-	
-	public async delete_one(atom:Atom<A>)
-			:Promise<Atom<A>>{
-		const db_record = await this.delete_by_id(atom._id);
-		return db_record;
-		return await this._fix_atom_on_validation_error(db_record);
-	}
+export class AutoFixDAL<A extends AtomName> extends WithTrashDAL<A>{
 	
 	protected async _replace_atom_on_error(id:string, atom:Atom<A>)
 			:Promise<Atom<A>>{
@@ -101,7 +37,7 @@ export class AutoFixDAL<A extends AtomName> extends DAL<A>{
 			:Promise<Molecule<A,D>>{
 		const atom = urn_atm.molecule_to_atom(this.atom_name, molecule);
 		await this._replace_atom_on_error(id, atom);
-		return await this._select_by_id(id, depth);
+		return await this.select_by_id(id, depth);
 	}
 	
 	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>, depth?:D)
@@ -132,10 +68,10 @@ export class AutoFixDAL<A extends AtomName> extends DAL<A>{
 			if(exc.type !== urn_exception.ExceptionType.INVALID){
 				throw exc;
 			}
-			if(this._db_trash_relation){
+			if(this.trash_dal){
 				const clone_molecule = {...molecule};
 				clone_molecule._deleted_from = molecule._id;
-				await this._db_trash_relation.insert_one(clone_molecule as AtomShape<A>);
+				await this.trash_dal.insert_one(clone_molecule as AtomShape<A>);
 			}
 			let k:keyof Atom<A>;
 			for(k of exc.keys){
@@ -158,10 +94,10 @@ export class AutoFixDAL<A extends AtomName> extends DAL<A>{
 			if(exc.type !== urn_exception.ExceptionType.INVALID){
 				throw exc;
 			}
-			if(this._db_trash_relation){
+			if(this.trash_dal){
 				const clone_atom = {...atom};
 				clone_atom._deleted_from = clone_atom._id;
-				await this._db_trash_relation.insert_one(clone_atom);
+				await this.trash_dal.insert_one(clone_atom);
 			}
 			let k:keyof Atom<A>;
 			for(k of exc.keys){
@@ -174,6 +110,14 @@ export class AutoFixDAL<A extends AtomName> extends DAL<A>{
 			atom = await this._replace_atom_on_error(atom._id, atom);
 		}
 		return atom;
+	}
+	
+	protected async validate_molecule(molecule:Atom<A>):Promise<Atom<A>>;
+	protected async validate_molecule(molecule:Atom<A>, depth?:0):Promise<Atom<A>>;
+	protected async validate_molecule<D extends Depth>(molecule:Molecule<A,D>, depth?:D):Promise<Molecule<A,D>>;
+	protected async validate_molecule<D extends Depth>(molecule:Molecule<A,D> | Atom<A>, depth?:D)
+			:Promise<Molecule<A,D> | Atom<A>>{
+		return await this._fix_molecule_on_validation_error<D>(molecule as Molecule<A,D>, depth);
 	}
 	
 }

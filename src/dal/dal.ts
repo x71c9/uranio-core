@@ -54,29 +54,36 @@ export class DAL<A extends AtomName> {
 		}
 	}
 	
+	protected async validate_molecule(molecule:Atom<A>):Promise<Atom<A>>;
+	protected async validate_molecule(molecule:Atom<A>, depth?:0):Promise<Atom<A>>;
+	protected async validate_molecule<D extends Depth>(molecule:Molecule<A,D>, depth?:D):Promise<Molecule<A,D>>
+	protected async validate_molecule<D extends Depth>(molecule:Molecule<A,D> | Atom<A>, depth?:D)
+			:Promise<Molecule<A,D> | Atom<A>>{
+		return urn_atm.validate_molecule<A,D>(this.atom_name, molecule as Molecule<A,D>, depth);
+	}
 	
 	public async select<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A, D>)
 			:Promise<Molecule<A, D>[]>{
 		const atom_array = await this._select<D>(query, options);
 		for(let i = 0; i < atom_array.length; i++){
 			const depth = (options && options.depth) ? options.depth : undefined;
-			urn_atm.validate_molecule(this.atom_name, atom_array[i], depth);
+			atom_array[i] = await this.validate_molecule<D>(atom_array[i], depth);
 		}
 		return atom_array;
 	}
 	
 	public async select_by_id<D extends Depth = 0>(id:string, depth?:D)
 			:Promise<Molecule<A,D>>{
-		const db_record = await this._select_by_id(id, depth);
-		urn_atm.validate_molecule(this.atom_name, db_record, depth);
+		let db_record = await this._select_by_id(id, depth);
+		db_record = await this.validate_molecule<D>(db_record, depth);
 		return db_record;
 	}
 	
 	public async select_one<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
-		const db_record = await this._select_one(query, options);
+		let db_record = await this._select_one(query, options);
 		const depth = (options && options.depth) ? options.depth : undefined;
-		urn_atm.validate_molecule(this.atom_name, db_record, depth);
+		db_record = await this.validate_molecule<D>(db_record, depth);
 		return db_record;
 	}
 	
@@ -84,20 +91,23 @@ export class DAL<A extends AtomName> {
 			:Promise<Atom<A>>{
 		atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
 		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
-		const db_record = await this._insert_one(atom_shape);
+		let db_record = await this._insert_one(atom_shape);
+		db_record = await this.validate_molecule(db_record);
 		return db_record;
 	}
 	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
 		await this._check_unique(partial_atom, id);
-		const db_record = await this._alter_by_id(id, partial_atom);
+		let db_record = await this._alter_by_id(id, partial_atom);
+		db_record = await this.validate_molecule(db_record);
 		return db_record;
 	}
 	
 	public async alter_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
-		const db_record = await this.alter_by_id(atom._id, atom as Partial<AtomShape<A>>);
+		let db_record = await this.alter_by_id(atom._id, atom as Partial<AtomShape<A>>);
+		db_record = await this.validate_molecule(db_record);
 		return db_record;
 	}
 	
@@ -203,9 +213,6 @@ export class DAL<A extends AtomName> {
 			const err_msg = `Cannot _insert_one [in_trash=true]. Trash DB not found.`;
 			throw urn_exc.create('INS_ONE_TRASH_NOT_FOUND', err_msg);
 		}
-		
-		urn_atm.validate_atom_shape<A>(this.atom_name, atom_shape);
-		
 		const _relation = (in_trash === true && this._db_trash_relation) ?
 			this._db_trash_relation : this._db_relation;
 		const db_res_insert = await _relation.insert_one(atom_shape);

@@ -100,10 +100,21 @@ export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, mo
 	return true;
 }
 
-export function fix_property<A extends AtomName>(atom_name:A, atom:Atom<A>, key:keyof Atom<A>):Atom<A>;
-export function fix_property<A extends AtomName, D extends Depth>(atom_name:A, atom:Molecule<A,D>, key:keyof Molecule<A,D>):Molecule<A,D>;
-export function fix_property<A extends AtomName, D extends Depth>(atom_name:A, atom:Atom<A> | Molecule<A,D>, key: keyof Atom<A> | keyof Molecule<A,D>)
-		:Atom<A> | Molecule<A,D>{
+export function fix_property<A extends AtomName>(
+	atom_name:A,
+	atom:Atom<A>,
+	key:keyof Atom<A>
+):Atom<A>;
+export function fix_property<A extends AtomName, D extends Depth>(
+	atom_name:A,
+	atom:Molecule<A,D>,
+	key:keyof Molecule<A,D>
+):Molecule<A,D>;
+export function fix_property<A extends AtomName, D extends Depth>(
+	atom_name:A,
+	atom:Atom<A> | Molecule<A,D>,
+	key: keyof Atom<A> | keyof Molecule<A,D>
+):Atom<A> | Molecule<A,D>{
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	let prop_def = undefined;
 	if(urn_util.object.has_key(atom_props, key)){
