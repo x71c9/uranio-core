@@ -23,10 +23,10 @@ import {
 @urn_log.decorators.debug_methods
 class BLL<A extends AtomName> {
 	
-	protected _dal:urn_dal.DAL<A>;
+	protected _dal:urn_dal.AdvancedDAL<A>;
 	
 	constructor(public atom_name:A) {
-		this._dal = urn_dal.create_autofix<A>(atom_name);
+		this._dal = urn_dal.create(atom_name);
 	}
 	
 	public async find<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
