@@ -26,6 +26,8 @@ import {atom_book} from '../book';
 
 // const urn_exc = urn_exception.init('VAL_DAL', 'Validation DAL');
 
+import {create_abstract} from './abs';
+
 import {ValidateDAL} from './vali';
 
 @urn_log.decorators.debug_constructor
@@ -64,7 +66,8 @@ export class EncryptDAL<A extends AtomName> extends ValidateDAL<A>{
 				if(value && typeof value === 'string' && (value.length !== 60 || !value.startsWith('$2'))){
 					value = await urn_atm.encrypt_property(this.atom_name, k, value);
 				}else{
-					const res_select = await this.select_by_id(id);
+					const abstract_dal = create_abstract(this.atom_name, this._db_relation);
+					const res_select = await abstract_dal.select_by_id(id);
 					const db_prop = res_select[k];
 					if(db_prop && db_prop !== value){
 						value = await urn_atm.encrypt_property(this.atom_name, k, value);
