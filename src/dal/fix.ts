@@ -26,6 +26,7 @@ export class AutoFixDAL<A extends AtomName> extends WithTrashDAL<A>{
 	
 	protected async _replace_atom_on_error(id:string, atom:Atom<A>)
 			:Promise<Atom<A>>{
+		console.log('REPLACE', atom);
 		atom = await this._encrypt_changed_properties(id, atom);
 		atom = await this._fix_atom_on_validation_error(atom);
 		const db_res_insert = await this._db_relation.replace_by_id(id, atom);
@@ -42,10 +43,11 @@ export class AutoFixDAL<A extends AtomName> extends WithTrashDAL<A>{
 	
 	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>, depth?:D)
 			:Promise<Molecule<A,D>>{
-		if(!depth){
+		console.log(molecule, depth);
+		const bond_keys = urn_atm.get_bond_keys(this.atom_name);
+		if(!depth || (urn_atm.is_atom(this.atom_name, molecule as Atom<A>) && bond_keys.size === 0)){
 			return (await this._fix_atom_on_validation_error(molecule as Atom<A>)) as Molecule<A,D>;
 		}else{
-			const bond_keys = urn_atm.get_bond_keys(this.atom_name);
 			for(const k of bond_keys){
 				const bond_name = urn_atm.get_subatom_name(this.atom_name, k as string);
 				let prop_value = molecule[k] as any;
