@@ -4,5 +4,5 @@
  * @packageDocumentation
  */
 
-export * from './advanced';
+export * from './dal';
 

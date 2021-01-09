@@ -6,11 +6,10 @@
 
 import {urn_log} from 'urn-lib';
 
-// import * as urn_atm from '../atm/';
-
 import * as urn_dal from '../dal/';
 
 import {
+	AccessLayer,
 	Query,
 	AtomName,
 	Atom,
@@ -21,37 +20,37 @@ import {
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class BLL<A extends AtomName> {
+export class BLL<A extends AtomName> {
 	
-	protected _dal:urn_dal.AdvancedDAL<A>;
+	protected _al:AccessLayer<A>;
 	
 	constructor(public atom_name:A) {
-		this._dal = urn_dal.create(atom_name);
+		this._al = urn_dal.create(atom_name);
 	}
 	
 	public async find<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>[]>{
-		return await this._dal.select(query, options);
+		return await this._al.select(query, options);
 	}
 	
 	public async find_by_id<D extends Depth>(id:string, depth?:D)
 			:Promise<Molecule<A,D>>{
-		return await this._dal.select_by_id(id, depth);
+		return await this._al.select_by_id(id, depth);
 	}
 	
 	public async find_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
-		return await this._dal.select_one(query, options);
+		return await this._al.select_one(query, options);
 	}
 	
 	public async insert_new(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
-		return await this._dal.insert_one(atom_shape);
+		return await this._al.insert_one(atom_shape);
 	}
 	
 	public async update_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
-		return await this._dal.alter_by_id(id, partial_atom);
+		return await this._al.alter_by_id(id, partial_atom);
 	}
 	
 	public async update_one(atom:Atom<A>)
@@ -61,7 +60,7 @@ class BLL<A extends AtomName> {
 	
 	public async remove_by_id(id:string)
 			:Promise<Atom<A>>{
-		return await this._dal.delete_by_id(id);
+		return await this._al.delete_by_id(id);
 	}
 	
 	public async remove_one(molecule:Molecule<A>)

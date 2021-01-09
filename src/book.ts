@@ -28,6 +28,12 @@ const core_atoms_book = {
 			password: {
 				type: BookPropertyType.ENCRYPTED,
 				label: 'Password'
+			},
+			groups: {
+				type: BookPropertyType.ATOM_ARRAY,
+				atom: 'group',
+				label: 'Groups',
+				optional: true
 			}
 		}
 	},

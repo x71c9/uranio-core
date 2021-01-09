@@ -68,7 +68,8 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		let mon_find_res:Molecule<A,D>[] = [];
 		if(options){
 			mon_find_res = await this._raw.find(query, null, options)
-				.populate(_generate_populate_obj(this.atom_name, options.depth)).lean<Molecule<A,D>[]>();
+				.populate(_generate_populate_obj(this.atom_name, options.depth, options.depth_query))
+				.lean<Molecule<A,D>[]>();
 		}else{
 			mon_find_res = await this._raw.find(query).lean<Molecule<A,D>[]>();
 		}
@@ -102,7 +103,8 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		let mon_find_one_res:Molecule<A,D>;
 		if(options){
 			mon_find_one_res = await this._raw.findOne(query).sort(options.sort)
-				.populate(_generate_populate_obj(this.atom_name, options.depth)).lean<Molecule<A,D>>();
+				.populate(_generate_populate_obj(this.atom_name, options.depth, options.depth_query))
+				.lean<Molecule<A,D>>();
 		}else{
 			mon_find_one_res = await this._raw.findOne(query).lean<Molecule<A,D>>();
 		}
@@ -180,17 +182,24 @@ function _is_valid_id(id:string)
 	return mongoose.Types.ObjectId.isValid(id);
 }
 
-function _generate_subatomkey_populate_obj<A extends AtomName>(atom_name:A, subatom_key:string, depth:number)
-			:PopulateObject{
+function _generate_subatomkey_populate_obj<A extends AtomName>(
+	atom_name:A,
+	subatom_key:string,
+	depth:number,
+	depth_query?:Query<A>
+):PopulateObject{
 	const subatom_name = urn_atm.get_subatom_name(atom_name, subatom_key);
 	let populate_object:PopulateObject = {path: subatom_key, model: subatom_name};
+	if(depth_query){
+		populate_object.match = depth_query;
+	}
 	const subsubatom_keys = urn_atm.get_bond_keys(subatom_name);
 	if(subsubatom_keys.size === 0 || depth == 0)
 		return populate_object;
 	const subpops:PopulateObject[] = [];
 	for(const subsubkey of subsubatom_keys){
 		subpops.push(
-			_generate_subatomkey_populate_obj(subatom_name, subsubkey, depth - 1)
+			_generate_subatomkey_populate_obj(subatom_name, subsubkey, depth - 1, depth_query)
 		);
 	}
 	populate_object = {
@@ -200,13 +209,14 @@ function _generate_subatomkey_populate_obj<A extends AtomName>(atom_name:A, suba
 	return populate_object;
 }
 
-function _generate_populate_obj<A extends AtomName>(atom_name:A, depth?:number):PopulateObject[]{
+function _generate_populate_obj<A extends AtomName>(atom_name:A, depth?:number, depth_query?:Query<A>)
+		:PopulateObject[]{
 	const subatom_keys = urn_atm.get_bond_keys(atom_name);
 	const populate_object = [];
 	if(depth && depth > 0 && depth <= core_config.max_query_depth_allowed && subatom_keys.size){
 		for(const k of subatom_keys){
 			populate_object.push(
-				_generate_subatomkey_populate_obj(atom_name, k as string, depth - 1)
+				_generate_subatomkey_populate_obj(atom_name, k as string, depth - 1, depth_query)
 			);
 		}
 	}
