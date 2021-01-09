@@ -51,7 +51,8 @@ export const atom_book = {
 	...core_atoms_book,
 	product: {
 		security: {
-			type: BookSecurityType.UNIFORM
+			type: BookSecurityType.UNIFORM,
+			_r: '389'
 		},
 		properties: {
 			title: {
@@ -77,6 +78,10 @@ export const atom_book = {
 		}
 	},
 	media: {
+		security: {
+			type: BookSecurityType.UNIFORM,
+			_r: ''
+		},
 		properties: {
 			src: {
 				type: BookPropertyType.TEXT,

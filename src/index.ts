@@ -47,7 +47,7 @@ export default urn_core;
 //   console.log(data);
 // });
 
-const pro_bll = urn_core.bll.create('product');
+const pro_bll = urn_core.bll.create('product', ['389']);
 
 // const pro:urn_core.types.AtomShape<'product'> = {
 //   active: true,

@@ -1,5 +1,5 @@
 /**
- * Abstract Class for Business Logic Layer
+ * Class for Authentication Business Logic Layer
  *
  * @packageDocumentation
  */
@@ -16,11 +16,11 @@ import {core_config} from '../config/defaults';
 
 import * as urn_atm from '../atm/';
 
-import {BLL} from './bll';
+import {BasicBLL} from './basic';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class UsersBLL extends BLL<'user'>{
+class AuthBLL extends BasicBLL<'user'>{
 	
 	constructor(){
 		super('user');
@@ -40,9 +40,9 @@ class UsersBLL extends BLL<'user'>{
 	
 }
 
-export function create_users():UsersBLL{
-	urn_log.fn_debug(`Create UsersBLL`);
-	return new UsersBLL();
+export function create_users():AuthBLL{
+	urn_log.fn_debug(`Create AuthBLL`);
+	return new AuthBLL();
 }
 
 

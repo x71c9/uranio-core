@@ -65,7 +65,7 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 			:void{
 		if(this._security_type === BookSecurityType.UNIFORM){
 			if(typeof this._read !== 'undefined' && !this.user_groups.includes(this._read)){
-				throw urn_exc.create('UNAUTHORIZED', 'Read unauthorized');
+				throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Read unauthorized');
 			}
 		}
 	}
@@ -74,7 +74,7 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 			:void{
 		if(this._security_type === BookSecurityType.UNIFORM){
 			if(typeof this._write === 'undefined' || !this.user_groups.includes(this._write)){
-				throw urn_exc.create('UNAUTHORIZED', 'Write unauthorized');
+				throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Write unauthorized');
 			}
 		}
 	}
@@ -83,7 +83,7 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 			:Promise<boolean>{
 		const atom = await this._dal.select_by_id(id);
 		if(!atom._w || !this.user_groups.includes(atom._w)){
-			throw urn_exc.create('UNAUTHORIZED', 'Write unauthorized');
+			throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Write unauthorized');
 		}
 		return true;
 	}

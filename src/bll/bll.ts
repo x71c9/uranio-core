@@ -6,75 +6,19 @@
 
 import {urn_log} from 'urn-lib';
 
-import * as urn_dal from '../dal/';
-
 import {
-	AccessLayer,
-	Query,
 	AtomName,
-	Atom,
-	AtomShape,
-	Depth,
-	Molecule
 } from '../types';
+
+import {SecurityBLL} from './security';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class BLL<A extends AtomName> {
-	
-	protected _al:AccessLayer<A>;
-	
-	constructor(public atom_name:A) {
-		this._al = urn_dal.create(atom_name);
-	}
-	
-	public async find<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
-			:Promise<Molecule<A,D>[]>{
-		return await this._al.select(query, options);
-	}
-	
-	public async find_by_id<D extends Depth>(id:string, depth?:D)
-			:Promise<Molecule<A,D>>{
-		return await this._al.select_by_id(id, depth);
-	}
-	
-	public async find_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
-			:Promise<Molecule<A,D>>{
-		return await this._al.select_one(query, options);
-	}
-	
-	public async insert_new(atom_shape:AtomShape<A>)
-			:Promise<Atom<A>>{
-		return await this._al.insert_one(atom_shape);
-	}
-	
-	public async update_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
-			:Promise<Atom<A>>{
-		return await this._al.alter_by_id(id, partial_atom);
-	}
-	
-	public async update_one(atom:Atom<A>)
-			:Promise<Atom<A>>{
-		return await this.update_by_id(atom._id, atom as Partial<AtomShape<A>>);
-	}
-	
-	public async remove_by_id(id:string)
-			:Promise<Atom<A>>{
-		return await this._al.delete_by_id(id);
-	}
-	
-	public async remove_one(molecule:Molecule<A>)
-			:Promise<Atom<A>>{
-		return await this.remove_by_id(molecule._id);
-	}
-	
-}
+export class BLL<A extends AtomName> extends SecurityBLL<A>{}
 
-// export type BllInstance = InstanceType<typeof BLL>;
-
-export function create<A extends AtomName>(atom_name:A):BLL<A>{
+export function create<A extends AtomName>(atom_name:A, user_groups:string[]):BLL<A>{
 	urn_log.fn_debug(`Create BLL [${atom_name}]`);
-	return new BLL<A>(atom_name);
+	return new BLL<A>(atom_name, user_groups);
 }
 
 
