@@ -3,8 +3,5 @@
  *
  * @packageDocumentation
  */
-import * as acl from './acl';
 
-export {
-	acl
-};
+export * from './acl';
