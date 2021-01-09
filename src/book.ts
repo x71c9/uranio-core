@@ -1,5 +1,5 @@
 
-import {BookPropertyType} from './types';
+import {BookPropertyType, BookSecurityType} from './types';
 
 const core_atoms_book = {
 	superuser: {
@@ -9,12 +9,33 @@ const core_atoms_book = {
 				label: 'Email',
 				unique: true,
 				on_error: () => {
-					return 'a@a.com';
+					return 'email@email.com';
 				}
 			},
 			password: {
 				type: BookPropertyType.ENCRYPTED,
 				label: 'Password'
+			}
+		}
+	},
+	user: {
+		properties: {
+			email: {
+				type: BookPropertyType.EMAIL,
+				label: 'Email',
+				unique: true,
+			},
+			password: {
+				type: BookPropertyType.ENCRYPTED,
+				label: 'Password'
+			}
+		}
+	},
+	group: {
+		properties: {
+			name: {
+				type: BookPropertyType.TEXT,
+				label: 'Name'
 			}
 		}
 	}
@@ -23,6 +44,9 @@ const core_atoms_book = {
 export const atom_book = {
 	...core_atoms_book,
 	product: {
+		security: {
+			type: BookSecurityType.UNIFORM
+		},
 		properties: {
 			title: {
 				type: BookPropertyType.TEXT,

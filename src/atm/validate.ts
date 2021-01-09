@@ -64,9 +64,20 @@ export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof 
 	);
 }
 
-export function validate_molecule<A extends AtomName>(atom_name:A, molecule:Atom<A>):Atom<A>;
-export function validate_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>, depth?:D):Molecule<A,D>;
-export function validate_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D> | Atom<A>, depth?:D):Molecule<A,D> | Atom<A>{
+export function validate<A extends AtomName>(
+	atom_name:A,
+	molecule:Atom<A>
+):Atom<A>;
+export function validate<A extends AtomName, D extends Depth>(
+	atom_name:A,
+	molecule:Molecule<A,D>,
+	depth?:D
+):Molecule<A,D>;
+export function validate<A extends AtomName, D extends Depth>(
+	atom_name:A,
+	molecule:Molecule<A,D> | Atom<A>,
+	depth?:D
+):Molecule<A,D> | Atom<A>{
 	if(!depth){
 		validate_atom(atom_name, molecule as Atom<A>);
 	}else{
@@ -311,10 +322,10 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 				_validate_custom_bond_type(k as keyof Atom<A>, prop_def, prop_value);
 				if(Array.isArray(prop_value)){
 					for(const subatom of prop_value){
-						validate_molecule(subatom_name, subatom, number_depth);
+						validate(subatom_name, subatom, number_depth);
 					}
 				}else{
-					validate_molecule<typeof subatom_name, typeof number_depth>(
+					validate<typeof subatom_name, typeof number_depth>(
 						subatom_name,
 						prop_value as Molecule<A,D>,
 						number_depth

@@ -24,6 +24,11 @@ export const enum BookPropertyType {
 	ATOM_ARRAY = 'ATOM_ARRAY'
 }
 
+export const enum BookSecurityType {
+	UNIFORM = 'UNIFORM',
+	GRANULAR = 'GRANULAR'
+}
+
 export type RealType<AT extends BookPropertyType> =
 	AT extends BookPropertyType.ID ? string :
 	AT extends BookPropertyType.TEXT ? string :
@@ -50,10 +55,17 @@ export namespace Book {
 	
 	export type Definition = {
 		properties: Definition.Properties
+		security: BookSecurityType | Definition.Security
 	}
 	
 	export namespace Definition {
-	
+		
+		export type Security = {
+			type: BookSecurityType,
+			_r?: BookPropertyType.ID,
+			_w?: BookPropertyType.ID
+		}
+		
 		export type Properties = {
 			[k:string]: Property
 		}
