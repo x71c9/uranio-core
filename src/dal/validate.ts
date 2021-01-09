@@ -1,16 +1,16 @@
 /**
- * Abstract Class for Data Access Layer
+ * Class for Validate Data Access Layer
  *
  * @packageDocumentation
  */
 
 import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
+const urn_exc = urn_exception.init('VAL_DAL', 'ValidateDAL');
+
 import * as urn_atm from '../atm/';
 
 import * as urn_rel from '../rel/';
-
-// import * as urn_validators from '../vali/';
 
 import {
 	Depth,
@@ -21,15 +21,13 @@ import {
 	Molecule
 } from '../types';
 
-const urn_exc = urn_exception.init('VAL_DAL', 'Validation DAL');
-
 import {core_config} from '../config/defaults';
 
-import {AbstractDAL} from './abs';
+import {BasicDAL} from './basic';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class ValidateDAL<A extends AtomName> extends AbstractDAL<A>{
+export class ValidateDAL<A extends AtomName> extends BasicDAL<A>{
 	
 	constructor(atom_name:A) {
 		let db_relation: urn_rel.Relation<A>;
@@ -52,7 +50,7 @@ export class ValidateDAL<A extends AtomName> extends AbstractDAL<A>{
 		const atom_array = await super.select<D>(query, options);
 		for(let i = 0; i < atom_array.length; i++){
 			const depth = (options && options.depth) ? options.depth : undefined;
-			atom_array[i] = await this.validate_molecule<D>(atom_array[i], depth);
+			atom_array[i] = await this.validate<D>(atom_array[i], depth);
 		}
 		return atom_array;
 	}
@@ -60,7 +58,7 @@ export class ValidateDAL<A extends AtomName> extends AbstractDAL<A>{
 	public async select_by_id<D extends Depth = 0>(id:string, depth?:D)
 			:Promise<Molecule<A,D>>{
 		let db_record = await super.select_by_id(id, depth);
-		db_record = await this.validate_molecule<D>(db_record, depth);
+		db_record = await this.validate<D>(db_record, depth);
 		return db_record;
 	}
 	
@@ -68,7 +66,7 @@ export class ValidateDAL<A extends AtomName> extends AbstractDAL<A>{
 			:Promise<Molecule<A,D>>{
 		let db_record = await super.select_one(query, options);
 		const depth = (options && options.depth) ? options.depth : undefined;
-		db_record = await this.validate_molecule<D>(db_record, depth);
+		db_record = await this.validate<D>(db_record, depth);
 		return db_record;
 	}
 	
@@ -77,7 +75,7 @@ export class ValidateDAL<A extends AtomName> extends AbstractDAL<A>{
 		urn_atm.validate_atom_shape(this.atom_name, atom_shape);
 		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
 		let db_record = await super.insert_one(atom_shape);
-		db_record = await this.validate_molecule(db_record);
+		db_record = await this.validate(db_record);
 		return db_record;
 	}
 	
@@ -86,14 +84,14 @@ export class ValidateDAL<A extends AtomName> extends AbstractDAL<A>{
 		urn_atm.validate_atom_partial(this.atom_name, partial_atom);
 		await this._check_unique(partial_atom, id);
 		let db_record = await super.alter_by_id(id, partial_atom);
-		db_record = await this.validate_molecule(db_record);
+		db_record = await this.validate(db_record);
 		return db_record;
 	}
 	
 	public async delete_by_id(id:string)
 			:Promise<Atom<A>>{
 		let db_record = await super.delete_by_id(id);
-		db_record = await this.validate_molecule(db_record);
+		db_record = await this.validate(db_record);
 		return db_record;
 	}
 	
@@ -133,19 +131,18 @@ export class ValidateDAL<A extends AtomName> extends AbstractDAL<A>{
 		return true;
 	}
 	
-	protected async validate_molecule(molecule:Atom<A>):Promise<Atom<A>>;
-	protected async validate_molecule(molecule:Atom<A>, depth?:0):Promise<Atom<A>>;
-	protected async validate_molecule<D extends Depth>(molecule:Molecule<A,D>, depth?:D):Promise<Molecule<A,D>>
-	protected async validate_molecule<D extends Depth>(molecule:Molecule<A,D> | Atom<A>, depth?:D)
+	protected async validate(molecule:Atom<A>):Promise<Atom<A>>;
+	protected async validate(molecule:Atom<A>, depth?:0):Promise<Atom<A>>;
+	protected async validate<D extends Depth>(molecule:Molecule<A,D>, depth?:D):Promise<Molecule<A,D>>
+	protected async validate<D extends Depth>(molecule:Molecule<A,D> | Atom<A>, depth?:D)
 			:Promise<Molecule<A,D> | Atom<A>>{
-		return urn_atm.validate_molecule<A,D>(this.atom_name, molecule as Molecule<A,D>, depth);
+		return urn_atm.validate<A,D>(this.atom_name, molecule as Molecule<A,D>, depth);
 	}
 	
 }
 
-// export type DalInstance = InstanceType<typeof DAL>;
-
-export function create_validate<A extends AtomName>(atom_name:A):ValidateDAL<A>{
+export function create_validate<A extends AtomName>(atom_name:A)
+		:ValidateDAL<A>{
 	urn_log.fn_debug(`Create ValidateDAL [${atom_name}]`);
 	return new ValidateDAL<A>(atom_name);
 }

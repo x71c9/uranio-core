@@ -77,8 +77,7 @@ function _generate_mongoose_schema_type_options(atom_name: AtomName, prop_def:Bo
 		case BookPropertyType.ID:{
 			schema_type_options = {
 				...schema_type_options,
-				type: String,
-				trim: true
+				type: mongoose.Schema.Types.ObjectId
 			};
 			return schema_type_options;
 		}

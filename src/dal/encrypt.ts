@@ -1,5 +1,5 @@
 /**
- * Abstract Class for Data Access Layer
+ * Class for Encrypt Data Access Layer
  *
  * @packageDocumentation
  */
@@ -8,27 +8,21 @@ import {urn_log} from 'urn-lib';
 
 import * as urn_atm from '../atm/';
 
-// import * as urn_rel from '../rel/';
-
-// import * as urn_validators from '../vali/';
+import {atom_book} from '../book';
 
 import {
-	atom_hard_properties,
-	atom_common_properties,
 	AtomName,
 	AtomShape,
 	Atom,
 	Book,
-	BookPropertyType
+	BookPropertyType,
+	atom_hard_properties,
+	atom_common_properties,
 } from '../types';
 
-import {atom_book} from '../book';
+import {create_basic} from './basic';
 
-// const urn_exc = urn_exception.init('VAL_DAL', 'Validation DAL');
-
-import {create_abstract} from './abs';
-
-import {ValidateDAL} from './vali';
+import {ValidateDAL} from './validate';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
@@ -66,7 +60,7 @@ export class EncryptDAL<A extends AtomName> extends ValidateDAL<A>{
 				if(value && typeof value === 'string' && (value.length !== 60 || !value.startsWith('$2'))){
 					value = await urn_atm.encrypt_property(this.atom_name, k, value);
 				}else{
-					const abstract_dal = create_abstract(this.atom_name, this._db_relation);
+					const abstract_dal = create_basic(this.atom_name, this._db_relation);
 					const res_select = await abstract_dal.select_by_id(id);
 					const db_prop = res_select[k];
 					if(db_prop && db_prop !== value){
@@ -80,8 +74,6 @@ export class EncryptDAL<A extends AtomName> extends ValidateDAL<A>{
 	}
 	
 }
-
-// export type DalInstance = InstanceType<typeof DAL>;
 
 export function create_encrypt<A extends AtomName>(atom_name:A)
 		:EncryptDAL<A>{

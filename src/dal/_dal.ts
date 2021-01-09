@@ -54,12 +54,12 @@ export class DAL<A extends AtomName> {
 		}
 	}
 	
-	protected async validate_molecule(molecule:Atom<A>):Promise<Atom<A>>;
-	protected async validate_molecule(molecule:Atom<A>, depth?:0):Promise<Atom<A>>;
-	protected async validate_molecule<D extends Depth>(molecule:Molecule<A,D>, depth?:D):Promise<Molecule<A,D>>
-	protected async validate_molecule<D extends Depth>(molecule:Molecule<A,D> | Atom<A>, depth?:D)
+	protected async validate(molecule:Atom<A>):Promise<Atom<A>>;
+	protected async validate(molecule:Atom<A>, depth?:0):Promise<Atom<A>>;
+	protected async validate<D extends Depth>(molecule:Molecule<A,D>, depth?:D):Promise<Molecule<A,D>>
+	protected async validate<D extends Depth>(molecule:Molecule<A,D> | Atom<A>, depth?:D)
 			:Promise<Molecule<A,D> | Atom<A>>{
-		return urn_atm.validate_molecule<A,D>(this.atom_name, molecule as Molecule<A,D>, depth);
+		return urn_atm.validate<A,D>(this.atom_name, molecule as Molecule<A,D>, depth);
 	}
 	
 	public async select<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A, D>)
@@ -67,7 +67,7 @@ export class DAL<A extends AtomName> {
 		const atom_array = await this._select<D>(query, options);
 		for(let i = 0; i < atom_array.length; i++){
 			const depth = (options && options.depth) ? options.depth : undefined;
-			atom_array[i] = await this.validate_molecule<D>(atom_array[i], depth);
+			atom_array[i] = await this.validate<D>(atom_array[i], depth);
 		}
 		return atom_array;
 	}
@@ -75,7 +75,7 @@ export class DAL<A extends AtomName> {
 	public async select_by_id<D extends Depth = 0>(id:string, depth?:D)
 			:Promise<Molecule<A,D>>{
 		let db_record = await this._select_by_id(id, depth);
-		db_record = await this.validate_molecule<D>(db_record, depth);
+		db_record = await this.validate<D>(db_record, depth);
 		return db_record;
 	}
 	
@@ -83,7 +83,7 @@ export class DAL<A extends AtomName> {
 			:Promise<Molecule<A,D>>{
 		let db_record = await this._select_one(query, options);
 		const depth = (options && options.depth) ? options.depth : undefined;
-		db_record = await this.validate_molecule<D>(db_record, depth);
+		db_record = await this.validate<D>(db_record, depth);
 		return db_record;
 	}
 	
@@ -92,7 +92,7 @@ export class DAL<A extends AtomName> {
 		atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
 		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
 		let db_record = await this._insert_one(atom_shape);
-		db_record = await this.validate_molecule(db_record);
+		db_record = await this.validate(db_record);
 		return db_record;
 	}
 	
@@ -100,14 +100,14 @@ export class DAL<A extends AtomName> {
 			:Promise<Atom<A>>{
 		await this._check_unique(partial_atom, id);
 		let db_record = await this._alter_by_id(id, partial_atom);
-		db_record = await this.validate_molecule(db_record);
+		db_record = await this.validate(db_record);
 		return db_record;
 	}
 	
 	public async alter_one(atom:Atom<A>)
 			:Promise<Atom<A>>{
 		let db_record = await this.alter_by_id(atom._id, atom as Partial<AtomShape<A>>);
-		db_record = await this.validate_molecule(db_record);
+		db_record = await this.validate(db_record);
 		return db_record;
 	}
 	

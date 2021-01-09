@@ -1,5 +1,5 @@
 /**
- * Abstract Class for Data Access Layer
+ * Class for Selfish/Autofix Data Access Layer
  *
  * @packageDocumentation
  */
@@ -16,17 +16,14 @@ import {
 	Molecule
 } from '../types';
 
-// const urn_exc = urn_exception.init('AutoFixDAL', 'AutoFixDAL module');
-
-import {WithTrashDAL} from './trash';
+import {RecycleDAL} from './recycle';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class AutoFixDAL<A extends AtomName> extends WithTrashDAL<A>{
+export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 	
 	protected async _replace_atom_on_error(id:string, atom:Atom<A>)
 			:Promise<Atom<A>>{
-		console.log('REPLACE', atom);
 		atom = await this._encrypt_changed_properties(id, atom);
 		atom = await this._fix_atom_on_validation_error(atom);
 		const db_res_insert = await this._db_relation.replace_by_id(id, atom);
@@ -43,7 +40,6 @@ export class AutoFixDAL<A extends AtomName> extends WithTrashDAL<A>{
 	
 	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>, depth?:D)
 			:Promise<Molecule<A,D>>{
-		console.log(molecule, depth);
 		const bond_keys = urn_atm.get_bond_keys(this.atom_name);
 		if(!depth || (urn_atm.is_atom(this.atom_name, molecule as Atom<A>) && bond_keys.size === 0)){
 			return (await this._fix_atom_on_validation_error(molecule as Atom<A>)) as Molecule<A,D>;
@@ -51,7 +47,7 @@ export class AutoFixDAL<A extends AtomName> extends WithTrashDAL<A>{
 			for(const k of bond_keys){
 				const bond_name = urn_atm.get_subatom_name(this.atom_name, k as string);
 				let prop_value = molecule[k] as any;
-				const SUBDAL = create_autofix(bond_name);
+				const SUBDAL = create_selfish(bond_name);
 				if(Array.isArray(prop_value)){
 					for(let i = 0; i < prop_value.length; i++){
 						let subatom = prop_value[i];
@@ -114,20 +110,19 @@ export class AutoFixDAL<A extends AtomName> extends WithTrashDAL<A>{
 		return atom;
 	}
 	
-	protected async validate_molecule(molecule:Atom<A>):Promise<Atom<A>>;
-	protected async validate_molecule(molecule:Atom<A>, depth?:0):Promise<Atom<A>>;
-	protected async validate_molecule<D extends Depth>(molecule:Molecule<A,D>, depth?:D):Promise<Molecule<A,D>>;
-	protected async validate_molecule<D extends Depth>(molecule:Molecule<A,D> | Atom<A>, depth?:D)
+	protected async validate(molecule:Atom<A>):Promise<Atom<A>>;
+	protected async validate(molecule:Atom<A>, depth?:0):Promise<Atom<A>>;
+	protected async validate<D extends Depth>(molecule:Molecule<A,D>, depth?:D):Promise<Molecule<A,D>>;
+	protected async validate<D extends Depth>(molecule:Molecule<A,D> | Atom<A>, depth?:D)
 			:Promise<Molecule<A,D> | Atom<A>>{
 		return await this._fix_molecule_on_validation_error<D>(molecule as Molecule<A,D>, depth);
 	}
 	
 }
 
-// export type DalInstance = InstanceType<typeof DAL>;
-
-export function create_autofix<A extends AtomName>(atom_name:A):AutoFixDAL<A>{
-	urn_log.fn_debug(`Create AutoFixDAL [${atom_name}]`);
-	return new AutoFixDAL<A>(atom_name);
+export function create_selfish<A extends AtomName>(atom_name:A)
+		:SelfishDAL<A>{
+	urn_log.fn_debug(`Create SelfishDAL [${atom_name}]`);
+	return new SelfishDAL<A>(atom_name);
 }
 

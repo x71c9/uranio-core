@@ -23,6 +23,16 @@ export const atom_hard_properties = {
 } as const;
 
 export const atom_common_properties = {
+	_r:{
+		type: BookPropertyType.ID,
+		label: '_r',
+		optional: true
+	},
+	_w:{
+		type: BookPropertyType.ID,
+		label: '_w',
+		optional: true
+	},
 	_deleted_from: {
 		type: BookPropertyType.ID,
 		label: 'Deleted from',
