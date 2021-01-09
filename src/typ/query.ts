@@ -72,7 +72,8 @@ export namespace Query {
 		{ $lt?: T } |
 		{ $lte?: T } |
 		{ $ne?: T } |
-		{ $nin?: T[] }
+		{ $nin?: T[] } |
+		{ $exists: boolean}
 
 	type WithComparsion<A extends AtomName> =
 		{ [P in QueryAtomKey<A>]?: Comparsion<QueryAtomRealType<A,P>> }
@@ -90,6 +91,7 @@ export namespace Query {
 		sort?: string | Equal<A>;
 		limit?: number;
 		skip?: number;
+		depth_query?:Query<A>
 	}
 	
 	// const a1:Query<'superuser'> = {email: ''};

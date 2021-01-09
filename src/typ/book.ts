@@ -55,7 +55,7 @@ export namespace Book {
 	
 	export type Definition = {
 		properties: Definition.Properties
-		security: BookSecurityType | Definition.Security
+		security?: BookSecurityType | Definition.Security
 	}
 	
 	export namespace Definition {

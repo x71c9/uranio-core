@@ -13,6 +13,7 @@ import * as urn_rel from '../rel/';
 import * as urn_validators from '../vali/';
 
 import {
+	AccessLayer,
 	Depth,
 	Query,
 	AtomName,
@@ -23,7 +24,7 @@ import {
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class BasicDAL<A extends AtomName> {
+export class BasicDAL<A extends AtomName> implements AccessLayer<A>{
 	
 	constructor(public atom_name:A, protected _db_relation:urn_rel.Relation<A>) {}
 	

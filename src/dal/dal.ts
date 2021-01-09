@@ -12,11 +12,11 @@ import {SelfishDAL} from './selfish';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class AdvancedDAL<A extends AtomName> extends SelfishDAL<A>{}
+export class DAL<A extends AtomName> extends SelfishDAL<A>{}
 
 export function create<A extends AtomName>(atom_name:A)
-		:AdvancedDAL<A>{
-	urn_log.fn_debug(`Create AdvancedDAL [${atom_name}]`);
-	return new AdvancedDAL<A>(atom_name);
+		:DAL<A>{
+	urn_log.fn_debug(`Create DAL [${atom_name}]`);
+	return new DAL<A>(atom_name);
 }
 
