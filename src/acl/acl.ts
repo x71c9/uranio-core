@@ -10,6 +10,8 @@ const urn_exc = urn_exception.init('ACL', 'Access Control Module');
 
 import * as urn_dal from '../dal/';
 
+import * as urn_atm from '../atm/';
+
 import {atom_book} from '../book';
 
 import {
@@ -40,8 +42,6 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 	
 	protected _read_query:Query<A>;
 	
-	// protected _write_query:Query<A>;
-	
 	constructor(public atom_name:A, protected user_groups:RealType<BookPropertyType.ID>[]) {
 		this._dal = urn_dal.create(atom_name);
 		const atom_def = atom_book[atom_name] as Book.Definition;
@@ -51,14 +51,15 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 		this._write = undefined;
 		if(security){
 			if(typeof security === 'string'){
-				this._security_type = security;
+				if(security === BookSecurityType.GRANULAR){
+					this._security_type = security;
+				}
 			}else{
 				this._read = security._r;
 				this._write = security._w;
 			}
 		}
 		this._read_query = {$or: [{_r: {$exists: 0}}, {_r: {$in: user_groups}}]} as Query<A>;
-		// this._write_query = {_w: {$in: user_groups}} as Query<A>;
 	}
 	
 	protected _can_uniform_read()
@@ -88,6 +89,37 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 		return true;
 	}
 	
+	public filter_uniform_bond_properties<D extends Depth>(molecule:Molecule<A,D>, depth = 0)
+			:Molecule<A,D>{
+		const bond_keys = urn_atm.get_bond_keys(this.atom_name);
+		let k:keyof Molecule<A,D>;
+		for(k of bond_keys){
+			const subatom_name = urn_atm.get_subatom_name(this.atom_name, k as string);
+			const acl = create(subatom_name, this.user_groups);
+			try{
+				acl._can_uniform_read();
+				if(depth){
+					const prop_value = molecule[k];
+					if(Array.isArray(prop_value)){
+						for(let subatom of prop_value){
+							subatom = acl.filter_uniform_bond_properties(subatom, depth - 1);
+						}
+					}else{
+						molecule[k] = acl.filter_uniform_bond_properties(molecule[k] as Molecule<A,D>, depth - 1) as any;
+					}
+				}
+			}catch(err){
+				if(err.type === urn_exception.ExceptionType.UNAUTHORIZED){
+					// molecule[k] = (Array.isArray(molecule[k])) ? [] : '' as any;
+					delete molecule[k];
+				}else{
+					throw err;
+				}
+			}
+		}
+		return molecule;
+	}
+	
 	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>[]>{
 		
@@ -100,7 +132,11 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 			}
 			options.depth_query = query;
 		}
-		return await this._dal.select(query, options);
+		const molecules = await this._dal.select(query, options);
+		return molecules.map((m) => {
+			const depth = (options) ? options.depth : 0;
+			return this.filter_uniform_bond_properties(m, depth);
+		});
 	}
 	
 	public async select_by_id<D extends Depth>(id:string, depth?:D)

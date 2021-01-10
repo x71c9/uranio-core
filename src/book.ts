@@ -3,6 +3,10 @@ import {BookPropertyType, BookSecurityType} from './types';
 
 const core_atoms_book = {
 	superuser: {
+		security: {
+			type: BookSecurityType.UNIFORM,
+			_r: null
+		},
 		properties: {
 			email: {
 				type: BookPropertyType.EMAIL,
@@ -19,6 +23,9 @@ const core_atoms_book = {
 		}
 	},
 	user: {
+		securiy: {
+			type: BookSecurityType.GRANULAR
+		},
 		properties: {
 			email: {
 				type: BookPropertyType.EMAIL,
@@ -73,14 +80,15 @@ export const atom_book = {
 			},
 			cover: {
 				type: BookPropertyType.ATOM_ARRAY,
-				atom: 'media'
+				atom: 'media',
+				optional: true
 			}
 		}
 	},
 	media: {
 		security: {
 			type: BookSecurityType.UNIFORM,
-			_r: ''
+			_r: null
 		},
 		properties: {
 			src: {
@@ -95,7 +103,7 @@ export const atom_book = {
 			superuser: {
 				type: BookPropertyType.ATOM,
 				atom: 'superuser',
-				// optional: true
+				optional: true
 			}
 		}
 	},
