@@ -22,7 +22,7 @@ import {
 
 import {atom_book} from '../book';
 
-import {core_config} from '../config/defaults';
+import {core_config} from '../conf/defaults';
 
 import {get_subatom_name} from './util';
 

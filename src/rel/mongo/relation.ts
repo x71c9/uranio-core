@@ -17,7 +17,7 @@ import {
 	Molecule
 } from '../../types';
 
-import {core_config} from '../../config/defaults';
+import {core_config} from '../../conf/defaults';
 
 import * as urn_atm from '../../atm/';
 

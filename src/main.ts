@@ -12,7 +12,7 @@ import * as bll from './bll/';
 
 export {bll};
 
-import {core_config} from './config/defaults';
+import {core_config} from './conf/defaults';
 
 export function init(config:types.Configuration)
 		:void{

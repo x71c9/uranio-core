@@ -12,7 +12,7 @@ import {urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('USERSBLL', 'Users BLL');
 
-import {core_config} from '../config/defaults';
+import {core_config} from '../conf/defaults';
 
 import * as urn_atm from '../atm/';
 

@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt';
 
 import {urn_util} from 'urn-lib';
 
-import {core_config} from '../config/defaults';
+import {core_config} from '../conf/defaults';
 
 import {atom_book} from '../book';
 

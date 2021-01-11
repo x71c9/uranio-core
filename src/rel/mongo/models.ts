@@ -12,7 +12,7 @@ import {AtomName} from '../../types';
 
 import {atom_book} from '../../book';
 
-import {core_config} from '../../config/defaults';
+import {core_config} from '../../conf/defaults';
 
 import {ConnectionName} from './types';
 
