@@ -137,6 +137,7 @@ export function fix_property<A extends AtomName, D extends Depth>(
 	}
 	try{
 		
+		console.log(atom);
 		validate_property(key as keyof Atom<A>, prop_def, fixed_value, atom as Atom<A>);
 		(atom as any)[key] = fixed_value;
 		

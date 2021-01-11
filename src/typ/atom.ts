@@ -18,7 +18,8 @@ export const atom_hard_properties = {
 	_date: {
 		type: BookPropertyType.TIME,
 		label: '_date',
-		default: 'NOW'
+		default: 'NOW',
+		on_error: () => {return new Date();}
 	}
 } as const;
 
@@ -226,52 +227,4 @@ export type Molecule<A extends AtomName, D extends Depth = 0> =
 	AtomHardProperties &
 	AtomPrimitiveShape<A> &
 	BondShape<A, 'molecule', D>
-
-
-export const a:Molecule<'product'> = {
-	_id: '',
-	_date: new Date('2020-01-01'),
-	title: '',
-	price: 0,
-	active: true,
-	cover: ['']
-};
-
-export const b:Molecule<'product',1> = {
-	_id: '',
-	_date: new Date('2020-01-01'),
-	title: '',
-	price: 0,
-	active: true,
-	cover: [{
-		_id: '',
-		_date: new Date(),
-		src: '',
-		type: '',
-		active: false,
-		superuser: '',
-	}]
-};
-
-export const c:Molecule<'product',2> = {
-	_id: '',
-	_date: new Date('2020-01-01'),
-	title: '',
-	price: 0,
-	active: true,
-	cover: [{
-		_id: '',
-		_date: new Date(),
-		src: '',
-		type: '',
-		active: false,
-		superuser: {
-			_id: '',
-			_date: new Date(),
-			active: true,
-			email: '',
-			password: ''
-		}
-	}]
-};
 

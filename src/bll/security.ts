@@ -6,9 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import {
-	AtomName,
-} from '../types';
+import {AtomName} from '../types';
 
 import {BasicBLL} from './basic';
 
