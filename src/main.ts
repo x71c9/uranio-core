@@ -8,13 +8,13 @@ import * as types from './types';
 
 export {types};
 
-export * from './bll/';
+import * as bll from './bll/';
 
-import {Configuration} from './types';
+export {bll};
 
 import {core_config} from './config/defaults';
 
-export function init(config:Configuration)
+export function init(config:types.Configuration)
 		:void{
 	Object.assign(core_config, config);
 }

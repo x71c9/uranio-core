@@ -1,10 +1,9 @@
 /**
- * Index module for Data Access Layers
+ * Index module Business Logic Layer
  *
  * @packageDocumentation
  */
-import * as bll from './bll';
 
-export {
-	bll
-};
+export * from './bll';
+
+export * from './basic';
