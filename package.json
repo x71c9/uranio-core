@@ -28,8 +28,7 @@
 	"dependencies": {
 		"bcrypt": "^5.0.0",
 		"jsonwebtoken": "^8.5.1",
-		"mongoose": "^5.11.9",
-		"urn-lib": "file:../urn-lib/",
-		"urn-mdls": "file:../urn-mdls/"
+		"mongoose": "^5.11.11",
+		"urn-lib": "git+ssh://git@bitbucket.org/nbl7/urn-lib.git"
 	}
 }
