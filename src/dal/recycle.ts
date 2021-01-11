@@ -15,7 +15,7 @@ import {
 	Atom,
 } from '../types';
 
-import {core_config} from '../config/defaults';
+import {core_config} from '../conf/defaults';
 
 import {BasicDAL, create_basic} from './basic';
 

@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {core_config} from '../config/defaults';
+import {core_config} from '../conf/defaults';
 
 import {atom_book} from '../book';
 

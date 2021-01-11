@@ -7,7 +7,7 @@
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-import {core_config} from '../config/defaults';
+import {core_config} from '../conf/defaults';
 
 import {Depth, Query, AtomName} from '../types';
 
