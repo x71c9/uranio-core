@@ -22,13 +22,13 @@
 	"homepage": "https://bitbucket.org/nbl7/urn-core#readme",
 	"devDependencies": {
 		"@types/bcrypt": "^3.0.0",
-		"@types/jsonwebtoken": "^8.5.0",
-		"urn-dev": "git+ssh://git@bitbucket.org/nbl7/urn-dev.git"
+		"@types/jsonwebtoken": "^8.5.0"
 	},
 	"dependencies": {
 		"bcrypt": "^5.0.0",
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^5.11.11",
+		"urn-dev": "git+ssh://git@bitbucket.org/nbl7/urn-dev.git",
 		"urn-lib": "git+ssh://git@bitbucket.org/nbl7/urn-lib.git"
 	}
 }
