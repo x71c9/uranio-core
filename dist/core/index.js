@@ -24,6 +24,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const urn_core = __importStar(require("./core/main"));
+const urn_core = __importStar(require("./main"));
 exports.default = urn_core;
 //# sourceMappingURL=index.js.map
