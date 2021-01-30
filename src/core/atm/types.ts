@@ -1,7 +1,0 @@
-/**
- *
- * Atom type module
- *
- * @packageDocumentation
- */
-
