@@ -4,6 +4,8 @@
  * @packageDocumentation
  */
 
+import {atom_book} from '@book';
+
 import {urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ACL', 'Access Control Module');
@@ -11,8 +13,6 @@ const urn_exc = urn_exception.init('ACL', 'Access Control Module');
 import * as urn_dal from '../dal/';
 
 import * as urn_atm from '../atm/';
-
-import {atom_book} from '../../book';
 
 import {
 	Query,

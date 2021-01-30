@@ -4,13 +4,13 @@
  * @packageDocumentation
  */
 
+import {atom_book} from '@book';
+
 import bcrypt from 'bcrypt';
 
 import {urn_util} from 'urn-lib';
 
 import {core_config} from '../conf/defaults';
-
-import {atom_book} from '../../book';
 
 import {_validate_encrypt_property} from './validate';
 

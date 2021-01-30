@@ -4,11 +4,11 @@
  * @packageDocumentation
  */
 
+import {atom_book} from '@book';
+
 import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util modul`);
-
-import {atom_book} from '../../book';
 
 import {get_bond_keys} from './keys';
 

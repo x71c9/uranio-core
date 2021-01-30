@@ -4,13 +4,13 @@
  * @packageDocumentation
  */
 
+import {atom_book} from '@book';
+
 import mongoose from 'mongoose';
 
 // import {urn_util} from 'urn-lib';
 
 import {AtomName} from '../../types';
-
-import {atom_book} from '../../../book';
 
 import {core_config} from '../../conf/defaults';
 

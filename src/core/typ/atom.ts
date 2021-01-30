@@ -4,9 +4,9 @@
  * @packageDocumentation
  */
 
-import {core_config} from '../conf/defaults';
+import {atom_book} from '@book';
 
-import {atom_book} from '../../book';
+import {core_config} from '../conf/defaults';
 
 import {BookPropertyType, RealType} from './book';
 

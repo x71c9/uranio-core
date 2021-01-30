@@ -1,5 +1,0 @@
-/**
- * Module for Atom
- *
- * @packageDocumentation
- */

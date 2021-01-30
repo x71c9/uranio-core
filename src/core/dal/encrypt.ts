@@ -4,11 +4,11 @@
  * @packageDocumentation
  */
 
+import {atom_book} from '@book';
+
 import {urn_log} from 'urn-lib';
 
 import * as urn_atm from '../atm/';
-
-import {atom_book} from '../../book';
 
 import {
 	AtomName,

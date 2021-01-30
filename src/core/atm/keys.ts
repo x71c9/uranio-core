@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from '../../book';
+import {atom_book} from '@book';
 
 import {
 	atom_common_properties,

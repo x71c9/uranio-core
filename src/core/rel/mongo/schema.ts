@@ -4,6 +4,8 @@
  * @packageDocumentation
  */
 
+import {atom_book} from '@book';
+
 import mongoose from 'mongoose';
 
 // import {urn_exception, urn_util} from 'urn-lib';
@@ -20,8 +22,6 @@ import {
 	atom_hard_properties,
 	atom_common_properties
 } from '../../types';
-
-import {atom_book} from '../../../book';
 
 // function _generate_schemas(){
 //   const schema_by_atom_name = new Map<AtomName, mongoose.SchemaDefinition>();
