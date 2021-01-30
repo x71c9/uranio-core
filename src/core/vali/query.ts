@@ -5,13 +5,13 @@
  * @packageDocumentation
  */
 
+import {atom_book} from '@book';
+
 import {urn_exception, urn_util} from 'urn-lib';
 
 import {core_config} from '../conf/defaults';
 
 import {Depth, Query, AtomName} from '../types';
-
-import {atom_book} from '../../book';
 
 
 const _query_op_keys = {

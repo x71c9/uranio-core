@@ -4,6 +4,8 @@
  * @packageDocumentation
  */
 
+import {atom_book} from '@book';
+
 import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init(`VALIDATION`, `Validate module`);
@@ -19,8 +21,6 @@ import {
 	Depth,
 	Molecule
 } from '../types';
-
-import {atom_book} from '../../book';
 
 import {core_config} from '../conf/defaults';
 
