@@ -1,4 +1,4 @@
-import { BookPropertyType, BookSecurityType } from './types';
+import { BookPropertyType, BookSecurityType } from './core/types';
 export declare const atom_book: {
     readonly superuser: {
         readonly security: {

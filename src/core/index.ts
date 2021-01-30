@@ -3,5 +3,7 @@
  *
  * @packageDocumentation
  */
-import * as urn_core from './core/main';
+
+import * as urn_core from './main';
+
 export default urn_core;

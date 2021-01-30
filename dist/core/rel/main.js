@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Index module for URANIO Core
+ * Main export module for DB
  *
  * @packageDocumentation
  */
@@ -23,7 +23,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const urn_core = __importStar(require("./core/main"));
-exports.default = urn_core;
-//# sourceMappingURL=index.js.map
+exports.mongo = void 0;
+const urn_mongo = __importStar(require("./mongo/"));
+exports.mongo = urn_mongo;
+__exportStar(require("./types"), exports);
+//# sourceMappingURL=main.js.map

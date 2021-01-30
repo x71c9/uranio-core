@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Index module for URANIO Core
+ * Export module for validators
  *
  * @packageDocumentation
  */
@@ -24,6 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const urn_core = __importStar(require("./core/main"));
-exports.default = urn_core;
+exports.query = void 0;
+const urn_query_validator = __importStar(require("./query"));
+exports.query = urn_query_validator;
 //# sourceMappingURL=index.js.map

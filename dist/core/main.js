@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Index module for URANIO Core
+ * Main module
  *
  * @packageDocumentation
  */
@@ -24,6 +24,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const urn_core = __importStar(require("./core/main"));
-exports.default = urn_core;
-//# sourceMappingURL=index.js.map
+exports.init = exports.bll = exports.types = void 0;
+const types = __importStar(require("./types"));
+exports.types = types;
+const bll = __importStar(require("./bll/"));
+exports.bll = bll;
+const defaults_1 = require("./conf/defaults");
+function init(config) {
+    Object.assign(defaults_1.core_config, config);
+}
+exports.init = init;
+//# sourceMappingURL=main.js.map
