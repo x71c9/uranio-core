@@ -1,5 +1,5 @@
 
-import {BookPropertyType, BookSecurityType} from './core/types';
+import {BookPropertyType, BookSecurityType} from './_core/types';
 
 const core_atoms_book = {
 	superuser: {
