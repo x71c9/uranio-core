@@ -1,3 +1,0 @@
-[submodule "src/core"]
-	path = src/core
-	url = git@bitbucket.org:nbl7/urn-core-src.git
