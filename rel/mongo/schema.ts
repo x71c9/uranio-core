@@ -65,6 +65,7 @@ function _generate_mongoose_schema_type_options(atom_name: AtomName, prop_def:Bo
 		is_required = false;
 	}
 	let schema_type_options:mongoose.SchemaTypeOptions<any> = {
+		type: undefined,
 		required: is_required
 	};
 	if(prop_def.unique && prop_def.unique === true){
