@@ -63,7 +63,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 		try{
 			urn_atm.validate_molecule_primitive_properties(this.atom_name, molecule);
 		}catch(exc){
-			if(exc.type !== urn_exception.ExceptionType.INVALID){
+			if(exc.type !== urn_exception.ExceptionType.INVALID_ATOM){
 				throw exc;
 			}
 			if(this.trash_dal){
@@ -89,7 +89,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 		try{
 			urn_atm.validate_atom<A>(this.atom_name, atom);
 		}catch(exc){
-			if(exc.type !== urn_exception.ExceptionType.INVALID){
+			if(exc.type !== urn_exception.ExceptionType.INVALID_ATOM){
 				throw exc;
 			}
 			if(this.trash_dal){
