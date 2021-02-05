@@ -35,7 +35,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 			:Promise<Molecule<A,D>>{
 		const atom = urn_atm.molecule_to_atom(this.atom_name, molecule);
 		await this._replace_atom_on_error(id, atom);
-		return await this.select_by_id(id, depth);
+		return await this.select_by_id(id, {depth: depth});
 	}
 	
 	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>, depth?:D)

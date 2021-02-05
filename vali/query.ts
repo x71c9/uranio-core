@@ -13,12 +13,13 @@ import {core_config} from '../conf/defaults';
 
 import {Depth, Query, AtomName} from '../types';
 
-
 const _query_op_keys = {
 	array_op: ['$and', '$nor', '$or'],
 	equal_op: ['$not'],
 	compa_op: ['$eq', '$gt', '$gte', '$in', '$lt', '$lte', '$ne', '$nin']
 };
+
+const _options_keys = ['depth', 'sort', 'limit', 'skip', 'depth_query'];
 
 const urn_exc = urn_exception.init('QUERY_VALIDATE','Query Validator');
 
@@ -142,11 +143,22 @@ function validate_filter<A extends AtomName>(query:Query<A>, atom_name:A)
  */
 function validate_options<A extends AtomName, D extends Depth>(options:Query.Options<A,D>, atom_name:A)
 		:true{
+	
+	if(Object.keys(options).length > _options_keys.length){
+		throw urn_exc.create('OPTIONS_INVALID_KEYS', `Options param has an invalid property.`);
+	}
+	for(const k in options){
+		if(!_options_keys.includes(k)){
+			const err_msg = `Invalid property for options param [${k}]`;
+			throw urn_exc.create('OPTIONS_INVALID_KEY', err_msg);
+		}
+	}
+	
 	if(options.sort){
 		switch(typeof options.sort){
 			case 'string':{
 				let sort_value = options.sort;
-				if(options.sort[0] == '+' || options.sort[0] == '-'){
+				if(options.sort[0] === '+' || options.sort[0] === '-'){
 					sort_value = sort_value.substring(1, options.sort.length);
 				}
 				if(!urn_util.object.has_key(atom_book[atom_name].properties, sort_value)){
@@ -171,16 +183,23 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 			}
 		}
 	}
-	if(options.limit && typeof options.limit != 'number'){
-		const err_msg = `options.limit value type must be number.`;
-		throw urn_exc.create('OPTIONS_INVALID_LIMIT_VAL', err_msg);
+	if(options.limit){
+		options.limit = +options.limit;
+		if(typeof options.limit !== 'number'){
+			const err_msg = `options.limit value type must be number.`;
+			throw urn_exc.create('OPTIONS_INVALID_LIMIT_VAL', err_msg);
+		}
 	}
-	if(options.skip && typeof options.skip != 'number'){
-		const err_msg = `option.skip value type must be number.`;
-		throw urn_exc.create('OPTIONS_INVALID_SKIP_VAL', err_msg);
+	if(options.skip){
+		options.skip = +options.skip;
+		if(typeof options.skip !== 'number'){
+			const err_msg = `option.skip value type must be number.`;
+			throw urn_exc.create('OPTIONS_INVALID_SKIP_VAL', err_msg);
+		}
 	}
 	if(options.depth){
-		if(typeof options.depth != 'number'){
+		options.depth = +options.depth as D;
+		if(typeof options.depth !== 'number'){
 			const err_msg = `options.depth value type must be number.`;
 			throw urn_exc.create('OPTIONS_INVALID_DEPTH_TYPE', err_msg);
 		}

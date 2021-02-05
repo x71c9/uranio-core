@@ -12,7 +12,7 @@ export interface AccessLayer<A extends AtomName> {
 	
 	select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>):Promise<Molecule<A,D>[]>;
 	
-	select_by_id<D extends Depth>(id:string, depth?:D):Promise<Molecule<A,D>>;
+	select_by_id<D extends Depth>(id:string, options?:Query.Options<A,D>):Promise<Molecule<A,D>>;
 	
 	select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>):Promise<Molecule<A,D>>;
 	

@@ -66,10 +66,14 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>[]>{
 		let mon_find_res:Molecule<A,D>[] = [];
-		if(options){
+		if(options && options.depth && typeof options.depth === 'number' && options.depth > 0){
+			const populate_object = _generate_populate_obj(
+				this.atom_name,
+				options.depth,
+				options.depth_query
+			);
 			mon_find_res = await this._raw.find(query, null, options)
-				.populate(_generate_populate_obj(this.atom_name, options.depth, options.depth_query))
-				.lean<Molecule<A,D>[]>();
+				.populate(populate_object).lean<Molecule<A,D>[]>();
 		}else{
 			mon_find_res = await this._raw.find(query).lean<Molecule<A,D>[]>();
 		}
@@ -78,15 +82,15 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		});
 	}
 	
-	public async select_by_id<D extends Depth>(id:string, depth?:D)
+	public async select_by_id<D extends Depth>(id:string, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
-		if(typeof depth !== 'undefined' && typeof depth !== 'number'){
-			const err_msg = `Invalid depth type, Depth should be a number.`;
-			throw urn_exc.create('SELECT_BY_ID_INVALID_DEPTH', err_msg);
-		}
 		let mon_find_by_id_res:Molecule<A,D>;
-		if(depth && depth > 0){
-			const populate_object = _generate_populate_obj(this.atom_name, depth);
+		if(options && options.depth && typeof options.depth === 'number' && options.depth > 0){
+			const populate_object = _generate_populate_obj(
+				this.atom_name,
+				options.depth,
+				options.depth_query
+			);
 			mon_find_by_id_res = await this._raw.findById(id)
 				.populate(populate_object).lean<Molecule<A,D>>();
 		}else{
@@ -101,10 +105,14 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	public async select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
 		let mon_find_one_res:Molecule<A,D>;
-		if(options){
+		if(options && options.depth && typeof options.depth === 'number' && options.depth > 0){
+			const populate_object = _generate_populate_obj(
+				this.atom_name,
+				options.depth,
+				options.depth_query
+			);
 			mon_find_one_res = await this._raw.findOne(query).sort(options.sort)
-				.populate(_generate_populate_obj(this.atom_name, options.depth, options.depth_query))
-				.lean<Molecule<A,D>>();
+				.populate(populate_object).lean<Molecule<A,D>>();
 		}else{
 			mon_find_one_res = await this._raw.findOne(query).lean<Molecule<A,D>>();
 		}

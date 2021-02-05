@@ -39,7 +39,6 @@ export class RecycleDAL<A extends AtomName> extends EncryptDAL<A>{
 			default:{
 				const err_msg = `The Database type in the configuration data is invalid.`;
 				throw urn_exc.create('INVALID_DB_TYPE', err_msg);
-				break;
 			}
 		}
 	}

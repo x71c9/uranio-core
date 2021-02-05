@@ -34,12 +34,13 @@ export class BasicDAL<A extends AtomName> implements AccessLayer<A>{
 		return await this._db_relation.select(query, options);
 	}
 	
-	public async select_by_id<D extends Depth = 0>(id:string, depth?:D)
+	public async select_by_id<D extends Depth = 0>(id:string, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
 		if(!this._db_relation.is_valid_id(id)){
-			throw urn_exc.create('SELECT_BY_ID_INVALID_ID', `Cannot _select_by_id. Invalid argument id.`);
+			const err_msg = `Cannot _select_by_id. Invalid argument id.`;
+			throw urn_exc.create('SELECT_BY_ID_INVALID_ID', err_msg);
 		}
-		return await this._db_relation.select_by_id(id, depth);
+		return await this._db_relation.select_by_id(id, options);
 	}
 	
 	public async select_one<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A,D>)
