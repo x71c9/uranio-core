@@ -108,7 +108,7 @@ export class ValidateDAL<A extends AtomName> extends BasicDAL<A>{
 		}
 		let query:Query<A> = {};
 		if(typeof id === 'string' && this._db_relation.is_valid_id(id)){
-			query = {$and: [{$not: {_id: id}}, {$or: $or}]} as Query<A>;
+			query = {$and: [{_id: {$ne: id}}, {$or: $or}]} as Query<A>;
 		}else{
 			query = {$or: $or};
 		}
@@ -129,7 +129,7 @@ export class ValidateDAL<A extends AtomName> extends BasicDAL<A>{
 			}
 			throw err;
 		}
-		return true;
+		// return true;
 	}
 	
 	protected async validate(molecule:Atom<A>):Promise<Atom<A>>;

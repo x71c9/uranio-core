@@ -14,7 +14,8 @@ import {SecurityBLL} from './security';
 @urn_log.decorators.debug_methods
 export class BLL<A extends AtomName> extends SecurityBLL<A>{}
 
-export function create<A extends AtomName>(atom_name:A, user_groups:string[]):BLL<A>{
+export function create<A extends AtomName>(atom_name:A, user_groups:string[])
+		:BLL<A>{
 	urn_log.fn_debug(`Create BLL [${atom_name}]`);
 	return new BLL<A>(atom_name, user_groups);
 }
