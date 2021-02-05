@@ -139,14 +139,14 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 		});
 	}
 	
-	public async select_by_id<D extends Depth>(id:string, depth?:D)
+	public async select_by_id<D extends Depth>(id:string, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
 		
 		this._can_uniform_read();
 		
-		const options = {depth: depth} as Query.Options<A,D>;
+		// const options = {depth: depth} as Query.Options<A,D>;
 		let query = {_id: id} as Query<A>;
-		if(this._security_type === BookSecurityType.GRANULAR){
+		if(options && this._security_type === BookSecurityType.GRANULAR){
 			query = {$and: [query, this._read_query]};
 			options.depth_query = query;
 		}

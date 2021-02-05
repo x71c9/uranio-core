@@ -6,7 +6,6 @@
 
 import {
 	AtomName,
-	// Atom,
 	Depth,
 	KeyOfHardProperties,
 	KeyOfCommonProperties,

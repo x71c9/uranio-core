@@ -55,9 +55,10 @@ export class ValidateDAL<A extends AtomName> extends BasicDAL<A>{
 		return atom_array;
 	}
 	
-	public async select_by_id<D extends Depth = 0>(id:string, depth?:D)
+	public async select_by_id<D extends Depth = 0>(id:string, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
-		let db_record = await super.select_by_id(id, depth);
+		let db_record = await super.select_by_id(id, options);
+		const depth = (options && options.depth) ? options.depth : undefined;
 		db_record = await this.validate<D>(db_record, depth);
 		return db_record;
 	}
