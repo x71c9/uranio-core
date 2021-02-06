@@ -132,7 +132,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		const str_id = mon_res_doc._id.toString();
 		const mon_obj = mon_res_doc.toObject();
 		mon_obj._id = str_id;
-		return mon_obj as Atom<A>;
+		return _clean_atom<A>(this.atom_name, mon_obj as Atom<A>);
 	}
 	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)

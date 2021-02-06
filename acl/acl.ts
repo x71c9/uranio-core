@@ -1,6 +1,26 @@
 /**
  * Class for Access Control Layer
  *
+ * The Access Control Layer is an Access Layer that will check if it is possible
+ * to make the query and filters the results with only the accessible data.
+ *
+ * The permission on each Relation can be UNIFORM or GRANULAR.
+ *
+ * UNIFORM permission will check on a Relation level.
+ * GRANULAR permission will check on a Record level.
+ *
+ * In order to the ACL to work, it needs User and Group Relations.
+ * Each request is made by an User. Each User has Groups.
+ *
+ * Each Relation / Record has two attributes _r and _w, respectively for reading
+ * and writing permission. The value of these attributes is a Group ID Array.
+ *
+ * _r will narrow from Everybody
+ * _w will widen from Nobody
+ *
+ * _r == nullish -> Everybody can read
+ * _w == nullish -> Nobody can write
+ *
  * @packageDocumentation
  */
 
@@ -65,7 +85,7 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 	protected _can_uniform_read()
 			:void{
 		if(this._security_type === BookSecurityType.UNIFORM){
-			if(typeof this._read !== 'undefined' && !this.user_groups.includes(this._read)){
+			if(this._read && !this.user_groups.includes(this._read)){
 				throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Read unauthorized');
 			}
 		}
@@ -74,7 +94,7 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 	protected _can_uniform_write()
 			:void{
 		if(this._security_type === BookSecurityType.UNIFORM){
-			if(typeof this._write === 'undefined' || !this.user_groups.includes(this._write)){
+			if(!this._write || !this.user_groups.includes(this._write)){
 				throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Write unauthorized');
 			}
 		}
@@ -130,7 +150,8 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 			if(!options){
 				options = {};
 			}
-			options.depth_query = query;
+			// options.depth_query = query;
+			options.depth_query = this._read_query;
 		}
 		const molecules = await this._dal.select(query, options);
 		return molecules.map((m) => {
@@ -144,11 +165,11 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 		
 		this._can_uniform_read();
 		
-		// const options = {depth: depth} as Query.Options<A,D>;
 		let query = {_id: id} as Query<A>;
 		if(options && this._security_type === BookSecurityType.GRANULAR){
 			query = {$and: [query, this._read_query]};
-			options.depth_query = query;
+			// options.depth_query = query;
+			options.depth_query = this._read_query;
 		}
 		return await this._dal.select_one(query, options);
 	}
@@ -163,7 +184,8 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 			if(!options){
 				options = {};
 			}
-			options.depth_query = query;
+			// options.depth_query = query;
+			options.depth_query = this._read_query;
 		}
 		return await this._dal.select_one(query, options);
 	}
