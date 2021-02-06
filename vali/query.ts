@@ -13,6 +13,8 @@ import {core_config} from '../conf/defaults';
 
 import {Depth, Query, AtomName} from '../types';
 
+import * as urn_atm from '../atm/';
+
 const _query_op_keys = {
 	array_op: ['$and', '$nor', '$or'],
 	equal_op: ['$not'],
@@ -46,7 +48,7 @@ export function validate_filter_options_params<A extends AtomName, D extends Dep
  * @param field - The field to validate
  *
  */
-function _validate_expression<A extends AtomName>(field:Query.Expression<A>)
+function _validate_expression<A extends AtomName>(field:Query.Expression<A>, atom_name:A)
 		:true{
 	if(field === undefined || field === null || typeof field !== 'object'){
 		const err_msg = `Cannot _validate_expression. Invalid expression type.`;
@@ -58,9 +60,16 @@ function _validate_expression<A extends AtomName>(field:Query.Expression<A>)
 	}
 	for(const [k,v] of Object.entries(field)){
 		if(_query_op_keys.equal_op.includes(k)){
-			return _validate_expression<A>(v);
+			return _validate_expression<A>(v, atom_name);
 		}else{
+			
+			if(!urn_atm.is_valid_property(atom_name, k as any)){
+				const err_msg = `Invalid filter key [${k}] for Atom [${atom_name}].`;
+				throw urn_exc.create('INVALID_EXPRESSION_KEY', err_msg);
+			}
+			
 			switch(typeof v){
+				case 'boolean':
 				case 'string':
 				case 'number':
 					return true;
@@ -129,7 +138,7 @@ function validate_filter<A extends AtomName>(query:Query<A>, atom_name:A)
 				}
 			}
 		}else{
-			_validate_expression<A>({[key]: value} as any);
+			_validate_expression<A>({[key]: value} as any, atom_name);
 		}
 	}
 	return true;
