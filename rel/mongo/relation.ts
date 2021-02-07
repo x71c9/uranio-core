@@ -139,12 +139,12 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 			:Promise<Atom<A>>{
 		if(typeof id !== 'string' || id === '' || !this.is_valid_id(id)){
 			const err_msg = `Cannot alter_by_id. Invalid id param.`;
-			throw urn_exc.create('ALTER_BY_ID_INVALID_ID', err_msg);
+			throw urn_exc.create_invalid_request('ALTER_BY_ID_INVALID_ID', err_msg);
 		}
 		const mon_update_res =
 			await this._raw.findByIdAndUpdate({_id:id}, partial_atom, {new: true, lean: true}) as unknown;
 		if(mon_update_res === null){
-			throw urn_exc.create('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
+			throw urn_exc.create_not_found('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
 		}
 		return _clean_atom<A>(this.atom_name, mon_update_res as Atom<A>);
 	}
@@ -158,7 +158,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		const mon_update_res =
 			await this._raw.findByIdAndUpdate({_id:id}, atom, {new: true, lean: true, overwrite: true}) as unknown;
 		if(mon_update_res === null){
-			throw urn_exc.create('REPLACE_BY_ID_NOT_FOUND', `Cannot replace_by_id. Record not found.`);
+			throw urn_exc.create_not_found('REPLACE_BY_ID_NOT_FOUND', `Cannot replace_by_id. Record not found.`);
 		}
 		const cleaned = _clean_atom(this.atom_name, mon_update_res as Atom<A>);
 		return cleaned;
@@ -168,7 +168,7 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 			:Promise<Atom<A>>{
 		if(typeof id !== 'string' || id === '' || !this.is_valid_id(id)){
 			const err_msg = `Cannot delete_by_id. Invalid id param.`;
-			throw urn_exc.create('DEL_BY_ID_INVALID_ID', err_msg);
+			throw urn_exc.create_invalid_request('DEL_BY_ID_INVALID_ID', err_msg);
 		}
 		const mon_delete_res =
 			await this._raw.findOneAndDelete({_id:id});

@@ -52,11 +52,11 @@ function _validate_expression<A extends AtomName>(field:Query.Expression<A>, ato
 		:true{
 	if(field === undefined || field === null || typeof field !== 'object'){
 		const err_msg = `Cannot _validate_expression. Invalid expression type.`;
-		throw urn_exc.create('INVALID_EXPRESSION_TYPE', err_msg);
+		throw urn_exc.create_invalid_request('INVALID_EXPRESSION_TYPE', err_msg);
 	}
 	if(Object.keys(field).length > 1){
 		const err_msg = `Invalid expression. Expression must have only one key set.`;
-		throw urn_exc.create('INVALID_EXPRESSION_MULTIPLE_KEYS', err_msg);
+		throw urn_exc.create_invalid_request('INVALID_EXPRESSION_MULTIPLE_KEYS', err_msg);
 	}
 	for(const [k,v] of Object.entries(field)){
 		if(_query_op_keys.equal_op.includes(k)){
@@ -65,7 +65,7 @@ function _validate_expression<A extends AtomName>(field:Query.Expression<A>, ato
 			
 			if(!urn_atm.is_valid_property(atom_name, k as any)){
 				const err_msg = `Invalid filter key [${k}] for Atom [${atom_name}].`;
-				throw urn_exc.create('INVALID_EXPRESSION_KEY', err_msg);
+				throw urn_exc.create_invalid_request('INVALID_EXPRESSION_KEY', err_msg);
 			}
 			
 			switch(typeof v){
@@ -77,12 +77,12 @@ function _validate_expression<A extends AtomName>(field:Query.Expression<A>, ato
 					for(const [l,u] of Object.entries(v)){
 						if(!_query_op_keys.compa_op.includes(l)){
 							const err_msg = `Filter value comparsion not valid [${l}].`;
-							throw urn_exc.create('FIELD_INVALID_COMP', err_msg);
+							throw urn_exc.create_invalid_request('FIELD_INVALID_COMP', err_msg);
 						}
 						if(!Array.isArray(u) && !_is_base_query_type(u)){
 							let err_msg = `Filter comparsion value type must be`;
 							err_msg += ` a string, a number, a date or an Array [${l}]`;
-							throw urn_exc.create('FIELD_INVALID_COMP_TYPE', err_msg);
+							throw urn_exc.create_invalid_request('FIELD_INVALID_COMP_TYPE', err_msg);
 						}
 						if(Array.isArray(u)){
 							const are_all_valid_values = u.every((val) => {
@@ -90,7 +90,7 @@ function _validate_expression<A extends AtomName>(field:Query.Expression<A>, ato
 							});
 							if(!are_all_valid_values){
 								const err_msg = `Invalid query comparsion value type.`;
-								throw urn_exc.create('FIELD_INVALID_VAL_TYPE', err_msg);
+								throw urn_exc.create_invalid_request('FIELD_INVALID_VAL_TYPE', err_msg);
 							}
 						}
 					}
@@ -98,7 +98,7 @@ function _validate_expression<A extends AtomName>(field:Query.Expression<A>, ato
 				}
 				default:{
 					const err_msg = `Filter filed type not valid.`;
-					throw urn_exc.create('FIELD_INVALID_TYPE', err_msg);
+					throw urn_exc.create_invalid_request('FIELD_INVALID_TYPE', err_msg);
 				}
 			}
 		}
@@ -125,13 +125,13 @@ function validate_filter<A extends AtomName>(query:Query<A>, atom_name:A)
 		:true{
 	if(typeof query !== 'object' || query === null || query === undefined){
 		const err_msg = `Invalid query format.`;
-		throw urn_exc.create('FILTER_INVALID_TYPE', err_msg);
+		throw urn_exc.create_invalid_request('FILTER_INVALID_TYPE', err_msg);
 	}
 	for(const [key, value] of Object.entries(query)){
 		if(_query_op_keys.array_op.includes(key)){
 			if(!Array.isArray(value)){
 				const err_msg = `Invalid query format. Filter value for [${key}] must be an array.`;
-				throw urn_exc.create('FILTER_OP_VAL_NOT_ARRAY', err_msg);
+				throw urn_exc.create_invalid_request('FILTER_OP_VAL_NOT_ARRAY', err_msg);
 			}else{
 				for(let i=0; i < value.length; i++){
 					validate_filter(value[i], atom_name);
@@ -154,12 +154,12 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 		:true{
 	
 	if(Object.keys(options).length > _options_keys.length){
-		throw urn_exc.create('OPTIONS_INVALID_KEYS', `Options param has an invalid property.`);
+		throw urn_exc.create_invalid_request('OPTIONS_INVALID_KEYS', `Options param has an invalid property.`);
 	}
 	for(const k in options){
 		if(!_options_keys.includes(k)){
 			const err_msg = `Invalid property for options param [${k}]`;
-			throw urn_exc.create('OPTIONS_INVALID_KEY', err_msg);
+			throw urn_exc.create_invalid_request('OPTIONS_INVALID_KEY', err_msg);
 		}
 	}
 	
@@ -172,7 +172,7 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 				}
 				if(!urn_util.object.has_key(atom_book[atom_name].properties, sort_value)){
 					const err_msg = `Sort value not valid [${options.sort}].`;
-					throw urn_exc.create('OPTIONS_INVALID_SORT_VAL', err_msg);
+					throw urn_exc.create_invalid_request('OPTIONS_INVALID_SORT_VAL', err_msg);
 				}
 				break;
 			}
@@ -180,12 +180,12 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 				for(const k in options.sort){
 					if(!urn_util.object.has_key(atom_book[atom_name].properties, k)){
 						const err_msg = `Sort value not valid [${k}].`;
-						throw urn_exc.create('OPTIONS_INVALID_OBJECT_SORT_VAL', err_msg);
+						throw urn_exc.create_invalid_request('OPTIONS_INVALID_OBJECT_SORT_VAL', err_msg);
 					}
 					const sort_obj_value = options.sort[k];
 					if(isNaN(sort_obj_value) || (sort_obj_value != -1 && sort_obj_value != 1)){
 						const err_msg = `Sort value must be equal either to -1 or 1.`;
-						throw urn_exc.create('OPTIONS_INVALID_VAL', err_msg);
+						throw urn_exc.create_invalid_request('OPTIONS_INVALID_VAL', err_msg);
 					}
 				}
 				break;
@@ -196,26 +196,26 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 		options.limit = +options.limit;
 		if(typeof options.limit !== 'number'){
 			const err_msg = `options.limit value type must be number.`;
-			throw urn_exc.create('OPTIONS_INVALID_LIMIT_VAL', err_msg);
+			throw urn_exc.create_invalid_request('OPTIONS_INVALID_LIMIT_VAL', err_msg);
 		}
 	}
 	if(options.skip){
 		options.skip = +options.skip;
 		if(typeof options.skip !== 'number'){
 			const err_msg = `option.skip value type must be number.`;
-			throw urn_exc.create('OPTIONS_INVALID_SKIP_VAL', err_msg);
+			throw urn_exc.create_invalid_request('OPTIONS_INVALID_SKIP_VAL', err_msg);
 		}
 	}
 	if(options.depth){
 		options.depth = +options.depth as D;
 		if(typeof options.depth !== 'number'){
 			const err_msg = `options.depth value type must be number.`;
-			throw urn_exc.create('OPTIONS_INVALID_DEPTH_TYPE', err_msg);
+			throw urn_exc.create_invalid_request('OPTIONS_INVALID_DEPTH_TYPE', err_msg);
 		}
 		if(options.depth > core_config.max_query_depth_allowed){
 			let err_msg = `options.depth is gratern than maximun allowed`;
 			err_msg += ` [${core_config.max_password_length}]`;
-			throw urn_exc.create('OPTIONS_INVALID_DEPTH_VAL', err_msg);
+			throw urn_exc.create_invalid_request('OPTIONS_INVALID_DEPTH_VAL', err_msg);
 		}
 	}
 	return true;

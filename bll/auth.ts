@@ -32,7 +32,7 @@ class AuthBLL extends BasicBLL<'user'>{
 		const user = await this._al.select_one({email: email});
 		const compare_result = await bcrypt.compare(password, user.password);
 		if(!compare_result){
-			throw urn_exc.create('AUTH_INVALID_PASSWORD', `Invalid password.`);
+			throw urn_exc.create_invalid_request('AUTH_INVALID_PASSWORD', `Invalid password.`);
 		}
 		const token = jwt.sign({user: {_id: user._id, groups: user.groups}}, core_config.jwt_private_key);
 		return token;
