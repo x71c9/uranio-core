@@ -39,7 +39,6 @@ export class ValidateDAL<A extends AtomName> extends BasicDAL<A>{
 			default:{
 				const err_msg = `The Database type in the configuration data is invalid.`;
 				throw urn_exc.create('INVALID_DB_TYPE', err_msg);
-				break;
 			}
 		}
 		super(atom_name, db_relation);
@@ -122,7 +121,7 @@ export class ValidateDAL<A extends AtomName> extends BasicDAL<A>{
 			}
 			let err_msg = `Atom unique fields are already in the database.`;
 			err_msg += ` Duplicate fields: ${urn_util.formatter.json_one_line(equal_values)}.`;
-			throw urn_exc.create('CHECK_UNIQUE_DUPLICATE', err_msg);
+			throw urn_exc.create_invalid_request('CHECK_UNIQUE_DUPLICATE', err_msg);
 		}catch(err){
 			if(err.type && err.type === urn_exception.ExceptionType.NOT_FOUND){
 				return true;

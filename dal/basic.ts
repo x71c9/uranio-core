@@ -38,7 +38,7 @@ export class BasicDAL<A extends AtomName> implements AccessLayer<A>{
 			:Promise<Molecule<A,D>>{
 		if(!this._db_relation.is_valid_id(id)){
 			const err_msg = `Cannot _select_by_id. Invalid argument id.`;
-			throw urn_exc.create('SELECT_BY_ID_INVALID_ID', err_msg);
+			throw urn_exc.create_invalid_request('SELECT_BY_ID_INVALID_ID', err_msg);
 		}
 		return await this._db_relation.select_by_id(id, options);
 	}
