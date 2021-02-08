@@ -6,6 +6,8 @@
 
 import {AtomName} from './atom';
 
+export type ConnectionName = 'main' | 'trash' | 'log';
+
 export const enum BookPropertyType {
 	ID = 'ID',
 	TEXT = 'TEXT',
@@ -55,6 +57,7 @@ export namespace Book {
 	
 	export type Definition = {
 		properties: Definition.Properties
+		connection?: ConnectionName,
 		security?: BookSecurityType | Definition.Security
 	}
 	

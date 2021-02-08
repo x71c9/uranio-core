@@ -39,7 +39,6 @@ export class BasicBLL<A extends AtomName> {
 		return await this._al.select(query, options);
 	}
 	
-	// public async find_by_id<D extends Depth>(id:string, depth?:D)
 	public async find_by_id<D extends Depth>(id:string, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
 		return await this._al.select_by_id(id, options);

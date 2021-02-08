@@ -10,8 +10,6 @@ const urn_exc = urn_exception.init('VAL_DAL', 'ValidateDAL');
 
 import * as urn_atm from '../atm/';
 
-import * as urn_rel from '../rel/';
-
 import {
 	Depth,
 	Query,
@@ -21,28 +19,11 @@ import {
 	Molecule
 } from '../types';
 
-import {core_config} from '../conf/defaults';
-
-import {BasicDAL} from './basic';
+import {RelationDAL} from './rel';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class ValidateDAL<A extends AtomName> extends BasicDAL<A>{
-	
-	constructor(atom_name:A) {
-		let db_relation: urn_rel.Relation<A>;
-		switch(core_config.db_type){
-			case 'mongo':{
-				db_relation = urn_rel.mongo.create<A>(atom_name);
-				break;
-			}
-			default:{
-				const err_msg = `The Database type in the configuration data is invalid.`;
-				throw urn_exc.create('INVALID_DB_TYPE', err_msg);
-			}
-		}
-		super(atom_name, db_relation);
-	}
+export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	
 	public async select<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A, D>)
 			:Promise<Molecule<A, D>[]>{

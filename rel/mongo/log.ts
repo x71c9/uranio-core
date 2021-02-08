@@ -19,7 +19,7 @@ import {MongooseRelation} from './relation';
  */
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-export class MongooseTrashRelation<A extends AtomName> extends MongooseRelation<A>
+export class MongooseLogRelation<A extends AtomName> extends MongooseRelation<A>
 	implements Relation<A> {
 	
 	constructor(atom_name:A){
@@ -27,13 +27,13 @@ export class MongooseTrashRelation<A extends AtomName> extends MongooseRelation<
 	}
 	
 	protected _get_conn_name():ConnectionName{
-		return 'trash';
+		return 'log';
 	}
 	
 }
 
-export function trash_create<A extends AtomName>(atom_name: A)
+export function log_create<A extends AtomName>(atom_name: A)
 		:MongooseRelation<A>{
-	urn_log.fn_debug(`Create MongooseTrashRelation`);
-	return new MongooseTrashRelation<A>(atom_name);
+	urn_log.fn_debug(`Create MongooseLogRelation`);
+	return new MongooseLogRelation<A>(atom_name);
 }

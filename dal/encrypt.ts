@@ -17,7 +17,7 @@ import {
 	Book,
 	BookPropertyType,
 	atom_hard_properties,
-	atom_common_properties,
+	atom_common_properties
 } from '../types';
 
 import {create_basic} from './basic';

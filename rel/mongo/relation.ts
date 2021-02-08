@@ -14,7 +14,8 @@ import {
 	Atom,
 	AtomShape,
 	Depth,
-	Molecule
+	Molecule,
+	ConnectionName
 } from '../../types';
 
 import {core_config} from '../../conf/defaults';
@@ -23,7 +24,7 @@ import * as urn_atm from '../../atm/';
 
 import {Relation} from '../types';
 
-import {ConnectionName, PopulateObject} from './types';
+import {PopulateObject} from './types';
 
 import {models_by_connection} from './models';
 
