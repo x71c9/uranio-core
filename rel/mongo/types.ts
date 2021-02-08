@@ -6,8 +6,6 @@
 
 import mongoose from 'mongoose';
 
-export type ConnectionName = 'main' | 'trash';
-
 export type PopulateObject = {
 	path: string,
 	model: string,

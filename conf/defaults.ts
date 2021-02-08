@@ -16,7 +16,15 @@ export const core_config:FullConfiguration = {
 	
 	db_name: 'uranio_dev',
 	
+	db_trash_host: 'localhost',
+	
+	db_trash_port: 27017,
+	
 	db_trash_name: 'uranio_trash_dev',
+	
+	db_log_host: 'localhost',
+	
+	db_log_port: 27017,
 	
 	db_log_name: 'uranio_log_dev',
 	

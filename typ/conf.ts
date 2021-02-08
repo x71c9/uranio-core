@@ -26,7 +26,15 @@ type RequiredConfigParams = {
 }
 
 type OptionalConfigParam = {
-
+	
+	db_trash_host: string,
+	
+	db_trash_port: number,
+	
+	db_log_host: string,
+	
+	db_log_port: number,
+	
 	encryption_round: number;
 	
 	max_password_length: number;
