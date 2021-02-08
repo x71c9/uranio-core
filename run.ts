@@ -11,7 +11,7 @@ urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
 import urn_core from 'urn_core';
 
 // const bll_log = urn_core.bll.create_basic('log');
-const bll_log = urn_core.bll.create_log();
+const bll_log = urn_core.bll.create_log('debug');
 
 // const log = {
 //   active: true,

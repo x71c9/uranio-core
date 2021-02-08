@@ -65,6 +65,10 @@ type OmitSubType<Base, Condition> = Omit<Base, {
 	[Key in keyof Base]: Base[Key] extends Condition ? Key : never
 }[keyof Base]>;
 
+type ExtractLogAtom<P> = PickSubType<P, {connection: 'log'}>;
+
+export type LogName = keyof ExtractLogAtom<typeof atom_book>;
+
 type ExtractOptional<P> = PickSubType<P, {optional: true}>;
 
 type ExcludeOptional<P> = OmitSubType<P, {optional: true}>;
