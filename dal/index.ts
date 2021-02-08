@@ -6,3 +6,5 @@
 
 export * from './dal';
 
+export * from './log';
+
