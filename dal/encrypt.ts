@@ -1,6 +1,11 @@
 /**
  * Class for Encrypt Data Access Layer
  *
+ * This class handle Atom's encrypted properties.
+ * It will encrypt before `insert_one`
+ * It will also check if a property with ENCRYPT type has changed and encrypt
+ * it again before `alter_by_id`.
+ *
  * @packageDocumentation
  */
 

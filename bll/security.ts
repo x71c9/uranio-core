@@ -1,5 +1,11 @@
 /**
- * Secutiry Class for Business Logic Layer
+ * Security Class for Business Logic Layer
+ *
+ * This is a Business Logic Layer that force the use of the `user_group` in
+ * order to initialise.
+ *
+ * If a `user_group` is defined the BLL will use an ACL - Access Control Layer
+ * instead of a DAL - Data Access Layer without `user_group` control.
  *
  * @packageDocumentation
  */

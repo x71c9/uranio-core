@@ -10,7 +10,7 @@ import {create_log} from '../dal/log';
 
 export async function debug(msg:string, additional:Partial<AtomShape<'log'>>)
 		:Promise<Atom<'log'> | undefined>{
-	return _insert_one('error', msg, additional);
+	return _insert_one('debug', msg, additional);
 }
 
 export async function error(msg:string, additional:Partial<AtomShape<'log'>>)

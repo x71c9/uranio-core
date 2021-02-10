@@ -1,6 +1,8 @@
 /**
  * Class for Basic Data Access Layer
  *
+ * This class is a mirror of a Relation.
+ *
  * @packageDocumentation
  */
 

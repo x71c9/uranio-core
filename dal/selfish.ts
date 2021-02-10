@@ -1,5 +1,9 @@
 /**
- * Class for Selfish/Autofix Data Access Layer
+ * Class for Selfish Data Access Layer
+ *
+ * This class will autofix Atoms when retrieving them from the db.
+ * If a property of an Atom is invalid the class will try to replace with a
+ * function or a default value defined in `atom_book`.
  *
  * @packageDocumentation
  */

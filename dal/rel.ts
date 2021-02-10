@@ -1,6 +1,10 @@
 /**
  * Class for Main Data Access Layer
  *
+ * This class will select the Relation the DAL should use.
+ * Check the type of DB defined in the config.
+ * Use a Log Relation if the Atom has the `connection` property set to `log`.
+ *
  * @packageDocumentation
  */
 

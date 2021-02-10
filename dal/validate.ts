@@ -1,6 +1,9 @@
 /**
  * Class for Validate Data Access Layer
  *
+ * This class will validate all Atom before and after saving to the db.
+ * If the Atoms are not valid it will throw Exceptions.
+ *
  * @packageDocumentation
  */
 

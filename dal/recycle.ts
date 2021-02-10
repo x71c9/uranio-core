@@ -1,6 +1,9 @@
 /**
  * Class for Recycle Data Access Layer
  *
+ * This class will move a deleted Atom to the Trash database instead of just
+ * deleting it.
+ *
  * @packageDocumentation
  */
 
