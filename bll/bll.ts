@@ -1,5 +1,5 @@
 /**
- * Abstract Class for Business Logic Layer
+ * Default Class for Business Logic Layer
  *
  * @packageDocumentation
  */

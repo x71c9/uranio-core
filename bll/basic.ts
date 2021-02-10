@@ -1,6 +1,9 @@
 /**
  * Class for Basic Business Logic Layer
  *
+ * If a `user_groups` array  is defined in the constructor the class will use
+ * an ACL - Access Control Layer - in order to filter the data.
+ *
  * @packageDocumentation
  */
 

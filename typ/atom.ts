@@ -1,6 +1,21 @@
 /**
  * Atom types module
  *
+ * This modules defines all the types for an Atom starting from the `atom_book`
+ * variable, defined in `urn_book`.
+ *
+ * An `Atom` type is composed by
+ * - `atom_hard_properties`:
+ *   the common properties that are generated when saved to the db: _id, _date
+ * - `atom_common_properties`
+ *   the common properties for each Atom
+ * - and the properties defined in the `atom_book` under `properties`.
+ *
+ * An `AtomShape` is an `Atom` without the `atom_hard_properties`.
+ *
+ * A `Molecule` is an `Atom` with all its Atom-type-properties populated with
+ * other Atoms.
+ *
  * @packageDocumentation
  */
 
@@ -205,7 +220,7 @@ export type AtomMoleculeBondPropertyType<
 	AoM extends 'atom' ? RealTypeOfAtomProperty<A,k> :
 	never;
 
-export type BondShape<A extends AtomName, AoM extends AtomOrMolecule, D extends Depth> =
+type BondShape<A extends AtomName, AoM extends AtomOrMolecule, D extends Depth> =
 	{ [k in RequiredKeyOfBondProperties<A>]: AtomMoleculeBondPropertyType<A, AoM, k ,D> } &
 	{ [k in OptionalKeyOfBondProperties<A>]?: AtomMoleculeBondPropertyType<A, AoM, k, D> };
 	// { [k in RequiredKeyOfBondProperties<A>]: AtomMoleculeBondPropertyType<A, AoM, k ,D> } &

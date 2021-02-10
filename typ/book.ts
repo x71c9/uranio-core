@@ -1,6 +1,8 @@
 /**
  * Book types module
  *
+ * This module defines the type of the `atom_book` defined in `urn_book`
+ *
  * @packageDocumentation
  */
 

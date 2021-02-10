@@ -1,5 +1,5 @@
 /**
- * Class for Advanced Data Access Layer
+ * Default Class for Data Access Layer
  *
  * @packageDocumentation
  */
