@@ -38,11 +38,6 @@ export const atom_common_properties = {
 		type: BookPropertyType.ID,
 		label: 'Deleted from',
 		optional: true
-	},
-	active: {
-		type: BookPropertyType.BINARY,
-		default: true,
-		label: 'Active'
 	}
 } as const;
 

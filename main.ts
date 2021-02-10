@@ -12,6 +12,10 @@ import * as bll from './bll/';
 
 export {bll};
 
+import * as logger from './log/';
+
+export {logger};
+
 import {core_config} from './conf/defaults';
 
 export function init(config:types.Configuration)
