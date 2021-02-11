@@ -28,7 +28,9 @@ import {get_subatom_name} from './util';
 
 import {get_bond_keys} from './keys';
 
-export function is_valid_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>)
+export function is_valid_property<A extends AtomName>(atom_name:A, key:string):boolean;
+export function is_valid_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>):boolean;
+export function is_valid_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>|string)
 		:boolean{
 	if(urn_util.object.has_key(atom_hard_properties, key)){
 		return true;
