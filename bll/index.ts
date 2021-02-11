@@ -6,4 +6,6 @@
 
 export * from './bll';
 
+export * from './log';
+
 export * from './basic';

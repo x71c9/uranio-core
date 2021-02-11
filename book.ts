@@ -2,27 +2,6 @@
 import * as book_types from './types';
 
 export const core_atom_book = {
-	log: {
-		connection: 'log',
-		security: {
-			type: book_types.BookSecurityType.UNIFORM,
-			_r: null
-		},
-		api:{
-			url: '/log'
-		},
-		properties: {
-			msg: {
-				type: book_types.BookPropertyType.TEXT,
-				label: 'Message'
-			},
-			type: {
-				type: book_types.BookPropertyType.ENUM_STRING,
-				label: 'Type',
-				values: ['debug', 'warning', 'error']
-			}
-		}
-	},
 	superuser: {
 		security: {
 			type: book_types.BookSecurityType.UNIFORM,

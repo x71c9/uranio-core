@@ -277,7 +277,7 @@ function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molec
 	if(subatom_keys.size > 0){
 		for(const subkey of subatom_keys){
 			const subatom_name = urn_atm.get_subatom_name<A>(atom_name, subkey as string);
-			let prop = molecule[subkey];
+			const prop = molecule[subkey];
 			if(prop){
 				if(Array.isArray(prop)){
 					for(let i = 0; i < prop.length; i++){
@@ -288,9 +288,9 @@ function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molec
 						}
 					}
 				}else if(_is_valid_id(prop as any)){
-					prop = prop.toString() as any;
+					molecule[subkey] = prop.toString() as any;
 				}else if(typeof prop === 'object'){
-					prop = _clean_molecule(subatom_name, prop as any) as any;
+					molecule[subkey] = _clean_molecule(subatom_name, prop as any) as any;
 				}
 			}
 		}

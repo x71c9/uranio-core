@@ -8,7 +8,7 @@ import {atom_book} from 'urn_book';
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util modul`);
+const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util module`);
 
 import {get_bond_keys} from './keys';
 
@@ -137,7 +137,6 @@ export function fix_property<A extends AtomName, D extends Depth>(
 	}
 	try{
 		
-		console.log(atom);
 		validate_property(key as keyof Atom<A>, prop_def, fixed_value, atom as Atom<A>);
 		(atom as any)[key] = fixed_value;
 		
