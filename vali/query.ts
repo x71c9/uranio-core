@@ -178,11 +178,11 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 			}
 			case 'object':{
 				for(const k in options.sort){
-					if(!urn_util.object.has_key(atom_book[atom_name].properties, k)){
+					if(!urn_atm.is_valid_property(atom_name, k)){
 						const err_msg = `Sort value not valid [${k}].`;
 						throw urn_exc.create_invalid_request('OPTIONS_INVALID_OBJECT_SORT_VAL', err_msg);
 					}
-					const sort_obj_value = options.sort[k];
+					const sort_obj_value = options.sort[k as keyof typeof options.sort];
 					if(isNaN(sort_obj_value) || (sort_obj_value != -1 && sort_obj_value != 1)){
 						const err_msg = `Sort value must be equal either to -1 or 1.`;
 						throw urn_exc.create_invalid_request('OPTIONS_INVALID_VAL', err_msg);

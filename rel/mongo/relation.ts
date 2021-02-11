@@ -67,14 +67,17 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	public async select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>[]>{
 		let mon_find_res:Molecule<A,D>[] = [];
-		if(options && options.depth && typeof options.depth === 'number' && options.depth > 0){
-			const populate_object = _generate_populate_obj(
-				this.atom_name,
-				options.depth,
-				options.depth_query
-			);
-			mon_find_res = await this._raw.find(query, null, options)
-				.populate(populate_object).lean<Molecule<A,D>[]>();
+		if(options){
+			if(options.depth && typeof options.depth === 'number' && options.depth > 0){
+				const populate_object = _generate_populate_obj(
+					this.atom_name,
+					options.depth,
+					options.depth_query
+				);
+				mon_find_res = await this._raw.find(query, null, options)
+					.populate(populate_object).lean<Molecule<A,D>[]>();
+			}
+			mon_find_res = await this._raw.find(query, null, options).lean<Molecule<A,D>[]>();
 		}else{
 			mon_find_res = await this._raw.find(query).lean<Molecule<A,D>[]>();
 		}
