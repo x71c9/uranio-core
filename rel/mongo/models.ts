@@ -74,7 +74,8 @@ function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstan
 		const atom_schema_def = generate_mongo_schema_def(atom_name);
 		let atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
 		
-		atom_mongo_schema = _add_schema_middleware(atom_name, atom_mongo_schema);
+		const conn_name = (!connection) ? 'main' : connection;
+		atom_mongo_schema = _add_schema_middleware(atom_name, conn_name, atom_mongo_schema);
 		
 		const atom_model = mongoose_db_connection.create_model(atom_name, atom_mongo_schema);
 		model_by_atom_name.set(atom_name, atom_model);
@@ -91,31 +92,58 @@ function _convert_for_trash(schema_definition:mongoose.SchemaDefinition)
 	return schema_without_unique;
 }
 
-export function _add_schema_middleware<A extends AtomName>(
+async function _delete_cascade(
+	conn_name: ConnectionName,
+	atom_by_cascade_keys: Map<string, AtomName>,
+	document: any
+){
+	if(!document){
+		return false;
+	}
+	const conn_models = models_by_connection.get(conn_name);
+	if(!conn_models){
+		return false;
+	}
+	for(const [k, atom_name] of atom_by_cascade_keys){
+		const model = conn_models.get(atom_name);
+		if(!model || !document[k]){
+			continue;
+		}
+		if(Array.isArray(document[k])){
+			const valid_ids = [];
+			for(const id of document[k]){
+				if(mongoose.Types.ObjectId.isValid(id)){
+					valid_ids.push(id);
+				}
+			}
+			await model.deleteMany({_id: {$in: valid_ids}});
+		}else if(mongoose.Types.ObjectId.isValid(document[k])){
+			await model.findOneAndDelete({_id: document[k]});
+		}
+	}
+}
+
+function _add_schema_middleware<A extends AtomName>(
 	atom_name:A,
 	conn_name:ConnectionName,
 	mongo_schema:mongoose.Schema
 ):mongoose.Schema{
 	
+	// DELETE ON CASCADE
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const cascade_keys:string[] = [];
+	const atom_by_cascade_keys = new Map<string, AtomName>();
 	for(const [k,v] of Object.entries(atom_props)){
 		if(v.type === BookPropertyType.ATOM || v.type === BookPropertyType.ATOM_ARRAY){
 			if(v.delete_cascade && v.delete_cascade === true){
-				cascade_keys.push(k);
+				atom_by_cascade_keys.set(k, v.atom);
 			}
 		}
 	}
-	mongo_schema.post('findOneAndDelete', (document:any) => {
-bfe6d9ff3a28623842u
-		if(){
-			const model = models_by_connection.get(conn_name).get(atom_name);
-			for(let i = 0; i < cascade_keys.length; i++){
-				if(document[cascade_keys[i]] && mongoose.Types.ObjectId.isValid(document[cascade_keys[i]])){
-					model.findOneAndDelete(document[cascade_keys[i]]);
-				}
-			}
-		}
+	mongo_schema.post('findOneAndDelete', async (document:any) => {
+		await _delete_cascade(conn_name, atom_by_cascade_keys, document);
+	});
+	mongo_schema.post('deleteMany', async (document:any) => {
+		await _delete_cascade(conn_name, atom_by_cascade_keys, document);
 	});
 	
 	return mongo_schema;
@@ -144,6 +172,5 @@ models_by_connection.set('trash', trash_connection_models);
 models_by_connection.set('log', log_connection_models);
 
 export {models_by_connection};
-
 
 
