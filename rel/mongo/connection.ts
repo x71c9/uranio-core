@@ -10,8 +10,6 @@ import {urn_log,  urn_exception} from 'urn-lib';
 
 import {AtomName, ConnectionName} from '../../types';
 
-// import {ConnectionName} from './types';
-
 const urn_exc = urn_exception.init('DBC_M', 'Mongoose DB Connection');
 
 /*
