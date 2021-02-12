@@ -192,12 +192,14 @@ export namespace Book {
 			export interface Atom extends SharedFields {
 				type: BookPropertyType.ATOM,
 				atom: AtomName,
+				delete_cascade?: boolean,
 				validation?: Validation.Atom
 			}
 			
 			export interface AtomArray extends SharedFields {
 				type: BookPropertyType.ATOM_ARRAY,
 				atom: AtomName,
+				delete_cascade?: boolean,
 				validation?: Validation.Atom
 			}
 			

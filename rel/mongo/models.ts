@@ -8,13 +8,9 @@ import {atom_book} from 'urn_book';
 
 import mongoose from 'mongoose';
 
-// import {urn_util} from 'urn-lib';
-
-import {AtomName, Book, ConnectionName} from '../../types';
+import {AtomName, Book, ConnectionName, BookPropertyType} from '../../types';
 
 import {core_config} from '../../conf/defaults';
-
-// import {ConnectionName} from './types';
 
 import {generate_mongo_schema_def} from './schema';
 
@@ -42,18 +38,15 @@ const mongo_log_conn = mongo_connection.create(
 );
 
 function _create_main_models(){
-	const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
-	let atom_name:AtomName;
-	for(atom_name in atom_book){
-		const atom_def = atom_book[atom_name] as Book.Definition;
-		if(atom_def.connection && atom_def.connection !== 'main')
-			continue;
-		const atom_schema_def = generate_mongo_schema_def(atom_name);
-		const atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false });
-		const atom_model = mongo_main_conn.create_model(atom_name, atom_mongo_schema);
-		model_by_atom_name.set(atom_name, atom_model);
-	}
-	return model_by_atom_name;
+	const undefined_connection_models = _create_models(mongo_main_conn);
+	const main_connection_models = _create_models(mongo_main_conn, 'main');
+	return new Map<AtomName, mongoose.Model<mongoose.Document<any>>>(
+		[...undefined_connection_models, ...main_connection_models]
+	);
+}
+
+function _create_log_models(){
+	return _create_models(mongo_log_conn, 'log');
 }
 
 function _create_trash_models(){
@@ -71,16 +64,19 @@ function _create_trash_models(){
 	return model_by_atom_name;
 }
 
-function _create_log_models(){
+function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstance, connection?:ConnectionName){
 	const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
 	let atom_name:AtomName;
 	for(atom_name in atom_book){
 		const atom_def = atom_book[atom_name] as Book.Definition;
-		if(!atom_def.connection || atom_def.connection !== 'log')
+		if(atom_def.connection !== connection)
 			continue;
 		const atom_schema_def = generate_mongo_schema_def(atom_name);
-		const atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
-		const atom_model = mongo_log_conn.create_model(atom_name, atom_mongo_schema);
+		let atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
+		
+		atom_mongo_schema = _add_schema_middleware(atom_name, atom_mongo_schema);
+		
+		const atom_model = mongoose_db_connection.create_model(atom_name, atom_mongo_schema);
 		model_by_atom_name.set(atom_name, atom_model);
 	}
 	return model_by_atom_name;
@@ -93,6 +89,36 @@ function _convert_for_trash(schema_definition:mongoose.SchemaDefinition)
 		schema_without_unique[k] = {type:'Mixed'};
 	}
 	return schema_without_unique;
+}
+
+export function _add_schema_middleware<A extends AtomName>(
+	atom_name:A,
+	conn_name:ConnectionName,
+	mongo_schema:mongoose.Schema
+):mongoose.Schema{
+	
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	const cascade_keys:string[] = [];
+	for(const [k,v] of Object.entries(atom_props)){
+		if(v.type === BookPropertyType.ATOM || v.type === BookPropertyType.ATOM_ARRAY){
+			if(v.delete_cascade && v.delete_cascade === true){
+				cascade_keys.push(k);
+			}
+		}
+	}
+	mongo_schema.post('findOneAndDelete', (document:any) => {
+bfe6d9ff3a28623842u
+		if(){
+			const model = models_by_connection.get(conn_name).get(atom_name);
+			for(let i = 0; i < cascade_keys.length; i++){
+				if(document[cascade_keys[i]] && mongoose.Types.ObjectId.isValid(document[cascade_keys[i]])){
+					model.findOneAndDelete(document[cascade_keys[i]]);
+				}
+			}
+		}
+	});
+	
+	return mongo_schema;
 }
 
 // function _allow_duplicate(schema_definition:mongoose.SchemaDefinition)

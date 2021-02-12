@@ -7,4 +7,9 @@ of it as subatom must be optional in the case it cannot be accessible by the use
 
 --
 
+Check if Atom reference type are on the same connection
+
+--
+
+
 

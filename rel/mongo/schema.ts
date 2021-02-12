@@ -8,10 +8,7 @@ import {atom_book} from 'urn_book';
 
 import mongoose from 'mongoose';
 
-// import {urn_exception, urn_util} from 'urn-lib';
 import {urn_util} from 'urn-lib';
-
-// const urn_exc = urn_exception.init('MONGO_SCHEMA', 'Mongoose Schema Definition');
 
 import * as urn_atm from '../../atm/';
 
@@ -22,17 +19,6 @@ import {
 	atom_hard_properties,
 	atom_common_properties
 } from '../../types';
-
-// function _generate_schemas(){
-//   const schema_by_atom_name = new Map<AtomName, mongoose.SchemaDefinition>();
-//   let atom_name:AtomName;
-//   for(atom_name in atom_book){
-//     schema_by_atom_name.set(atom_name, _generate_mongo_schema_def(atom_name));
-//   }
-//   return schema_by_atom_name;
-// }
-
-// const _mongo_schema_by_atom_name = _generate_schemas();
 
 export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{
@@ -51,7 +37,6 @@ export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 			[k]: {..._generate_mongoose_schema_type_options(atom_name, v, k)}
 		};
 	}
-	// console.log(mongoose_schema_def);
 	return mongoose_schema_def;
 }
 
