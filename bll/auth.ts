@@ -16,20 +16,22 @@ import {core_config} from '../conf/defaults';
 
 import * as urn_atm from '../atm/';
 
-import {BasicBLL} from './basic';
+import {create_basic, BasicBLL} from './basic';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class AuthBLL extends BasicBLL<'user'>{
+class AuthBLL {
+	
+	private _basic_users_bll:BasicBLL<'user'>;
 	
 	constructor(){
-		super('user');
+		this._basic_users_bll = create_basic('user');
 	}
 	
 	public async authenticate(email: string, password: string)
 			:Promise<string>{
 		urn_atm.validate_atom_partial('user', {email: email, password: password});
-		const user = await this._al.select_one({email: email});
+		const user = await this._basic_users_bll.find_one({email: email});
 		const compare_result = await bcrypt.compare(password, user.password);
 		if(!compare_result){
 			throw urn_exc.create_invalid_request('AUTH_INVALID_PASSWORD', `Invalid password.`);
@@ -40,7 +42,7 @@ class AuthBLL extends BasicBLL<'user'>{
 	
 }
 
-export function create_users():AuthBLL{
+export function create_auth():AuthBLL{
 	urn_log.fn_debug(`Create AuthBLL`);
 	return new AuthBLL();
 }

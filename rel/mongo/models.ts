@@ -145,6 +145,9 @@ function _add_schema_middleware<A extends AtomName>(
 	mongo_schema.post('deleteMany', async (document:any) => {
 		await _delete_cascade(conn_name, atom_by_cascade_keys, document);
 	});
+	mongo_schema.post('remove', async (document:any) => {
+		await _delete_cascade(conn_name, atom_by_cascade_keys, document);
+	});
 	
 	return mongo_schema;
 }

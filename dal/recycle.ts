@@ -7,11 +7,7 @@
  * @packageDocumentation
  */
 
-// import {urn_log, urn_exception} from 'urn-lib';
-
 import {urn_log} from 'urn-lib';
-
-// const urn_exc = urn_exception.init('RECYCLE_DAL', 'RecycleDAL');
 
 import {atom_book} from 'urn_book';
 
