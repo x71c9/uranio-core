@@ -12,9 +12,9 @@ import * as bll from './bll/';
 
 export {bll};
 
-// import * as logger from './log/';
+import * as atm from './atm/';
 
-// export {logger};
+export {atm};
 
 import {core_config} from './conf/defaults';
 

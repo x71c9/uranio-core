@@ -72,7 +72,7 @@ export class BasicBLL<A extends AtomName> {
 		return await this._al.delete_by_id(id);
 	}
 	
-	public async remove_one(molecule:Molecule<A>)
+	public async remove_one<D extends Depth>(molecule:Molecule<A,D>)
 			:Promise<Atom<A>>{
 		return await this.remove_by_id(molecule._id);
 	}

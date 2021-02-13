@@ -21,7 +21,8 @@ export const core_atom_book = {
 			},
 			password: {
 				type: book_types.BookPropertyType.ENCRYPTED,
-				label: 'Password'
+				label: 'Password',
+				hidden: true
 			}
 		}
 	},
@@ -40,7 +41,8 @@ export const core_atom_book = {
 			},
 			password: {
 				type: book_types.BookPropertyType.ENCRYPTED,
-				label: 'Password'
+				label: 'Password',
+				hidden: true
 			},
 			groups: {
 				type: book_types.BookPropertyType.ATOM_ARRAY,

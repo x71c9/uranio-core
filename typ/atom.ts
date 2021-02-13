@@ -109,6 +109,7 @@ type OptionalPrimitive<P> = PickSubType<ExcludeBondAndBondArray<P>, {optional: t
 
 type RequiredPrimitive<P> = OmitSubType<ExcludeBondAndBondArray<P>, {optional: true}>;
 
+// type HiddenPrimitive<P> = PickSubType<ExcludeBondAndBondArray<P>, {hidden: true}>;
 
 type DefinitionPropertyInferType<P> = P extends {type: infer I} ? I : never;
 
@@ -152,6 +153,9 @@ type RequiredKeyOfAtomPrimitiveProperties<A extends AtomName> =
 
 type OptionalKeyOfAtomPrimitiveProperties<A extends AtomName> =
 	keyof OptionalPrimitive<PropertiesOfAtomDefinition<A>>;
+
+// type HiddenKeyOfAtomPrimitiveProperties<A extends AtomName> =
+//   keyof HiddenPrimitive<PropertiesOfAtomDefinition<A>>;
 
 type RequiredKeyOfBondProperties<A extends AtomName> =
 	keyof RequiredBond<PropertiesOfAtomDefinition<A>>;
@@ -210,6 +214,12 @@ type AtomPrimitiveShape<A extends AtomName> =
 	{ [k in RequiredKeyOfAtomPrimitiveProperties<A>]: RealTypeOfAtomProperty<A,k> } &
 	{ [k in OptionalKeyOfAtomPrimitiveProperties<A>]?: RealTypeOfAtomProperty<A,k> };
 
+// type AtomPrivacyPrimitiveShape<A extends AtomName> =
+//   { [k in RequiredKeyOfAtomCommonProperties]: RealTypeOfAtomCommonProperty<k> } &
+//   { [k in OptionalKeyOfAtomCommonProperties]?: RealTypeOfAtomCommonProperty<k> } &
+//   { [k in RequiredKeyOfAtomPrimitiveProperties<A>]: RealTypeOfAtomProperty<A,k> } &
+//   { [k in OptionalKeyOfAtomPrimitiveProperties<A> | HiddenKeyOfAtomPrimitiveProperties<A>]?: RealTypeOfAtomProperty<A,k> };
+
 export type AtomMoleculeBondPropertyType<
 	A extends AtomName,
 	AoM extends AtomOrMolecule,
@@ -232,13 +242,27 @@ export type AtomShape<A extends AtomName> =
 	AtomPrimitiveShape<A> &
 	BondShape<A, 'atom', 0>;
 
+// export type AtomPrivacyShape<A extends AtomName> =
+//   AtomPrivacyPrimitiveShape<A> &
+//   BondShape<A, 'atom', 0>
+
 export type Atom<A extends AtomName> =
 	AtomHardProperties &
 	AtomShape<A>;
+
+// export type AtomPrivacy<A extends AtomName> =
+//   AtomHardProperties &
+//   AtomPrivacyShape<A>;
 
 export type Molecule<A extends AtomName, D extends Depth = 0> =
 	D extends (0 | undefined) ? Atom<A> :
 	AtomHardProperties &
 	AtomPrimitiveShape<A> &
 	BondShape<A, 'molecule', D>
+
+// export type MoleculePrivacy<A extends AtomName, D extends Depth = 0> =
+//   D extends (0 | undefined) ? Atom<A> :
+//   AtomHardProperties &
+//   AtomPrivacyPrimitiveShape<A> &
+//   BondShape<A, 'molecule', D>
 
