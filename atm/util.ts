@@ -4,13 +4,13 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'urn_book';
-
 import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util module`);
 
-import {get_bond_keys} from './keys';
+import {atom_book} from 'urn_book';
+
+import {get_bond_keys, get_hidden_keys} from './keys';
 
 import {validate_property} from './validate';
 
@@ -148,6 +148,44 @@ export function fix_property<A extends AtomName, D extends Depth>(
 	return atom;
 }
 
+export function hide_hidden_properties<A extends AtomName, D extends Depth>(atom_name:A, molecules:Molecule<A,D>):Molecule<A,D>;
+export function hide_hidden_properties<A extends AtomName, D extends Depth>(atom_name:A, molecules:Molecule<A,D>[]):Molecule<A,D>[];
+export function hide_hidden_properties<A extends AtomName, D extends Depth>(atom_name:A, molecules:Molecule<A,D>|Molecule<A,D>[])
+			:Molecule<A,D>|Molecule<A,D>[]{
+	if(Array.isArray(molecules)){
+		for(let i = 0; i < molecules.length; i++){
+			molecules[i] = _hide_hidden_properties_single_molecule(atom_name, molecules[i]);
+		}
+	}else{
+		molecules = _hide_hidden_properties_single_molecule(atom_name, molecules);
+	}
+	return molecules;
+}
+	
+function _hide_hidden_properties_single_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
+		:Molecule<A,D>{
+	
+	const hidden_keys = get_hidden_keys(atom_name);
+	const bond_keys = get_bond_keys(atom_name);
+	
+	if(is_atom(atom_name, molecule as Atom<A>)){
+		let k:keyof Molecule<A,D>;
+		for(k of hidden_keys){
+			delete molecule[k];
+		}
+	}else{
+		for(const k in molecule){
+			if(hidden_keys.has(k as any)){
+				delete molecule[k];
+			}else if(bond_keys.has(k as any)){
+				const subatom_name = get_subatom_name(atom_name, k);
+				molecule[k] = _hide_hidden_properties_single_molecule(subatom_name, molecule[k] as any) as any;
+			}
+		}
+	}
+	return molecule;
+}
+	
 
 // export function fix_molecule_property<A extends AtomName, D extends Depth>(
 //   atom_name:A,

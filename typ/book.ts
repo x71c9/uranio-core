@@ -98,6 +98,7 @@ export namespace Book {
 				type: BookPropertyType,
 				label: string,
 				optional?: boolean,
+				hidden?: boolean,
 				unique?: boolean,
 				default?: any,
 				on_error?: (old_value: any) => any

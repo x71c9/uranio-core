@@ -16,6 +16,27 @@ import {
 	BookPropertyType
 } from '../types';
 
+export function get_hidden_keys<A extends AtomName>(atom_name:A)
+		:Set<keyof Atom<A>>{
+	const hidden_keys = new Set<keyof Atom<A>>();
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	for(const k in atom_props){
+		const prop:Book.Definition.Property = atom_props[k];
+		console.log(prop);
+		if(prop.hidden && prop.hidden === true){
+			hidden_keys.add(k as keyof Atom<A>);
+		}
+	}
+	let k:keyof typeof atom_common_properties;
+	for(k in atom_common_properties){
+		const prop:Book.Definition.Property = atom_common_properties[k];
+		if(prop.hidden && prop.hidden === true){
+			hidden_keys.add(k as keyof AtomShape<A>);
+		}
+	}
+	return hidden_keys;
+}
+
 export function get_encrypted_keys<A extends AtomName>(atom_name:A)
 		:Set<keyof Atom<A>>{
 	const encrypt_keys = new Set<keyof Atom<A>>();
@@ -24,6 +45,15 @@ export function get_encrypted_keys<A extends AtomName>(atom_name:A)
 		const prop:Book.Definition.Property = atom_props[k];
 		if(prop.type && prop.type === BookPropertyType.ENCRYPTED){
 			encrypt_keys.add(k as keyof Atom<A>);
+		}
+	}
+	let k:keyof typeof atom_common_properties;
+	for(k in atom_common_properties){
+		const prop:Book.Definition.Property = atom_common_properties[k];
+		// eslint-disable-next-line
+		// @ts-ignore
+		if(prop.type && prop.type === BookPropertyType.ENCRYPTED){
+			encrypt_keys.add(k as keyof AtomShape<A>);
 		}
 	}
 	return encrypt_keys;
