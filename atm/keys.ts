@@ -22,7 +22,6 @@ export function get_hidden_keys<A extends AtomName>(atom_name:A)
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	for(const k in atom_props){
 		const prop:Book.Definition.Property = atom_props[k];
-		console.log(prop);
 		if(prop.hidden && prop.hidden === true){
 			hidden_keys.add(k as keyof Atom<A>);
 		}

@@ -33,6 +33,10 @@ export const enum BookSecurityType {
 	GRANULAR = 'GRANULAR'
 }
 
+export const enum BookPermissionType {
+	NOBODY = 'NOBODY'
+}
+
 export type RealType<AT extends BookPropertyType> =
 	AT extends BookPropertyType.ID ? string :
 	AT extends BookPropertyType.TEXT ? string :
