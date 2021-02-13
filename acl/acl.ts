@@ -44,6 +44,7 @@ import {
 	Book,
 	BookPropertyType,
 	BookSecurityType,
+	BookPermissionType,
 	RealType,
 	AccessLayer
 } from '../types';
@@ -85,7 +86,7 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 	protected _can_uniform_read()
 			:void{
 		if(this._security_type === BookSecurityType.UNIFORM){
-			if(this._read && !this.user_groups.includes(this._read)){
+			if(this._read === BookPermissionType.NOBODY || (this._read && !this.user_groups.includes(this._read))){
 				throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Read unauthorized');
 			}
 		}

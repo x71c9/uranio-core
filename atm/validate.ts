@@ -296,7 +296,6 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 	molecule: Molecule<A,D>,
 	depth?:D
 ):true{
-	console.log(molecule);
 	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const bond_keys = get_bond_keys(atom_name);
 	for(const k of bond_keys){

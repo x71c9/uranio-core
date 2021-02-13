@@ -5,7 +5,7 @@ export const core_atom_book = {
 	superuser: {
 		security: {
 			type: book_types.BookSecurityType.UNIFORM,
-			_r: null
+			_r: book_types.BookPermissionType.NOBODY
 		},
 		api:{
 			url: '/superusers'
@@ -59,6 +59,7 @@ export const core_atom_book = {
 		properties: {
 			name: {
 				type: book_types.BookPropertyType.TEXT,
+				unique: true,
 				label: 'Name'
 			}
 		}
