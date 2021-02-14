@@ -8,7 +8,8 @@ export const core_atom_book = {
 			_r: book_types.BookPermissionType.NOBODY
 		},
 		api:{
-			url: '/superusers'
+			url: '/superusers',
+			auth: '/superauth'
 		},
 		properties: {
 			email: {
@@ -23,6 +24,12 @@ export const core_atom_book = {
 				type: book_types.BookPropertyType.ENCRYPTED,
 				label: 'Password',
 				hidden: true
+			},
+			groups: {
+				type: book_types.BookPropertyType.ATOM_ARRAY,
+				atom: 'group',
+				label: 'Groups',
+				optional: true
 			}
 		}
 	},
@@ -31,7 +38,8 @@ export const core_atom_book = {
 			type: book_types.BookSecurityType.GRANULAR
 		},
 		api:{
-			url: '/users'
+			url: '/users',
+			auth: '/auth'
 		},
 		properties: {
 			email: {

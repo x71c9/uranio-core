@@ -6,6 +6,8 @@
  *
  * The permission on each Relation can be UNIFORM or GRANULAR.
  *
+ * Default is UNIFORM.
+ *
  * UNIFORM permission will check on a Relation level.
  * GRANULAR permission will check on a Record level.
  *

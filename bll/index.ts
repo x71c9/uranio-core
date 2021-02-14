@@ -6,7 +6,7 @@
 
 export * from './bll';
 
-export * from './auth';
+export * from './authenticate';
 
 export * from './log';
 

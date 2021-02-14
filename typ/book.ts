@@ -62,9 +62,10 @@ export type Book = {
 export namespace Book {
 	
 	export type Definition = {
-		properties: Definition.Properties
+		properties: Definition.Properties,
 		connection?: ConnectionName,
-		security?: BookSecurityType | Definition.Security
+		security?: BookSecurityType | Definition.Security,
+		api: Definition.Api
 	}
 	
 	export namespace Definition {
@@ -73,6 +74,10 @@ export namespace Book {
 			type: BookSecurityType,
 			_r?: BookPropertyType.ID,
 			_w?: BookPropertyType.ID
+		}
+		
+		export type Api = {
+			auth: string
 		}
 		
 		export type Properties = {

@@ -8,7 +8,7 @@
  * @packageDocumentation
  */
 
-import {urn_log, urn_exception} from 'urn-lib';
+import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 import * as urn_atm from '../atm/';
 
@@ -50,17 +50,16 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 		}else{
 			for(const k of bond_keys){
 				const bond_name = urn_atm.get_subatom_name(this.atom_name, k as string);
-				let prop_value = molecule[k] as any;
-				const SUBDAL = create_selfish(bond_name);
+				const prop_value = molecule[k] as any;
+				const SUB_DAL = create_selfish(bond_name);
+				const sub_depth = ((depth as number) - 1 as Depth);
 				if(Array.isArray(prop_value)){
 					for(let i = 0; i < prop_value.length; i++){
-						let subatom = prop_value[i];
-						subatom =
-							await SUBDAL._fix_molecule_on_validation_error(subatom, ((depth as number) - 1 as Depth));
+						const subatom = prop_value[i];
+						prop_value[i] = await SUB_DAL._fix_molecule_on_validation_error(subatom, sub_depth);
 					}
 				}else{
-					prop_value =
-						await SUBDAL._fix_molecule_on_validation_error(prop_value, ((depth as number) - 1 as Depth));
+					molecule[k] = await SUB_DAL._fix_molecule_on_validation_error(prop_value, sub_depth) as any;
 				}
 			}
 		}
@@ -77,7 +76,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 			}
 			let k:keyof Atom<A>;
 			for(k of exc.keys){
-				if(molecule[k] && !urn_atm.is_valid_property(this.atom_name, k)){
+				if(urn_util.object.has_key(molecule, k) && !urn_atm.is_valid_property(this.atom_name, k)){
 					delete molecule[k];
 				}else{
 					molecule = urn_atm.fix_property<A,D>(this.atom_name, molecule, k);
@@ -103,7 +102,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 			}
 			let k:keyof Atom<A>;
 			for(k of exc.keys){
-				if(atom[k] && !urn_atm.is_valid_property(this.atom_name, k)){
+				if(urn_util.object.has_key(atom, k) && !urn_atm.is_valid_property(this.atom_name, k)){
 					delete atom[k];
 				}else{
 					atom = urn_atm.fix_property<A>(this.atom_name, atom, k);

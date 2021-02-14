@@ -19,6 +19,8 @@ import {
 	atom_common_properties,
 	Atom,
 	AtomName,
+	AuthAtom,
+	AuthName,
 	Molecule,
 	Depth,
 	Book,
@@ -100,6 +102,27 @@ export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, mo
 	return true;
 }
 
+export function is_auth_atom_name(atom_name:AtomName)
+		:boolean{
+	const atom_def = atom_book[atom_name] as Book.Definition;
+	if(atom_def.api && atom_def.api.auth){
+		return true;
+	}
+	return false;
+}
+
+export function is_auth_atom<A extends AuthName>(atom:unknown)
+		:atom is AuthAtom<A>{
+	if(
+		urn_util.object.has_key(atom, 'email') &&
+		urn_util.object.has_key(atom, 'password') &&
+		urn_util.object.has_key(atom, 'groups')
+	){
+		return true;
+	}
+	return false;
+}
+
 export function fix_property<A extends AtomName>(
 	atom_name:A,
 	atom:Atom<A>,
@@ -126,7 +149,7 @@ export function fix_property<A extends AtomName, D extends Depth>(
 	}
 	if(!prop_def){
 		const err_msg = `Missing or invalid key [${key}] in atom_book`;
-		throw urn_exc.create('FIX_MOLECULE_KEY_INVALID_KEY', err_msg);
+		throw urn_exc.create_invalid_atom('FIX_MOLECULE_KEY_INVALID_KEY', err_msg, atom, [key]);
 	}
 	const def = prop_def as Book.Definition.Property;
 	let fixed_value = null;
