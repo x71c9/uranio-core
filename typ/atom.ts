@@ -75,9 +75,15 @@ type OmitSubType<Base, Condition> = Omit<Base, {
 	[Key in keyof Base]: Base[Key] extends Condition ? Key : never
 }[keyof Base]>;
 
+
 type ExtractLogAtom<P> = PickSubType<P, {connection: 'log'}>;
 
 export type LogName = keyof ExtractLogAtom<typeof atom_book>;
+
+type ExtractAuthName<P> = PickSubType<P, {api: {auth: string}}>;
+
+export type AuthName = keyof ExtractAuthName<typeof atom_book>;
+
 
 type ExtractOptional<P> = PickSubType<P, {optional: true}>;
 
@@ -242,6 +248,11 @@ export type AtomShape<A extends AtomName> =
 	AtomPrimitiveShape<A> &
 	BondShape<A, 'atom', 0>;
 
+export type AuthAtomShape<A extends AuthName> =
+	AtomPrimitiveShape<A> &
+	BondShape<A, 'atom', 0> &
+	{email: string, password: string, groups: string[]};
+
 // export type AtomPrivacyShape<A extends AtomName> =
 //   AtomPrivacyPrimitiveShape<A> &
 //   BondShape<A, 'atom', 0>
@@ -249,6 +260,10 @@ export type AtomShape<A extends AtomName> =
 export type Atom<A extends AtomName> =
 	AtomHardProperties &
 	AtomShape<A>;
+
+export type AuthAtom<A extends AuthName> =
+	AtomHardProperties &
+	AuthAtomShape<A>;
 
 // export type AtomPrivacy<A extends AtomName> =
 //   AtomHardProperties &

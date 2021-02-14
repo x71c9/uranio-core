@@ -11,9 +11,12 @@ Check if Atom reference type are on the same connection
 
 --
 
+Check if AuthAtom have email, password non-optional and groups (optional?).
+
+--
+
 #### CONF VALIDATION
 
 Check that jwt private key is changed.
 
 --
-

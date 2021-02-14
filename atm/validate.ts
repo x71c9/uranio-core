@@ -14,6 +14,7 @@ import {
 	atom_hard_properties,
 	atom_common_properties,
 	AtomName,
+	AuthName,
 	Atom,
 	AtomShape,
 	Book,
@@ -114,6 +115,8 @@ export function validate_atom_shape<A extends AtomName>(atom_name:A, atom_shape:
 	return true;
 }
 
+export function validate_atom_partial<A extends AuthName>(atom_name:A, partial_atom:Partial<AtomShape<A>>):true;
+export function validate_atom_partial<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>):true;
 export function validate_atom_partial<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
 	_has_no_other_properties(atom_name, partial_atom);
