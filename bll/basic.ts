@@ -13,6 +13,8 @@ import * as urn_dal from '../dal/';
 
 import * as urn_acl from '../acl/';
 
+import {auth} from './authenticate';
+
 import {
 	AccessLayer,
 	Query,
@@ -20,7 +22,8 @@ import {
 	Atom,
 	AtomShape,
 	Depth,
-	Molecule
+	Molecule,
+	TokenObject
 } from '../types';
 
 @urn_log.decorators.debug_constructor
@@ -29,12 +32,17 @@ export class BasicBLL<A extends AtomName> {
 	
 	protected _al:AccessLayer<A>;
 	
-	constructor(public atom_name:A, protected user_groups?:string[]){
-		if(this.user_groups){
-			this._al = urn_acl.create(this.atom_name, this.user_groups);
+	constructor(public atom_name:A, protected token_object?:TokenObject){
+		
+		if(token_object)
+			auth.is_valid_token_object(token_object);
+		
+		if(token_object && !_is_superuser(token_object)){
+			this._al = urn_acl.create(this.atom_name, token_object.groups);
 		}else{
 			this._al = urn_dal.create(this.atom_name);
 		}
+		// this._al = urn_dal.create(this.atom_name);
 	}
 	
 	public async find<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
@@ -79,9 +87,21 @@ export class BasicBLL<A extends AtomName> {
 	
 }
 
-export function create_basic<A extends AtomName>(atom_name:A):BasicBLL<A>{
+function _is_superuser(token_object:TokenObject)
+		:boolean{
+	if(!token_object){
+		return false;
+	}
+	if(token_object.auth_atom_name !== 'superuser'){
+		return false;
+	}
+	return true;
+}
+
+export function create_basic<A extends AtomName>(atom_name:A, token_object?:TokenObject)
+		:BasicBLL<A>{
 	urn_log.fn_debug(`Create BasicBLL [${atom_name}]`);
-	return new BasicBLL<A>(atom_name);
+	return new BasicBLL<A>(atom_name, token_object);
 }
 
 
