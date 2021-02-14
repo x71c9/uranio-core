@@ -13,3 +13,5 @@ export * from './typ/conf';
 export * from './typ/query';
 
 export * from './typ/layer';
+
+export * from './typ/auth';

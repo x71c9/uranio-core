@@ -10,11 +10,19 @@ import jwt from 'jsonwebtoken';
 
 import {urn_util, urn_log, urn_exception} from 'urn-lib';
 
-const urn_exc = urn_exception.init('USERSBLL', 'Users BLL');
+const urn_exc = urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 
 import {core_config} from '../conf/defaults';
 
-import {AuthName, Query, AuthAtom} from '../types';
+import {
+	AuthName,
+	Query,
+	AuthAtom,
+	AuthAtomShape,
+	TokenObject,
+	abstract_token_object,
+	TokenKey
+} from '../types';
 
 import * as urn_atm from '../atm/';
 
@@ -22,7 +30,7 @@ import {create_basic, BasicBLL} from './basic';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class AuthenticateBLL<A extends AuthName> {
+class AuthenticationBLL<A extends AuthName> {
 	
 	private _basic_bll:BasicBLL<A>;
 	
@@ -32,31 +40,122 @@ class AuthenticateBLL<A extends AuthName> {
 	
 	public async authenticate(email: string, password: string)
 			:Promise<string>{
-		urn_atm.validate_atom_partial<A>(this._atom_name, {email: email, password: password} as any);
-		const user_atom = await this._basic_bll.find_one({email: email} as Query<A>) as AuthAtom<A>;
-		if(!urn_util.object.has_key(user_atom, 'password')){
-			throw urn_exc.create_invalid_atom('INVALID_AUTH_ATOM', 'Invalid atom. No password.', user_atom, ['password']);
+		urn_atm.validate_atom_partial<A>(this._atom_name, {email: email, password: password} as Partial<AuthAtomShape<A>>);
+		const auth_atom = await this._basic_bll.find_one({email: email} as Query<A>) as AuthAtom<A>;
+		if(!urn_atm.is_auth_atom(auth_atom)){
+			throw urn_exc.create_invalid_atom('INVALID_AUTH_ATOM', 'Invalid Auth Atom.', auth_atom, ['email', 'password', 'groups']);
 		}
-		if(!urn_util.object.has_key(user_atom, 'groups')){
-			throw urn_exc.create_invalid_atom('INVALID_AUTH_ATOM', 'Invalid atom. No groups.', user_atom, ['groups']);
-		}
-		const compare_result = await bcrypt.compare(password, user_atom.password);
+		const compare_result = await bcrypt.compare(password, auth_atom.password);
 		if(!compare_result){
 			throw urn_exc.create_invalid_request('AUTH_INVALID_PASSWORD', `Invalid password.`);
 		}
-		const token = jwt.sign({_id: user_atom._id, atom: this._atom_name, groups: (user_atom as any).groups}, core_config.jwt_private_key);
-		return token;
+		return this._generate_token(auth_atom);
+	}
+	
+	private _generate_token_object(auth_atom:AuthAtom<A>)
+			:TokenObject{
+		return {
+			_id: auth_atom._id,
+			auth_atom_name: this._atom_name,
+			groups: auth_atom.groups
+		};
+	}
+	
+	private _generate_token(auth_atom:AuthAtom<A>)
+			:string{
+		const token_object = this._generate_token_object(auth_atom);
+		return jwt.sign(token_object, core_config.jwt_private_key);
 	}
 	
 }
 
-export type AuthBLLInstance = InstanceType<typeof AuthenticateBLL>;
+export type AuthenticationBLLInstance = InstanceType<typeof AuthenticationBLL>;
 
-export function create_auth<A extends AuthName>(atom_name:A)
-		:AuthenticateBLL<A>{
-	urn_log.fn_debug(`Create AuthenticateBLL`);
-	return new AuthenticateBLL<A>(atom_name);
+export function create_authentication<A extends AuthName>(atom_name:A)
+		:AuthenticationBLL<A>{
+	urn_log.fn_debug(`Create AuthenticationBLL [${atom_name}]`);
+	return new AuthenticationBLL<A>(atom_name);
 }
 
+
+async function _is_valid_token_object(token_object:TokenObject)
+		:Promise<true>{
+	_token_has_all_keys(token_object);
+	_token_has_no_other_keys(token_object);
+	_token_has_correct_type_values(token_object);
+	await _if_superuser_validate_id(token_object);
+	return true;
+}
+
+function _token_has_all_keys(token_object:TokenObject)
+		:true{
+	for(const k in abstract_token_object){
+		if(!urn_util.object.has_key(token_object, k)){
+			throw urn_exc.create_invalid_request('TOKEN_MISSING_KEY', `Token is missing key [${k}].`);
+		}
+	}
+	return true;
+}
+
+function _token_has_no_other_keys(token_object:TokenObject)
+		:true{
+	for(const [k] of Object.entries(token_object)){
+		if(k === 'iat'){
+			continue;
+		}
+		if(!urn_util.object.has_key(abstract_token_object, k)){
+			throw urn_exc.create_invalid_request('TOKEN_INVALID_KEY', `Token have invalid keys [${k}].`);
+		}
+	}
+	return true;
+}
+
+function _token_has_correct_type_values(token_object:TokenObject)
+		:true{
+	let k:TokenKey;
+	for(k in abstract_token_object){
+		_check_token_key_type(token_object, k);
+	}
+	return true;
+}
+
+function _check_token_key_type(token_object:TokenObject, key:TokenKey)
+		:true{
+	switch(abstract_token_object[key]){
+		case 'string':{
+			if(typeof token_object[key] !== 'string'){
+				const err_msg = 'Invalid token.';
+				throw urn_exc.create_invalid_request('TOKEN_INVALID_VALUE_TYPE', err_msg);
+			}
+			return true;
+		}
+		case 'string[]':{
+			if(!Array.isArray(token_object[key])){
+				const err_msg = 'Invalid token.';
+				throw urn_exc.create_invalid_request('TOKEN_INVALID_VALUE_TYPE', err_msg);
+			}
+			return true;
+		}
+	}
+}
+
+async function _if_superuser_validate_id(token_object:TokenObject)
+		:Promise<true>{
+	if(token_object.auth_atom_name !== 'superuser'){
+		return true;
+	}
+	try{
+		const basic_superusers_bll = create_basic('superuser');
+		await basic_superusers_bll.find_by_id(token_object._id);
+		return true;
+	}catch(ex){
+		const err_msg = 'Invalid token object _id.';
+		throw urn_exc.create_invalid_request('INVALID_TOKEN_SU_ID', err_msg);
+	}
+}
+
+export const auth = {
+	is_valid_token_object: _is_valid_token_object
+};
 
 
