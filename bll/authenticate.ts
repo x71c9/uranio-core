@@ -24,9 +24,11 @@ import {
 	TokenKey
 } from '../types';
 
-import * as urn_atm from '../atm/';
+import * as atm_validate from '../atm/validate';
 
-import {create_basic, BasicBLL} from './basic';
+import * as atm_util from '../atm/util';
+
+import {create as create_basic, BasicBLL} from './basic';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
@@ -40,9 +42,9 @@ class AuthenticationBLL<A extends AuthName> {
 	
 	public async authenticate(email: string, password: string)
 			:Promise<string>{
-		urn_atm.validate_atom_partial<A>(this._atom_name, {email: email, password: password} as Partial<AuthAtomShape<A>>);
+		atm_validate.atom_partial<A>(this._atom_name, {email: email, password: password} as Partial<AuthAtomShape<A>>);
 		const auth_atom = await this._basic_bll.find_one({email: email} as Query<A>) as AuthAtom<A>;
-		if(!urn_atm.is_auth_atom(auth_atom)){
+		if(!atm_util.is_auth_atom(auth_atom)){
 			throw urn_exc.create_invalid_atom('INVALID_AUTH_ATOM', 'Invalid Auth Atom.', auth_atom, ['email', 'password', 'groups']);
 		}
 		const compare_result = await bcrypt.compare(password, auth_atom.password);
@@ -71,19 +73,28 @@ class AuthenticationBLL<A extends AuthName> {
 
 export type AuthenticationBLLInstance = InstanceType<typeof AuthenticationBLL>;
 
-export function create_authentication<A extends AuthName>(atom_name:A)
+export function create<A extends AuthName>(atom_name:A)
 		:AuthenticationBLL<A>{
 	urn_log.fn_debug(`Create AuthenticationBLL [${atom_name}]`);
 	return new AuthenticationBLL<A>(atom_name);
 }
 
 
-async function _is_valid_token_object(token_object:TokenObject)
+export async function is_valid_token_object(token_object:TokenObject)
 		:Promise<true>{
+	_token_is_object(token_object);
 	_token_has_all_keys(token_object);
 	_token_has_no_other_keys(token_object);
 	_token_has_correct_type_values(token_object);
 	await _if_superuser_validate_id(token_object);
+	return true;
+}
+
+function _token_is_object(token_object:TokenObject)
+	:true{
+	if(!token_object || typeof token_object !== 'object'){
+		throw urn_exc.create_invalid_request('TOKEN_INVALID_TYPE', 'Token has wrong type.');
+	}
 	return true;
 }
 
@@ -144,18 +155,17 @@ async function _if_superuser_validate_id(token_object:TokenObject)
 	if(token_object.auth_atom_name !== 'superuser'){
 		return true;
 	}
-	try{
-		const basic_superusers_bll = create_basic('superuser');
-		await basic_superusers_bll.find_by_id(token_object._id);
-		return true;
-	}catch(ex){
-		const err_msg = 'Invalid token object _id.';
-		throw urn_exc.create_invalid_request('INVALID_TOKEN_SU_ID', err_msg);
-	}
+		
+	return true;
+	
+	// try{
+	//   const basic_superusers_bll = create_basic('superuser');
+	//   await basic_superusers_bll.find_by_id(token_object._id);
+	//   return true;
+	// }catch(ex){
+	//   const err_msg = 'Invalid token object _id.';
+	//   throw urn_exc.create_invalid_request('INVALID_TOKEN_SU_ID', err_msg);
+	// }
 }
-
-export const auth = {
-	is_valid_token_object: _is_valid_token_object
-};
 
 

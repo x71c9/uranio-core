@@ -10,7 +10,7 @@ import urn_core from 'urn_core';
 
 import {Atom, AtomShape, AtomName} from '../types';
 
-import {create_basic} from './basic';
+import {create as create_basic} from './basic';
 
 import {SecurityBLL} from './security';
 
@@ -23,7 +23,10 @@ export class AuthBLL<A extends AtomName> extends SecurityBLL<A>{
 	public async insert_new(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		const atom = await super.insert_new(atom_shape);
-		if(!urn_core.atm.is_auth_atom_name(this.atom_name) || !urn_core.atm.is_auth_atom(atom)){
+		if(
+			!urn_core.atm.util.is_auth_atom_name(this.atom_name) ||
+			!urn_core.atm.util.is_auth_atom(atom)
+		){
 			return atom;
 		}
 		const group = await group_bll.insert_new({name: atom.email});

@@ -18,7 +18,7 @@ class LogBLL<A extends LogName> extends BasicBLL<A>{
 	}
 }
 
-export function create_log<A extends LogName>(log_name:A)
+export function create<A extends LogName>(log_name:A)
 		:LogBLL<A>{
 	urn_log.fn_debug(`Create LogBLL [${log_name}]`);
 	return new BasicBLL<A>(log_name);

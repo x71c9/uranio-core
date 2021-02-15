@@ -10,7 +10,11 @@
 
 import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
-import * as urn_atm from '../atm/';
+import * as atm_validate from '../atm/validate';
+
+import * as atm_util from '../atm/util';
+
+import * as atm_keys from '../atm/keys';
 
 import {
 	Depth,
@@ -31,25 +35,25 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 		atom = await this._encrypt_changed_properties(id, atom);
 		atom = await this._fix_atom_on_validation_error(atom);
 		const db_res_insert = await this._db_relation.replace_by_id(id, atom);
-		urn_atm.validate_atom<A>(this.atom_name, db_res_insert);
+		atm_validate.atom<A>(this.atom_name, db_res_insert);
 		return db_res_insert;
 	}
 	
 	protected async _replace_molecule_on_error<D extends Depth>(id:string, molecule:Molecule<A,D>, depth?:D)
 			:Promise<Molecule<A,D>>{
-		const atom = urn_atm.molecule_to_atom(this.atom_name, molecule);
+		const atom = atm_util.molecule_to_atom(this.atom_name, molecule);
 		await this._replace_atom_on_error(id, atom);
 		return await this.select_by_id(id, {depth: depth});
 	}
 	
 	private async _fix_molecule_on_validation_error<D extends Depth>(molecule:Molecule<A,D>, depth?:D)
 			:Promise<Molecule<A,D>>{
-		const bond_keys = urn_atm.get_bond_keys(this.atom_name);
-		if(!depth || (urn_atm.is_atom(this.atom_name, molecule as Atom<A>) && bond_keys.size === 0)){
+		const bond_keys = atm_keys.get_bond(this.atom_name);
+		if(!depth || (atm_util.is_atom(this.atom_name, molecule as Atom<A>) && bond_keys.size === 0)){
 			return (await this._fix_atom_on_validation_error(molecule as Atom<A>)) as Molecule<A,D>;
 		}else{
 			for(const k of bond_keys){
-				const bond_name = urn_atm.get_subatom_name(this.atom_name, k as string);
+				const bond_name = atm_util.get_subatom_name(this.atom_name, k as string);
 				const prop_value = molecule[k] as any;
 				const SUB_DAL = create_selfish(bond_name);
 				const sub_depth = ((depth as number) - 1 as Depth);
@@ -64,7 +68,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 			}
 		}
 		try{
-			urn_atm.validate_molecule_primitive_properties(this.atom_name, molecule);
+			atm_validate.molecule_primitive_properties(this.atom_name, molecule);
 		}catch(exc){
 			if(exc.type !== urn_exception.ExceptionType.INVALID_ATOM){
 				throw exc;
@@ -76,10 +80,10 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 			}
 			let k:keyof Atom<A>;
 			for(k of exc.keys){
-				if(urn_util.object.has_key(molecule, k) && !urn_atm.is_valid_property(this.atom_name, k)){
+				if(urn_util.object.has_key(molecule, k) && !atm_validate.is_valid_property(this.atom_name, k)){
 					delete molecule[k];
 				}else{
-					molecule = urn_atm.fix_property<A,D>(this.atom_name, molecule, k);
+					molecule = atm_util.fix_property<A,D>(this.atom_name, molecule, k);
 				}
 			}
 			molecule = await this._replace_molecule_on_error(molecule._id, molecule, depth);
@@ -90,7 +94,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 	private async _fix_atom_on_validation_error(atom:Atom<A>)
 			:Promise<Atom<A>>{
 		try{
-			urn_atm.validate_atom<A>(this.atom_name, atom);
+			atm_validate.atom<A>(this.atom_name, atom);
 		}catch(exc){
 			if(exc.type !== urn_exception.ExceptionType.INVALID_ATOM){
 				throw exc;
@@ -102,10 +106,10 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 			}
 			let k:keyof Atom<A>;
 			for(k of exc.keys){
-				if(urn_util.object.has_key(atom, k) && !urn_atm.is_valid_property(this.atom_name, k)){
+				if(urn_util.object.has_key(atom, k) && !atm_validate.is_valid_property(this.atom_name, k)){
 					delete atom[k];
 				}else{
-					atom = urn_atm.fix_property<A>(this.atom_name, atom, k);
+					atom = atm_util.fix_property<A>(this.atom_name, atom, k);
 				}
 			}
 			atom = await this._replace_atom_on_error(atom._id, atom);

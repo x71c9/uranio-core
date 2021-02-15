@@ -34,7 +34,9 @@ const urn_exc = urn_exception.init('ACL', 'Access Control Module');
 
 import * as urn_dal from '../dal/';
 
-import * as urn_atm from '../atm/';
+import * as atm_keys from '../atm/keys';
+
+import * as atm_util from '../atm/util';
 
 import {
 	Query,
@@ -114,10 +116,10 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 	
 	public filter_uniform_bond_properties<D extends Depth>(molecule:Molecule<A,D>, depth = 0)
 			:Molecule<A,D>{
-		const bond_keys = urn_atm.get_bond_keys(this.atom_name);
+		const bond_keys = atm_keys.get_bond(this.atom_name);
 		let k:keyof Molecule<A,D>;
 		for(k of bond_keys){
-			const subatom_name = urn_atm.get_subatom_name(this.atom_name, k as string);
+			const subatom_name = atm_util.get_subatom_name(this.atom_name, k as string);
 			const acl = create(subatom_name, this.user_groups);
 			try{
 				acl._can_uniform_read();

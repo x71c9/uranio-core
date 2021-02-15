@@ -27,7 +27,7 @@ import {core_config} from '../conf/defaults';
 
 import {get_subatom_name} from './util';
 
-import {get_bond_keys} from './keys';
+import * as keys from './keys';
 
 export function is_valid_property<A extends AtomName>(atom_name:A, key:string):boolean;
 export function is_valid_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>):boolean;
@@ -67,30 +67,38 @@ export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof 
 	);
 }
 
-export function validate<A extends AtomName>(
+export function molecule<A extends AtomName, D extends Depth>(
+	atom_name:A,
+	molecule:Molecule<A,D>,
+	depth?:D
+):Molecule<A,D>{
+	return any(atom_name, molecule, depth);
+}
+
+export function any<A extends AtomName>(
 	atom_name:A,
 	molecule:Atom<A>
 ):Atom<A>;
-export function validate<A extends AtomName, D extends Depth>(
+export function any<A extends AtomName, D extends Depth>(
 	atom_name:A,
 	molecule:Molecule<A,D>,
 	depth?:D
 ):Molecule<A,D>;
-export function validate<A extends AtomName, D extends Depth>(
+export function any<A extends AtomName, D extends Depth>(
 	atom_name:A,
 	molecule:Molecule<A,D> | Atom<A>,
 	depth?:D
 ):Molecule<A,D> | Atom<A>{
 	if(!depth){
-		validate_atom(atom_name, molecule as Atom<A>);
+		atom(atom_name, molecule as Atom<A>);
 	}else{
-		validate_molecule_primitive_properties(atom_name, molecule);
+		molecule_primitive_properties(atom_name, molecule);
 		_validate_molecule_bond_properties(atom_name, molecule as Molecule<A,D>, depth);
 	}
 	return molecule;
 }
 
-export function validate_molecule_primitive_properties<A extends AtomName, D extends Depth>(
+export function molecule_primitive_properties<A extends AtomName, D extends Depth>(
 	atom_name:A,
 	molecule:Molecule<A,D>
 ):true{
@@ -101,23 +109,23 @@ export function validate_molecule_primitive_properties<A extends AtomName, D ext
 	return true;
 }
 
-export function validate_atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
+export function atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
 		:Atom<A>{
 	_validate_hard_properties(atom);
-	validate_atom_shape(atom_name, atom);
+	atom_shape(atom_name, atom);
 	return atom;
 }
 
-export function validate_atom_shape<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
+export function atom_shape<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
 	_has_all_properties(atom_name, atom_shape);
-	validate_atom_partial(atom_name, atom_shape as Partial<AtomShape<A>>);
+	atom_partial(atom_name, atom_shape as Partial<AtomShape<A>>);
 	return true;
 }
 
-export function validate_atom_partial<A extends AuthName>(atom_name:A, partial_atom:Partial<AtomShape<A>>):true;
-export function validate_atom_partial<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>):true;
-export function validate_atom_partial<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
+export function atom_partial<A extends AuthName>(atom_name:A, partial_atom:Partial<AtomShape<A>>):true;
+export function atom_partial<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>):true;
+export function atom_partial<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
 	_has_no_other_properties(atom_name, partial_atom);
 	_validate_primitive_properties(atom_name, partial_atom);
@@ -125,7 +133,7 @@ export function validate_atom_partial<A extends AtomName>(atom_name:A, partial_a
 	return true;
 }
 
-export function validate_property<A extends AtomName>(
+export function property<A extends AtomName>(
 	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property,
 	prop_value:unknown,
@@ -143,7 +151,7 @@ export function validate_property<A extends AtomName>(
 	return true;
 }
 
-export function _validate_encrypt_property<A extends AtomName>(
+export function encrypt_property<A extends AtomName>(
 	prop_key:keyof Atom<A>,
 	prop_def:Book.Definition.Property.Encrypted,
 	prop_value:string
@@ -300,7 +308,7 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 	depth?:D
 ):true{
 	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const bond_keys = get_bond_keys(atom_name);
+	const bond_keys = keys.get_bond(atom_name);
 	for(const k of bond_keys){
 		let prop_def = undefined;
 		if(urn_util.object.has_key(atom_hard_properties, k)){
@@ -320,16 +328,16 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 		try {
 			const prop_value = molecule[k];
 			if(!depth){
-				validate_property(k, prop_def, prop_value, molecule as Atom<A>);
+				property(k, prop_def, prop_value, molecule as Atom<A>);
 			}else{
 				_validate_bond_type(k as keyof Atom<A>, prop_def, prop_value);
 				_validate_custom_bond_type(k as keyof Atom<A>, prop_def, prop_value);
 				if(Array.isArray(prop_value)){
 					for(const subatom of prop_value){
-						validate(subatom_name, subatom, number_depth);
+						any(subatom_name, subatom, number_depth);
 					}
 				}else{
-					validate<typeof subatom_name, typeof number_depth>(
+					any<typeof subatom_name, typeof number_depth>(
 						subatom_name,
 						prop_value as Molecule<A,D>,
 						number_depth

@@ -11,7 +11,9 @@ import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('VAL_DAL', 'ValidateDAL');
 
-import * as urn_atm from '../atm/';
+import * as atm_validate from '../atm/validate';
+
+import * as atm_keys from '../atm/keys';
 
 import {
 	Depth,
@@ -56,7 +58,7 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
-		urn_atm.validate_atom_shape(this.atom_name, atom_shape);
+		atm_validate.atom_shape(this.atom_name, atom_shape);
 		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
 		let db_record = await super.insert_one(atom_shape);
 		db_record = await this.validate(db_record);
@@ -65,7 +67,7 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
-		urn_atm.validate_atom_partial(this.atom_name, partial_atom);
+		atm_validate.atom_partial(this.atom_name, partial_atom);
 		await this._check_unique(partial_atom, id);
 		let db_record = await super.alter_by_id(id, partial_atom);
 		db_record = await this.validate(db_record);
@@ -82,7 +84,7 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	protected async _check_unique(partial_atom:Partial<AtomShape<A>>, id?:string)
 			:Promise<true>{
 		const $or = [];
-		const unique_keys = urn_atm.get_unique_keys(this.atom_name);
+		const unique_keys = atm_keys.get_unique(this.atom_name);
 		for(const k of unique_keys){
 			$or.push({[k]: partial_atom[k]});
 		}
@@ -120,7 +122,7 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	protected async validate<D extends Depth>(molecule:Molecule<A,D>, depth?:D):Promise<Molecule<A,D>>
 	protected async validate<D extends Depth>(molecule:Molecule<A,D> | Atom<A>, depth?:D)
 			:Promise<Molecule<A,D> | Atom<A>>{
-		return urn_atm.validate<A,D>(this.atom_name, molecule as Molecule<A,D>, depth);
+		return atm_validate.any<A,D>(this.atom_name, molecule as Molecule<A,D>, depth);
 	}
 	
 }

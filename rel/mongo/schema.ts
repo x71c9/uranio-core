@@ -10,7 +10,7 @@ import mongoose from 'mongoose';
 
 import {urn_util} from 'urn-lib';
 
-import * as urn_atm from '../../atm/';
+import * as atm_util from '../../atm/util';
 
 import {
 	BookPropertyType,
@@ -131,7 +131,7 @@ function _generate_mongoose_schema_type_options(atom_name: AtomName, prop_def:Bo
 			schema_type_options = {
 				...schema_type_options,
 				type: mongoose.Schema.Types.ObjectId,
-				ref: urn_atm.get_subatom_name(atom_name, prop_key)
+				ref: atm_util.get_subatom_name(atom_name, prop_key)
 			};
 			return schema_type_options;
 		}
@@ -139,7 +139,7 @@ function _generate_mongoose_schema_type_options(atom_name: AtomName, prop_def:Bo
 			schema_type_options = {
 				...schema_type_options,
 				type: [mongoose.Schema.Types.ObjectId],
-				ref: urn_atm.get_subatom_name(atom_name, prop_key)
+				ref: atm_util.get_subatom_name(atom_name, prop_key)
 			};
 			return schema_type_options;
 		}

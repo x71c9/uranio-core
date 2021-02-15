@@ -6,8 +6,14 @@
 
 export * from './bll';
 
-export * from './authenticate';
+import * as auth from './authenticate';
 
-export * from './log';
+import * as log from './log';
 
-export * from './basic';
+import * as basic from './basic';
+
+export {
+	auth,
+	log,
+	basic
+};
