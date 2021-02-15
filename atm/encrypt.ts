@@ -12,7 +12,7 @@ import {urn_util} from 'urn-lib';
 
 import {core_config} from '../conf/defaults';
 
-import {_validate_encrypt_property} from './validate';
+import * as validate from './validate';
 
 import {
 	AtomName,
@@ -22,11 +22,11 @@ import {
 	BookPropertyType
 } from '../types';
 
-export async function encrypt_property<A extends AtomName>
+export async function property<A extends AtomName>
 (atom_name:A, prop_key:keyof Atom<A>, prop_value:string)
 		:Promise<string>{
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	_validate_encrypt_property(prop_key, atom_props[prop_key as string] as Book.Definition.Property.Encrypted, prop_value);
+	validate.encrypt_property(prop_key, atom_props[prop_key as string] as Book.Definition.Property.Encrypted, prop_value);
 	// *********
 	// IMPORTANT - If the encryption method is changed,
 	// *********   DAL._encrypt_changed_properties must be changed too.
@@ -35,8 +35,8 @@ export async function encrypt_property<A extends AtomName>
 	return await bcrypt.hash(prop_value, salt);
 }
 
-export async function encrypt_properties<A extends AtomName>(atom_name:A, atom:AtomShape<A>):Promise<AtomShape<A>>
-export async function encrypt_properties<A extends AtomName>(atom_name:A, atom:Partial<AtomShape<A>>)
+export async function properties<A extends AtomName>(atom_name:A, atom:AtomShape<A>):Promise<AtomShape<A>>
+export async function properties<A extends AtomName>(atom_name:A, atom:Partial<AtomShape<A>>)
 		:Promise<Partial<AtomShape<A>>>{
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	let k:keyof AtomShape<A>;
@@ -46,7 +46,7 @@ export async function encrypt_properties<A extends AtomName>(atom_name:A, atom:P
 			atom_props[k] &&
 			atom_props[k].type === BookPropertyType.ENCRYPTED
 		){
-			atom[k] = await encrypt_property<A>(atom_name, k, atom[k] as string) as any;
+			atom[k] = await property<A>(atom_name, k, atom[k] as string) as any;
 		}
 	}
 	return atom;

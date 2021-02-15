@@ -13,7 +13,7 @@ import {atom_book} from 'urn_book';
 
 import {urn_log} from 'urn-lib';
 
-import * as urn_atm from '../atm/';
+import * as atm_encrypt from '../atm/encrypt';
 
 import {
 	AtomName,
@@ -35,7 +35,7 @@ export class EncryptDAL<A extends AtomName> extends ValidateDAL<A>{
 	
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
-		atom_shape = await urn_atm.encrypt_properties<A>(this.atom_name, atom_shape);
+		atom_shape = await atm_encrypt.properties<A>(this.atom_name, atom_shape);
 		return await super.insert_one(atom_shape);
 	}
 	
@@ -63,13 +63,13 @@ export class EncryptDAL<A extends AtomName> extends ValidateDAL<A>{
 			if(prop_def && prop_def.type && prop_def.type === BookPropertyType.ENCRYPTED){
 				let value = (atom as any)[k];
 				if(value && typeof value === 'string' && (value.length !== 60 || !value.startsWith('$2'))){
-					value = await urn_atm.encrypt_property(this.atom_name, k, value);
+					value = await atm_encrypt.property(this.atom_name, k, value);
 				}else{
 					const abstract_dal = create_basic(this.atom_name, this._db_relation);
 					const res_select = await abstract_dal.select_by_id(id);
 					const db_prop = res_select[k];
 					if(db_prop && db_prop !== value){
-						value = await urn_atm.encrypt_property(this.atom_name, k, value);
+						value = await atm_encrypt.property(this.atom_name, k, value);
 					}
 				}
 				(atom as any)[k] = value;

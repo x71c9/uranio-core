@@ -10,9 +10,9 @@ const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util module`);
 
 import {atom_book} from 'urn_book';
 
-import {get_bond_keys, get_hidden_keys} from './keys';
+import * as keys from './keys';
 
-import {validate_property} from './validate';
+import * as validate from './validate';
 
 import {
 	atom_hard_properties,
@@ -29,7 +29,7 @@ import {
 
 export function molecule_to_atom<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
 		:Atom<A>{
-	const bond_keys = get_bond_keys(atom_name);
+	const bond_keys = keys.get_bond(atom_name);
 	let k:keyof Molecule<A,D>;
 	for(k of bond_keys){
 		const prop_value = molecule[k];
@@ -74,7 +74,7 @@ export function get_subatom_name<A extends AtomName>(atom_name:A ,atom_key:strin
 
 export function is_atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
 		:atom is Atom<A>{
-	const subatom_keys = get_bond_keys(atom_name);
+	const subatom_keys = keys.get_bond(atom_name);
 	for(const subkey of subatom_keys){
 		if(Array.isArray(atom[subkey])){
 			if(typeof (atom[subkey] as Array<any>)[0] === 'object'){
@@ -89,7 +89,7 @@ export function is_atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
 
 export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
 		:molecule is Molecule<A,D>{
-	const subatom_keys = get_bond_keys(atom_name) as Set<keyof Molecule<A,D>>;
+	const subatom_keys = keys.get_bond(atom_name) as Set<keyof Molecule<A,D>>;
 	for(const subkey of subatom_keys){
 		if(Array.isArray(molecule[subkey])){
 			if(typeof (molecule[subkey] as Array<any>)[0] === 'string'){
@@ -160,7 +160,7 @@ export function fix_property<A extends AtomName, D extends Depth>(
 	}
 	try{
 		
-		validate_property(key as keyof Atom<A>, prop_def, fixed_value, atom as Atom<A>);
+		validate.property(key as keyof Atom<A>, prop_def, fixed_value, atom as Atom<A>);
 		(atom as any)[key] = fixed_value;
 		
 	}catch(err){
@@ -188,8 +188,8 @@ export function hide_hidden_properties<A extends AtomName, D extends Depth>(atom
 function _hide_hidden_properties_single_molecule<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
 		:Molecule<A,D>{
 	
-	const hidden_keys = get_hidden_keys(atom_name);
-	const bond_keys = get_bond_keys(atom_name);
+	const hidden_keys = keys.get_hidden(atom_name);
+	const bond_keys = keys.get_bond(atom_name);
 	
 	if(is_atom(atom_name, molecule as Atom<A>)){
 		let k:keyof Molecule<A,D>;

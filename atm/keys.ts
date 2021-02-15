@@ -16,7 +16,7 @@ import {
 	BookPropertyType
 } from '../types';
 
-export function get_hidden_keys<A extends AtomName>(atom_name:A)
+export function get_hidden<A extends AtomName>(atom_name:A)
 		:Set<keyof Atom<A>>{
 	const hidden_keys = new Set<keyof Atom<A>>();
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
@@ -36,7 +36,7 @@ export function get_hidden_keys<A extends AtomName>(atom_name:A)
 	return hidden_keys;
 }
 
-export function get_encrypted_keys<A extends AtomName>(atom_name:A)
+export function get_encrypted<A extends AtomName>(atom_name:A)
 		:Set<keyof Atom<A>>{
 	const encrypt_keys = new Set<keyof Atom<A>>();
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
@@ -58,7 +58,7 @@ export function get_encrypted_keys<A extends AtomName>(atom_name:A)
 	return encrypt_keys;
 }
 
-export function get_unique_keys<A extends AtomName>(atom_name:A)
+export function get_unique<A extends AtomName>(atom_name:A)
 		:Set<keyof AtomShape<A>>{
 	const unique_keys = new Set<keyof AtomShape<A>>();
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
@@ -78,7 +78,7 @@ export function get_unique_keys<A extends AtomName>(atom_name:A)
 	return unique_keys;
 }
 
-export function get_bond_keys<A extends AtomName>(atom_name:A)
+export function get_bond<A extends AtomName>(atom_name:A)
 		:Set<keyof Molecule<A>>{
 	const subatom_keys = new Set<keyof Molecule<A>>();
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
@@ -91,7 +91,7 @@ export function get_bond_keys<A extends AtomName>(atom_name:A)
 	return subatom_keys;
 }
 
-export function get_subatom_array_keys<A extends AtomName>(atom_name:A)
+export function get_bond_array<A extends AtomName>(atom_name:A)
 		:Set<keyof AtomShape<A>>{
 	const subatom_keys = new Set<keyof AtomShape<A>>();
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
@@ -104,7 +104,7 @@ export function get_subatom_array_keys<A extends AtomName>(atom_name:A)
 	return subatom_keys;
 }
 
-export function get_subatom_non_array_keys<A extends AtomName>(atom_name:A)
+export function get_bond_non_array<A extends AtomName>(atom_name:A)
 		:Set<keyof AtomShape<A>>{
 	const subatom_keys = new Set<keyof AtomShape<A>>();
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;

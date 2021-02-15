@@ -13,7 +13,7 @@ import * as urn_dal from '../dal/';
 
 import * as urn_acl from '../acl/';
 
-import {auth} from './authenticate';
+import {is_valid_token_object} from './authenticate';
 
 import {
 	AccessLayer,
@@ -35,7 +35,7 @@ export class BasicBLL<A extends AtomName> {
 	constructor(public atom_name:A, protected token_object?:TokenObject){
 		
 		if(token_object)
-			auth.is_valid_token_object(token_object);
+			is_valid_token_object(token_object);
 		
 		if(token_object && !_is_superuser(token_object)){
 			this._al = urn_acl.create(this.atom_name, token_object.groups);
@@ -98,7 +98,7 @@ function _is_superuser(token_object:TokenObject)
 	return true;
 }
 
-export function create_basic<A extends AtomName>(atom_name:A, token_object?:TokenObject)
+export function create<A extends AtomName>(atom_name:A, token_object?:TokenObject)
 		:BasicBLL<A>{
 	urn_log.fn_debug(`Create BasicBLL [${atom_name}]`);
 	return new BasicBLL<A>(atom_name, token_object);
