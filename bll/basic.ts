@@ -11,12 +11,6 @@ import {urn_log} from 'urn-lib';
 
 import * as urn_dal from '../dal/';
 
-// import * as urn_acl from '../acl/';
-
-// import {is_valid_token_object} from './authenticate';
-
-// import {is_superuser} from './authenticate';
-
 import {
 	AccessLayer,
 	Query,
@@ -24,7 +18,7 @@ import {
 	Atom,
 	AtomShape,
 	Depth,
-	Molecule
+	Molecule,
 } from '../types';
 
 @urn_log.decorators.debug_constructor
@@ -33,14 +27,13 @@ export class BasicBLL<A extends AtomName> {
 	
 	protected _al:AccessLayer<A>;
 	
-	constructor(public atom_name:A){
+	constructor(public atom_name:A, init_access_layer?:() => AccessLayer<A>){
 		
-		this._al = this._get_access_layer();
-		
-	}
-	
-	protected _get_access_layer():AccessLayer<A>{
-		return urn_dal.create(this.atom_name);
+		if(!init_access_layer){
+			this._al = urn_dal.create(atom_name);
+		}else{
+			this._al = init_access_layer();
+		}
 	}
 	
 	public async find<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
