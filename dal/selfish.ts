@@ -80,7 +80,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 			}
 			let k:keyof Atom<A>;
 			for(k of exc.keys){
-				if(urn_util.object.has_key(molecule, k) && !atm_validate.is_valid_property(this.atom_name, k)){
+				if(urn_util.object.has_key(molecule, k) && !atm_util.has_property(this.atom_name, k)){
 					delete molecule[k];
 				}else{
 					molecule = atm_util.fix_property<A,D>(this.atom_name, molecule, k);
@@ -106,7 +106,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 			}
 			let k:keyof Atom<A>;
 			for(k of exc.keys){
-				if(urn_util.object.has_key(atom, k) && !atm_validate.is_valid_property(this.atom_name, k)){
+				if(urn_util.object.has_key(atom, k) && !atm_util.has_property(this.atom_name, k)){
 					delete atom[k];
 				}else{
 					atom = atm_util.fix_property<A>(this.atom_name, atom, k);

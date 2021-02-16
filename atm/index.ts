@@ -10,8 +10,6 @@ import {
 	atom,
 	atom_shape,
 	atom_partial,
-	is_valid_property,
-	is_optional_property
 } from './validate';
 
 export const validate = {
@@ -20,8 +18,6 @@ export const validate = {
 	atom,
 	atom_shape,
 	atom_partial,
-	is_valid_property,
-	is_optional_property
 };
 
 import {
@@ -43,22 +39,26 @@ export const keys = {
 };
 
 import {
+	has_property,
 	molecule_to_atom,
 	get_subatom_name,
 	is_atom,
 	is_molecule,
 	is_auth_atom_name,
 	is_auth_atom,
+	is_optional_property,
 	hide_hidden_properties
 } from './util';
 
 export const util = {
+	has_property,
 	molecule_to_atom,
 	get_subatom_name,
 	is_atom,
 	is_molecule,
 	is_auth_atom_name,
 	is_auth_atom,
+	is_optional_property,
 	hide_hidden_properties
 };
 

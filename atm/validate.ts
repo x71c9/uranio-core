@@ -25,47 +25,9 @@ import {
 
 import {core_config} from '../conf/defaults';
 
-import {get_subatom_name} from './util';
+import * as atm_util from './util';
 
-import * as keys from './keys';
-
-export function is_valid_property<A extends AtomName>(atom_name:A, key:string):boolean;
-export function is_valid_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>):boolean;
-export function is_valid_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>|string)
-		:boolean{
-	if(urn_util.object.has_key(atom_hard_properties, key)){
-		return true;
-	}
-	if(urn_util.object.has_key(atom_common_properties, key)){
-		return true;
-	}
-	if(urn_util.object.has_key(atom_book[atom_name]['properties'], key)){
-		return true;
-	}
-	return false;
-}
-
-export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>)
-		:boolean{
-	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	let prop_def = undefined;
-	if(urn_util.object.has_key(atom_hard_properties, key)){
-		prop_def = atom_hard_properties[key];
-	}else if(urn_util.object.has_key(atom_common_properties, key)){
-		prop_def = atom_common_properties[key];
-	}else if(urn_util.object.has_key(atom_props, key)){
-		prop_def = atom_props[key];
-	}
-	if(!prop_def){
-		const err_msg = `Atom property definition missing for atom [${atom_name}] property [${key}]`;
-		throw urn_exc.create('IS_OPTIONAL_MISSING_ATM_PROP_DEFINITION', err_msg);
-	}
-	return (
-		prop_def &&
-		urn_util.object.has_key(prop_def, 'optional') &&
-		(prop_def as any).optional === true
-	);
-}
+import * as atm_keys from './keys';
 
 export function molecule<A extends AtomName, D extends Depth>(
 	atom_name:A,
@@ -170,12 +132,12 @@ function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomSha
 	const atom_props = atom_book[atom_name]['properties'];
 	const missin_props:string[] = [];
 	for(const [k] of Object.entries(atom_props)){
-		if(!is_optional_property(atom_name, k as keyof Atom<A>) && !urn_util.object.has_key(atom_shape,k)){
+		if(!atm_util.is_optional_property(atom_name, k as keyof Atom<A>) && !urn_util.object.has_key(atom_shape,k)){
 			missin_props.push(k);
 		}
 	}
 	for(const [k] of Object.entries(atom_common_properties)){
-		if(!is_optional_property(atom_name, k as keyof Atom<A>) && !urn_util.object.has_key(atom_shape,k)){
+		if(!atm_util.is_optional_property(atom_name, k as keyof Atom<A>) && !urn_util.object.has_key(atom_shape,k)){
 			missin_props.push(k);
 		}
 	}
@@ -308,7 +270,7 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 	depth?:D
 ):true{
 	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const bond_keys = keys.get_bond(atom_name);
+	const bond_keys = atm_keys.get_bond(atom_name);
 	for(const k of bond_keys){
 		let prop_def = undefined;
 		if(urn_util.object.has_key(atom_hard_properties, k)){
@@ -323,7 +285,7 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
 		}
 		
-		const subatom_name = get_subatom_name(atom_name, k as string);
+		const subatom_name = atm_util.get_subatom_name(atom_name, k as string);
 		const number_depth = (!depth) ? 0 : depth as number - 1 as Depth;
 		try {
 			const prop_value = molecule[k];

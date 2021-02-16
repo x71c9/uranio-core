@@ -13,7 +13,7 @@ import {core_config} from '../conf/defaults';
 
 import {Depth, Query, AtomName} from '../types';
 
-import * as atm_validate from '../atm/validate';
+import * as atm_util from '../atm/util';
 
 const _query_op_keys = {
 	array_op: ['$and', '$nor', '$or'],
@@ -63,7 +63,7 @@ function _validate_expression<A extends AtomName>(field:Query.Expression<A>, ato
 			return _validate_expression<A>(v, atom_name);
 		}else{
 			
-			if(!atm_validate.is_valid_property(atom_name, k as any)){
+			if(!atm_util.has_property(atom_name, k as any)){
 				const err_msg = `Invalid filter key [${k}] for Atom [${atom_name}].`;
 				throw urn_exc.create_invalid_request('INVALID_EXPRESSION_KEY', err_msg);
 			}
@@ -178,7 +178,7 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 			}
 			case 'object':{
 				for(const k in options.sort){
-					if(!atm_validate.is_valid_property(atom_name, k)){
+					if(!atm_util.has_property(atom_name, k)){
 						const err_msg = `Sort value not valid [${k}].`;
 						throw urn_exc.create_invalid_request('OPTIONS_INVALID_OBJECT_SORT_VAL', err_msg);
 					}

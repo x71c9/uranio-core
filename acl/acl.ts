@@ -99,7 +99,7 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 	protected _can_uniform_write()
 			:void{
 		if(this._security_type === BookSecurityType.UNIFORM){
-			if(!this._write || !this.user_groups.includes(this._write)){
+			if(this._write !==  BookPermissionType.PUBLIC && (!this._write || !this.user_groups.includes(this._write))){
 				throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Write unauthorized');
 			}
 		}
