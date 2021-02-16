@@ -78,8 +78,9 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 				);
 				mon_find_res = await this._raw.find(query, null, options)
 					.populate(populate_object).lean<Molecule<A,D>[]>();
+			}else{
+				mon_find_res = await this._raw.find(query, null, options).lean<Molecule<A,D>[]>();
 			}
-			mon_find_res = await this._raw.find(query, null, options).lean<Molecule<A,D>[]>();
 		}else{
 			mon_find_res = await this._raw.find(query).lean<Molecule<A,D>[]>();
 		}
