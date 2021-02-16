@@ -21,7 +21,7 @@ import {AtomName, TokenObject, AccessLayer} from '../types';
 
 import {BasicBLL} from './basic';
 
-import {is_superuser} from './authenticate';
+import {is_superuser, is_valid_token_object} from './authenticate';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
@@ -35,12 +35,25 @@ export class SecurityBLL<A extends AtomName> extends BasicBLL<A> {
 
 function _return_acl<A extends AtomName>(atom_name:A, token_object?:TokenObject) {
 	return ():AccessLayer<A> => {
-		if(is_superuser(token_object)){
-			return urn_dal.create(atom_name);
+		
+		let groups:string[] = [];
+
+		if(token_object){
+			
+			is_valid_token_object(token_object);
+			
+			if(is_superuser(token_object)){
+				return urn_dal.create(atom_name);
+			}
+			
+			if(Array.isArray(token_object.groups)){
+				groups = token_object.groups;
+			}
+			
 		}
-		const groups = (token_object?.groups && Array.isArray(token_object.groups)) ?
-			token_object.groups : [];
+		
 		return urn_acl.create(atom_name, groups);
+		
 	};
 }
 
