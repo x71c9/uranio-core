@@ -34,7 +34,8 @@ export const enum BookSecurityType {
 }
 
 export const enum BookPermissionType {
-	NOBODY = 'NOBODY'
+	NOBODY = 'NOBODY',
+	PUBLIC = 'PUBLIC'
 }
 
 export type RealType<AT extends BookPropertyType> =
@@ -72,8 +73,8 @@ export namespace Book {
 		
 		export type Security = {
 			type: BookSecurityType,
-			_r?: BookPropertyType.ID,
-			_w?: BookPropertyType.ID
+			_r?: BookPropertyType.ID | BookPermissionType.NOBODY,
+			_w?: BookPropertyType.ID | BookPermissionType.PUBLIC
 		}
 		
 		export type Api = {

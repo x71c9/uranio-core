@@ -1,8 +1,8 @@
 /**
  * Class for Basic Business Logic Layer
  *
- * If a `user_groups` array  is defined in the constructor the class will use
- * an ACL - Access Control Layer - in order to filter the data.
+ * It is a mirror of a Data Access Layer.
+ * The method _get_access_layer can be overwritten when extending the class.
  *
  * @packageDocumentation
  */
@@ -11,9 +11,11 @@ import {urn_log} from 'urn-lib';
 
 import * as urn_dal from '../dal/';
 
-import * as urn_acl from '../acl/';
+// import * as urn_acl from '../acl/';
 
-import {is_valid_token_object} from './authenticate';
+// import {is_valid_token_object} from './authenticate';
+
+// import {is_superuser} from './authenticate';
 
 import {
 	AccessLayer,
@@ -22,8 +24,7 @@ import {
 	Atom,
 	AtomShape,
 	Depth,
-	Molecule,
-	TokenObject
+	Molecule
 } from '../types';
 
 @urn_log.decorators.debug_constructor
@@ -32,17 +33,14 @@ export class BasicBLL<A extends AtomName> {
 	
 	protected _al:AccessLayer<A>;
 	
-	constructor(public atom_name:A, protected token_object?:TokenObject){
+	constructor(public atom_name:A){
 		
-		if(token_object)
-			is_valid_token_object(token_object);
+		this._al = this._get_access_layer();
 		
-		if(token_object && !_is_superuser(token_object)){
-			this._al = urn_acl.create(this.atom_name, token_object.groups);
-		}else{
-			this._al = urn_dal.create(this.atom_name);
-		}
-		// this._al = urn_dal.create(this.atom_name);
+	}
+	
+	protected _get_access_layer():AccessLayer<A>{
+		return urn_dal.create(this.atom_name);
 	}
 	
 	public async find<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>)
@@ -87,21 +85,10 @@ export class BasicBLL<A extends AtomName> {
 	
 }
 
-function _is_superuser(token_object:TokenObject)
-		:boolean{
-	if(!token_object){
-		return false;
-	}
-	if(token_object.auth_atom_name !== 'superuser'){
-		return false;
-	}
-	return true;
-}
-
-export function create<A extends AtomName>(atom_name:A, token_object?:TokenObject)
+export function create<A extends AtomName>(atom_name:A)
 		:BasicBLL<A>{
 	urn_log.fn_debug(`Create BasicBLL [${atom_name}]`);
-	return new BasicBLL<A>(atom_name, token_object);
+	return new BasicBLL<A>(atom_name);
 }
 
 

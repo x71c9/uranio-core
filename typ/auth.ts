@@ -32,3 +32,8 @@ export type TokenObject = {
 //   groups: string[]
 // }
 
+export const enum AuthAction {
+	READ = 'READ',
+	WRITE = 'WRITE',
+	AUTH = 'AUTH'
+}

@@ -12,16 +12,23 @@ import {urn_util, urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 
+import {atom_book} from 'urn_book';
+
 import {core_config} from '../conf/defaults';
 
 import {
+	AtomName,
 	AuthName,
 	Query,
 	AuthAtom,
 	AuthAtomShape,
 	TokenObject,
 	abstract_token_object,
-	TokenKey
+	TokenKey,
+	Book,
+	BookSecurityType,
+	BookPermissionType,
+	AuthAction
 } from '../types';
 
 import * as atm_validate from '../atm/validate';
@@ -79,24 +86,67 @@ export function create<A extends AuthName>(atom_name:A)
 	return new AuthenticationBLL<A>(atom_name);
 }
 
+export function is_public_request(atom_name:AtomName, action: AuthAction)
+		:boolean{
+	const atom_def = atom_book[atom_name] as Book.Definition;
+	
+	if(action === AuthAction.READ){
+	
+		if(
+			!atom_def.security ||
+			atom_def.security === BookSecurityType.UNIFORM
+		){
+			return true;
+		}
+		
+		if(
+			typeof atom_def.security === 'object' &&
+			atom_def.security.type === BookSecurityType.UNIFORM &&
+			atom_def.security._r === undefined
+		){
+			return true;
+		}
+		
+		return false;
+		
+	}else if(action === AuthAction.WRITE){
+		
+		if(
+			typeof atom_def.security === 'object' &&
+			atom_def.security.type === BookSecurityType.UNIFORM &&
+			atom_def.security._w === BookPermissionType.PUBLIC
+		){
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
+	return false;
+	
+}
 
-export async function is_valid_token_object(token_object:TokenObject)
-		:Promise<true>{
-	_token_is_object(token_object);
+export function is_valid_token_object(token_object:TokenObject)
+		:true{
+	// _token_is_object(token_object);
 	_token_has_all_keys(token_object);
 	_token_has_no_other_keys(token_object);
 	_token_has_correct_type_values(token_object);
-	await _if_superuser_validate_id(token_object);
+	// await _if_superuser_validate_id(token_object);
 	return true;
 }
 
-function _token_is_object(token_object:TokenObject)
-	:true{
-	if(!token_object || typeof token_object !== 'object'){
-		throw urn_exc.create_invalid_request('TOKEN_INVALID_TYPE', 'Token has wrong type.');
-	}
-	return true;
-}
+// function _token_is_object(token_object:TokenObject)
+//   :true{
+//   if(!token_object){
+//     throw urn_exc.create_invalid_request('TOKEN_UNDEFINED', 'Token is missing.');
+//   }
+//   if(typeof token_object !== 'object'){
+//     throw urn_exc.create_invalid_request('TOKEN_INVALID_TYPE', 'Token has wrong type.');
+//   }
+//   return true;
+// }
 
 function _token_has_all_keys(token_object:TokenObject)
 		:true{
@@ -150,22 +200,34 @@ function _check_token_key_type(token_object:TokenObject, key:TokenKey)
 	}
 }
 
-async function _if_superuser_validate_id(token_object:TokenObject)
-		:Promise<true>{
-	if(token_object.auth_atom_name !== 'superuser'){
+export function is_superuser(token_object?:TokenObject)
+		:boolean{
+	if(
+		token_object &&
+		typeof token_object === 'object' &&
+		token_object.auth_atom_name === 'superuser'
+	){
 		return true;
 	}
-		
-	return true;
-	
-	// try{
-	//   const basic_superusers_bll = create_basic('superuser');
-	//   await basic_superusers_bll.find_by_id(token_object._id);
-	//   return true;
-	// }catch(ex){
-	//   const err_msg = 'Invalid token object _id.';
-	//   throw urn_exc.create_invalid_request('INVALID_TOKEN_SU_ID', err_msg);
-	// }
+	return false;
 }
+
+// async function _if_superuser_validate_id(token_object:TokenObject)
+//     :Promise<true>{
+//   if(token_object.auth_atom_name !== 'superuser'){
+//     return true;
+//   }
+		
+//   return true;
+	
+//   // try{
+//   //   const basic_superusers_bll = create_basic('superuser');
+//   //   await basic_superusers_bll.find_by_id(token_object._id);
+//   //   return true;
+//   // }catch(ex){
+//   //   const err_msg = 'Invalid token object _id.';
+//   //   throw urn_exc.create_invalid_request('INVALID_TOKEN_SU_ID', err_msg);
+//   // }
+// }
 
 

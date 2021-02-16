@@ -208,81 +208,42 @@ function _hide_hidden_properties_single_molecule<A extends AtomName, D extends D
 	}
 	return molecule;
 }
-	
 
-// export function fix_molecule_property<A extends AtomName, D extends Depth>(
-//   atom_name:A,
-//   molecule:Molecule<A,D>,
-//   key:keyof Molecule<A,D>
-// ):Molecule<A,D>{
-//   const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-//   let prop_def = undefined;
-//   if(urn_util.object.has_key(atom_props, key)){
-//     prop_def = atom_props[key as string];
-//   }else if(urn_util.object.has_key(atom_hard_properties, key)){
-//     prop_def = atom_hard_properties[key];
-//   }else if(urn_util.object.has_key(atom_common_properties, key)){
-//     prop_def = atom_common_properties[key];
-//   }
-//   if(!prop_def){
-//     const err_msg = `Missing or invalid key [${key}] in atom_book`;
-//     throw urn_exc.create('FIX_MOLECULE_KEY_INVALID_KEY', err_msg);
-//   }
-//   const def = prop_def as Book.Definition.Property;
-//   let fixed_value = null;
-//   if(def.on_error && typeof def.on_error === 'function'){
-//     fixed_value = def.on_error!(molecule[key]);
-//   }else if(def.default){
-//     fixed_value = def.default;
-//   }
-//   try{
-		
-//     validate_property(key as keyof Atom<A>, prop_def, fixed_value, molecule as Atom<A>);
-//     molecule[key] = fixed_value;
-		
-//   }catch(err){
-//     let err_msg = `Cannot fix property of Atom. Default value or on_error result is invalid.`;
-//     err_msg += ` for Atom [${atom_name}] property [${key}]`;
-//     throw urn_exc.create('CANNOT_FIX', err_msg);
-//   }
-//   return molecule;
-// }
+export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>)
+		:boolean{
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	let prop_def = undefined;
+	if(urn_util.object.has_key(atom_hard_properties, key)){
+		prop_def = atom_hard_properties[key];
+	}else if(urn_util.object.has_key(atom_common_properties, key)){
+		prop_def = atom_common_properties[key];
+	}else if(urn_util.object.has_key(atom_props, key)){
+		prop_def = atom_props[key];
+	}
+	if(!prop_def){
+		const err_msg = `Atom property definition missing for atom [${atom_name}] property [${key}]`;
+		throw urn_exc.create('IS_OPTIONAL_MISSING_ATM_PROP_DEFINITION', err_msg);
+	}
+	return (
+		prop_def &&
+		urn_util.object.has_key(prop_def, 'optional') &&
+		(prop_def as any).optional === true
+	);
+}
 
-// export function fix_atom_property<A extends AtomName>(
-//   atom_name:A,
-//   atom:Atom<A>,
-//   key:keyof Atom<A>
-// ):Atom<A>{
-//   const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-//   let prop_def = undefined;
-//   if(urn_util.object.has_key(atom_props, key)){
-//     prop_def = atom_props[key as string];
-//   }else if(urn_util.object.has_key(atom_hard_properties, key)){
-//     prop_def = atom_hard_properties[key];
-//   }else if(urn_util.object.has_key(atom_common_properties, key)){
-//     prop_def = atom_common_properties[key];
-//   }
-//   if(!prop_def){
-//     const err_msg = `Missing or invalid key [${key}] in atom_book`;
-//     throw urn_exc.create('FIX_ATOM_KEY_INVALID_KEY', err_msg);
-//   }
-//   let fixed_value = null;
-//   const def = prop_def as Book.Definition.Property;
-//   if(def.on_error && typeof def.on_error === 'function'){
-//     fixed_value = def.on_error!(atom[key]);
-//   }else if(def.default){
-//     fixed_value = def.default;
-//   }
-//   try{
-		
-//     validate_property(key as keyof Atom<A>, prop_def, fixed_value, atom);
-//     atom[key] = fixed_value;
-		
-//   }catch(err){
-//     let err_msg = `Cannot fix property of Atom. Default value or on_error result is invalid.`;
-//     err_msg += ` for Atom [${atom_name}] property [${key}]`;
-//     throw urn_exc.create('CANNOT_FIX', err_msg);
-//   }
-//   return atom;
-// }
+export function has_property<A extends AtomName>(atom_name:A, key:string):boolean;
+export function has_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>):boolean;
+export function has_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>|string)
+		:boolean{
+	if(urn_util.object.has_key(atom_hard_properties, key)){
+		return true;
+	}
+	if(urn_util.object.has_key(atom_common_properties, key)){
+		return true;
+	}
+	if(urn_util.object.has_key(atom_book[atom_name]['properties'], key)){
+		return true;
+	}
+	return false;
+}
 

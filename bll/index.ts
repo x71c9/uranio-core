@@ -10,7 +10,9 @@ import * as auth from './authenticate';
 
 import * as log from './log';
 
-import * as basic from './basic';
+import {create} from './basic';
+
+const basic = {create};
 
 export {
 	auth,
