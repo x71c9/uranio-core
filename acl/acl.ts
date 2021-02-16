@@ -224,7 +224,8 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 			this._can_atom_write(id);
 		}
 		
-		return await this._dal.delete_by_id(id);
+		const acl_res = await this._dal.delete_by_id(id);
+		return acl_res;
 	}
 	
 }

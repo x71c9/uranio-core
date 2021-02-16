@@ -21,28 +21,29 @@ import {AtomName, TokenObject, AccessLayer} from '../types';
 
 import {BasicBLL} from './basic';
 
-// import {is_valid_token_object} from './authenticate';
-
 import {is_superuser} from './authenticate';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
 export class SecurityBLL<A extends AtomName> extends BasicBLL<A> {
 	
-	constructor(atom_name:A, protected _token_object?:TokenObject) {
-		super(atom_name);
-	}
-	
-	protected _get_access_layer():AccessLayer<A>{
-		if(is_superuser(this._token_object)){
-			return urn_dal.create(this.atom_name);
-		}
-		const groups = (this._token_object?.groups && Array.isArray(this._token_object.groups)) ?
-			this._token_object.groups : [];
-		return urn_acl.create(this.atom_name, groups);
+	constructor(atom_name:A, _token_object?:TokenObject) {
+		super(atom_name, _return_acl(atom_name, _token_object));
 	}
 	
 }
+
+function _return_acl<A extends AtomName>(atom_name:A, token_object?:TokenObject) {
+	return ():AccessLayer<A> => {
+		if(is_superuser(token_object)){
+			return urn_dal.create(atom_name);
+		}
+		const groups = (token_object?.groups && Array.isArray(token_object.groups)) ?
+			token_object.groups : [];
+		return urn_acl.create(atom_name, groups);
+	};
+}
+
 
 export function create_security<A extends AtomName>(atom_name:A, token_object?:TokenObject)
 		:SecurityBLL<A>{

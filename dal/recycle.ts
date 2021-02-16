@@ -61,6 +61,7 @@ export class RecycleDAL<A extends AtomName> extends EncryptDAL<A>{
 			return db_res_delete;
 		db_res_delete._deleted_from = db_res_delete._id;
 		await this.trash_dal.insert_one(db_res_delete);
+		// db_res_delete._id = id;
 		return db_res_delete;
 	}
 }

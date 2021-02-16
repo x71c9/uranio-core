@@ -8,11 +8,11 @@ import {urn_log} from 'urn-lib';
 
 import {AtomName, TokenObject} from '../types';
 
-import {SecurityBLL} from './security';
+import {AuthBLL} from './auth';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class BLL<A extends AtomName> extends SecurityBLL<A>{}
+class BLL<A extends AtomName> extends AuthBLL<A>{}
 
 export function create<A extends AtomName>(atom_name:A, token_object?:TokenObject)
 		:BLL<A>{
