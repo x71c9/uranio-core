@@ -33,7 +33,8 @@ export class BasicDAL<A extends AtomName> implements AccessLayer<A>{
 	public async select<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>[]>{
 		urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
-		return await this._db_relation.select(query, options);
+		const res_rel = await this._db_relation.select(query, options);
+		return res_rel;
 	}
 	
 	public async select_by_id<D extends Depth = 0>(id:string, options?:Query.Options<A,D>)
