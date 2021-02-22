@@ -42,6 +42,9 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	
 	public async select_by_id<D extends Depth = 0>(id:string, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
+		if(!this._db_relation.is_valid_id(id)){
+			throw urn_exc.create_invalid_request('INVALID_ID', `Invalid request [_id].`);
+		}
 		let db_record = await super.select_by_id(id, options);
 		const depth = (options && options.depth) ? options.depth : undefined;
 		db_record = await this.validate<D>(db_record, depth);
@@ -50,6 +53,9 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	
 	public async select_one<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
+		if(urn_util.object.has_key(query,'_id') && (query as Query.Equal<A>)._id){
+			return this.select_by_id((query as any)._id, options);
+		}
 		let db_record = await super.select_one(query, options);
 		const depth = (options && options.depth) ? options.depth : undefined;
 		db_record = await this.validate<D>(db_record, depth);
