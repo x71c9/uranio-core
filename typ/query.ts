@@ -19,38 +19,6 @@ export type Query<A extends AtomName> = Query.Expression<A> | Query.Logical<A>;
 
 export namespace Query {
 
-	// type Base = string | number | boolean | Date;
-
-	// type Equal<A extends AtomName> = Partial<Atom<A>>;
-
-	// type Equal<A extends AtomName> = {
-	//   [k in keyof Atom<A>]?: Base
-	// }
-	
-	// export type Equal<A extends AtomName> =
-	//   { [P in KeyOfHardProperties]?: RealTypeOfAtomHardProperty<P> } &
-	//   { [P in KeyOfCommonProperties]?: RealTypeOfAtomCommonProperty<P> } &
-	//   { [P in KeyOfPropertyOfAtomDefinition<A>]?: RealTypeOfAtomProperty<A,P>}
-	
-	// type Comparsion<A extends AtomName> =
-	//   { $eq?: Equal<A> } |
-	//   { $gt?: Equal<A> } |
-	//   { $gte?: Equal<A> } |
-	//   { $in?: Equal<A>[] } |
-	//   { $lt?: Equal<A> } |
-	//   { $lte?: Equal<A> } |
-	//   { $ne?: Equal<A> } |
-	//   { $nin?: Equal<A>[] }
-
-	// type WithComparsion<A extends AtomName> = {
-	//   [k in keyof Atom<A>]?: Comparsion<A>
-	// }
-	
-	// type WithComparsion<A extends AtomName> =
-		// { [P in KeyOfHardProperties]?: Comparsion<RealTypeOfAtomHardProperty<P>> } &
-		// { [P in KeyOfCommonProperties]?: Comparsion<RealTypeOfAtomCommonProperty<P>> } &
-		// { [P in KeyOfPropertyOfAtomDefinition<A>]?: Comparsion<RealTypeOfAtomProperty<A,P>>}
-
 	type QueryAtomKey<A extends AtomName> =
 		KeyOfHardProperties | KeyOfCommonProperties | KeyOfPropertyOfAtomDefinition<A>;
 	
@@ -93,15 +61,6 @@ export namespace Query {
 		depth_query?:Query<A>
 	}
 	
-	// const a1:Query<'superuser'> = {email: ''};
-	// const a2:Query<'superuser'> = {email: {$eq: ''}};
-	// const a3:Query<'superuser'> = {$and: [{email: ''}, {password: {$lte: ''}}]};
-	// const a4:Query<'superuser'> = {$or: []};
-	// const a5:Query<'superuser'> = {$nor: [{$and: []}]};
-	// const a6:Query<'superuser'> = {$not: {email: ''}};
-	// const a7:Query<'superuser'> = {$nor:[{$not: {$and:[{password: {$nin: ['']}}]}}]};
-	// console.log(a1,a2,a3,a4,a5,a6,a7);
-
 }
 
 // export function aaa<A extends AtomName>():void{
@@ -116,7 +75,7 @@ export namespace Query {
 
 // export const dd1:Query.Equal<'superuser'> = {active: true};
 // export const dd2:Query.Equal<'media'> = {_deleted_from: ''};
-// export const dd3:Query.Equal<'obi'> = {_id: ''};
+// export const dd3:Query<'user'> = {_id: ''};
 // export const dd4:Query.Equal<'product'> = {title: ''};
 
 // export const dd5:Query.Equal<'superuser'> = {_id: 'a', active: true, _deleted_from: '', _date: new Date()};
