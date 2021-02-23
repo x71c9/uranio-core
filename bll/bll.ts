@@ -48,6 +48,7 @@ export class my_class extends BLL<'product'> {
 	}
 	public async find_by_id<D extends Depth>(id:string, options?:Query.Options<'product',D>)
 			:Promise<Molecule<'product', D>>{
+		console.log('CUSTOOOOM BLL');
 		return await super.find_by_id(id, options) as Molecule<'product',D>;
 	}
 }
