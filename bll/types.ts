@@ -1,37 +1,24 @@
 /**
- * BLL interface
+ * BLL types module
  *
  * @packageDocumentation
  */
 
-// import {
-//   AccessLayer,
-//   Query,
-//   AtomName,
-//   Atom,
-//   AtomShape,
-//   Depth,
-//   Molecule
-// } from '../types';
+// import {bll_book} from './book';
 
-// export interface IBLL<A extends AtomName> {
-	
-//   _al:AccessLayer<A>;
-	
-//   find<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>):Promise<Molecule<A,D>[]>;
-	
-//   find_by_id<D extends Depth>(id:string, options?:Query.Options<A,D>):Promise<Molecule<A,D>>;
-	
-//   find_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>):Promise<Molecule<A,D>>;
-	
-//   insert_new(atom_shape:AtomShape<A>):Promise<Atom<A>>;
-	
-//   update_by_id(id:string, partial_atom:Partial<AtomShape<A>>):Promise<Atom<A>>;
-	
-//   update_one(atom:Atom<A>):Promise<Atom<A>>;
-	
-//   remove_by_id(id:string):Promise<Atom<A>>;
-	
-//   remove_one<D extends Depth>(molecule:Molecule<A,D>):Promise<Atom<A>>;
-	
-// }
+// import {AtomName} from '../types';
+
+// import {BLL} from './bll';
+
+// import {my_class} from '../../my';
+
+// export type CustomBLL<A extends AtomName> =
+//   A extends keyof typeof bll_book ?
+//   InstanceType<typeof bll_book[A]> :
+//   BLL<A>;
+
+// export const a:CustomBLL<'product'> = new my_class(undefined);
+// export const b:CustomBLL<'user'> = new BLL('user');
+
+// export const e = create('product');
+// export const d = create('user');
