@@ -12,7 +12,9 @@ import {AuthBLL} from './auth';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
-class BLL<A extends AtomName> extends AuthBLL<A>{}
+export class BLL<A extends AtomName> extends AuthBLL<A>{}
+
+// export type BLLInstance = InstanceType<typeof BLL>;
 
 export function create<A extends AtomName>(atom_name:A, token_object?:TokenObject)
 		:BLL<A>{

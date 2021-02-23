@@ -57,7 +57,8 @@ export type RealType<AT extends BookPropertyType> =
 	never;
 
 export type Book = {
-	[k:string]: Book.Definition
+	// [k in string]: k extends AtomName ? Book.Definition<k> : never;
+	[k in string]: Book.Definition;
 };
 
 export namespace Book {
@@ -66,7 +67,7 @@ export namespace Book {
 		properties: Definition.Properties,
 		connection?: ConnectionName,
 		security?: BookSecurityType | Definition.Security,
-		api: Definition.Api
+		api?: Definition.Api
 	}
 	
 	export namespace Definition {
