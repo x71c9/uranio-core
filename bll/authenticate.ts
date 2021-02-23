@@ -86,7 +86,7 @@ export function create<A extends AuthName>(atom_name:A)
 	return new AuthenticationBLL<A>(atom_name);
 }
 
-export function is_public_request(atom_name:AtomName, action: AuthAction)
+export function is_public_request<A extends AtomName>(atom_name:A, action: AuthAction)
 		:boolean{
 	const atom_def = atom_book[atom_name] as Book.Definition;
 	
