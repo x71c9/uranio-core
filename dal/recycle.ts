@@ -17,7 +17,7 @@ import {
 	AtomName,
 	Atom,
 	Book
-} from '../types';
+} from '../typ/';
 
 import {core_config} from '../conf/defaults';
 

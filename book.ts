@@ -1,5 +1,5 @@
 
-import * as book_types from './types';
+import * as book_types from './typ/';
 
 export const core_atom_book = {
 	superuser: {

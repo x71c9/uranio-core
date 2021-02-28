@@ -11,7 +11,7 @@ import {
 	AtomShape,
 	Depth,
 	Molecule
-} from '../types';
+} from '../typ/';
 
 export interface Relation<A extends AtomName> {
 	

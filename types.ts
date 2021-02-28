@@ -1,5 +1,7 @@
 /**
- * Shared type module
+ * Exported type module
+ *
+ * It doesn't include static types.
  *
  * @packageDocumentation
  */

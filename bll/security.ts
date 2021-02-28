@@ -17,7 +17,7 @@ import * as urn_acl from '../acl/';
 
 import * as urn_dal from '../dal/';
 
-import {AtomName, TokenObject, AccessLayer} from '../types';
+import {AtomName, TokenObject, AccessLayer} from '../typ/';
 
 import {BasicBLL} from './basic';
 

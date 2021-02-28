@@ -79,7 +79,7 @@ export namespace Book {
 		}
 		
 		export type Api = {
-			auth: string
+			auth?: string
 		}
 		
 		export type Properties = {

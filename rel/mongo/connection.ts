@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 
 import {urn_log,  urn_exception} from 'urn-lib';
 
-import {AtomName, ConnectionName} from '../../types';
+import {AtomName, ConnectionName} from '../../typ/';
 
 const urn_exc = urn_exception.init('DBC_M', 'Mongoose DB Connection');
 

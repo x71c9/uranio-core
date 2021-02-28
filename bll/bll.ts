@@ -12,7 +12,7 @@ import {
 	Molecule,
 	Depth,
 	Query
-} from '../types';
+} from '../typ/';
 
 // import {CustomBLL} from './types';
 
