@@ -18,7 +18,7 @@ import {
 	AtomName,
 	atom_hard_properties,
 	atom_common_properties
-} from '../../types';
+} from '../../typ/';
 
 export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{

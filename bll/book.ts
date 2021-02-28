@@ -6,7 +6,7 @@
 
 // import {my_class} from '../../my';
 
-// import {AtomName} from '../types';
+// import {AtomName} from '../typ/';
 
 // import {BLL} from './bll';
 

@@ -6,7 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import {AtomName, ConnectionName} from '../../types';
+import {AtomName, ConnectionName} from '../../typ/';
 
 import {Relation} from '../types';
 

@@ -25,36 +25,7 @@ import {core_config} from '../conf/defaults';
 
 import {BookPropertyType, RealType} from './book';
 
-export const atom_hard_properties = {
-	_id: {
-		type: BookPropertyType.ID,
-		label: '_id',
-	},
-	_date: {
-		type: BookPropertyType.TIME,
-		label: '_date',
-		default: 'NOW',
-		on_error: () => {return new Date();}
-	}
-} as const;
-
-export const atom_common_properties = {
-	_r:{
-		type: BookPropertyType.ID,
-		label: '_r',
-		optional: true
-	},
-	_w:{
-		type: BookPropertyType.ID,
-		label: '_w',
-		optional: true
-	},
-	_deleted_from: {
-		type: BookPropertyType.ID,
-		label: 'Deleted from',
-		optional: true
-	}
-} as const;
+import {atom_hard_properties, atom_common_properties} from './static';
 
 export type AtomName = keyof typeof atom_book;
 

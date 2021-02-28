@@ -6,7 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import {AtomName} from '../types';
+import {AtomName} from '../typ/';
 
 import {SelfishDAL} from './selfish';
 

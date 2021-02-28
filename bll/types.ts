@@ -6,7 +6,7 @@
 
 // import {bll_book} from './book';
 
-// import {AtomName} from '../types';
+// import {AtomName} from '../typ/';
 
 // import {BLL} from './bll';
 

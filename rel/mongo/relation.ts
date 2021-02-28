@@ -16,7 +16,7 @@ import {
 	Depth,
 	Molecule,
 	ConnectionName
-} from '../../types';
+} from '../../typ/';
 
 import {core_config} from '../../conf/defaults';
 

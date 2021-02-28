@@ -8,7 +8,7 @@ import {urn_log} from 'urn-lib';
 
 import urn_core from 'urn_core';
 
-import {Atom, AtomShape, AtomName} from '../types';
+import {Atom, AtomShape, AtomName} from '../typ/';
 
 import {create as create_basic} from './basic';
 

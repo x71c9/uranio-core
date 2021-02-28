@@ -51,7 +51,7 @@ import {
 	BookPermissionType,
 	RealType,
 	AccessLayer
-} from '../types';
+} from '../typ/';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods

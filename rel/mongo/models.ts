@@ -8,7 +8,7 @@ import {atom_book} from 'urn_book';
 
 import mongoose from 'mongoose';
 
-import {AtomName, Book, ConnectionName, BookPropertyType} from '../../types';
+import {AtomName, Book, ConnectionName, BookPropertyType} from '../../typ/';
 
 import {core_config} from '../../conf/defaults';
 

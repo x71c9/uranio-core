@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {FullConfiguration} from '../types';
+import {FullConfiguration} from '../typ/';
 
 export const core_config:FullConfiguration = {
 	

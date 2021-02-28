@@ -6,7 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import {LogName} from '../types';
+import {LogName} from '../typ/';
 
 import {BasicBLL} from './basic';
 

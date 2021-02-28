@@ -29,7 +29,7 @@ import {
 	BookSecurityType,
 	BookPermissionType,
 	AuthAction
-} from '../types';
+} from '../typ/';
 
 import * as atm_validate from '../atm/validate';
 

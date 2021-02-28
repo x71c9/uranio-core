@@ -25,7 +25,7 @@ import {
 	Depth,
 	Book,
 	BookPropertyType
-} from '../types';
+} from '../typ/';
 
 export function molecule_to_atom<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
 		:Atom<A>{

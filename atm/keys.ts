@@ -14,7 +14,7 @@ import {
 	Molecule,
 	Book,
 	BookPropertyType
-} from '../types';
+} from '../typ/';
 
 export function get_hidden<A extends AtomName>(atom_name:A)
 		:Set<keyof Atom<A>>{

@@ -22,7 +22,7 @@ import {
 	AtomShape,
 	Atom,
 	Molecule
-} from '../types';
+} from '../typ/';
 
 @urn_log.decorators.debug_constructor
 @urn_log.decorators.debug_methods
