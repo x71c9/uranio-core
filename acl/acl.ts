@@ -117,8 +117,8 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 	public filter_uniform_bond_properties<D extends Depth>(molecule:Molecule<A,D>, depth = 0)
 			:Molecule<A,D>{
 		const bond_keys = atm_keys.get_bond(this.atom_name);
-		let k:keyof Molecule<A,D>;
-		for(k of bond_keys){
+		// let k:keyof Molecule<A,D>;
+		for(const k of bond_keys){
 			const subatom_name = atm_util.get_subatom_name(this.atom_name, k as string);
 			const acl = create(subatom_name, this.user_groups);
 			try{

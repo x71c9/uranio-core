@@ -1,10 +1,13 @@
 /**
+ *
  * Book types module
  *
  * This module defines the type of the `atom_book` defined in `urn_book`
  *
  * @packageDocumentation
  */
+
+import {BLL} from '../bll/bll';
 
 import {AtomName} from './atom';
 
@@ -56,10 +59,14 @@ export type RealType<AT extends BookPropertyType> =
 	AT extends BookPropertyType.ATOM_ARRAY ? string[] :
 	never;
 
-export type Book = {
+export type RawBook = {
 	// [k in string]: k extends AtomName ? Book.Definition<k> : never;
 	[k in string]: Book.Definition;
 };
+
+export type Book = {
+	[k in AtomName]?: Book.AtomDefinition<k>;
+}
 
 export namespace Book {
 	
@@ -68,6 +75,10 @@ export namespace Book {
 		connection?: ConnectionName,
 		security?: BookSecurityType | Definition.Security,
 		api?: Definition.Api
+	}
+	
+	export type AtomDefinition<A extends AtomName> = Definition & {
+		bll?: new (...args:any[]) => BLL<A>
 	}
 	
 	export namespace Definition {
