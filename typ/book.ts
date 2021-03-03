@@ -13,6 +13,8 @@ import {AtomName} from './atom';
 
 export type ConnectionName = 'main' | 'trash' | 'log';
 
+export {core_atom_book as required_book} from '../book';
+
 export const enum BookPropertyType {
 	ID = 'ID',
 	TEXT = 'TEXT',

@@ -1,11 +1,11 @@
 
-import * as book_types from './typ/';
+import * as types from './typ/';
 
 export const core_atom_book = {
 	superuser: {
 		security: {
-			type: book_types.BookSecurityType.UNIFORM,
-			_r: book_types.BookPermissionType.NOBODY
+			type: types.BookSecurityType.UNIFORM,
+			_r: types.BookPermissionType.NOBODY
 		},
 		api:{
 			url: 'superusers',
@@ -13,7 +13,7 @@ export const core_atom_book = {
 		},
 		properties: {
 			email: {
-				type: book_types.BookPropertyType.EMAIL,
+				type: types.BookPropertyType.EMAIL,
 				label: 'Email',
 				unique: true,
 				on_error: () => {
@@ -21,12 +21,12 @@ export const core_atom_book = {
 				}
 			},
 			password: {
-				type: book_types.BookPropertyType.ENCRYPTED,
+				type: types.BookPropertyType.ENCRYPTED,
 				label: 'Password',
 				hidden: true
 			},
 			groups: {
-				type: book_types.BookPropertyType.ATOM_ARRAY,
+				type: types.BookPropertyType.ATOM_ARRAY,
 				atom: 'group',
 				label: 'Groups',
 				optional: true
@@ -35,7 +35,7 @@ export const core_atom_book = {
 	},
 	user: {
 		security: {
-			type: book_types.BookSecurityType.GRANULAR
+			type: types.BookSecurityType.GRANULAR
 		},
 		api:{
 			url: 'users',
@@ -43,17 +43,17 @@ export const core_atom_book = {
 		},
 		properties: {
 			email: {
-				type: book_types.BookPropertyType.EMAIL,
+				type: types.BookPropertyType.EMAIL,
 				label: 'Email',
 				unique: true,
 			},
 			password: {
-				type: book_types.BookPropertyType.ENCRYPTED,
+				type: types.BookPropertyType.ENCRYPTED,
 				label: 'Password',
 				hidden: true
 			},
 			groups: {
-				type: book_types.BookPropertyType.ATOM_ARRAY,
+				type: types.BookPropertyType.ATOM_ARRAY,
 				atom: 'group',
 				label: 'Groups',
 				optional: true
@@ -66,14 +66,10 @@ export const core_atom_book = {
 		},
 		properties: {
 			name: {
-				type: book_types.BookPropertyType.TEXT,
+				type: types.BookPropertyType.TEXT,
 				unique: true,
 				label: 'Name'
 			}
 		}
 	}
-} as const;
-
-export const atom_book = {
-	...core_atom_book
 } as const;
