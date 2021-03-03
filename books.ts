@@ -1,15 +1,11 @@
 
 import * as types from './typ/';
 
-export const core_atom_book = {
+export const atom = {
 	superuser: {
 		security: {
 			type: types.BookSecurityType.UNIFORM,
 			_r: types.BookPermissionType.NOBODY
-		},
-		api:{
-			url: 'superusers',
-			auth: 'superauth'
 		},
 		properties: {
 			email: {
@@ -37,10 +33,6 @@ export const core_atom_book = {
 		security: {
 			type: types.BookSecurityType.GRANULAR
 		},
-		api:{
-			url: 'users',
-			auth: 'auth'
-		},
 		properties: {
 			email: {
 				type: types.BookPropertyType.EMAIL,
@@ -61,15 +53,38 @@ export const core_atom_book = {
 		}
 	},
 	group: {
-		api:{
-			url: 'groups'
-		},
 		properties: {
 			name: {
 				type: types.BookPropertyType.TEXT,
 				unique: true,
 				label: 'Name'
 			}
+		}
+	}
+} as const;
+
+export const bll = {
+	superuser:{},
+	user:{},
+	group:{}
+} as const;
+
+export const api = {
+	superuser: {
+		api:{
+			url: 'superusers',
+			auth: 'superauth'
+		}
+	},
+	user: {
+		api:{
+			url: 'users',
+			auth: 'auth'
+		}
+	},
+	group: {
+		api:{
+			url: 'groups'
 		}
 	}
 } as const;
