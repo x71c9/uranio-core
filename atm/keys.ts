@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'urn_book';
+import {atom_book} from 'urn_books';
 
 import {
 	atom_common_properties,
