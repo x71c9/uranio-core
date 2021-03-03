@@ -26,7 +26,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'urn_book';
+import {atom_book} from 'urn_books';
 
 import {urn_log, urn_exception} from 'urn-lib';
 
