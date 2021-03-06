@@ -16,6 +16,8 @@ import * as atm_util from '../atm/util';
 
 import * as atm_keys from '../atm/keys';
 
+import * as atm_fix from '../atm/fix';
+
 import {
 	Depth,
 	AtomName,
@@ -83,7 +85,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 				if(urn_util.object.has_key(molecule, k) && !atm_util.has_property(this.atom_name, k)){
 					delete molecule[k];
 				}else{
-					molecule = atm_util.fix_property<A,D>(this.atom_name, molecule, k);
+					molecule = atm_fix.property<A,D>(this.atom_name, molecule, k);
 				}
 			}
 			molecule = await this._replace_molecule_on_error(molecule._id, molecule, depth);
@@ -109,7 +111,7 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 				if(urn_util.object.has_key(atom, k) && !atm_util.has_property(this.atom_name, k)){
 					delete atom[k];
 				}else{
-					atom = atm_util.fix_property<A>(this.atom_name, atom, k);
+					atom = atm_fix.property<A>(this.atom_name, atom, k);
 				}
 			}
 			atom = await this._replace_atom_on_error(atom._id, atom);

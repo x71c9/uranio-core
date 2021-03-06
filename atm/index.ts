@@ -62,5 +62,13 @@ export const util = {
 	hide_hidden_properties
 };
 
+import {
+	property
+} from './fix';
+
+export const fix = {
+	property
+};
+
 // export * from './encrypt';
 
