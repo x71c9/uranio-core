@@ -8,7 +8,7 @@ import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ATOM_FIX', `Atom Fix module`);
 
-import {atom_book} from '../../books';
+import {atom_book} from 'urn_books';
 
 import * as validate from './validate';
 
