@@ -15,7 +15,7 @@ export type ConnectionName = 'main' | 'trash' | 'log';
 
 import * as required_books from '../books';
 
-import {TokenObject} from './auth';
+// import {TokenObject} from './auth';
 
 export {required_books};
 
@@ -65,7 +65,7 @@ export type RealType<AT extends BookPropertyType> =
 	AT extends BookPropertyType.ATOM_ARRAY ? string[] :
 	never;
 
-export type RawBook = {
+export type TransposedBook = {
 	// [k in string]: k extends AtomName ? Book.Definition<k> : never;
 	[k in string]: Book.Definition;
 };
@@ -84,8 +84,8 @@ export namespace Book {
 	}
 	
 	export type AtomDefinition<A extends AtomName> = Definition & {
-		// bll?: new (...args:any[]) => BLL<A>
-		bll?: (token_object?:TokenObject) => BLL<A>
+		bll?: () => {new (...args:any[]): BLL<A>}
+		// bll?: (token_object?:TokenObject) => BLL<A>
 	}
 	
 	export namespace Definition {

@@ -28,7 +28,6 @@ export class BasicBLL<A extends AtomName> {
 	protected _al:AccessLayer<A>;
 	
 	constructor(public atom_name:A, init_access_layer?:() => AccessLayer<A>){
-		
 		if(!init_access_layer){
 			this._al = urn_dal.create(atom_name);
 		}else{

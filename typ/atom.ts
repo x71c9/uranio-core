@@ -19,13 +19,17 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'urn_books';
+import {atom_book} from '../../books';
 
 import {core_config} from '../conf/defaults';
 
 import {BookPropertyType, RealType} from './book';
 
 import {atom_hard_properties, atom_common_properties} from './static';
+
+// export type Book = {
+//   [k in AtomName]?: Book.AtomDefinition<k>;
+// }
 
 export type AtomName = keyof typeof atom_book;
 

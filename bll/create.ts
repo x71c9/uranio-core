@@ -6,12 +6,12 @@
 
 import {urn_log} from 'urn-lib';
 
-import {bll_book} from 'urn_books';
+import {bll_book} from '../../books';
 
 import {
 	AtomName,
 	TokenObject,
-	// Book
+	Book
 } from '../typ/';
 
 import {BLL} from './bll';
@@ -21,10 +21,14 @@ export type BLLInstance = InstanceType<typeof BLL>;
 export function create<A extends AtomName>(atom_name:A, token_object?:TokenObject)
 		:CustomBLL<A>{
 	urn_log.fn_debug(`Create BLL [${atom_name}]`);
-	const atom_def = bll_book[atom_name] as any;
-	if('bll' in atom_def && atom_def.bll && atom_def.bll instanceof BLL){
-		// return new atom_def.bll(token_object) as CustomBLL<A>;
-		return atom_def.bll(token_object) as CustomBLL<A>;
+	const atom_def = bll_book[atom_name] as Partial<Book.AtomDefinition<A>>;
+	if(
+		'bll' in atom_def &&
+		atom_def.bll &&
+		typeof atom_def.bll === 'function' &&
+		atom_def.bll().prototype.constructor.name === 'BLL'
+	){
+		return new (atom_def.bll())(token_object) as CustomBLL<A>;
 	}else{
 		return new BLL<A>(atom_name, token_object) as CustomBLL<A>;
 	}
