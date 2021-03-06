@@ -12,7 +12,7 @@ import {urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('CONN_DAL', 'RelationDAL');
 
-import {atom_book} from '../../books';
+import {atom_book} from 'urn_books';
 
 import * as urn_rel from '../rel/';
 
