@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import core from 'urn_core';
+import core from '../index';
 
 import * as types from '../types';
 

@@ -6,7 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import urn_core from 'urn_core';
+import * as atm from '../atm/';
 
 import {Atom, AtomShape, AtomName} from '../typ/';
 
@@ -24,8 +24,8 @@ export class AuthBLL<A extends AtomName> extends SecurityBLL<A>{
 			:Promise<Atom<A>>{
 		const atom = await super.insert_new(atom_shape);
 		if(
-			!urn_core.atm.util.is_auth_atom_name(this.atom_name) ||
-			!urn_core.atm.util.is_auth_atom(atom)
+			!atm.util.is_auth_atom_name(this.atom_name) ||
+			!atm.util.is_auth_atom(atom)
 		){
 			return atom;
 		}
