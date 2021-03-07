@@ -13,11 +13,11 @@ import {AtomName} from './atom';
 
 export type ConnectionName = 'main' | 'trash' | 'log';
 
-import * as required_books from '../books';
+// import * as required_books from '../books';
+
+// export {required_books};
 
 import {TokenObject} from './auth';
-
-export {required_books};
 
 export const enum BookPropertyType {
 	ID = 'ID',

@@ -1,15 +1,20 @@
+/**
+ * Required core books
+ *
+ * @packageDocumentation
+ */
 
-import * as types from './typ/';
+import uranio from 'uranio';
 
 export const atom = {
 	superuser: {
 		security: {
-			type: types.BookSecurityType.UNIFORM,
-			_r: types.BookPermissionType.NOBODY
+			type: uranio.types.BookSecurityType.UNIFORM,
+			_r: uranio.types.BookPermissionType.NOBODY
 		},
 		properties: {
 			email: {
-				type: types.BookPropertyType.EMAIL,
+				type: uranio.types.BookPropertyType.EMAIL,
 				label: 'Email',
 				unique: true,
 				on_error: () => {
@@ -17,12 +22,12 @@ export const atom = {
 				}
 			},
 			password: {
-				type: types.BookPropertyType.ENCRYPTED,
+				type: uranio.types.BookPropertyType.ENCRYPTED,
 				label: 'Password',
 				hidden: true
 			},
 			groups: {
-				type: types.BookPropertyType.ATOM_ARRAY,
+				type: uranio.types.BookPropertyType.ATOM_ARRAY,
 				atom: 'group',
 				label: 'Groups',
 				optional: true
@@ -31,21 +36,21 @@ export const atom = {
 	},
 	user: {
 		security: {
-			type: types.BookSecurityType.GRANULAR
+			type: uranio.types.BookSecurityType.GRANULAR
 		},
 		properties: {
 			email: {
-				type: types.BookPropertyType.EMAIL,
+				type: uranio.types.BookPropertyType.EMAIL,
 				label: 'Email',
 				unique: true,
 			},
 			password: {
-				type: types.BookPropertyType.ENCRYPTED,
+				type: uranio.types.BookPropertyType.ENCRYPTED,
 				label: 'Password',
 				hidden: true
 			},
 			groups: {
-				type: types.BookPropertyType.ATOM_ARRAY,
+				type: uranio.types.BookPropertyType.ATOM_ARRAY,
 				atom: 'group',
 				label: 'Groups',
 				optional: true
@@ -55,7 +60,7 @@ export const atom = {
 	group: {
 		properties: {
 			name: {
-				type: types.BookPropertyType.TEXT,
+				type: uranio.types.BookPropertyType.TEXT,
 				unique: true,
 				label: 'Name'
 			}
