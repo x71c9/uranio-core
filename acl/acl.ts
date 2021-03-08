@@ -53,8 +53,8 @@ import {
 	AccessLayer
 } from '../typ/';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class ACL<A extends AtomName> implements AccessLayer<A>{
 	
 	protected _dal:urn_dal.DAL<A>;

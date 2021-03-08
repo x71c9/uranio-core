@@ -29,8 +29,8 @@ import {create_basic} from './basic';
 
 import {ValidateDAL} from './validate';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class EncryptDAL<A extends AtomName> extends ValidateDAL<A>{
 	
 	public async insert_one(atom_shape:AtomShape<A>)

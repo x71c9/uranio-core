@@ -12,8 +12,8 @@ import {
 
 import {AuthBLL} from './auth';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class BLL<A extends AtomName> extends AuthBLL<A>{}
 
 

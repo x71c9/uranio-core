@@ -17,8 +17,8 @@ import {MongooseRelation} from './relation';
 /**
  * Mongoose Trash Relation class
  */
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class MongooseTrashRelation<A extends AtomName> extends MongooseRelation<A>
 	implements Relation<A> {
 	

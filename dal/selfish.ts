@@ -28,8 +28,8 @@ import {
 
 import {RecycleDAL} from './recycle';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 	
 	protected async _replace_atom_on_error(id:string, atom:Atom<A>)

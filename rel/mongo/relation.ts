@@ -35,8 +35,8 @@ const urn_exc = urn_exception.init('REL_MONGO', 'Mongoose Relation');
 /**
  * Mongoose Relation class
  */
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class MongooseRelation<A extends AtomName> implements Relation<A> {
 	
 	protected _conn_name:ConnectionName;

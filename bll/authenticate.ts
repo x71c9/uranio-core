@@ -37,8 +37,8 @@ import * as atm_util from '../atm/util';
 
 import {create as create_basic, BasicBLL} from './basic';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 class AuthenticationBLL<A extends AuthName> {
 	
 	private _basic_bll:BasicBLL<A>;

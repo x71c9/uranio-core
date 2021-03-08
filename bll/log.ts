@@ -10,8 +10,8 @@ import {LogName} from '../typ/';
 
 import {BasicBLL} from './basic';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 class LogBLL<A extends LogName> extends BasicBLL<A>{
 	constructor(log_name:A){
 		super(log_name);
