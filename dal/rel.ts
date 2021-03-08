@@ -25,8 +25,8 @@ import {core_config} from '../conf/defaults';
 
 import {BasicDAL} from './basic';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class RelationDAL<A extends AtomName> extends BasicDAL<A>{
 	
 	constructor(atom_name:A) {

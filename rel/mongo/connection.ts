@@ -25,8 +25,8 @@ const mongoose_options = {
 /**
  * MongooseDBConnection class
  */
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 class MongooseDBConnection {
 	
 	/*

@@ -10,8 +10,8 @@ import {LogName} from '../typ/';
 
 import {DAL} from './dal';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class LogDAL<A extends LogName> extends DAL<A>{
 	constructor(log_name:A){
 		super(log_name);

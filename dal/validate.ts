@@ -26,8 +26,8 @@ import {
 
 import {RelationDAL} from './rel';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	
 	public async select<D extends Depth = 0>(query:Query<A>, options?:Query.Options<A, D>)

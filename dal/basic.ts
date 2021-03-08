@@ -24,8 +24,8 @@ import {
 	Molecule
 } from '../typ/';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class BasicDAL<A extends AtomName> implements AccessLayer<A>{
 	
 	constructor(public atom_name:A, protected _db_relation:urn_rel.Relation<A>) {}

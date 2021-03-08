@@ -25,8 +25,8 @@ import {BasicDAL, create_basic} from './basic';
 
 import {EncryptDAL} from './encrypt';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class RecycleDAL<A extends AtomName> extends EncryptDAL<A>{
 	
 	public trash_dal?:BasicDAL<A>;

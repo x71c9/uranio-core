@@ -10,8 +10,8 @@ import {AtomName} from '../typ/';
 
 import {SelfishDAL} from './selfish';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class DAL<A extends AtomName> extends SelfishDAL<A>{}
 
 export function create<A extends AtomName>(atom_name:A)

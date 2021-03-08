@@ -21,8 +21,8 @@ import {
 	Molecule,
 } from '../typ/';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class BasicBLL<A extends AtomName> {
 	
 	protected _al:AccessLayer<A>;

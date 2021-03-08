@@ -23,8 +23,8 @@ import {BasicBLL} from './basic';
 
 import {is_superuser, is_valid_token_object} from './authenticate';
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class SecurityBLL<A extends AtomName> extends BasicBLL<A> {
 	
 	constructor(atom_name:A, _token_object?:TokenObject) {

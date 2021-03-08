@@ -16,8 +16,8 @@ import {SecurityBLL} from './security';
 
 const group_bll = create_basic('group');
 
-@urn_log.decorators.debug_constructor
-@urn_log.decorators.debug_methods
+@urn_log.util.decorators.debug_constructor
+@urn_log.util.decorators.debug_methods
 export class AuthBLL<A extends AtomName> extends SecurityBLL<A>{
 	
 	public async insert_new(atom_shape:AtomShape<A>)
