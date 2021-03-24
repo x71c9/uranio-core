@@ -40,7 +40,7 @@ export const atom_common_properties = {
 	}
 } as const;
 
-export const abstract_token_object = {
+export const abstract_passport = {
 	_id: 'string',
 	auth_atom_name: 'string',
 	groups: 'string[]'

@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {abstract_token_object} from './static';
+import {abstract_passport} from './static';
 
 export type MapType<T> =
 	T extends 'string' ? string :
@@ -14,10 +14,10 @@ export type MapType<T> =
 	T extends 'boolean' ? boolean :
 	never;
 
-export type TokenKey = keyof typeof abstract_token_object;
+export type PassportKey = keyof typeof abstract_passport;
 
-export type TokenObject = {
-	[k in TokenKey]: MapType<typeof abstract_token_object[k]>
+export type Passport = {
+	[k in PassportKey]: MapType<typeof abstract_passport[k]>
 }
 
 export const enum AuthAction {
