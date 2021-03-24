@@ -37,7 +37,7 @@ export class RecycleDAL<A extends AtomName> extends EncryptDAL<A>{
 		
 		let db_trash_relation:urn_rel.Relation<A>;
 		
-		const atom_def = atom_book[atom_name] as Book.Definition;
+		const atom_def = atom_book[atom_name] as Book.BasicDefinition;
 		if(!atom_def.connection || atom_def.connection === 'main'){
 			switch(core_config.db_type){
 				case 'mongo':{

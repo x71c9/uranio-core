@@ -53,7 +53,7 @@ function _create_trash_models(){
 	const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
 	let atom_name:AtomName;
 	for(atom_name in atom_book){
-		const atom_def = atom_book[atom_name] as Book.Definition;
+		const atom_def = atom_book[atom_name] as Book.BasicDefinition;
 		if(atom_def.connection && atom_def.connection !== 'main')
 			continue;
 		const atom_schema_def = _convert_for_trash(generate_mongo_schema_def(atom_name));
@@ -68,7 +68,7 @@ function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstan
 	const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
 	let atom_name:AtomName;
 	for(atom_name in atom_book){
-		const atom_def = atom_book[atom_name] as Book.Definition;
+		const atom_def = atom_book[atom_name] as Book.BasicDefinition;
 		if(atom_def.connection !== connection)
 			continue;
 		const atom_schema_def = generate_mongo_schema_def(atom_name);

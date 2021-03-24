@@ -102,7 +102,7 @@ export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, mo
 
 export function is_auth_atom_name<A extends AtomName>(atom_name:A)
 		:boolean{
-	const atom_def = atom_book[atom_name] as Book.Definition;
+	const atom_def = atom_book[atom_name] as Book.BasicDefinition;
 	if(atom_def.api && atom_def.api.auth){
 		return true;
 	}
