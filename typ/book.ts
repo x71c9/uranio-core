@@ -78,9 +78,9 @@ export namespace Book {
 		api?: Definition.Api
 	}
 	
-	export type Definition<A extends AtomName> = BasicDefinition & {
-		bll?: (token_object?:TokenObject) => BLL<A>
-	}
+	export type Definition<A extends AtomName> =
+		BasicDefinition &
+		{ bll?: (token_object?:TokenObject) => BLL<A> }
 	
 	export namespace Definition {
 		
