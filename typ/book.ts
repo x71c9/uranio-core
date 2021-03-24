@@ -66,7 +66,7 @@ export type TransposedBook = {
 };
 
 export type Book = {
-	[k in string]: k extends AtomName ? Book.Definition<k> : never;
+	[k in AtomName]?: Book.Definition<k>;
 }
 
 export namespace Book {
