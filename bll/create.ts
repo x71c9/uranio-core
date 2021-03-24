@@ -21,7 +21,7 @@ export type BLLInstance = InstanceType<typeof BLL>;
 export function create<A extends AtomName>(atom_name:A, token_object?:TokenObject)
 		:CustomBLL<A>{
 	urn_log.fn_debug(`Create BLL [${atom_name}]`);
-	const atom_def = bll_book[atom_name] as Partial<Book.AtomDefinition<A>>;
+	const atom_def = bll_book[atom_name] as Partial<Book.Definition<A>>;
 	if(
 		'bll' in atom_def &&
 		atom_def.bll &&
