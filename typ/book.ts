@@ -13,10 +13,6 @@ import {AtomName} from './atom';
 
 export type ConnectionName = 'main' | 'trash' | 'log';
 
-// import * as required_books from '../books';
-
-// export {required_books};
-
 import {TokenObject} from './auth';
 
 export const enum BookPropertyType {
@@ -66,25 +62,23 @@ export type RealType<AT extends BookPropertyType> =
 	never;
 
 export type TransposedBook = {
-	// [k in string]: k extends AtomName ? Book.Definition<k> : never;
-	[k in string]: Book.Definition;
+	[k in string]: Book.BasicDefinition;
 };
 
 export type Book = {
-	[k in AtomName]?: Book.AtomDefinition<k>;
+	[k in string]: k extends AtomName ? Book.Definition<k> : never;
 }
 
 export namespace Book {
 	
-	export type Definition = {
+	export type BasicDefinition = {
 		properties: Definition.Properties,
 		connection?: ConnectionName,
 		security?: BookSecurityType | Definition.Security,
 		api?: Definition.Api
 	}
 	
-	export type AtomDefinition<A extends AtomName> = Definition & {
-		// bll?: () => {new (...args:any[]): BLL<A>}
+	export type Definition<A extends AtomName> = BasicDefinition & {
 		bll?: (token_object?:TokenObject) => BLL<A>
 	}
 	
