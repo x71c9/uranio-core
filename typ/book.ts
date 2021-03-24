@@ -13,7 +13,7 @@ import {AtomName} from './atom';
 
 export type ConnectionName = 'main' | 'trash' | 'log';
 
-import {TokenObject} from './auth';
+import {Passport} from './auth';
 
 export const enum BookPropertyType {
 	ID = 'ID',
@@ -80,7 +80,7 @@ export namespace Book {
 	
 	export type Definition<A extends AtomName> =
 		BasicDefinition &
-		{ bll?: (token_object?:TokenObject) => BLL<A> }
+		{ bll?: (passport?:Passport) => BLL<A> }
 	
 	export namespace Definition {
 		

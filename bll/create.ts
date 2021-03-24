@@ -10,7 +10,7 @@ import {bll_book} from 'urn_books';
 
 import {
 	AtomName,
-	TokenObject,
+	Passport,
 	Book
 } from '../typ/';
 
@@ -18,7 +18,7 @@ import {BLL} from './bll';
 
 export type BLLInstance = InstanceType<typeof BLL>;
 
-export function create<A extends AtomName>(atom_name:A, token_object?:TokenObject)
+export function create<A extends AtomName>(atom_name:A, passport?:Passport)
 		:CustomBLL<A>{
 	urn_log.fn_debug(`Create BLL [${atom_name}]`);
 	const atom_def = bll_book[atom_name] as Partial<Book.Definition<A>>;
@@ -27,9 +27,9 @@ export function create<A extends AtomName>(atom_name:A, token_object?:TokenObjec
 		atom_def.bll &&
 		typeof atom_def.bll === 'function'
 	){
-		return atom_def.bll(token_object) as CustomBLL<A>;
+		return atom_def.bll(passport) as CustomBLL<A>;
 	}else{
-		return new BLL<A>(atom_name, token_object) as CustomBLL<A>;
+		return new BLL<A>(atom_name, passport) as CustomBLL<A>;
 	}
 	// if(
 	//   'bll' in atom_def &&
@@ -38,9 +38,9 @@ export function create<A extends AtomName>(atom_name:A, token_object?:TokenObjec
 	//   atom_def.bll().prototype &&
 	//   atom_def.bll().prototype.constructor.name === 'BLL'
 	// ){
-	//   return new (atom_def.bll())(token_object) as CustomBLL<A>;
+	//   return new (atom_def.bll())(passport) as CustomBLL<A>;
 	// }else{
-	//   return new BLL<A>(atom_name, token_object) as CustomBLL<A>;
+	//   return new BLL<A>(atom_name, passport) as CustomBLL<A>;
 	// }
 }
 
