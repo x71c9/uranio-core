@@ -50,13 +50,21 @@ class AuthenticationBLL<A extends AuthName> {
 	public async authenticate(email: string, password: string)
 			:Promise<string>{
 		atm_validate.atom_partial<A>(this._atom_name, {email: email, password: password} as Partial<AuthAtomShape<A>>);
-		const auth_atom = await this._basic_bll.find_one({email: email} as Query<A>) as AuthAtom<A>;
+		let auth_atom;
+		try {
+			auth_atom = await this._basic_bll.find_one({email: email} as Query<A>) as AuthAtom<A>;
+		}catch(err){
+			if(err.type === urn_exception.ExceptionType.NOT_FOUND){
+				throw urn_exc.create_auth_not_found(err.error_code, err.msg, err.nested);
+			}
+			throw err;
+		}
 		if(!atm_util.is_auth_atom(auth_atom)){
 			throw urn_exc.create_invalid_atom('INVALID_AUTH_ATOM', 'Invalid Auth Atom.', auth_atom, ['email', 'password', 'groups']);
 		}
 		const compare_result = await bcrypt.compare(password, auth_atom.password);
 		if(!compare_result){
-			throw urn_exc.create_invalid_request('AUTH_INVALID_PASSWORD', `Invalid password.`);
+			throw urn_exc.create_auth_invalid_password('AUTH_INVALID_PASSWORD', `Invalid password.`);
 		}
 		return this._generate_token(auth_atom);
 	}
