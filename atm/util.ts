@@ -25,8 +25,10 @@ import {
 	BookPropertyType
 } from '../typ/';
 
-export function molecule_to_atom<A extends AtomName, D extends Depth>(atom_name:A, molecule:Molecule<A,D>)
-		:Atom<A>{
+export function molecule_to_atom<A extends AtomName, D extends Depth>(
+	atom_name:A,
+	molecule:Molecule<A,D>
+):Atom<A>{
 	const bond_keys = keys.get_bond(atom_name);
 	let k:keyof Molecule<A,D>;
 	for(k of bond_keys){
@@ -46,11 +48,9 @@ export function get_subatom_name<A extends AtomName>(atom_name:A ,atom_key:strin
 		:AtomName{
 	const atom_def = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const key_string = atom_key as string;
-	if(atom_def[key_string]){
-		if(
-			atom_def[key_string].type === BookPropertyType.ATOM ||
-			atom_def[key_string].type === BookPropertyType.ATOM_ARRAY
-		){
+	const prop = atom_def[key_string];
+	if(prop){
+		if(prop.type === BookPropertyType.ATOM || prop.type === BookPropertyType.ATOM_ARRAY){
 			if((atom_def[key_string] as Book.Definition.Property.Atom).atom){
 				return (atom_def[key_string] as Book.Definition.Property.Atom).atom;
 			}else{
@@ -127,7 +127,7 @@ export function hide_hidden_properties<A extends AtomName, D extends Depth>(atom
 			:Molecule<A,D>|Molecule<A,D>[]{
 	if(Array.isArray(molecules)){
 		for(let i = 0; i < molecules.length; i++){
-			molecules[i] = _hide_hidden_properties_single_molecule(atom_name, molecules[i]);
+			molecules[i] = _hide_hidden_properties_single_molecule(atom_name, molecules[i]!) as Molecule<A,D>;
 		}
 	}else{
 		molecules = _hide_hidden_properties_single_molecule(atom_name, molecules);
