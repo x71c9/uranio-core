@@ -35,7 +35,7 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 		const atom_array = await super.select<D>(query, options);
 		for(let i = 0; i < atom_array.length; i++){
 			const depth = (options && options.depth) ? options.depth : undefined;
-			atom_array[i] = await this.validate<D>(atom_array[i], depth);
+			atom_array[i] = await this.validate<D>(atom_array[i]!, depth);
 		}
 		return atom_array;
 	}

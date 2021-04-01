@@ -41,12 +41,11 @@ export async function properties<A extends AtomName>(atom_name:A, atom:Partial<A
 	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	let k:keyof AtomShape<A>;
 	for(k in atom){
-		if(
-			urn_util.object.has_key(atom_props, k) &&
-			atom_props[k] &&
-			atom_props[k].type === BookPropertyType.ENCRYPTED
-		){
-			atom[k] = await property<A>(atom_name, k, atom[k] as string) as any;
+		if(urn_util.object.has_key(atom_props, k)){
+			const prop = atom_props[k];
+			if(prop && prop.type === BookPropertyType.ENCRYPTED){
+				atom[k] = await property<A>(atom_name, k, atom[k] as string) as any;
+			}
 		}
 	}
 	return atom;
