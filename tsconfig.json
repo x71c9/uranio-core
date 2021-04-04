@@ -18,8 +18,8 @@
 		"outDir": "./dist",
 		"rootDir": "./",
 		"paths": {
-			"urn_books": [".urn/books"],
-			"uranio": [".urn/web/"]
+			"urn_books": [".uranio/books"],
+			"uranio": [".uranio/repo/"]
 		},
 		"sourceMap": true,
 		"strict": true,
@@ -30,7 +30,7 @@
 	},
 	"include": [
 		"src/**/*",
-		".urn/**/*"
+		".uranio/**/*"
 	],
 	"exclude": [
 		"dist/**/*"
