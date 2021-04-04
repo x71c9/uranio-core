@@ -20,12 +20,14 @@
 	"author": "Andrea Reni <mail@nbl7.net>",
 	"license": "ISC",
 	"homepage": "https://bitbucket.org/nbl7/urn-core#readme",
-	"devDependencies": {
-	},
 	"dependencies": {
+		"urn-core-dep": "bitbucket:nbl7/urn-core-dep"
 	},
 	"_moduleAliases": {
 		"urn_books": "./dist/.uranio/books.js",
 		"uranio": "./dist/.uranio/repo/"
+	},
+	"devDependencies": {
+		"urn-core-dep-dev": "bitbucket:nbl7/urn-core-dep-dev"
 	}
 }
