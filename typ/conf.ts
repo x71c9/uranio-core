@@ -11,9 +11,7 @@ type RequiredConfigParams = {
 	
 	db_type: DatabaseType;
 	
-	db_host: string;
-	
-	db_port: number;
+	mongo_connection: string,
 	
 	db_name: string;
 	
@@ -27,13 +25,9 @@ type RequiredConfigParams = {
 
 type OptionalConfigParam = {
 	
-	db_trash_host: string,
+	mongo_trash_connection: string,
 	
-	db_trash_port: number,
-	
-	db_log_host: string,
-	
-	db_log_port: number,
+	mongo_log_connection: string,
 	
 	encryption_round: number;
 	

@@ -10,21 +10,17 @@ export const core_config:FullConfiguration = {
 	
 	db_type: 'mongo',
 	
-	db_host: 'localhost',
+	// mongo_connection: 'mongodb://localhost:27017',
 	
-	db_port: 27017,
+	mongo_connection: 'DELETED',
+	
+	mongo_trash_connection: 'DELETED',
+	
+	mongo_log_connection: 'DELETED',
 	
 	db_name: 'uranio_dev',
 	
-	db_trash_host: 'localhost',
-	
-	db_trash_port: 27017,
-	
 	db_trash_name: 'uranio_trash_dev',
-	
-	db_log_host: 'localhost',
-	
-	db_log_port: 27017,
 	
 	db_log_name: 'uranio_log_dev',
 	

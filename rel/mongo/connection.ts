@@ -61,11 +61,11 @@ class MongooseDBConnection {
 	 * @param db_port - database port number
 	 * @param db_name - database name
 	 */
-	constructor(con_name:ConnectionName, public db_host:string, public db_port:number, public db_name:string){
+	constructor(con_name:ConnectionName, mongo_connection:string, public db_name:string){
 		
 		this.name = con_name;
-		this.uri = `mongodb://${this.db_host}:${this.db_port}/${this.db_name}`;
-		
+		this.uri = `${mongo_connection}/${this.db_name}?retryWrites=true&w=majority`;
+
 		this.readyState = 0;
 		this._connection = mongoose.createConnection(this.uri, mongoose_options);
 		this._connection.on('connecting', () => { this._on_connecting(); });
@@ -199,9 +199,9 @@ class MongooseDBConnection {
 
 export type ConnectionInstance = InstanceType<typeof MongooseDBConnection>;
 
-export function create(con_name:ConnectionName, db_host:string, db_port:number, db_name:string)
+export function create(con_name:ConnectionName, mongo_connection:string, db_name:string)
 		:ConnectionInstance{
 	urn_log.debug(`Create MongooseDBConnection`);
-	return new MongooseDBConnection(con_name, db_host, db_port, db_name);
+	return new MongooseDBConnection(con_name, mongo_connection, db_name);
 }
 
