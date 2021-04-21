@@ -18,22 +18,21 @@ import * as mongo_connection from './connection';
 
 const mongo_main_conn = mongo_connection.create(
 	'main',
-	core_config.db_host,
-	core_config.db_port,
+	core_config.mongo_connection,
 	core_config.db_name
 );
 
 const mongo_trash_conn = mongo_connection.create(
 	'trash',
-	(core_config.db_trash_host) ? core_config.db_trash_host : core_config.db_host,
-	(core_config.db_trash_port) ? core_config.db_trash_port : core_config.db_port,
+	(core_config.mongo_trash_connection) ?
+		core_config.mongo_trash_connection : core_config.mongo_connection,
 	core_config.db_trash_name
 );
 
 const mongo_log_conn = mongo_connection.create(
 	'log',
-	(core_config.db_log_host) ? core_config.db_log_host : core_config.db_host,
-	(core_config.db_log_port) ? core_config.db_log_port : core_config.db_port,
+	(core_config.mongo_log_connection) ?
+		core_config.mongo_log_connection : core_config.mongo_connection,
 	core_config.db_log_name
 );
 
