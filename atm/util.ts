@@ -35,7 +35,7 @@ export function molecule_to_atom<A extends AtomName, D extends Depth>(
 		const prop_value = molecule[k];
 		if(Array.isArray(prop_value)){
 			for(let i = 0; i < prop_value.length; i++){
-				prop_value[i] = (prop_value[i]._id) ? prop_value[i]._id : null;
+				prop_value[i] = ((prop_value[i] as any)._id) ? (prop_value[i] as any)._id : null;
 			}
 		}else{
 			molecule[k] = ((prop_value as any)._id) ? (prop_value as any)._id : null;
