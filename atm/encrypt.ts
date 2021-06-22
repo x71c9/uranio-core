@@ -6,7 +6,7 @@
 
 import {atom_book} from 'urn_books';
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 import {urn_util} from 'urn-lib';
 
