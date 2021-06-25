@@ -43,14 +43,26 @@ export function create<A extends AtomName>(atom_name:A, passport?:Passport)
 	//   return new BLL<A>(atom_name, passport) as CustomBLL<A>;
 	// }
 }
-
 export type CustomBLL<A extends AtomName> =
 	A extends keyof typeof bll_book ?
 	'bll' extends keyof typeof bll_book[A] ?
-	typeof bll_book[A]['bll'] extends BLL<A> ?
-	typeof bll_book[A]['bll'] :
+	// eslint-disable-next-line
+	// @ts-ignore
+	ReturnType<typeof bll_book[A]['bll']> extends BLL<A> ?
+	// eslint-disable-next-line
+	// @ts-ignore
+	ReturnType<typeof bll_book[A]['bll']> :
 	BLL<A> :
 	BLL<A> :
 	BLL<A>;
+
+// export type CustomBLL<A extends AtomName> =
+//   A extends keyof typeof bll_book ?
+//   'bll' extends keyof typeof bll_book[A] ?
+//   typeof bll_book[A]['bll'] extends BLL<A> ?
+//   typeof bll_book[A]['bll'] :
+//   BLL<A> :
+//   BLL<A> :
+//   BLL<A>;
 
 
