@@ -6,7 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import {bll_book} from 'urn_books';
+import {bll_book} from 'uranio-books';
 
 import {
 	AtomName,

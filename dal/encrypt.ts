@@ -9,7 +9,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'urn_books';
+import {atom_book} from 'uranio-books';
 
 import {urn_log} from 'urn-lib';
 

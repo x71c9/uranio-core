@@ -12,7 +12,7 @@ import {urn_util, urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 
-import {atom_book} from 'urn_books';
+import {atom_book} from 'uranio-books';
 
 import {core_config} from '../conf/defaults';
 
