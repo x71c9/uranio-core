@@ -19,7 +19,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'urn_books';
+import {atom_book} from 'uranio-books';
 
 import {core_config} from '../conf/defaults';
 
