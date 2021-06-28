@@ -47,7 +47,7 @@ export function create<A extends AtomName>(atom_name:A, passport?:Passport)
 type BllReturnType<T, A extends AtomName> = T extends (...args:any) => BLL<A> ?
 	ReturnType<T> : BLL<A>;
 
-export type CustomBLL<A extends AtomName> =
+type CustomBLL<A extends AtomName> =
 	A extends keyof typeof bll_book ?
 	'bll' extends keyof typeof bll_book[A] ?
 	BllReturnType<typeof bll_book[A]['bll'], A> :
