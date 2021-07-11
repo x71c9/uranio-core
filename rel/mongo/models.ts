@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'uranio-books';
+import {atom_book} from 'uranio-books/atom';
 
 import mongoose from 'mongoose';
 

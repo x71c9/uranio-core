@@ -9,7 +9,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import {atom_book} from 'uranio-books';
+import {atom_book} from 'uranio-books/atom';
 
 import * as urn_rel from '../rel/';
 

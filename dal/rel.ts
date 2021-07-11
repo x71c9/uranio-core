@@ -12,7 +12,7 @@ import {urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('CONN_DAL', 'RelationDAL');
 
-import {atom_book} from 'uranio-books';
+import {atom_book} from 'uranio-books/atom';
 
 import * as urn_rel from '../rel/';
 
