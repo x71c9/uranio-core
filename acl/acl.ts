@@ -130,7 +130,8 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 							subatom = acl.filter_uniform_bond_properties(subatom, depth - 1);
 						}
 					}else{
-						molecule[k] = acl.filter_uniform_bond_properties(molecule[k] as Molecule<A,D>, depth - 1) as any;
+						// molecule[k] = acl.filter_uniform_bond_properties(molecule[k] as Molecule<A,D>, depth - 1) as any;
+						molecule[k] = acl.filter_uniform_bond_properties(molecule[k] as any, depth - 1) as any;
 					}
 				}
 			}catch(err){
