@@ -301,7 +301,8 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 				}else{
 					any<typeof subatom_name, typeof number_depth>(
 						subatom_name,
-						prop_value as Molecule<A,D>,
+						// prop_value as Molecule<A,D>,
+						prop_value as any,
 						number_depth
 					);
 				}
