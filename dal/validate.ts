@@ -112,7 +112,7 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 				}
 			}
 			let err_msg = `Atom unique fields are already in the database.`;
-			err_msg += ` Duplicate fields: ${urn_util.formatter.json_one_line(equal_values)}.`;
+			err_msg += ` Duplicate fields: ${urn_util.json.safe_stringify_oneline(equal_values)}.`;
 			throw urn_exc.create_invalid_request('CHECK_UNIQUE_DUPLICATE', err_msg);
 		}catch(err){
 			if(err.type && err.type === urn_exception.ExceptionType.NOT_FOUND){
