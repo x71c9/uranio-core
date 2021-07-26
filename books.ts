@@ -77,19 +77,19 @@ export const bll = {
 export const api = {
 	superuser: {
 		api:{
-			url: 'superusers',
-			auth: 'superauth'
+			url: '/superusers',
+			auth: '/superauth'
 		}
 	},
 	user: {
 		api:{
-			url: 'users',
-			auth: 'auth'
+			url: '/users',
+			auth: '/auth'
 		}
 	},
 	group: {
 		api:{
-			url: 'groups'
+			url: '/groups'
 		}
 	}
 } as const;
