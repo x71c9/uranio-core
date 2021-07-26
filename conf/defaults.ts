@@ -12,13 +12,13 @@ export const core_config:FullConfiguration = {
 	
 	// mongo_connection: 'mongodb://localhost:27017',
 	
-	mongo_connection: 'mongodb+srv://local:stdHMgSWmbkkLrfM@cluster0.je8zc.mongodb.net',
+	mongo_main_connection: 'mongodb+srv://local:stdHMgSWmbkkLrfM@cluster0.je8zc.mongodb.net',
 	
 	mongo_trash_connection: 'mongodb+srv://local:stdHMgSWmbkkLrfM@cluster0.je8zc.mongodb.net',
 	
 	mongo_log_connection: 'mongodb+srv://local:stdHMgSWmbkkLrfM@cluster0.je8zc.mongodb.net',
 	
-	db_name: 'uranio_dev',
+	db_main_name: 'uranio_dev',
 	
 	db_trash_name: 'uranio_trash_dev',
 	

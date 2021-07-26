@@ -28,7 +28,7 @@ import {Relation} from '../types';
 
 import {PopulateObject} from './types';
 
-import {models_by_connection} from './models';
+import {get_model} from './models';
 
 const urn_exc = urn_exception.init('REL_MONGO', 'Mongoose Relation');
 
@@ -47,18 +47,20 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		
 		this._conn_name = this._get_conn_name();
 		
-		const models_map = models_by_connection.get(this._conn_name);
-		if(!models_map){
-			const err_msg = `Cannot find models for connection [${this._conn_name}]`;
-			throw urn_exc.create('MODELS_NOT_FOUND', err_msg);
-		}
-		const model = models_map.get(this.atom_name);
-		if(!model){
-			let err_msg = `Cannot find model for atom [${this.atom_name}]`;
-			err_msg += ` and connection [${this._conn_name}]`;
-			throw urn_exc.create('MODEL_NOT_FOUND', err_msg);
-		}
-		this._raw = model;
+		// const models_map = models_by_connection.get(this._conn_name);
+		// if(!models_map){
+		//   const err_msg = `Cannot find models for connection [${this._conn_name}]`;
+		//   throw urn_exc.create('MODELS_NOT_FOUND', err_msg);
+		// }
+		// const model = models_map.get(this.atom_name);
+		// if(!model){
+		//   let err_msg = `Cannot find model for atom [${this.atom_name}]`;
+		//   err_msg += ` and connection [${this._conn_name}]`;
+		//   throw urn_exc.create('MODEL_NOT_FOUND', err_msg);
+		// }
+		// this._raw = model;
+		
+		this._raw = get_model(this._conn_name, this.atom_name);
 		
 	}
 	

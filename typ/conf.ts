@@ -11,9 +11,9 @@ type RequiredConfigParams = {
 	
 	db_type: DatabaseType;
 	
-	mongo_connection: string,
+	mongo_main_connection: string,
 	
-	db_name: string;
+	db_main_name: string;
 	
 	db_trash_name: string;
 	
