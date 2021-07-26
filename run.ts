@@ -8,7 +8,9 @@ import {urn_log} from 'urn-lib';
 
 urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
 
-// import urn_core from 'urn_core';
+import urn_core from './index';
+
+console.log(urn_core.atm);
 
 // const bll_log = urn_core.bll.create_basic('log');
 // const bll_log = urn_core.bll.create_log('debug');

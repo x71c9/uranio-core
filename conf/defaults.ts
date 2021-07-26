@@ -12,13 +12,13 @@ export const core_config:FullConfiguration = {
 	
 	// mongo_connection: 'mongodb://localhost:27017',
 	
-	mongo_connection: 'DELETED',
+	mongo_main_connection: 'DELETED',
 	
 	mongo_trash_connection: 'DELETED',
 	
 	mongo_log_connection: 'DELETED',
 	
-	db_name: 'uranio_dev',
+	db_main_name: 'uranio_dev',
 	
 	db_trash_name: 'uranio_trash_dev',
 	
