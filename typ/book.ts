@@ -58,9 +58,10 @@ export type Book = {
 export namespace Book {
 	
 	export type BasicDefinition = {
-		properties: Definition.Properties,
-		connection?: ConnectionName,
-		security?: BookSecurityType | Definition.Security,
+		properties: Definition.Properties
+		plural?: string
+		connection?: ConnectionName
+		security?: BookSecurityType | Definition.Security
 		api?: Definition.Api
 	}
 	
@@ -72,7 +73,7 @@ export namespace Book {
 		
 		export type Security = {
 			type: BookSecurityType,
-			_r?: BookPropertyType.ID | BookPermissionType.NOBODY,
+			_r?: BookPropertyType.ID | BookPermissionType.NOBODY
 			_w?: BookPropertyType.ID | BookPermissionType.PUBLIC
 		}
 		
