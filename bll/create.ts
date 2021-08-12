@@ -8,11 +8,11 @@ import {urn_log} from 'urn-lib';
 
 import {bll_book} from 'uranio-books/bll';
 
-import {
-	AtomName,
-	Passport,
-	Book
-} from '../typ/';
+import {Book} from '../typ/book_srv';
+
+import {AtomName} from '../typ/atom';
+
+import {Passport} from '../typ/auth';
 
 import {BLL} from './bll';
 

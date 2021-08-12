@@ -15,14 +15,16 @@ import * as urn_rel from '../rel/';
 import * as urn_validators from '../vali/';
 
 import {
-	AccessLayer,
 	Depth,
-	Query,
 	AtomName,
 	AtomShape,
 	Atom,
 	Molecule
-} from '../typ/';
+} from '../typ/atom';
+
+import {AccessLayer} from '../typ/layer';
+
+import {Query} from '../typ/query';
 
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods

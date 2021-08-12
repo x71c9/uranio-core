@@ -13,17 +13,22 @@ import {atom_book} from 'uranio-books/atom';
 import * as keys from './keys';
 
 import {
-	atom_hard_properties,
-	atom_common_properties,
 	Atom,
 	AtomName,
 	AuthAtom,
 	AuthName,
 	Molecule,
 	Depth,
-	Book,
-	BookPropertyType
-} from '../typ/';
+} from '../typ/atom';
+
+import {Book} from '../typ/book_cln';
+
+import {BookPropertyType} from '../typ/common';
+
+import {
+	atom_hard_properties,
+	atom_common_properties,
+} from '../typ/static';
 
 export function molecule_to_atom<A extends AtomName, D extends Depth>(
 	atom_name:A,

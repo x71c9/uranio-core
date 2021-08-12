@@ -13,12 +13,15 @@ import {urn_util} from 'urn-lib';
 import * as atm_util from '../../atm/util';
 
 import {
-	BookPropertyType,
-	Book,
-	AtomName,
 	atom_hard_properties,
 	atom_common_properties
-} from '../../typ/';
+} from '../../typ/static';
+
+import {Book} from '../../typ/book_srv';
+
+import {AtomName} from '../../typ/atom';
+
+import {BookPropertyType} from '../../typ/common';
 
 export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{

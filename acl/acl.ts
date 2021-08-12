@@ -39,19 +39,24 @@ import * as atm_keys from '../atm/keys';
 import * as atm_util from '../atm/util';
 
 import {
-	Query,
 	AtomName,
 	Atom,
 	AtomShape,
 	Depth,
 	Molecule,
+} from '../typ/atom';
+
+import {Query} from '../typ/query';
+
+import {
 	Book,
-	BookPropertyType,
 	BookSecurityType,
 	BookPermissionType,
-	RealType,
-	AccessLayer
-} from '../typ/';
+} from '../typ/book_srv';
+
+import {BookPropertyType, RealType} from '../typ/common';
+
+import {AccessLayer} from '../typ/layer';
 
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods

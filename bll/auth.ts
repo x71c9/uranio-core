@@ -10,7 +10,7 @@ import * as atm from '../atm/';
 
 import * as insta from '../nst/';
 
-import {Atom, AtomShape, AtomName} from '../typ/';
+import {Atom, AtomShape, AtomName} from '../typ/atom';
 
 import {SecurityBLL} from './security';
 

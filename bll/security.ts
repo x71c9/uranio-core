@@ -17,7 +17,11 @@ import * as urn_acl from '../acl/';
 
 import * as urn_dal from '../dal/';
 
-import {AtomName, Passport, AccessLayer} from '../typ/';
+import {AtomName} from '../typ/atom';
+
+import {Passport} from '../typ/auth';
+
+import {AccessLayer} from '../typ/layer';
 
 import {BasicBLL} from './basic';
 

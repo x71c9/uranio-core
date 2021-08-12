@@ -19,17 +19,14 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'uranio-books/atom';
+import {atom_book} from 'uranio-books-client/atom';
 
-import {core_config} from '../conf/defaults';
+import {BookPropertyType, RealType} from './common';
 
-import {BookPropertyType, RealType} from './book';
-
-import {atom_hard_properties, atom_common_properties} from './static';
-
-// export type Book = {
-//   [k in AtomName]?: Book.AtomDefinition<k>;
-// }
+import {
+	atom_hard_properties,
+	atom_common_properties
+} from './static';
 
 export type AtomName = keyof typeof atom_book;
 
@@ -59,7 +56,6 @@ type ExtractAuthName<P> = PickSubType<P, {api: {auth: string}}>;
 
 export type AuthName = keyof ExtractAuthName<typeof atom_book>;
 
-
 type ExtractOptional<P> = PickSubType<P, {optional: true}>;
 
 type ExcludeOptional<P> = OmitSubType<P, {optional: true}>;
@@ -70,27 +66,13 @@ type ExcludeBondAndBondArray<P> = OmitSubType<P, BondPropertyDefinition>;
 
 type ExtractBond<P> = PickSubType<P, BondPropertyDefinition>;
 
-// type ExtractBond<P> = PickSubType<P, {type: BookPropertyType.ATOM}>;
-
-// type ExtractBondArray<P> = PickSubType<P, {type: BookPropertyType.ATOM_ARRAY}>;
-
 type RequiredBond<P> = OmitSubType<ExtractBond<P>, {optional: true}>;
 
 type OptionalBond<P> = PickSubType<ExtractBond<P>, {optional: true}>;
 
-// type RequiredBond<P> = OmitSubType<ExtractBond<P>, {optional: true}>;
-
-// type OptionalBond<P> = PickSubType<ExtractBond<P>, {optional: true}>;
-
-// type RequiredBondArray<P> = OmitSubType<ExtractBondArray<P>, {optional: true}>;
-
-// type OptionalBondArray<P> = PickSubType<ExtractBondArray<P>, {optional: true}>;
-
 type OptionalPrimitive<P> = PickSubType<ExcludeBondAndBondArray<P>, {optional: true}>;
 
 type RequiredPrimitive<P> = OmitSubType<ExcludeBondAndBondArray<P>, {optional: true}>;
-
-// type HiddenPrimitive<P> = PickSubType<ExcludeBondAndBondArray<P>, {hidden: true}>;
 
 type DefinitionPropertyInferType<P> = P extends {type: infer I} ? I : never;
 
@@ -156,8 +138,7 @@ type OptionalKeyOfBondProperties<A extends AtomName> =
 // type OptionalKeyOfBondArrayProperties<A extends AtomName> =
 //   keyof OptionalBondArray<PropertiesOfAtomDefinition<A>>;
 
-
-export type Depth = undefined | typeof core_config['max_query_depth_allowed'];
+export type Depth = undefined | 0 | 1 | 2 | 3;
 
 type AtomOrMolecule = 'atom' | 'molecule';
 
@@ -188,7 +169,7 @@ type RealTypeOfMoleculeBondProperty<A extends AtomName, k extends KeyOfPropertyO
 		) :
 		never
 	) : never;
-
+	
 type AtomPrimitiveShape<A extends AtomName> =
 	{ [k in RequiredKeyOfAtomCommonProperties]: RealTypeOfAtomCommonProperty<k> } &
 	{ [k in OptionalKeyOfAtomCommonProperties]?: RealTypeOfAtomCommonProperty<k> } &
@@ -254,5 +235,5 @@ export type Molecule<A extends AtomName, D extends Depth = 0> =
 //   D extends (0 | undefined) ? Atom<A> :
 //   AtomHardProperties &
 //   AtomPrivacyPrimitiveShape<A> &
-//   BondShape<A, 'molecule', D>
+
 

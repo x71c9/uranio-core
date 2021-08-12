@@ -1,58 +1,15 @@
 /**
- *
- * Book types module
- *
- * This module defines the type of the `atom_book` defined in `urn_book`
+ * Common
  *
  * @packageDocumentation
  */
 
-import {BLL} from '../bll/bll';
-
 import {AtomName} from './atom';
 
-export type ConnectionName = 'main' | 'trash' | 'log';
-
-import {Passport} from './auth';
-
-import {BookPropertyType} from './client';
-
-export * from './client';
-
-export const enum BookSecurityType {
-	UNIFORM = 'UNIFORM',
-	GRANULAR = 'GRANULAR'
-}
-
-export const enum BookPermissionType {
-	NOBODY = 'NOBODY',
-	PUBLIC = 'PUBLIC'
-}
-
-export type RealType<AT extends BookPropertyType> =
-	AT extends BookPropertyType.ID ? string :
-	AT extends BookPropertyType.TEXT ? string :
-	AT extends BookPropertyType.LONG_TEXT ? string :
-	AT extends BookPropertyType.EMAIL ? string :
-	AT extends BookPropertyType.INTEGER ? number :
-	AT extends BookPropertyType.FLOAT ? number :
-	AT extends BookPropertyType.BINARY ? boolean :
-	AT extends BookPropertyType.ENCRYPTED ? string :
-	AT extends BookPropertyType.TIME ? Date :
-	AT extends BookPropertyType.SET_STRING ? Array<string> :
-	AT extends BookPropertyType.SET_NUMBER ? Array<number> :
-	AT extends BookPropertyType.ENUM_STRING ? string :
-	AT extends BookPropertyType.ENUM_NUMBER ? number :
-	AT extends BookPropertyType.ATOM ? string :
-	AT extends BookPropertyType.ATOM_ARRAY ? string[] :
-	never;
-
-export type TransposedBook = {
-	[k in string]: Book.BasicDefinition;
-};
+import {BookPropertyType} from './common';
 
 export type Book = {
-	[k in AtomName]?: Book.Definition<k>;
+	[k in AtomName]?: Book.Definition;
 }
 
 export namespace Book {
@@ -60,22 +17,13 @@ export namespace Book {
 	export type BasicDefinition = {
 		properties: Definition.Properties
 		plural?: string
-		connection?: ConnectionName
-		security?: BookSecurityType | Definition.Security
 		api?: Definition.Api
 	}
 	
-	export type Definition<A extends AtomName> =
-		BasicDefinition &
-		{ bll?: (passport?:Passport) => BLL<A> }
+	export type Definition =
+		BasicDefinition
 	
 	export namespace Definition {
-		
-		export type Security = {
-			type: BookSecurityType,
-			_r?: BookPropertyType.ID | BookPermissionType.NOBODY
-			_w?: BookPropertyType.ID | BookPermissionType.PUBLIC
-		}
 		
 		export type Api = {
 			auth?: string
@@ -104,7 +52,7 @@ export namespace Book {
 		
 		export namespace Property {
 		
-			interface SharedFields {
+			export interface SharedFields {
 				type: BookPropertyType,
 				label: string,
 				optional?: boolean,
@@ -288,3 +236,5 @@ export namespace Book {
 	}
 	
 }
+
+

@@ -6,9 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import {
-	AtomName,
-} from '../typ/';
+import {AtomName} from '../typ/atom';
 
 import {AuthBLL} from './auth';
 

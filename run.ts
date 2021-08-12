@@ -12,6 +12,10 @@ import urn_core from './index';
 
 console.log(urn_core.atm);
 
+import client from './client';
+
+console.log(client.types.BookPropertyType.EMAIL);
+
 // const bll_log = urn_core.bll.create_basic('log');
 // const bll_log = urn_core.bll.create_log('debug');
 

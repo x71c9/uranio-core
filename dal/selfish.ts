@@ -24,7 +24,7 @@ import {
 	AtomShape,
 	Atom,
 	Molecule
-} from '../typ/';
+} from '../typ/atom';
 
 import {RecycleDAL} from './recycle';
 

@@ -20,7 +20,7 @@ import {
 	AtomShape,
 	Book,
 	BookPropertyType
-} from '../typ/';
+} from '../cln/types';
 
 export async function property<A extends AtomName>
 (atom_name:A, prop_key:keyof Atom<A>, prop_value:string)

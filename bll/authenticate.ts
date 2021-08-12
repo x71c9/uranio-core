@@ -19,17 +19,25 @@ import {core_config} from '../conf/defaults';
 import {
 	AtomName,
 	AuthName,
-	Query,
 	AuthAtom,
 	AuthAtomShape,
-	Passport,
-	abstract_passport,
-	PassportKey,
+} from '../typ/atom';
+
+import {abstract_passport} from '../typ/static';
+
+import {
 	Book,
 	BookSecurityType,
 	BookPermissionType,
+} from '../typ/book_srv';
+
+import {Query} from '../typ/query';
+
+import {
+	Passport,
+	PassportKey,
 	AuthAction
-} from '../typ/';
+} from '../typ/auth';
 
 import * as atm_validate from '../atm/validate';
 
