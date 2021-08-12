@@ -16,8 +16,9 @@ import * as urn_rel from '../rel/';
 import {
 	AtomName,
 	Atom,
-	Book
-} from '../typ/';
+} from '../typ/atom';
+
+import {Book} from '../typ/book_srv';
 
 import {core_config} from '../conf/defaults';
 

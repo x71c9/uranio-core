@@ -11,8 +11,6 @@ import {urn_exception, urn_util} from 'urn-lib';
 const urn_exc = urn_exception.init(`VALIDATION`, `Validate module`);
 
 import {
-	atom_hard_properties,
-	atom_common_properties,
 	AtomName,
 	AuthName,
 	Atom,
@@ -21,7 +19,12 @@ import {
 	BookPropertyType,
 	Depth,
 	Molecule
-} from '../typ/';
+} from '../cln/types';
+
+import {
+	atom_hard_properties,
+	atom_common_properties,
+} from '../typ/static';
 
 import {core_config} from '../conf/defaults';
 

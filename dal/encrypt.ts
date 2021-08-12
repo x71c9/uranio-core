@@ -19,11 +19,13 @@ import {
 	AtomName,
 	AtomShape,
 	Atom,
-	Book,
-	BookPropertyType,
-	atom_hard_properties,
-	atom_common_properties
-} from '../typ/';
+} from '../typ/atom';
+
+import {atom_hard_properties, atom_common_properties} from '../typ/static';
+
+import {Book} from '../typ/book_srv';
+
+import {BookPropertyType} from '../typ/common';
 
 import {create_basic} from './basic';
 

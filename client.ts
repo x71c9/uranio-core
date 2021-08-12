@@ -4,8 +4,6 @@
  * @packageDocumentation
  */
 
-import * as types from './typ/client';
+import * as urn_client from './cln/main';
 
-export default {
-	types
-};
+export default urn_client;

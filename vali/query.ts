@@ -11,7 +11,9 @@ import {urn_exception, urn_util} from 'urn-lib';
 
 import {core_config} from '../conf/defaults';
 
-import {Depth, Query, AtomName} from '../typ/';
+import {Depth, AtomName} from '../typ/atom';
+
+import {Query} from '../typ/query';
 
 import * as atm_util from '../atm/util';
 

@@ -5,13 +5,14 @@
  */
 
 import {
-	Query,
 	AtomName,
 	Atom,
 	AtomShape,
 	Depth,
 	Molecule
-} from '../typ/';
+} from '../typ/atom';
+
+import {Query} from '../typ/query';
 
 export interface Relation<A extends AtomName> {
 	

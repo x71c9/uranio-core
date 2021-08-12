@@ -7,14 +7,19 @@
 import {atom_book} from 'uranio-books/atom';
 
 import {
-	atom_common_properties,
 	AtomName,
 	Atom,
 	AtomShape,
 	Molecule,
-	Book,
-	BookPropertyType
-} from '../typ/';
+} from '../typ/atom';
+
+import {Book} from '../typ/book_cln';
+
+import {BookPropertyType} from '../typ/common';
+
+import {
+	atom_common_properties
+} from '../typ/static';
 
 export function get_hidden<A extends AtomName>(atom_name:A)
 		:Set<keyof Atom<A>>{

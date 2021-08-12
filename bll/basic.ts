@@ -12,14 +12,16 @@ import {urn_log} from 'urn-lib';
 import * as urn_dal from '../dal/';
 
 import {
-	AccessLayer,
-	Query,
 	AtomName,
 	Atom,
 	AtomShape,
 	Depth,
 	Molecule,
-} from '../typ/';
+} from '../typ/atom';
+
+import {AccessLayer} from '../typ/layer';
+
+import {Query} from '../typ/query';
 
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods

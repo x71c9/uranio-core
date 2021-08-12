@@ -16,10 +16,9 @@ import {atom_book} from 'uranio-books/atom';
 
 import * as urn_rel from '../rel/';
 
-import {
-	AtomName,
-	Book
-} from '../typ/';
+import {AtomName} from '../typ/atom';
+
+import {Book} from '../typ/book_srv';
 
 import {core_config} from '../conf/defaults';
 

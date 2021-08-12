@@ -1,5 +1,5 @@
 /**
- * Main module
+ * Main module for server
  *
  * @packageDocumentation
  */
@@ -9,17 +9,17 @@ import * as types from './types';
 export {types};
 
 
-import * as bll from './bll/';
+import * as bll from '../bll/';
 
 export {bll};
 
 
-import * as atm from './atm/';
+import * as atm from '../atm/';
 
 export {atm};
 
 
-import {core_config} from './conf/defaults';
+import {core_config} from '../conf/defaults';
 
 export function init(config:types.Configuration)
 		:void{

@@ -17,12 +17,13 @@ import * as atm_keys from '../atm/keys';
 
 import {
 	Depth,
-	Query,
 	AtomName,
 	AtomShape,
 	Atom,
 	Molecule
-} from '../typ/';
+} from '../typ/atom';
+
+import {Query} from '../typ/query';
 
 import {RelationDAL} from './rel';
 

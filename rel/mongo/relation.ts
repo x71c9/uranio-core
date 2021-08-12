@@ -9,14 +9,16 @@ import mongoose from 'mongoose';
 import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 import {
-	Query,
 	AtomName,
 	Atom,
 	AtomShape,
 	Depth,
 	Molecule,
-	ConnectionName
-} from '../../typ/';
+} from '../../typ/atom';
+
+import {Query} from '../../typ/query';
+
+import {ConnectionName} from '../../typ/book_srv';
 
 import {core_config} from '../../conf/defaults';
 

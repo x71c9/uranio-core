@@ -12,12 +12,11 @@ import {atom_book} from 'uranio-books/atom';
 
 const urn_exc = urn_exception.init('MONGO_APP', 'Mongoose Models App');
 
-import {
-	AtomName,
-	Book,
-	ConnectionName,
-	BookPropertyType,
-} from '../../typ/';
+import {AtomName} from '../../typ/atom';
+
+import {Book, ConnectionName} from '../../typ/book_srv';
+
+import {BookPropertyType} from '../../typ/common';
 
 import {core_config} from '../../conf/defaults';
 

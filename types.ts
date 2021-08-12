@@ -1,19 +1,9 @@
 /**
- * Exported type module
+ * Export server type module
  *
- * It doesn't include static types.
+ * It should not include static types.
  *
  * @packageDocumentation
  */
 
-export * from './typ/atom';
-
-export * from './typ/book';
-
-export * from './typ/conf';
-
-export * from './typ/query';
-
-export * from './typ/layer';
-
-export * from './typ/auth';
+export * from './srv/types';
