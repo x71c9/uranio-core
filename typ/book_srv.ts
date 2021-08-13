@@ -1,8 +1,13 @@
 /**
+ * Server Book types module
  *
- * Book types module
+ * This module defines the type of the `atom_book` for the Server.
+ * It extends the defintion of the Client Book type.
  *
- * This module defines the type of the `atom_book` defined in `urn_book`
+ * In order to copy and reexport namespaces and types we use the syntax
+ * `export import`.
+ *
+ * `type Book` must be redifined.
  *
  * @packageDocumentation
  */
@@ -29,7 +34,9 @@ export const enum BookPermissionType {
 	PUBLIC = 'PUBLIC'
 }
 
-export type Book = book_cln.Book
+export type Book = {
+	[k in AtomName]?: Book.Definition<k>;
+}
 
 export namespace Book {
 	
@@ -63,3 +70,4 @@ export namespace Book {
 	}
 	
 }
+
