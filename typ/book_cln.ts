@@ -1,5 +1,7 @@
 /**
- * Common
+ * Client Book types module
+ *
+ * This module defines the type of the `atom_book` for the Client.
  *
  * @packageDocumentation
  */
