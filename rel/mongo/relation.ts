@@ -291,7 +291,7 @@ function _clean_molecule<A extends AtomName, D extends Depth>(atom_name:A, molec
 			if(prop){
 				if(Array.isArray(prop)){
 					for(let i = 0; i < prop.length; i++){
-						if(_is_valid_id(prop[i] as string)){
+						if(_is_valid_id(prop[i] as any as string)){
 							prop[i] = (prop[i] as any).toString();
 						}else if(typeof prop[i] === 'object'){
 							prop[i] = _clean_molecule(subatom_name, prop[i] as any) as any;
