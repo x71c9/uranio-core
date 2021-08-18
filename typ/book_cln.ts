@@ -19,7 +19,7 @@ export namespace Book {
 	export type BasicDefinition = {
 		properties: Definition.Properties
 		plural?: string
-		api?: Definition.Api
+		dock?: Definition.Dock
 	}
 	
 	export type Definition =
@@ -27,7 +27,7 @@ export namespace Book {
 	
 	export namespace Definition {
 		
-		export type Api = {
+		export type Dock = {
 			auth?: string
 		}
 		
