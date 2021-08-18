@@ -53,7 +53,7 @@ export namespace Book {
 	export namespace Definition {
 		
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		export import Api = book_cln.Book.Definition.Api;
+		export import Dock = book_cln.Book.Definition.Dock;
 		
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		export import Properties = book_cln.Book.Definition.Properties;
