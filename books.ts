@@ -1,5 +1,5 @@
 /**
- * Required core books
+ * Required CORE books
  *
  * @packageDocumentation
  */
