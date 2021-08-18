@@ -52,7 +52,7 @@ type ExtractLogAtom<P> = PickSubType<P, {connection: 'log'}>;
 
 export type LogName = keyof ExtractLogAtom<typeof atom_book>;
 
-type ExtractAuthName<P> = PickSubType<P, {api: {auth: string}}>;
+type ExtractAuthName<P> = PickSubType<P, {dock: {auth: string}}>;
 
 export type AuthName = keyof ExtractAuthName<typeof atom_book>;
 

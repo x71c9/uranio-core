@@ -74,21 +74,21 @@ export const bll = {
 	group:{}
 } as const;
 
-export const api = {
+export const dock = {
 	superuser: {
-		api:{
+		dock:{
 			url: '/superusers',
 			auth: '/superauth'
 		}
 	},
 	user: {
-		api:{
+		dock:{
 			url: '/users',
 			auth: '/auth'
 		}
 	},
 	group: {
-		api:{
+		dock:{
 			url: '/groups'
 		}
 	}
