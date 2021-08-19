@@ -10,7 +10,7 @@ import {urn_log,  urn_exception} from 'urn-lib';
 
 import {AtomName} from '../../typ/atom';
 
-import {ConnectionName} from '../../typ/book_srv';
+import {ConnectionName} from '../../typ/book_cln';
 
 const urn_exc = urn_exception.init('DBC_M', 'Mongoose DB Connection');
 

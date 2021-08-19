@@ -18,7 +18,7 @@ import {
 
 import {Query} from '../../typ/query';
 
-import {ConnectionName} from '../../typ/book_srv';
+import {ConnectionName} from '../../typ/book_cln';
 
 import {core_config} from '../../conf/defaults';
 

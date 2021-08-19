@@ -16,8 +16,6 @@ import {BLL} from '../bll/bll';
 
 import {AtomName} from './atom';
 
-export type ConnectionName = 'main' | 'trash' | 'log';
-
 import {Passport} from './auth';
 
 import {BookPropertyType} from './common';
@@ -42,7 +40,6 @@ export namespace Book {
 	
 	export type BasicDefinition =
 		book_cln.Book.BasicDefinition & {
-		connection?: ConnectionName
 		security?: BookSecurityType | Definition.Security
 	}
 	

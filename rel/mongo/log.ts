@@ -8,7 +8,7 @@ import {urn_log} from 'urn-lib';
 
 import {AtomName} from '../../typ/atom';
 
-import {ConnectionName} from '../../typ/book_srv';
+import {ConnectionName} from '../../typ/book_cln';
 
 import {Relation} from '../types';
 
