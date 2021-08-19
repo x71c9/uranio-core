@@ -14,7 +14,7 @@ const urn_exc = urn_exception.init('MONGO_APP', 'Mongoose Models App');
 
 import {AtomName} from '../../typ/atom';
 
-import {Book, ConnectionName} from '../../typ/book_srv';
+import {Book, ConnectionName} from '../../typ/book_cln';
 
 import {BookPropertyType} from '../../typ/common';
 

@@ -10,6 +10,8 @@ import {AtomName} from './atom';
 
 import {BookPropertyType} from './common';
 
+export type ConnectionName = 'main' | 'trash' | 'log';
+
 export type Book = {
 	[k in AtomName]?: Book.Definition;
 }
@@ -18,6 +20,7 @@ export namespace Book {
 	
 	export type BasicDefinition = {
 		properties: Definition.Properties
+		connection?: ConnectionName
 		plural?: string
 		dock?: Definition.Dock
 	}
