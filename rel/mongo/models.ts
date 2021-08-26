@@ -195,7 +195,7 @@ type MongoModels = {
 	[k in ConnectionName]: Map<AtomName, mongoose.Model<mongoose.Document<any>>>
 }
 
-const mongo_app:MongoApp = {};
+export const mongo_app:MongoApp = {};
 
 function get_model(conn_name:ConnectionName, atom_name:AtomName)
 		:mongoose.Model<mongoose.Document<any>>{

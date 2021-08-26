@@ -25,3 +25,5 @@ export function init(config:types.Configuration)
 		:void{
 	Object.assign(core_config, config);
 }
+
+export * from '../dsc/';
