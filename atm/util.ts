@@ -10,6 +10,8 @@ const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util module`);
 
 import {atom_book} from 'uranio-books/atom';
 
+import {dock_book} from 'uranio-books/dock';
+
 import * as keys from './keys';
 
 import {
@@ -107,8 +109,9 @@ export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, mo
 
 export function is_auth_atom_name<A extends AtomName>(atom_name:A)
 		:boolean{
-	const atom_def = atom_book[atom_name] as Book.BasicDefinition;
-	if(atom_def.dock && atom_def.dock.auth){
+	// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+	const atom_dock_def = dock_book[atom_name].dock;
+	if(atom_dock_def && urn_util.object.has_key(atom_dock_def, 'auth')){
 		return true;
 	}
 	return false;
