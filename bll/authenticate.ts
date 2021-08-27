@@ -23,7 +23,7 @@ import {
 	AuthAtomShape,
 } from '../typ/atom';
 
-import {abstract_passport} from '../typ/static';
+import {abstract_passport} from '../stc/';
 
 import {
 	Book,

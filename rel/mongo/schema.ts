@@ -15,7 +15,7 @@ import * as atm_util from '../../atm/util';
 import {
 	atom_hard_properties,
 	atom_common_properties
-} from '../../typ/static';
+} from '../../stc/';
 
 import {Book} from '../../typ/book_srv';
 

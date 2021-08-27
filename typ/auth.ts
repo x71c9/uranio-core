@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {abstract_passport} from './static';
+import {abstract_passport} from '../stc/';
 
 export type MapType<T> =
 	T extends 'string' ? string :

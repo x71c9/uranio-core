@@ -1,4 +1,4 @@
-/*
+/**
  * Index module for URANIO Core
  *
  * @packageDocumentation

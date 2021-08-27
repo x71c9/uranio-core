@@ -21,7 +21,7 @@ import {
 	Atom,
 } from '../typ/atom';
 
-import {atom_hard_properties, atom_common_properties} from '../typ/static';
+import {atom_hard_properties, atom_common_properties} from '../stc/';
 
 import {Book} from '../typ/book_srv';
 

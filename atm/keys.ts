@@ -19,7 +19,7 @@ import {BookPropertyType} from '../typ/common';
 
 import {
 	atom_common_properties
-} from '../typ/static';
+} from '../stc/';
 
 export function get_hidden<A extends AtomName>(atom_name:A)
 		:Set<keyof Atom<A>>{
