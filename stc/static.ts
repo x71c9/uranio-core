@@ -7,7 +7,7 @@
  * @packageDocumentation
  */
 
-import {BookPropertyType} from './common';
+import {BookPropertyType} from '../typ/common';
 
 export const atom_hard_properties = {
 	_id: {

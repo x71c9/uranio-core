@@ -1,5 +1,5 @@
 /**
- * Export module for URANIO DB
+ * Index module for Relation
  *
  * @packageDocumentation
  */

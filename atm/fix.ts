@@ -24,7 +24,7 @@ import {Book} from '../typ/book_cln';
 import {
 	atom_hard_properties,
 	atom_common_properties,
-} from '../typ/static';
+} from '../stc/';
 
 export function property<A extends AtomName>(
 	atom_name:A,

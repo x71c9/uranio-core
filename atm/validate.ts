@@ -24,7 +24,7 @@ import {
 import {
 	atom_hard_properties,
 	atom_common_properties,
-} from '../typ/static';
+} from '../stc/';
 
 import {core_config} from '../conf/defaults';
 

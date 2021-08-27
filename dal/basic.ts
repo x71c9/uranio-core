@@ -12,7 +12,7 @@ const urn_exc = urn_exception.init('BASIC_DAL', 'BasicDAL');
 
 import * as urn_rel from '../rel/';
 
-import * as urn_validators from '../vali/';
+import * as urn_validators from '../val/';
 
 import {
 	Depth,

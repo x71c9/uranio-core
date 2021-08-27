@@ -26,7 +26,7 @@ import {BookPropertyType, RealType} from './common';
 import {
 	atom_hard_properties,
 	atom_common_properties
-} from './static';
+} from '../stc/';
 
 export type AtomName = keyof typeof atom_book;
 

@@ -30,7 +30,7 @@ import {BookPropertyType} from '../typ/common';
 import {
 	atom_hard_properties,
 	atom_common_properties,
-} from '../typ/static';
+} from '../stc/';
 
 export function molecule_to_atom<A extends AtomName, D extends Depth>(
 	atom_name:A,
