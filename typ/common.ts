@@ -13,6 +13,7 @@ export const enum BookPropertyType {
 	FLOAT = 'FLOAT',
 	BINARY = 'BINARY',
 	ENCRYPTED = 'ENCRYPTED',
+	DAY = 'DAY',
 	TIME = 'TIME',
 	ENUM_STRING = 'ENUM_STRING',
 	ENUM_NUMBER = 'ENUM_NUMBER',
@@ -31,6 +32,7 @@ export type RealType<AT extends BookPropertyType> =
 	AT extends BookPropertyType.FLOAT ? number :
 	AT extends BookPropertyType.BINARY ? boolean :
 	AT extends BookPropertyType.ENCRYPTED ? string :
+	AT extends BookPropertyType.DAY ? Date :
 	AT extends BookPropertyType.TIME ? Date :
 	AT extends BookPropertyType.SET_STRING ? Array<string> :
 	AT extends BookPropertyType.SET_NUMBER ? Array<number> :

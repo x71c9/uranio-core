@@ -363,6 +363,7 @@ function _validate_primitive_type<A extends AtomName>(
 			}
 			return true;
 		}
+		case BookPropertyType.DAY:
 		case BookPropertyType.TIME:{
 			// TODO: To be checked if this should be here.
 			if(typeof prop_value === 'string'){
@@ -459,6 +460,7 @@ function _validate_custom_type<A extends AtomName>(
 				_custom_validate_number(prop_key, prop_def, prop_value);
 				break;
 			}
+			case BookPropertyType.DAY:
 			case BookPropertyType.TIME:{
 				_custom_validate_time(prop_key, prop_def, prop_value);
 				break;
@@ -683,7 +685,7 @@ function _custom_validate_number<A extends AtomName>(
 
 function _custom_validate_time<A extends AtomName>(
 	prop_key:keyof Atom<A>,
-	prop_def:Book.Definition.Property.Time,
+	prop_def:Book.Definition.Property.DayTime,
 	prop_value:Date
 ):true{
 	if(prop_def.validation){

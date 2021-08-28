@@ -47,6 +47,7 @@ export namespace Book {
 			Property.Float |
 			Property.Binary |
 			Property.Encrypted |
+			Property.Day |
 			Property.Time |
 			Property.SetString |
 			Property.SetNumber |
@@ -99,6 +100,10 @@ export namespace Book {
 				SetString |
 				SetNumber;
 			
+			export type DayTime =
+				Day |
+				Time;
+			
 			export interface Email extends SharedFields {
 				type: BookPropertyType.EMAIL
 			}
@@ -125,10 +130,16 @@ export namespace Book {
 				validation?: Validation.String
 			}
 			
+			export interface Day extends SharedFields {
+				type: BookPropertyType.DAY
+				default?: Date | 'NOW'
+				validation?: Validation.DayTime
+			}
+			
 			export interface Time extends SharedFields {
 				type: BookPropertyType.TIME
 				default?: Date | 'NOW'
-				validation?: Validation.Time
+				validation?: Validation.DayTime
 			}
 			
 			export interface EnumString extends SharedFields {
@@ -200,7 +211,7 @@ export namespace Book {
 					eq?: number
 				}
 				
-				export interface Time {
+				export interface DayTime {
 					min?: Date
 					max?: Date
 					eq?: Date
