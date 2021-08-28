@@ -107,6 +107,7 @@ function _generate_mongoose_schema_type_options(atom_name: AtomName, prop_def:Bo
 			};
 			return schema_type_options;
 		}
+		case BookPropertyType.DAY:
 		case BookPropertyType.TIME:{
 			return _generate_date_schema_options(prop_def, schema_type_options);
 		}
@@ -152,7 +153,7 @@ function _generate_mongoose_schema_type_options(atom_name: AtomName, prop_def:Bo
 }
 
 function _generate_date_schema_options(
-	prop_def: Book.Definition.Property.Time,
+	prop_def: Book.Definition.Property.DayTime,
 	schema_type_options: mongoose.SchemaTypeOptions<any>
 ):mongoose.SchemaTypeOptions<Date>{
 	schema_type_options = {
