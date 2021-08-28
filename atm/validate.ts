@@ -109,7 +109,7 @@ export function property<A extends AtomName>(
 		_validate_custom_type(prop_key, prop_def, prop_value);
 	}catch(exc){
 		if(exc.type === urn_exception.ExceptionType.INVALID_ATOM){
-			throw urn_exc.create_invalid_atom(exc.err_msg, exc.msg, atom, [prop_key]);
+			throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, atom, [prop_key]);
 		}
 		throw exc;
 	}

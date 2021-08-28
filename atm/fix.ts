@@ -56,10 +56,13 @@ export function property<A extends AtomName, D extends Depth>(
 	}
 	const def = prop_def as Book.Definition.Property;
 	let fixed_value = null;
+	let fix_defined = false;
 	if(def.on_error && typeof def.on_error === 'function'){
 		fixed_value = def.on_error((atom as any)[key]);
+		fix_defined = true;
 	}else if(def.default){
 		fixed_value = def.default;
+		fix_defined = true;
 	}
 	try{
 		
@@ -67,7 +70,14 @@ export function property<A extends AtomName, D extends Depth>(
 		(atom as any)[key] = fixed_value;
 		
 	}catch(err){
-		let err_msg = `Cannot fix property of Atom. Default value or on_error result is invalid.`;
+		let err_msg = `Cannot fix property of Atom.`;
+		if(fix_defined){
+			err_msg += ` Default value or on_error result is invalid.`;
+		}else{
+			err_msg += ` Fix method not defined.`;
+			err_msg += ` Please define a \`default\` value or a \`on_error\` function`;
+			err_msg += ` in src/book.ts`;
+		}
 		err_msg += ` For Atom [${atom_name}] property [${key}]`;
 		throw urn_exc.create('CANNOT_FIX', err_msg);
 	}
