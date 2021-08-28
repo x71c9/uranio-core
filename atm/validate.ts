@@ -364,6 +364,10 @@ function _validate_primitive_type<A extends AtomName>(
 			return true;
 		}
 		case BookPropertyType.TIME:{
+			// TODO: To be checked if this should be here.
+			if(typeof prop_value === 'string'){
+				prop_value = new Date(prop_value);
+			}
 			if(!urn_util.is.date(prop_value)){
 				let err_msg = `Invalid property [${prop_key}]. Property should be a Date.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
