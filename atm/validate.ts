@@ -585,19 +585,19 @@ function _custom_validate_string<A extends AtomName>(
 		}
 		if(vali.contain_digit && vali.contain_digit === true){
 			if(!/\d/.test(prop_value)){
-				const err_msg = `Invalid [${prop_key}]. Must be contain a digit.`;
+				const err_msg = `Invalid [${prop_key}]. Must contain a digit.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_CONTAIN_DIGIT', err_msg);
 			}
 		}
 		if(vali.contain_lowercase && vali.contain_lowercase === true){
 			if(prop_value.toUpperCase() === prop_value){
-				const err_msg = `Invalid [${prop_key}]. Must be contain a lowercase character.`;
+				const err_msg = `Invalid [${prop_key}]. Must contain a lowercase character.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_CONTAIN_LOWERCASE', err_msg);
 			}
 		}
 		if(vali.contain_uppercase && vali.contain_uppercase === true){
 			if(prop_value.toLowerCase() === prop_value){
-				const err_msg = `Invalid [${prop_key}]. Must be contain an uppercase character.`;
+				const err_msg = `Invalid [${prop_key}]. Must contain an uppercase character.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_CONTAIN_UPPERCASE', err_msg);
 			}
 		}
@@ -628,13 +628,13 @@ function _custom_validate_string<A extends AtomName>(
 		}
 		if(vali.only_letters && vali.only_letters === true){
 			if(!/^[A-Za-z]+$/.test(prop_value)){
-				const err_msg = `Invalid [${prop_key}]. Must be contain only letters.`;
+				const err_msg = `Invalid [${prop_key}]. Must contain only letters.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_ONLY_LETTERS', err_msg);
 			}
 		}
 		if(vali.only_numbers){
 			if(!/^[0-9]+$/.test(prop_value)){
-				const err_msg = `Invalid [${prop_key}]. Must be contain only numbers.`;
+				const err_msg = `Invalid [${prop_key}]. Must contain only numbers.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_ONLY_NUMBERS', err_msg);
 			}
 		}

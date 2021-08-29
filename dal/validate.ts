@@ -11,6 +11,8 @@ import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('VAL_DAL', 'ValidateDAL');
 
+import {atom_book} from 'uranio-books/atom';
+
 import * as atm_validate from '../atm/validate';
 
 import * as atm_keys from '../atm/keys';
@@ -22,6 +24,13 @@ import {
 	Atom,
 	Molecule
 } from '../typ/atom';
+
+import { Book } from '../typ/book_cln';
+
+import { BookPropertyType } from '../typ/common';
+
+import { atom_hard_properties, atom_common_properties } from "../stc/";
+
 
 import {Query} from '../typ/query';
 
@@ -66,6 +75,7 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		atm_validate.atom_shape(this.atom_name, atom_shape);
+		_check_ids(this.atom_name, atom_shape, this._db_relation.is_valid_id);
 		await this._check_unique(atom_shape as Partial<AtomShape<A>>);
 		let db_record = await super.insert_one(atom_shape);
 		db_record = await this.validate(db_record);
@@ -75,6 +85,7 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	public async alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>>{
 		atm_validate.atom_partial(this.atom_name, partial_atom);
+		_check_ids(this.atom_name, partial_atom, this._db_relation.is_valid_id);
 		await this._check_unique(partial_atom, id);
 		let db_record = await super.alter_by_id(id, partial_atom);
 		db_record = await this.validate(db_record);
@@ -132,6 +143,53 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 		return atm_validate.any<A,D>(this.atom_name, molecule as Molecule<A,D>, depth);
 	}
 	
+}
+
+function _check_ids<A extends AtomName>(
+	atom_name:A,
+	partial_atom:Partial<AtomShape<A>>,
+	is_valid_id: (id:string) => boolean
+):true{
+	const props = atom_book[atom_name]["properties"] as Book.Definition.Properties;
+	let k:keyof typeof partial_atom;
+	for (k in partial_atom) {
+		let prop_def = undefined;
+		if (urn_util.object.has_key(atom_hard_properties, k)) {
+			prop_def = atom_hard_properties[k];
+		} else if (urn_util.object.has_key(atom_common_properties, k)) {
+			prop_def = atom_common_properties[k];
+		} else if (urn_util.object.has_key(props, k)) {
+			prop_def = props[k];
+		}
+		if (!prop_def) {
+			const err_msg = `Atom property definition missing for atom [${atom_name}] property [${k}]`;
+			throw urn_exc.create("CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION", err_msg);
+		}
+		if (prop_def.type === BookPropertyType.ATOM){
+			const id = partial_atom[k] as string;
+			_validate_id(id, is_valid_id, k as string);
+		}else if(prop_def.type === BookPropertyType.ATOM_ARRAY){
+			const ids = partial_atom[k] as string[];
+			for(let i = 0; i < ids.length; i++){
+				_validate_id(ids[i], is_valid_id, k as string);
+			}
+		}
+	}
+	return true;
+}
+
+function _validate_id(
+	id:string,
+	is_valid_id:(id:string) => boolean,
+	key:string
+):true{
+	if(!is_valid_id(id)){
+		throw urn_exc.create_invalid_request(
+			'INVALID_ATOM_ID',
+			`Invalid Atom id [${id}] in property [${key}]`
+		);
+	}
+	return true;
 }
 
 export function create_validate<A extends AtomName>(atom_name:A)
