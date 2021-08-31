@@ -8,14 +8,15 @@ import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util module`);
 
-import {atom_book} from 'uranio-books/atom';
+import {atom_book} from 'uranio-books-client/atom';
 
-import {dock_book} from 'uranio-books/dock';
+import {dock_book} from 'uranio-books-client/dock';
 
 import * as keys from './keys';
 
 import {
 	Atom,
+	AtomShape,
 	AtomName,
 	AuthAtom,
 	AuthName,
@@ -66,12 +67,12 @@ export function get_subatom_name<A extends AtomName>(atom_name:A ,atom_key:strin
 				throw urn_exc.create('GET_ATOM_NAME_INVALID_BOOK_PROP', err_msg);
 			}
 		}else{
-			let err_msg = `Invalid book property type for [${key_string}].`;
+			let err_msg = `Invalid book property type for \`${key_string}\`.`;
 			err_msg += ` Type shlould be ATOM or ATOM_ARRAY.`;
 			throw urn_exc.create('GET_ATOM_NAME_INVALID_BOOK_PROP_TYPE', err_msg);
 		}
 	}else{
-		let err_msg = `Invalid key [${key_string}].`;
+		let err_msg = `Invalid key \`${key_string}\`.`;
 		err_msg += ` Key should be an AtomName.`;
 		throw urn_exc.create('GET_ATOM_NAME_INVALID_KEY', err_msg);
 	}
@@ -179,7 +180,7 @@ export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof 
 		prop_def = atom_props[key];
 	}
 	if(!prop_def){
-		const err_msg = `Atom property definition missing for atom [${atom_name}] property [${key}]`;
+		const err_msg = `Atom property definition missing for atom \`${atom_name}\` property \`${key}\``;
 		throw urn_exc.create('IS_OPTIONAL_MISSING_ATM_PROP_DEFINITION', err_msg);
 	}
 	return (
@@ -203,5 +204,19 @@ export function has_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>|
 		return true;
 	}
 	return false;
+}
+
+export function delete_undefined_optional<A extends AtomName>(
+	atom_name: A,
+	partial_atom: Partial<AtomShape<A>>
+):Partial<AtomShape<A>>{
+	const optional_keys = keys.get_optional(atom_name);
+	let k:keyof Partial<AtomShape<A>>;
+	for(k in partial_atom){
+		if(optional_keys.has(k) && !partial_atom[k]){
+			delete partial_atom[k];
+		}
+	}
+	return partial_atom;
 }
 

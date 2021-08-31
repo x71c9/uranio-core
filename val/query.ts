@@ -66,7 +66,7 @@ function _validate_expression<A extends AtomName>(field:Query.Expression<A>, ato
 		}else{
 			
 			if(!atm_util.has_property(atom_name, k as any)){
-				const err_msg = `Invalid filter key [${k}] for Atom [${atom_name}].`;
+				const err_msg = `Invalid filter key \`${k}\` for Atom \`${atom_name}\`.`;
 				throw urn_exc.create_invalid_request('INVALID_EXPRESSION_KEY', err_msg);
 			}
 			
@@ -78,12 +78,12 @@ function _validate_expression<A extends AtomName>(field:Query.Expression<A>, ato
 				case 'object':{
 					for(const [l,u] of Object.entries(v)){
 						if(!_query_op_keys.compa_op.includes(l)){
-							const err_msg = `Filter value comparsion not valid [${l}].`;
+							const err_msg = `Filter value comparsion not valid \`${l}\`.`;
 							throw urn_exc.create_invalid_request('FIELD_INVALID_COMP', err_msg);
 						}
 						if(!Array.isArray(u) && !_is_base_query_type(u)){
 							let err_msg = `Filter comparsion value type must be`;
-							err_msg += ` a string, a number, a date or an Array [${l}]`;
+							err_msg += ` a string, a number, a date or an Array \`${l}\``;
 							throw urn_exc.create_invalid_request('FIELD_INVALID_COMP_TYPE', err_msg);
 						}
 						if(Array.isArray(u)){
@@ -132,7 +132,7 @@ function validate_filter<A extends AtomName>(query:Query<A>, atom_name:A)
 	for(const [key, value] of Object.entries(query)){
 		if(_query_op_keys.array_op.includes(key)){
 			if(!Array.isArray(value)){
-				const err_msg = `Invalid query format. Filter value for [${key}] must be an array.`;
+				const err_msg = `Invalid query format. Filter value for \`${key}\` must be an array.`;
 				throw urn_exc.create_invalid_request('FILTER_OP_VAL_NOT_ARRAY', err_msg);
 			}else{
 				for(let i=0; i < value.length; i++){
@@ -160,7 +160,7 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 	}
 	for(const k in options){
 		if(!_options_keys.includes(k)){
-			const err_msg = `Invalid property for options param [${k}]`;
+			const err_msg = `Invalid property for options param \`${k}\``;
 			throw urn_exc.create_invalid_request('OPTIONS_INVALID_KEY', err_msg);
 		}
 	}
@@ -173,7 +173,7 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 					sort_value = sort_value.substring(1, options.sort.length);
 				}
 				if(!urn_util.object.has_key(atom_book[atom_name].properties, sort_value)){
-					const err_msg = `Sort value not valid [${options.sort}].`;
+					const err_msg = `Sort value not valid \`${options.sort}\`.`;
 					throw urn_exc.create_invalid_request('OPTIONS_INVALID_SORT_VAL', err_msg);
 				}
 				break;
@@ -181,7 +181,7 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 			case 'object':{
 				for(const k in options.sort){
 					if(!atm_util.has_property(atom_name, k)){
-						const err_msg = `Sort value not valid [${k}].`;
+						const err_msg = `Sort value not valid \`${k}\`.`;
 						throw urn_exc.create_invalid_request('OPTIONS_INVALID_OBJECT_SORT_VAL', err_msg);
 					}
 					const sort_obj_value = (options.sort as any)[k];

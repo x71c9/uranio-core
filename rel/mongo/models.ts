@@ -256,7 +256,7 @@ function get_model(conn_name:ConnectionName, atom_name:AtomName)
 	if(!model){
 		throw urn_exc.create(
 			`NO_MODEL_FOUND`,
-			`Cannot find model for atom [${atom_name}] in connection [${conn_name}]`
+			`Cannot find model for atom \`${atom_name}\` in connection \`${conn_name}\``
 		);
 	}
 	return model;

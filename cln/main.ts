@@ -11,3 +11,7 @@ export {types};
 import * as stc from '../stc/';
 
 export {stc};
+
+import * as atm from '../atm/';
+
+export {atm};

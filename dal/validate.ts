@@ -53,7 +53,7 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 	public async select_by_id<D extends Depth = 0>(id:string, options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>>{
 		if(!this._db_relation.is_valid_id(id)){
-			throw urn_exc.create_invalid_request('INVALID_ID', `Invalid request [_id].`);
+			throw urn_exc.create_invalid_request('INVALID_ID', `Invalid request \`_id\`.`);
 		}
 		let db_record = await super.select_by_id(id, options);
 		const depth = (options && options.depth) ? options.depth : undefined;
@@ -162,7 +162,7 @@ function _check_ids<A extends AtomName>(
 			prop_def = props[k];
 		}
 		if (!prop_def) {
-			const err_msg = `Atom property definition missing for atom [${atom_name}] property [${k}]`;
+			const err_msg = `Atom property definition missing for atom \`${atom_name}\` property \`${k}\``;
 			throw urn_exc.create("CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION", err_msg);
 		}
 		if (prop_def.type === BookPropertyType.ATOM){
@@ -186,7 +186,7 @@ function _validate_id(
 	if(!is_valid_id(id)){
 		throw urn_exc.create_invalid_request(
 			'INVALID_ATOM_ID',
-			`Invalid Atom id [${id}] in property [${key}]`
+			`Invalid Atom id \`${id}\` in property \`${key}\``
 		);
 	}
 	return true;
