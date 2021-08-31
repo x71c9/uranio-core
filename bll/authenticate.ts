@@ -168,7 +168,7 @@ function passport_has_all_keys(passport:Passport)
 		:true{
 	for(const k in abstract_passport){
 		if(!urn_util.object.has_key(passport, k)){
-			throw urn_exc.create_invalid_request('PASSPORT_MISSING_KEY', `Passport is missing key [${k}].`);
+			throw urn_exc.create_invalid_request('PASSPORT_MISSING_KEY', `Passport is missing key \`${k}\`.`);
 		}
 	}
 	return true;
@@ -181,7 +181,7 @@ function passport_has_no_other_keys(passport:Passport)
 			continue;
 		}
 		if(!urn_util.object.has_key(abstract_passport, k)){
-			throw urn_exc.create_invalid_request('PASSPORT_INVALID_KEY', `Passport have invalid keys [${k}].`);
+			throw urn_exc.create_invalid_request('PASSPORT_INVALID_KEY', `Passport have invalid keys \`${k}\`.`);
 		}
 	}
 	return true;

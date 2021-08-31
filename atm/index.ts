@@ -47,7 +47,8 @@ import {
 	is_auth_atom_name,
 	is_auth_atom,
 	is_optional_property,
-	hide_hidden_properties
+	hide_hidden_properties,
+	delete_undefined_optional
 } from './util';
 
 export const util = {
@@ -59,7 +60,8 @@ export const util = {
 	is_auth_atom_name,
 	is_auth_atom,
 	is_optional_property,
-	hide_hidden_properties
+	hide_hidden_properties,
+	delete_undefined_optional
 };
 
 import {

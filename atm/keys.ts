@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'uranio-books/atom';
+import {atom_book} from 'uranio-books-client/atom';
 
 import {
 	AtomName,
@@ -20,6 +20,26 @@ import {BookPropertyType} from '../typ/common';
 import {
 	atom_common_properties
 } from '../stc/';
+
+export function get_optional<A extends AtomName>(atom_name:A)
+		:Set<keyof Atom<A>>{
+	const optional_keys = new Set<keyof Atom<A>>();
+	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	for(const k in atom_props){
+		const prop:Book.Definition.Property = atom_props[k]!;
+		if(prop.optional && prop.optional === true){
+			optional_keys.add(k as keyof Atom<A>);
+		}
+	}
+	let k:keyof typeof atom_common_properties;
+	for(k in atom_common_properties){
+		const prop:Book.Definition.Property = atom_common_properties[k];
+		if(prop.optional && prop.optional === true){
+			optional_keys.add(k as keyof AtomShape<A>);
+		}
+	}
+	return optional_keys;
+}
 
 export function get_hidden<A extends AtomName>(atom_name:A)
 		:Set<keyof Atom<A>>{
