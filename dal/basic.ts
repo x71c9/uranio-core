@@ -54,6 +54,13 @@ export class BasicDAL<A extends AtomName> implements AccessLayer<A>{
 		return await this._db_relation.select_one(query, options);
 	}
 	
+	public async count(query:Query<A>)
+			:Promise<number>{
+		urn_validators.query.validate_filter_options_params(this.atom_name, query);
+		const res_rel = await this._db_relation.count(query);
+		return res_rel;
+	}
+	
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		return await this._db_relation.insert_one(atom_shape);

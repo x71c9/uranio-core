@@ -52,6 +52,11 @@ export class BasicBLL<A extends AtomName> {
 		return await this._al.select_one(query, options);
 	}
 	
+	public async count(query:Query<A>)
+			:Promise<number>{
+		return await this._al.count(query);
+	}
+	
 	public async insert_new(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		return await this._al.insert_one(atom_shape);

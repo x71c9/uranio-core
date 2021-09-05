@@ -22,6 +22,8 @@ export interface Relation<A extends AtomName> {
 	
 	select_one<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>):Promise<Molecule<A,D>>;
 	
+	count(query:Query<A>):Promise<number>;
+	
 	insert_one(atom_shape:AtomShape<A>):Promise<Atom<A>>;
 	
 	alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>):Promise<Atom<A>>;
