@@ -70,7 +70,7 @@ export function property<A extends AtomName, D extends Depth>(
 		(atom as any)[key] = fixed_value;
 		
 	}catch(err){
-		let err_msg = `Cannot fix property of Atom.`;
+		let err_msg = `Cannot fix property of Atom [${atom._id}].`;
 		if(fix_defined){
 			err_msg += ` Default value or on_error result is invalid.`;
 		}else{

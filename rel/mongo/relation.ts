@@ -152,8 +152,14 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 			const err_msg = `Cannot alter_by_id. Invalid id param.`;
 			throw urn_exc.create_invalid_request('ALTER_BY_ID_INVALID_ID', err_msg);
 		}
+		const $unset = _find_unsets(this.atom_name, partial_atom);
+		partial_atom = _clean_unset(this.atom_name, partial_atom);
+		const update = {
+			$set: partial_atom,
+			$unset: $unset
+		};
 		const mon_update_res =
-			await this._raw.findByIdAndUpdate({_id:id}, partial_atom, {new: true, lean: true}) as unknown;
+			await this._raw.findByIdAndUpdate({_id:id}, update, {new: true, lean: true}) as unknown;
 		if(mon_update_res === null){
 			throw urn_exc.create_not_found('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
 		}
@@ -199,6 +205,31 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 function _is_valid_id(id:string)
 		:boolean{
 	return mongoose.Types.ObjectId.isValid(id);
+}
+
+type Unset = {
+	[k:string]: 1
+}
+
+function _find_unsets<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>){
+	const unsets = {} as Unset;
+	const type_atom_props = atm_keys.get_bond(atom_name);
+	for(const [prop, value] of Object.entries(partial_atom)){
+		if(type_atom_props.has(prop as keyof Partial<AtomShape<A>>) && value === ''){
+			unsets[prop] = 1;
+		}
+	}
+	return unsets;
+}
+
+function _clean_unset<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>){
+	const type_atom_props = atm_keys.get_bond(atom_name);
+	for(const [prop, value] of Object.entries(partial_atom)){
+		if(type_atom_props.has(prop as keyof Partial<AtomShape<A>>) && value === ''){
+			delete partial_atom[prop as keyof Partial<AtomShape<A>>];
+		}
+	}
+	return partial_atom;
 }
 
 function _generate_subatomkey_populate_obj<A extends AtomName>(

@@ -167,7 +167,9 @@ function _check_ids<A extends AtomName>(
 		}
 		if (prop_def.type === BookPropertyType.ATOM){
 			const id = partial_atom[k] as string;
-			_validate_id(id, is_valid_id, k as string);
+			if(prop_def.optional !== true || !_is_empty_id(id)){
+				_validate_id(id, is_valid_id, k as string);
+			}
 		}else if(prop_def.type === BookPropertyType.ATOM_ARRAY){
 			const ids = partial_atom[k] as string[];
 			for(let i = 0; i < ids.length; i++){
@@ -176,6 +178,10 @@ function _check_ids<A extends AtomName>(
 		}
 	}
 	return true;
+}
+
+function _is_empty_id(id:string){
+	return (id === '');
 }
 
 function _validate_id(
