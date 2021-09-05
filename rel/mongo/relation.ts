@@ -133,6 +133,12 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		return _clean_molecule<A,D>(this.atom_name, mon_find_one_res);
 	}
 	
+	public async count(query:Query<A>)
+			:Promise<number>{
+		const mon_count_res = await this._raw.countDocuments(query).lean<number>();
+		return mon_count_res;
+	}
+	
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		if(urn_util.object.has_key(atom_shape, '_id')){

@@ -99,7 +99,7 @@ function _validate_expression<A extends AtomName>(field:Query.Expression<A>, ato
 					return true;
 				}
 				default:{
-					const err_msg = `Filter filed type not valid.`;
+					const err_msg = `Filter filed type not valid. Type of \`${k}\` is \`${typeof v}\`.`;
 					throw urn_exc.create_invalid_request('FIELD_INVALID_TYPE', err_msg);
 				}
 			}

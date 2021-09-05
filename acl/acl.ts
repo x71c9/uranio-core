@@ -201,6 +201,17 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 		return await this._dal.select_one(query, options);
 	}
 	
+	public async count(query:Query<A>)
+			:Promise<number>{
+		
+		this._can_uniform_read();
+		
+		if(this._security_type === BookSecurityType.GRANULAR){
+			query = {$and: [query, this._read_query]};
+		}
+		return await this._dal.count(query);
+	}
+	
 	public async insert_one(atom_shape:AtomShape<A>)
 			:Promise<Atom<A>>{
 		
