@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'uranio-books/atom';
+import {atom_book} from 'uranio-books-client/atom';
 
 import bcrypt from 'bcryptjs';
 
