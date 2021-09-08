@@ -19,7 +19,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'uranio-books-client/atom';
+import {atom_book} from 'uranio-books/atom';
 
 import {BookPropertyType, RealType} from './common';
 
