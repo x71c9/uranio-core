@@ -110,7 +110,7 @@ export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, mo
 
 export function is_auth_atom_name<A extends AtomName>(atom_name:A)
 		:boolean{
-	const dock_def = dock_book[atom_name] as Book.BasicDefinition;
+	const dock_def = dock_book[atom_name];
 	if(!urn_util.object.has_key(dock_def, 'dock')){
 		return false;
 	}
