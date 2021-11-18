@@ -197,8 +197,13 @@ type MongoModels = {
 
 export const mongo_app:MongoApp = {};
 
-function get_model(conn_name:ConnectionName, atom_name:AtomName)
-		:mongoose.Model<mongoose.Document<any>>{
+export function create_all_connection():void{
+	_create_connection('main');
+	_create_connection('trash');
+	_create_connection('log');
+}
+
+function _create_connection(conn_name:ConnectionName){
 	if(!mongo_app.connections){
 		mongo_app.connections = {} as MongoConnections;
 	}
@@ -217,21 +222,28 @@ function get_model(conn_name:ConnectionName, atom_name:AtomName)
 			conf_db_name
 		);
 	}
+}
+
+function get_model(conn_name:ConnectionName, atom_name:AtomName)
+		:mongoose.Model<mongoose.Document<any>>{
+	
+	_create_connection(conn_name);
+	
 	if(!mongo_app.models){
 		mongo_app.models = {} as MongoModels;
 	}
 	if(!mongo_app.models[conn_name]){
 		switch(conn_name){
 			case 'main':{
-				const undefined_connection_models = _create_models(mongo_app.connections.main);
-				const main_connection_models = _create_models(mongo_app.connections.main, 'main');
+				const undefined_connection_models = _create_models(mongo_app.connections!.main);
+				const main_connection_models = _create_models(mongo_app.connections!.main, 'main');
 				mongo_app.models.main = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>(
 					[...undefined_connection_models, ...main_connection_models]
 				);
 				break;
 			}
 			case 'log':{
-				mongo_app.models.log = _create_models(mongo_app.connections.log, 'log');
+				mongo_app.models.log = _create_models(mongo_app.connections!.log, 'log');
 				break;
 			}
 			case 'trash':{
@@ -244,7 +256,7 @@ function get_model(conn_name:ConnectionName, atom_name:AtomName)
 					}
 					const atom_schema_def = _convert_for_trash(generate_mongo_schema_def(atom_name));
 					const atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
-					const atom_model = mongo_app.connections.trash.create_model(atom_name, atom_mongo_schema);
+					const atom_model = mongo_app.connections!.trash.create_model(atom_name, atom_mongo_schema);
 					model_by_atom_name.set(atom_name, atom_model);
 				}
 				mongo_app.models.trash = model_by_atom_name;

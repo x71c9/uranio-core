@@ -1,14 +1,24 @@
 /**
- * Disconnect module
+ * Connection methods module
  *
  * @packageDocumentation
  */
 
 import {core_config} from '../conf/defaults';
 
-import {mongo_app} from '../rel/mongo/models';
+import {mongo_app, create_all_connection} from '../rel/mongo/models';
 
 import {ConnectionName} from "../typ/book_cln";
+
+export function connect()
+		:void{
+	switch(core_config.db_type){
+		case 'mongo':{
+			create_all_connection();
+			break;
+		}
+	}
+}
 
 export async function disconnect(connection_name?:ConnectionName)
 		:Promise<void>{

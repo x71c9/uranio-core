@@ -1,0 +1,5 @@
+/**
+ * Types for Connection
+ *
+ * @packageDocumentation
+ */
