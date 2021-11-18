@@ -8,6 +8,7 @@ import uranio from 'uranio';
 
 export const atom = {
 	superuser: {
+		plural: 'superusers',
 		security: {
 			type: uranio.types.BookSecurityType.UNIFORM,
 			_r: uranio.types.BookPermissionType.NOBODY
@@ -35,6 +36,7 @@ export const atom = {
 		}
 	},
 	user: {
+		plural: 'users',
 		security: {
 			type: uranio.types.BookSecurityType.GRANULAR
 		},
@@ -58,6 +60,7 @@ export const atom = {
 		}
 	},
 	group: {
+		plural: 'groups',
 		properties: {
 			name: {
 				type: uranio.types.BookPropertyType.TEXT,

@@ -24,7 +24,7 @@ import * as stc from '../stc/';
 export {stc};
 
 
-export * from '../dsc/';
+export * from '../cnn/';
 
 
 import {core_config} from '../conf/defaults';
