@@ -42,4 +42,21 @@ export type RealType<AT extends BookPropertyType> =
 	AT extends BookPropertyType.ATOM_ARRAY ? string[] :
 	never;
 
-
+export const BookPropertyStringType = {
+	'ID': 'string',
+	'TEXT': 'string',
+	'LONG_TEXT': 'string',
+	'EMAIL': 'string',
+	'INTEGER': 'number',
+	'FLOAT': 'number',
+	'BINARY': 'number',
+	'ENCRYPTED': 'string',
+	'DAY': 'datetime',
+	'TIME': 'datetime',
+	'ENUM_STRING': 'string',
+	'ENUM_NUMBER': 'number',
+	'SET_STRING': 'set',
+	'SET_NUMBER': 'set',
+	'ATOM': 'object',
+	'ATOM_ARRAY': 'set'
+};
