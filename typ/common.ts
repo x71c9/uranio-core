@@ -49,7 +49,7 @@ export const BookPropertyStringType = {
 	'EMAIL': 'string',
 	'INTEGER': 'number',
 	'FLOAT': 'number',
-	'BINARY': 'number',
+	'BINARY': 'boolean',
 	'ENCRYPTED': 'string',
 	'DAY': 'datetime',
 	'TIME': 'datetime',
