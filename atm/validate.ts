@@ -192,8 +192,10 @@ function _validate_hard_properties<A extends AtomName>(atom:Atom<A>)
 	return true;
 }
 
-
-
+/**
+ * Primitive properties are properties of type: string, number, array, etc.
+ * Primitive properties are not of type: ATOM or ATOM_ARRAY
+ */
 function _validate_primitive_properties<A extends AtomName>(
 	atom_name:A,
 	partial_atom:Partial<AtomShape<A>>
@@ -213,11 +215,9 @@ function _validate_primitive_properties<A extends AtomName>(
 			const err_msg = `Atom property definition missing for atom \`${atom_name}\` property \`${k}\``;
 			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
 		}
-		
 		if(prop_def.type === BookPropertyType.ATOM || prop_def.type === BookPropertyType.ATOM_ARRAY){
 			continue;
 		}
-		
 		try{
 			_validate_primitive_type(k, prop_def, partial_atom[k]);
 			_validate_custom_type(k, prop_def, partial_atom[k]);
