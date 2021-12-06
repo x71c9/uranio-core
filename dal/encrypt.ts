@@ -61,7 +61,7 @@ export class EncryptDAL<A extends AtomName> extends ValidateDAL<A>{
 		//   ...atom_common_properties,
 		//   ...atom_props
 		// } as Book.Definition.Properties;
-		const all_props = book.get_all_property_definitions(this.atom_name);
+		const all_props = book.atom.get_all_property_definitions(this.atom_name);
 		let k:keyof Atom<A>;
 		for(k in atom){
 			const prop_def = all_props[k as string];

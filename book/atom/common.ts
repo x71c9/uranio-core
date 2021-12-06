@@ -1,5 +1,5 @@
 /**
- * Common module for Book Methods
+ * Common module for Atom Book Methods
  *
  * Since type Book is different between Server and Client we need two different
  * module with methods with different return types.
@@ -15,16 +15,20 @@ import {atom_book} from 'uranio-books/atom';
 
 import {
 	AtomName,
-} from '../typ/atom';
+} from '../../typ/atom';
 
-import {Book} from '../typ/book_srv';
+import {Book} from '../../typ/book_cln';
 
 import {
 	atom_hard_properties,
 	atom_common_properties,
-} from '../stc/';
+} from '../../stc/';
 
-export function get_atom_definition<A extends AtomName>(atom_name:A)
+export function validate_name(atom_name:string):boolean{
+	return urn_util.object.has_key(atom_book, atom_name);
+}
+
+export function get_definition<A extends AtomName>(atom_name:A)
 		:Book.BasicDefinition{
 	return atom_book[atom_name] as unknown as Book.BasicDefinition;
 }

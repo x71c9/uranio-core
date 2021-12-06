@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 
 import {urn_exception} from 'urn-lib';
 
-import {atom_book} from 'uranio-books/atom';
+// import {atom_book} from 'uranio-books/atom';
 
 const urn_exc = urn_exception.init('MONGO_APP', 'Mongoose Models App');
 
@@ -76,9 +76,9 @@ import * as book from '../../book/';
 function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstance, connection?:ConnectionName){
 	const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
 	let atom_name:AtomName;
-	for(atom_name in atom_book){
+	for(atom_name of book.atom.get_names()){
 		// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
-		const atom_def = book.get_atom_definition(atom_name);
+		const atom_def = book.atom.get_definition(atom_name);
 		if(atom_def.connection !== connection)
 			continue;
 		const atom_schema_def = generate_mongo_schema_def(atom_name);
@@ -142,7 +142,7 @@ function _add_schema_middleware<A extends AtomName>(
 	
 	// DELETE ON CASCADE
 	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	const atom_by_cascade_keys = new Map<string, AtomName>();
 	for(const [k,v] of Object.entries(prop_defs)){
 		if(v.type === BookPropertyType.ATOM || v.type === BookPropertyType.ATOM_ARRAY){
@@ -253,9 +253,9 @@ function get_model(conn_name:ConnectionName, atom_name:AtomName)
 			case 'trash':{
 				const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
 				let atom_name:AtomName;
-				for(atom_name in atom_book){
+				for(atom_name of book.atom.get_names()){
 					// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
-					const atom_def = book.get_atom_definition(atom_name);
+					const atom_def = book.atom.get_definition(atom_name);
 					if(atom_def.connection && atom_def.connection !== 'main'){
 						continue;
 					}

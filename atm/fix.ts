@@ -59,7 +59,7 @@ export function property<A extends AtomName, D extends Depth>(
 	//   throw urn_exc.create_invalid_atom('FIX_MOLECULE_KEY_INVALID_KEY', err_msg, atom, [key]);
 	// }
 	// const def = prop_def as Book.Definition.Property;
-	const prop_def = book.get_property_definition(atom_name, key as keyof Book.Definition.Properties);
+	const prop_def = book.atom.get_property_definition(atom_name, key as keyof Book.Definition.Properties);
 	let fixed_value = null;
 	let fix_defined = false;
 	if(prop_def.on_error && typeof prop_def.on_error === 'function'){

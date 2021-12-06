@@ -35,7 +35,7 @@ export class RelationDAL<A extends AtomName> extends BasicDAL<A>{
 		switch(core_config.db_type){
 			case 'mongo':{
 				// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
-				const atom_def = book.get_atom_definition(atom_name);
+				const atom_def = book.atom.get_definition(atom_name);
 				switch(atom_def.connection){
 					case 'log':
 						db_relation = urn_rel.mongo.log_create<A>(atom_name);
