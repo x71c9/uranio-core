@@ -1,0 +1,7 @@
+/**
+ *
+ * Book type module
+ *
+ * @packageDocumentation
+ */
+

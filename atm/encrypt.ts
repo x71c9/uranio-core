@@ -10,7 +10,7 @@ import bcrypt from 'bcryptjs';
 
 import {urn_util} from 'urn-lib';
 
-import {core_config} from '../conf/defaults';
+import {core_config} from '../cnf/defaults';
 
 import * as validate from './validate';
 

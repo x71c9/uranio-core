@@ -9,7 +9,7 @@ import {atom_book} from 'uranio-books/atom';
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-import {core_config} from '../conf/defaults';
+import {core_config} from '../cnf/defaults';
 
 import {Depth, AtomName} from '../typ/atom';
 

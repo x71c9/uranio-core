@@ -18,7 +18,7 @@ import {Book, ConnectionName} from '../../typ/book_cln';
 
 import {BookPropertyType} from '../../typ/common';
 
-import {core_config} from '../../conf/defaults';
+import {core_config} from '../../cnf/defaults';
 
 import {generate_mongo_schema_def} from './schema';
 
