@@ -4,4 +4,4 @@
  * @packageDocumentation
  */
 
-export * from './book';
+export * from './server';

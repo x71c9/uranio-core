@@ -14,7 +14,7 @@ const urn_exc = urn_exception.init('MONGO_APP', 'Mongoose Models App');
 
 import {AtomName} from '../../typ/atom';
 
-import {Book, ConnectionName} from '../../typ/book_cln';
+import {ConnectionName} from '../../typ/book_cln';
 
 import {BookPropertyType} from '../../typ/common';
 
@@ -23,6 +23,8 @@ import {core_config} from '../../cnf/defaults';
 import {generate_mongo_schema_def} from './schema';
 
 import * as mongo_connection from './connection';
+
+import * as book from '../../book/';
 
 // const mongo_main_conn = mongo_connection.create(
 //   'main',
@@ -75,7 +77,8 @@ function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstan
 	const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
 	let atom_name:AtomName;
 	for(atom_name in atom_book){
-		const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+		// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+		const atom_def = book.get_atom_definition(atom_name);
 		if(atom_def.connection !== connection)
 			continue;
 		const atom_schema_def = generate_mongo_schema_def(atom_name);
@@ -138,9 +141,10 @@ function _add_schema_middleware<A extends AtomName>(
 ):mongoose.Schema{
 	
 	// DELETE ON CASCADE
-	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	const prop_defs = book.get_custom_property_definitions(atom_name);
 	const atom_by_cascade_keys = new Map<string, AtomName>();
-	for(const [k,v] of Object.entries(atom_props)){
+	for(const [k,v] of Object.entries(prop_defs)){
 		if(v.type === BookPropertyType.ATOM || v.type === BookPropertyType.ATOM_ARRAY){
 			if(v.delete_cascade && v.delete_cascade === true){
 				atom_by_cascade_keys.set(k, v.atom);
@@ -250,7 +254,8 @@ function get_model(conn_name:ConnectionName, atom_name:AtomName)
 				const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
 				let atom_name:AtomName;
 				for(atom_name in atom_book){
-					const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+					// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+					const atom_def = book.get_atom_definition(atom_name);
 					if(atom_def.connection && atom_def.connection !== 'main'){
 						continue;
 					}

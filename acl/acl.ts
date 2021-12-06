@@ -26,7 +26,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'uranio-books/atom';
+// import {atom_book} from 'uranio-books/atom';
 
 import {urn_log, urn_exception} from 'urn-lib';
 
@@ -49,7 +49,7 @@ import {
 import {Query} from '../typ/query';
 
 import {
-	Book,
+	// Book,
 	BookSecurityType,
 	BookPermissionType,
 } from '../typ/book_srv';
@@ -57,6 +57,8 @@ import {
 import {BookPropertyType, RealType} from '../typ/common';
 
 import {AccessLayer} from '../typ/layer';
+
+import * as book from '../book/';
 
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods
@@ -74,7 +76,8 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 	
 	constructor(public atom_name:A, protected user_groups:RealType<BookPropertyType.ID>[]) {
 		this._dal = urn_dal.create(atom_name);
-		const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+		// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+		const atom_def = book.get_atom_definition(atom_name);
 		const security = atom_def['security'];
 		this._security_type = BookSecurityType.UNIFORM;
 		this._read = undefined;

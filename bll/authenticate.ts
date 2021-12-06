@@ -12,7 +12,7 @@ import {urn_util, urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 
-import {atom_book} from 'uranio-books/atom';
+// import {atom_book} from 'uranio-books/atom';
 
 import {core_config} from '../cnf/defaults';
 
@@ -26,7 +26,7 @@ import {
 import {abstract_passport} from '../stc/';
 
 import {
-	Book,
+	// Book,
 	BookSecurityType,
 	BookPermissionType,
 } from '../typ/book_srv';
@@ -42,6 +42,8 @@ import {
 import * as atm_validate from '../atm/validate';
 
 import * as atm_util from '../atm/util';
+
+import * as book from '../book/';
 
 import {create as create_basic, BasicBLL} from './basic';
 
@@ -104,7 +106,8 @@ export function create<A extends AuthName>(atom_name:A)
 
 export function is_public_request<A extends AtomName>(atom_name:A, action: AuthAction)
 		:boolean{
-	const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+	// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+	const atom_def = book.get_atom_definition(atom_name);
 	
 	if(action === AuthAction.READ){
 	

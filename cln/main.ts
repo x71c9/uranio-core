@@ -16,6 +16,6 @@ import * as atm from '../atm/';
 
 export {atm};
 
-import * as book from '../book/';
+import * as book from '../book/client';
 
 export {book};
