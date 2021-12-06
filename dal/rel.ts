@@ -20,7 +20,7 @@ import {AtomName} from '../typ/atom';
 
 import {Book} from '../typ/book_srv';
 
-import {core_config} from '../conf/defaults';
+import {core_config} from '../cnf/defaults';
 
 import {BasicDAL} from './basic';
 

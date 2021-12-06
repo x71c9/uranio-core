@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {core_config} from '../conf/defaults';
+import {core_config} from '../cnf/defaults';
 
 import {mongo_app, create_all_connection} from '../rel/mongo/models';
 

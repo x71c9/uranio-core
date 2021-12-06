@@ -20,7 +20,7 @@ import {Query} from '../../typ/query';
 
 import {ConnectionName} from '../../typ/book_cln';
 
-import {core_config} from '../../conf/defaults';
+import {core_config} from '../../cnf/defaults';
 
 import * as atm_keys from '../../atm/keys';
 

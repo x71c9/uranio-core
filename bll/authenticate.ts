@@ -14,7 +14,7 @@ const urn_exc = urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 
 import {atom_book} from 'uranio-books/atom';
 
-import {core_config} from '../conf/defaults';
+import {core_config} from '../cnf/defaults';
 
 import {
 	AtomName,

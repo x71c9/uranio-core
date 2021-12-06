@@ -15,3 +15,7 @@ export {stc};
 import * as atm from '../atm/';
 
 export {atm};
+
+import * as book from '../book/';
+
+export {book};

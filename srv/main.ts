@@ -19,6 +19,11 @@ import * as atm from '../atm/';
 export {atm};
 
 
+import * as book from '../book/';
+
+export {book};
+
+
 import * as stc from '../stc/';
 
 export {stc};
@@ -27,7 +32,7 @@ export {stc};
 export * from '../cnn/';
 
 
-import {core_config} from '../conf/defaults';
+import {core_config} from '../cnf/defaults';
 
 export function init(config:types.Configuration)
 		:void{

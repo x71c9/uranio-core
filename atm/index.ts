@@ -10,6 +10,7 @@ import {
 	atom,
 	atom_shape,
 	atom_partial,
+	property as validate_property,
 } from './validate';
 
 export const validate = {
@@ -18,6 +19,7 @@ export const validate = {
 	atom,
 	atom_shape,
 	atom_partial,
+	property: validate_property,
 };
 
 import {
