@@ -11,11 +11,13 @@ import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('VAL_DAL', 'ValidateDAL');
 
-import {atom_book} from 'uranio-books/atom';
+// import {atom_book} from 'uranio-books/atom';
 
 import * as atm_validate from '../atm/validate';
 
 import * as atm_keys from '../atm/keys';
+
+import * as book from '../book/';
 
 import {
 	Depth,
@@ -25,7 +27,7 @@ import {
 	Molecule
 } from '../typ/atom';
 
-import { Book } from '../typ/book_cln';
+// import { Book } from '../typ/book_cln';
 
 import { BookPropertyType } from '../typ/common';
 
@@ -150,7 +152,8 @@ function _check_ids<A extends AtomName>(
 	partial_atom:Partial<AtomShape<A>>,
 	is_valid_id: (id:string) => boolean
 ):true{
-	const props = atom_book[atom_name]["properties"] as Book.Definition.Properties;
+	// const props = atom_book[atom_name]["properties"] as Book.Definition.Properties;
+	const props = book.get_custom_property_definitions(atom_name);
 	let k:keyof typeof partial_atom;
 	for (k in partial_atom) {
 		let prop_def = undefined;

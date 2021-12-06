@@ -9,7 +9,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'uranio-books/atom';
+// import {atom_book} from 'uranio-books/atom';
 
 import {urn_log} from 'urn-lib';
 
@@ -21,9 +21,11 @@ import {
 	Atom,
 } from '../typ/atom';
 
-import {atom_hard_properties, atom_common_properties} from '../stc/';
+// import {atom_hard_properties, atom_common_properties} from '../stc/';
 
-import {Book} from '../typ/book_srv';
+import * as book from '../book/';
+
+// import {Book} from '../typ/book_srv';
 
 import {BookPropertyType} from '../typ/common';
 
@@ -53,12 +55,13 @@ export class EncryptDAL<A extends AtomName> extends ValidateDAL<A>{
 			:Promise<Partial<AtomShape<A>>>;
 	protected async _encrypt_changed_properties(id:string, atom:Atom<A> | Partial<AtomShape<A>>)
 			:Promise<Atom<A> | Partial<AtomShape<A>>>{
-		const atom_props = atom_book[this.atom_name]['properties'];
-		const all_props = {
-			...atom_hard_properties,
-			...atom_common_properties,
-			...atom_props
-		} as Book.Definition.Properties;
+		// const atom_props = atom_book[this.atom_name]['properties'];
+		// const all_props = {
+		//   ...atom_hard_properties,
+		//   ...atom_common_properties,
+		//   ...atom_props
+		// } as Book.Definition.Properties;
+		const all_props = book.get_all_property_definitions(this.atom_name);
 		let k:keyof Atom<A>;
 		for(k in atom){
 			const prop_def = all_props[k as string];

@@ -5,7 +5,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'uranio-books/atom';
+// import {atom_book} from 'uranio-books/atom';
 
 import {urn_exception, urn_util} from 'urn-lib';
 
@@ -16,6 +16,8 @@ import {Depth, AtomName} from '../typ/atom';
 import {Query} from '../typ/query';
 
 import * as atm_util from '../atm/util';
+
+import * as book from '../book/client';
 
 const _query_op_keys = {
 	array_op: ['$and', '$nor', '$or'],
@@ -172,7 +174,8 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 				if(options.sort[0] === '+' || options.sort[0] === '-'){
 					sort_value = sort_value.substring(1, options.sort.length);
 				}
-				if(!urn_util.object.has_key(atom_book[atom_name].properties, sort_value)){
+				const prop_defs = book.get_custom_property_definitions(atom_name);
+				if(!urn_util.object.has_key(prop_defs, sort_value)){
 					const err_msg = `Sort value not valid \`${options.sort}\`.`;
 					throw urn_exc.create_invalid_request('OPTIONS_INVALID_SORT_VAL', err_msg);
 				}

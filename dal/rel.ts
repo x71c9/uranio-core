@@ -12,13 +12,15 @@ import {urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('CONN_DAL', 'RelationDAL');
 
-import {atom_book} from 'uranio-books/atom';
+// import {atom_book} from 'uranio-books/atom';
 
 import * as urn_rel from '../rel/';
 
 import {AtomName} from '../typ/atom';
 
-import {Book} from '../typ/book_srv';
+// import {Book} from '../typ/book_srv';
+
+import * as book from '../book/';
 
 import {core_config} from '../cnf/defaults';
 
@@ -32,7 +34,8 @@ export class RelationDAL<A extends AtomName> extends BasicDAL<A>{
 		let db_relation: urn_rel.Relation<A>;
 		switch(core_config.db_type){
 			case 'mongo':{
-				const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+				// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+				const atom_def = book.get_atom_definition(atom_name);
 				switch(atom_def.connection){
 					case 'log':
 						db_relation = urn_rel.mongo.log_create<A>(atom_name);

@@ -4,11 +4,12 @@
  * @packageDocumentation
  */
 
-import {urn_exception, urn_util} from 'urn-lib';
+// import {urn_exception, urn_util} from 'urn-lib';
+import {urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ATOM_FIX', `Atom Fix module`);
 
-import {atom_book} from 'uranio-books/atom';
+// import {atom_book} from 'uranio-books/atom';
 
 import * as validate from './validate';
 
@@ -21,10 +22,12 @@ import {
 
 import {Book} from '../typ/book_cln';
 
-import {
-	atom_hard_properties,
-	atom_common_properties,
-} from '../stc/';
+// import {
+//   atom_hard_properties,
+//   atom_common_properties,
+// } from '../stc/';
+
+import * as book from '../book/client';
 
 export function property<A extends AtomName>(
 	atom_name:A,
@@ -41,27 +44,29 @@ export function property<A extends AtomName, D extends Depth>(
 	atom:Atom<A> | Molecule<A,D>,
 	key: keyof Atom<A> | keyof Molecule<A,D>
 ):Atom<A> | Molecule<A,D>{
-	const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	let prop_def = undefined;
-	if(urn_util.object.has_key(atom_props, key)){
-		prop_def = atom_props[key as string];
-	}else if(urn_util.object.has_key(atom_hard_properties, key)){
-		prop_def = atom_hard_properties[key];
-	}else if(urn_util.object.has_key(atom_common_properties, key)){
-		prop_def = atom_common_properties[key];
-	}
-	if(!prop_def){
-		const err_msg = `Missing or invalid key \`${key}\` in atom_book`;
-		throw urn_exc.create_invalid_atom('FIX_MOLECULE_KEY_INVALID_KEY', err_msg, atom, [key]);
-	}
-	const def = prop_def as Book.Definition.Property;
+	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	// const atom_props = book.get_custom_property_definitions(atom_name);
+	// let prop_def = undefined;
+	// if(urn_util.object.has_key(atom_props, key)){
+	//   prop_def = atom_props[key as string];
+	// }else if(urn_util.object.has_key(atom_hard_properties, key)){
+	//   prop_def = atom_hard_properties[key];
+	// }else if(urn_util.object.has_key(atom_common_properties, key)){
+	//   prop_def = atom_common_properties[key];
+	// }
+	// if(!prop_def){
+	//   const err_msg = `Missing or invalid key \`${key}\` in atom_book`;
+	//   throw urn_exc.create_invalid_atom('FIX_MOLECULE_KEY_INVALID_KEY', err_msg, atom, [key]);
+	// }
+	// const def = prop_def as Book.Definition.Property;
+	const prop_def = book.get_property_definition(atom_name, key as keyof Book.Definition.Properties);
 	let fixed_value = null;
 	let fix_defined = false;
-	if(def.on_error && typeof def.on_error === 'function'){
-		fixed_value = def.on_error((atom as any)[key]);
+	if(prop_def.on_error && typeof prop_def.on_error === 'function'){
+		fixed_value = prop_def.on_error((atom as any)[key]);
 		fix_defined = true;
-	}else if(def.default){
-		fixed_value = def.default;
+	}else if(prop_def.default){
+		fixed_value = prop_def.default;
 		fix_defined = true;
 	}
 	try{

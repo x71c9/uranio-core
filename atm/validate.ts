@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {atom_book} from 'uranio-books/atom';
+// import {atom_book} from 'uranio-books/atom';
 
 import {urn_exception, urn_util} from 'urn-lib';
 
@@ -31,6 +31,8 @@ import {core_config} from '../cnf/defaults';
 import * as atm_util from './util';
 
 import * as atm_keys from './keys';
+
+import * as book from '../book/client';
 
 export function molecule<A extends AtomName, D extends Depth>(
 	atom_name:A,
@@ -132,9 +134,10 @@ export function encrypt_property<A extends AtomName>(
 
 function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
-	const atom_props = atom_book[atom_name]['properties'];
+	// const atom_props = atom_book[atom_name]['properties'];
+	const prop_defs = book.get_custom_property_definitions(atom_name);
 	const missin_props:string[] = [];
-	for(const [k] of Object.entries(atom_props)){
+	for(const [k] of Object.entries(prop_defs)){
 		if(!atm_util.is_optional_property(atom_name, k as keyof Atom<A>) && !urn_util.object.has_key(atom_shape,k)){
 			missin_props.push(k);
 		}
@@ -154,7 +157,8 @@ function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomSha
 
 function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
-	const atom_props = atom_book[atom_name]['properties'];
+	// const atom_props = atom_book[atom_name]['properties'];
+	const prop_defs = book.get_custom_property_definitions(atom_name);
 	const extra_props:string[] = [];
 	for(const k in partial_atom){
 		if(urn_util.object.has_key(atom_hard_properties,k)){
@@ -163,7 +167,7 @@ function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:
 		if(urn_util.object.has_key(atom_common_properties,k)){
 			continue;
 		}
-		if(!urn_util.object.has_key(atom_props,k)){
+		if(!urn_util.object.has_key(prop_defs,k)){
 			extra_props.push(k);
 		}
 	}
@@ -200,7 +204,8 @@ function _validate_primitive_properties<A extends AtomName>(
 	atom_name:A,
 	partial_atom:Partial<AtomShape<A>>
 ):true{
-	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	// const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	const props = book.get_custom_property_definitions(atom_name);
 	let k:keyof typeof partial_atom;
 	for(k in partial_atom){
 		let prop_def = undefined;
@@ -235,7 +240,8 @@ function _validate_partial_atom_bond_properties<A extends AtomName>(
 	atom_name:A,
 	partial_atom:Partial<AtomShape<A>>
 ):true{
-	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	// const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	const props = book.get_custom_property_definitions(atom_name);
 	let k:keyof typeof partial_atom;
 	for(k in partial_atom){
 		let prop_def = undefined;
@@ -272,7 +278,8 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 	molecule: Molecule<A,D>,
 	depth?:D
 ):true{
-	const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	// const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
+	const props = book.get_custom_property_definitions(atom_name);
 	const bond_keys = atm_keys.get_bond(atom_name);
 	for(const k of bond_keys){
 		let prop_def = undefined;

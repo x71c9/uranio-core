@@ -9,7 +9,7 @@
 
 import {urn_log} from 'urn-lib';
 
-import {atom_book} from 'uranio-books/atom';
+// import {atom_book} from 'uranio-books/atom';
 
 import * as urn_rel from '../rel/';
 
@@ -18,13 +18,15 @@ import {
 	Atom,
 } from '../typ/atom';
 
-import {Book} from '../typ/book_srv';
+// import {Book} from '../typ/book_srv';
 
 import {core_config} from '../cnf/defaults';
 
 import {BasicDAL, create_basic} from './basic';
 
 import {EncryptDAL} from './encrypt';
+
+import * as book from '../book/';
 
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods
@@ -41,7 +43,8 @@ export class RecycleDAL<A extends AtomName> extends EncryptDAL<A>{
 	public get trash_dal():BasicDAL<A>{
 		if(this._trash_dal === undefined){
 			let db_trash_relation:urn_rel.Relation<A>;
-			const atom_def = atom_book[this.atom_name] as Book.BasicDefinition;
+			// const atom_def = atom_book[this.atom_name] as Book.BasicDefinition;
+			const atom_def = book.get_atom_definition(this.atom_name);
 			if(!atom_def.connection || atom_def.connection === 'main'){
 				switch(core_config.db_type){
 					case 'mongo':{
