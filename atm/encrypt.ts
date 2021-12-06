@@ -29,7 +29,7 @@ export async function property<A extends AtomName>
 		:Promise<string>{
 	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	// const prop_defs = book.get_custom_property_definitions(atom_name);
-	const prop_def = book.get_property_definition(atom_name, prop_key as string);
+	const prop_def = book.atom.get_property_definition(atom_name, prop_key as string);
 	validate.encrypt_property(prop_key, prop_def as Book.Definition.Property.Encrypted, prop_value);
 	// *********
 	// IMPORTANT - If the encryption method is changed,
@@ -43,7 +43,7 @@ export async function properties<A extends AtomName>(atom_name:A, atom:AtomShape
 export async function properties<A extends AtomName>(atom_name:A, atom:Partial<AtomShape<A>>)
 		:Promise<Partial<AtomShape<A>>>{
 	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	let k:keyof AtomShape<A>;
 	for(k in atom){
 		if(urn_util.object.has_key(prop_defs, k)){

@@ -135,7 +135,7 @@ export function encrypt_property<A extends AtomName>(
 function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
 	// const atom_props = atom_book[atom_name]['properties'];
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	const missin_props:string[] = [];
 	for(const [k] of Object.entries(prop_defs)){
 		if(!atm_util.is_optional_property(atom_name, k as keyof Atom<A>) && !urn_util.object.has_key(atom_shape,k)){
@@ -158,7 +158,7 @@ function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomSha
 function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
 	// const atom_props = atom_book[atom_name]['properties'];
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	const extra_props:string[] = [];
 	for(const k in partial_atom){
 		if(urn_util.object.has_key(atom_hard_properties,k)){
@@ -205,7 +205,7 @@ function _validate_primitive_properties<A extends AtomName>(
 	partial_atom:Partial<AtomShape<A>>
 ):true{
 	// const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const props = book.get_custom_property_definitions(atom_name);
+	const props = book.atom.get_custom_property_definitions(atom_name);
 	let k:keyof typeof partial_atom;
 	for(k in partial_atom){
 		let prop_def = undefined;
@@ -241,7 +241,7 @@ function _validate_partial_atom_bond_properties<A extends AtomName>(
 	partial_atom:Partial<AtomShape<A>>
 ):true{
 	// const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const props = book.get_custom_property_definitions(atom_name);
+	const props = book.atom.get_custom_property_definitions(atom_name);
 	let k:keyof typeof partial_atom;
 	for(k in partial_atom){
 		let prop_def = undefined;
@@ -279,7 +279,7 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 	depth?:D
 ):true{
 	// const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const props = book.get_custom_property_definitions(atom_name);
+	const props = book.atom.get_custom_property_definitions(atom_name);
 	const bond_keys = atm_keys.get_bond(atom_name);
 	for(const k of bond_keys){
 		let prop_def = undefined;

@@ -107,7 +107,7 @@ export function create<A extends AuthName>(atom_name:A)
 export function is_public_request<A extends AtomName>(atom_name:A, action: AuthAction)
 		:boolean{
 	// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
-	const atom_def = book.get_atom_definition(atom_name);
+	const atom_def = book.atom.get_definition(atom_name);
 	
 	if(action === AuthAction.READ){
 	

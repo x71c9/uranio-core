@@ -57,7 +57,7 @@ export function molecule_to_atom<A extends AtomName, D extends Depth>(
 export function get_subatom_name<A extends AtomName>(atom_name:A ,atom_key:string)
 		:AtomName{
 	// const atom_def = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	const atom_def = book.get_custom_property_definitions(atom_name);
+	const atom_def = book.atom.get_custom_property_definitions(atom_name);
 	const key_string = atom_key as string;
 	const prop = atom_def[key_string];
 	if(prop){
@@ -189,7 +189,7 @@ export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof 
 	//   const err_msg = `Atom property definition missing for atom \`${atom_name}\` property \`${key}\``;
 	//   throw urn_exc.create('IS_OPTIONAL_MISSING_ATM_PROP_DEFINITION', err_msg);
 	// }
-	const prop_def = book.get_property_definition(atom_name, key as string);
+	const prop_def = book.atom.get_property_definition(atom_name, key as string);
 	return (
 		prop_def &&
 		urn_util.object.has_key(prop_def, 'optional') &&
@@ -211,7 +211,7 @@ export function has_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>|
 	//   return true;
 	// }
 	// return false;
-	return book.has_property(atom_name, key as string);
+	return book.atom.has_property(atom_name, key as string);
 }
 
 export function delete_undefined_optional<A extends AtomName>(

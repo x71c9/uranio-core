@@ -1,18 +1,28 @@
 /**
- * Module for Server Book Methods
+ * Module for Server Atom Book Methods
  *
  * @packageDocumentation
  */
 
-import {AtomName} from '../typ/atom';
+import {AtomName} from '../../typ/atom';
 
-import {Book} from '../typ/book_srv';
+import {Book} from '../../typ/book_srv';
+
+import {atom_book} from 'uranio-books/atom';
 
 import * as common from './common';
 
-export function get_atom_definition<A extends AtomName>(atom_name:A)
+export function get_names():AtomName[]{
+	return Object.keys(atom_book) as AtomName[];
+}
+
+export function validate_name(atom_name:string):boolean{
+	return common.validate_name(atom_name);
+}
+
+export function get_definition<A extends AtomName>(atom_name:A)
 		:Book.BasicDefinition{
-	return common.get_atom_definition(atom_name);
+	return common.get_definition(atom_name);
 }
 
 export function get_property_definition<A extends AtomName>(atom_name:A, property_name:keyof Book.Definition.Properties)

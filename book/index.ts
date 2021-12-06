@@ -4,4 +4,10 @@
  * @packageDocumentation
  */
 
-export * from './server';
+import * as atom from './atom/';
+
+export {atom};
+
+import * as dock from './dock/';
+
+export {dock};
