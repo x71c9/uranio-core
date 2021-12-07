@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {AtomName} from '../../typ/atom';
+import {AtomName} from '../../cln/types';
 
 import {atom_book} from 'uranio-books/atom';
 

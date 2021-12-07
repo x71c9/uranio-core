@@ -10,7 +10,7 @@ const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util module`);
 
 // import {atom_book} from 'uranio-books/atom';
 
-import {dock_book} from 'uranio-books/dock';
+// import {dock_book} from 'uranio-books/dock';
 
 import * as keys from './keys';
 
@@ -113,12 +113,16 @@ export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, mo
 
 export function is_auth_atom_name<A extends AtomName>(atom_name:A)
 		:boolean{
-	const dock_def = dock_book[atom_name];
-	if(!urn_util.object.has_key(dock_def, 'dock')){
-		return false;
-	}
-	const atom_dock_def = dock_def.dock;
-	if(atom_dock_def && urn_util.object.has_key(atom_dock_def, 'auth')){
+	// const dock_def = dock_book[atom_name];
+	// if(!urn_util.object.has_key(dock_def, 'dock')){
+	//   return false;
+	// }
+	// const atom_dock_def = dock_def.dock;
+	// if(atom_dock_def && urn_util.object.has_key(atom_dock_def, 'auth')){
+	//   return true;
+	// }
+	const dock_def = book.dock.get_definition(atom_name);
+	if(dock_def && urn_util.object.has_key(dock_def, 'auth')){
 		return true;
 	}
 	return false;
