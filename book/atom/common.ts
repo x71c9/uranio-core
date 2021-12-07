@@ -15,7 +15,7 @@ import {atom_book} from 'uranio-books/atom';
 
 import {
 	AtomName,
-} from '../../typ/atom';
+} from '../../cln/types';
 
 import {Book} from '../../typ/book_cln';
 
