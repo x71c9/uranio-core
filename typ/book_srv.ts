@@ -45,9 +45,13 @@ export namespace Book {
 	
 	export type Definition<A extends AtomName> =
 		BasicDefinition &
-		{ bll?: (passport?:Passport) => BLL<A> }
+		{ bll?: Definition.Bll<A>}
 	
 	export namespace Definition {
+		
+		export type Bll<A extends AtomName> = {
+			class: (passport?:Passport) => BLL<A> ;
+		}
 		
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		export import Dock = book_cln.Book.Definition.Dock;
