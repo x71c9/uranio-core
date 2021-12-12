@@ -142,7 +142,8 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 						molecule[k] = acl.filter_uniform_bond_properties(molecule[k] as any, depth - 1) as any;
 					}
 				}
-			}catch(err){
+			}catch(e){
+				const err = e as any;
 				if(err.type === urn_exception.ExceptionType.UNAUTHORIZED){
 					// molecule[k] = (Array.isArray(molecule[k])) ? [] : '' as any;
 					delete molecule[k];

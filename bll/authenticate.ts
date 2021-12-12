@@ -63,7 +63,8 @@ class AuthenticationBLL<A extends AuthName> {
 		let auth_atom;
 		try {
 			auth_atom = await this._basic_bll.find_one({email: email} as Query<A>) as AuthAtom<A>;
-		}catch(err){
+		}catch(e){
+			const err = e as any;
 			if(err.type === urn_exception.ExceptionType.NOT_FOUND){
 				throw urn_exc.create_auth_not_found(err.error_code, err.msg, err);
 			}

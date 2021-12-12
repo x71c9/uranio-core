@@ -71,7 +71,8 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 		}
 		try{
 			atm_validate.molecule_primitive_properties(this.atom_name, molecule);
-		}catch(exc){
+		}catch(e){
+			const exc = e as any;
 			if(exc.type !== urn_exception.ExceptionType.INVALID_ATOM){
 				throw exc;
 			}
@@ -97,7 +98,8 @@ export class SelfishDAL<A extends AtomName> extends RecycleDAL<A>{
 			:Promise<Atom<A>>{
 		try{
 			atm_validate.atom<A>(this.atom_name, atom);
-		}catch(exc){
+		}catch(e){
+			const exc = e as any;
 			if(exc.type !== urn_exception.ExceptionType.INVALID_ATOM){
 				throw exc;
 			}
