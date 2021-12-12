@@ -8,10 +8,6 @@ import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ATOM_UTIL', `Atom Util module`);
 
-// import {atom_book} from 'uranio-books/atom';
-
-// import {dock_book} from 'uranio-books/dock';
-
 import * as keys from './keys';
 
 import {
@@ -27,11 +23,6 @@ import {
 import {Book} from '../typ/book_cln';
 
 import {BookPropertyType} from '../typ/common';
-
-// import {
-//   atom_hard_properties,
-//   atom_common_properties,
-// } from '../stc/';
 
 import * as book from '../book/client';
 
@@ -56,7 +47,6 @@ export function molecule_to_atom<A extends AtomName, D extends Depth>(
 
 export function get_subatom_name<A extends AtomName>(atom_name:A ,atom_key:string)
 		:AtomName{
-	// const atom_def = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const atom_def = book.atom.get_custom_property_definitions(atom_name);
 	const key_string = atom_key as string;
 	const prop = atom_def[key_string];
@@ -113,16 +103,8 @@ export function is_molecule<A extends AtomName, D extends Depth>(atom_name:A, mo
 
 export function is_auth_atom_name<A extends AtomName>(atom_name:A)
 		:boolean{
-	// const dock_def = dock_book[atom_name];
-	// if(!urn_util.object.has_key(dock_def, 'dock')){
-	//   return false;
-	// }
-	// const atom_dock_def = dock_def.dock;
-	// if(atom_dock_def && urn_util.object.has_key(atom_dock_def, 'auth')){
-	//   return true;
-	// }
-	const dock_def = book.dock.get_definition(atom_name);
-	if(dock_def && urn_util.object.has_key(dock_def, 'auth')){
+	const atom_def = book.atom.get_definition(atom_name);
+	if(atom_def.authenticate === true){
 		return true;
 	}
 	return false;

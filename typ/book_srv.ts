@@ -54,7 +54,7 @@ export namespace Book {
 		}
 		
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		export import Dock = book_cln.Book.Definition.Dock;
+		// export import Dock = book_cln.Book.Definition.Dock;
 		
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		export import Properties = book_cln.Book.Definition.Properties;

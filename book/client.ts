@@ -8,6 +8,6 @@ import * as atom from './atom/client';
 
 export {atom};
 
-import * as dock from './dock/client';
+// import * as dock from './dock/client';
 
-export {dock};
+// export {dock};

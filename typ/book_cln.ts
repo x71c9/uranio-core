@@ -20,9 +20,10 @@ export namespace Book {
 	
 	export type BasicDefinition = {
 		properties: Definition.Properties
+		authenticate?: boolean
 		connection?: ConnectionName
 		plural?: string
-		dock?: Definition.Dock
+		// dock?: Definition.Dock
 	}
 	
 	export type Definition =
@@ -30,9 +31,9 @@ export namespace Book {
 	
 	export namespace Definition {
 		
-		export type Dock = {
-			auth?: string
-		}
+		// export type Dock = {
+		//   auth?: string
+		// }
 		
 		export type Properties = {
 			[k:string]: Property

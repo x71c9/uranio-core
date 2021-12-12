@@ -8,6 +8,7 @@ import uranio from 'uranio';
 
 export const atom = {
 	superuser: {
+		authenticate: true,
 		plural: 'superusers',
 		security: {
 			type: uranio.types.BookSecurityType.UNIFORM,
@@ -36,6 +37,7 @@ export const atom = {
 		}
 	},
 	user: {
+		authenticate: true,
 		plural: 'users',
 		security: {
 			type: uranio.types.BookSecurityType.GRANULAR
