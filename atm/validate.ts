@@ -109,7 +109,8 @@ export function property<A extends AtomName>(
 	try{
 		_validate_primitive_type(prop_key, prop_def, prop_value);
 		_validate_custom_type(prop_key, prop_def, prop_value);
-	}catch(exc){
+	}catch(e){
+		const exc = e as any;
 		if(exc.type === urn_exception.ExceptionType.INVALID_ATOM){
 			throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, atom, [prop_key]);
 		}
@@ -186,7 +187,8 @@ function _validate_hard_properties<A extends AtomName>(atom:Atom<A>)
 		try{
 			_validate_primitive_type(k, atom_hard_properties[k], atom[k]);
 			_validate_custom_type(k, atom_hard_properties[k], atom[k]);
-		}catch(exc){
+		}catch(e){
+			const exc = e as any;
 			if(exc.type === urn_exception.ExceptionType.INVALID_ATOM){
 				throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, atom, [k]);
 			}
@@ -226,7 +228,8 @@ function _validate_primitive_properties<A extends AtomName>(
 		try{
 			_validate_primitive_type(k, prop_def, partial_atom[k]);
 			_validate_custom_type(k, prop_def, partial_atom[k]);
-		}catch(exc){
+		}catch(e){
+			const exc = e as any;
 			if(exc.type === urn_exception.ExceptionType.INVALID_ATOM){
 				throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, partial_atom, [k]);
 			}
@@ -263,7 +266,8 @@ function _validate_partial_atom_bond_properties<A extends AtomName>(
 		
 		try{
 			_validate_primitive_type(k, prop_def, partial_atom[k]);
-		}catch(exc){
+		}catch(e){
+			const exc = e as any;
 			if(exc.type === urn_exception.ExceptionType.INVALID_ATOM){
 				throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, partial_atom, [k]);
 			}
@@ -317,7 +321,8 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 					);
 				}
 			}
-		}catch(exc){
+		}catch(e){
+			const exc = e as any;
 			if(exc.type === urn_exception.ExceptionType.INVALID_ATOM){
 				throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, molecule, [k]);
 			}
@@ -481,7 +486,8 @@ function _validate_custom_type<A extends AtomName>(
 				break;
 			}
 		}
-	}catch(exc){
+	}catch(e){
+		const exc = e as any;
 		if(exc.type === urn_exception.ExceptionType.INVALID_ATOM){
 			throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, partial_atom, [prop_key]);
 		}
@@ -545,7 +551,8 @@ function _validate_custom_bond_type<A extends AtomName>(
 				break;
 			}
 		}
-	}catch(exc){
+	}catch(e){
+		const exc = e as any;
 		if(exc.type === urn_exception.ExceptionType.INVALID_ATOM){
 			throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, partial_atom, [prop_key]);
 		}
