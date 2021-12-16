@@ -70,13 +70,60 @@ export const atom = {
 				label: 'Name'
 			}
 		}
+	},
+	media: {
+		plural: 'media',
+		properties: {
+			src: {
+				type: uranio.types.BookPropertyType.TEXT,
+				label: 'SRC',
+			},
+			filename: {
+				type: uranio.types.BookPropertyType.TEXT,
+				label: 'Filename'
+			},
+			type: {
+				type: uranio.types.BookPropertyType.TEXT,
+				label: 'Filetype'
+			},
+			size: {
+				type: uranio.types.BookPropertyType.INTEGER,
+				label: 'Size (byte)',
+				validation: {
+					min: 0
+				}
+			},
+			width: {
+				optional: true,
+				type: uranio.types.BookPropertyType.INTEGER,
+				label: 'Width',
+				validation: {
+					min: 0
+				}
+			},
+			height: {
+				optional: true,
+				type: uranio.types.BookPropertyType.INTEGER,
+				label: 'Height',
+				validation: {
+					min: 0
+				}
+			}
+		}
 	}
 } as const;
 
 export const bll = {
 	superuser:{},
 	user:{},
-	group:{}
+	group:{},
+	media: {
+		bll: {
+			class: (passport?:uranio.types.Passport) => {
+				return uranio.bll.media.create(passport);
+			}
+		}
+	}
 } as const;
 
 export const dock = {
@@ -95,6 +142,11 @@ export const dock = {
 	group: {
 		dock:{
 			url: '/groups'
+		}
+	},
+	media: {
+		dock:{
+			url: '/media'
 		}
 	}
 } as const;
