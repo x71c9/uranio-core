@@ -57,6 +57,11 @@ class AuthenticationBLL<A extends AuthName> {
 		this._basic_bll = create_basic<A>(this._atom_name);
 	}
 	
+	public async get_passport(token: string):Promise<Passport>{
+		const decoded_token = jwt.verify(token, core_config.jwt_private_key);
+		return decoded_token as Passport;
+	}
+	
 	public async authenticate(email: string, password: string)
 			:Promise<string>{
 		atm_validate.atom_partial<A>(this._atom_name, {email: email, password: password} as Partial<AuthAtomShape<A>>);
