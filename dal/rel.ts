@@ -22,7 +22,7 @@ import {AtomName} from '../typ/atom';
 
 import * as book from '../book/';
 
-import {core_config} from '../cnf/defaults';
+import * as conf from '../conf/';
 
 import {BasicDAL} from './basic';
 
@@ -32,7 +32,7 @@ export class RelationDAL<A extends AtomName> extends BasicDAL<A>{
 	
 	constructor(atom_name:A) {
 		let db_relation: urn_rel.Relation<A>;
-		switch(core_config.db_type){
+		switch(conf.get(`db_type`)){
 			case 'mongo':{
 				// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
 				const atom_def = book.atom.get_definition(atom_name);

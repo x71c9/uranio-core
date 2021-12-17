@@ -10,7 +10,7 @@ import bcrypt from 'bcryptjs';
 
 import {urn_util} from 'urn-lib';
 
-import {core_config} from '../cnf/defaults';
+import * as conf from '../conf/';
 
 import * as book from '../book/client';
 
@@ -35,7 +35,7 @@ export async function property<A extends AtomName>
 	// IMPORTANT - If the encryption method is changed,
 	// *********   DAL._encrypt_changed_properties must be changed too.
 	// *********
-	const salt = await bcrypt.genSalt(core_config.encryption_round);
+	const salt = await bcrypt.genSalt(conf.get(`encryption_rounds`));
 	return await bcrypt.hash(prop_value, salt);
 }
 

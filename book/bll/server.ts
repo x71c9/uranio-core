@@ -6,7 +6,7 @@
 
 import {AtomName} from '../../typ/atom';
 
-import {Book} from '../../typ/book_srv';
+import {Book, BllBook} from '../../typ/book_srv';
 
 import {bll_book} from 'uranio-books/bll';
 
@@ -15,3 +15,12 @@ export function get_definition<A extends AtomName>(atom_name:A)
 	return (bll_book[atom_name] as Book.Definition<A>).bll;
 }
 
+export function get_all_definitions()
+		:BllBook{
+	const bll_book_def = {} as BllBook;
+	let atom_name:AtomName;
+	for(atom_name in bll_book){
+		(bll_book_def as any)[atom_name] = get_definition(atom_name);
+	}
+	return bll_book_def;
+}

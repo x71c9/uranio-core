@@ -20,13 +20,19 @@ export function validate_name(atom_name:string):boolean{
 	return common.validate_name(atom_name);
 }
 
+export function get_all_definitions():Book{
+	return atom_book as unknown as Book;
+}
+
 export function get_definition<A extends AtomName>(atom_name:A)
 		:Book.BasicDefinition{
 	return common.get_definition(atom_name);
 }
 
-export function get_property_definition<A extends AtomName>(atom_name:A, property_name:keyof Book.Definition.Properties)
-		:Book.Definition.Property{
+export function get_property_definition<A extends AtomName>(
+	atom_name:A,
+	property_name:keyof Book.Definition.Properties
+):Book.Definition.Property{
 	return common.get_property_definition(atom_name, property_name);
 }
 

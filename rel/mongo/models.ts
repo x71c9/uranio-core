@@ -18,7 +18,7 @@ import {ConnectionName} from '../../typ/book_cln';
 
 import {BookPropertyType} from '../../typ/common';
 
-import {core_config} from '../../cnf/defaults';
+import * as conf from '../../conf/';
 
 import {generate_mongo_schema_def} from './schema';
 
@@ -212,13 +212,13 @@ function _create_connection(conn_name:ConnectionName){
 		mongo_app.connections = {} as MongoConnections;
 	}
 	if(!mongo_app.connections[conn_name]){
-		const mongo_conn_string = (core_config as any)[`mongo_${conn_name}_connection`];
-		const mongo_db_string = (core_config as any)[`db_${conn_name}_name`];
+		const mongo_conn_string = conf.get(`mongo_${conn_name}_connection`);
+		const mongo_db_string = conf.get(`db_${conn_name}_name`);
 		
 		const conf_connection_name = (conn_name !== 'main' && typeof mongo_conn_string === 'string') ?
-			mongo_conn_string : core_config.mongo_main_connection;
+			mongo_conn_string : conf.get(`mongo_main_connection`);
 		const conf_db_name = (conn_name !== 'main' && typeof mongo_conn_string === 'string') ?
-			mongo_db_string : core_config.db_main_name;
+			mongo_db_string : conf.get(`db_main_name`);
 		
 		mongo_app.connections[conn_name] = mongo_connection.create(
 			conn_name,

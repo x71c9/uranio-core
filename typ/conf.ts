@@ -7,7 +7,7 @@
 
 export type DatabaseType = 'mongo'; // | 'mysql'
 
-export type StorageType = 'aws'; // | 'gcloud' | 'custom'
+export type StorageType = 'aws'; // | 'gcloud' | 'localhost'
 
 type RequiredConfigParams = {
 	
@@ -31,7 +31,7 @@ type OptionalConfigParam = {
 	
 	mongo_log_connection: string
 	
-	encryption_round: number
+	encryption_rounds: number
 	
 	max_password_length: number
 	

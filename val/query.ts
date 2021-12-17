@@ -9,7 +9,7 @@
 
 import {urn_exception, urn_util} from 'urn-lib';
 
-import {core_config} from '../cnf/defaults';
+import * as conf from '../conf/';
 
 import {Depth, AtomName} from '../typ/atom';
 
@@ -217,9 +217,9 @@ function validate_options<A extends AtomName, D extends Depth>(options:Query.Opt
 			const err_msg = `options.depth value type must be number.`;
 			throw urn_exc.create_invalid_request('OPTIONS_INVALID_DEPTH_TYPE', err_msg);
 		}
-		if(options.depth > core_config.max_query_depth_allowed){
+		if(options.depth > conf.get(`max_query_depth_allowed`)){
 			let err_msg = `options.depth is gratern than maximun allowed`;
-			err_msg += ` [${core_config.max_password_length}]`;
+			err_msg += ` [${conf.get(`max_password_length`)}]`;
 			throw urn_exc.create_invalid_request('OPTIONS_INVALID_DEPTH_VAL', err_msg);
 		}
 	}

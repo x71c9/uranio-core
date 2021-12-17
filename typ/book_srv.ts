@@ -36,6 +36,10 @@ export type Book = {
 	[k in AtomName]?: Book.Definition<k>;
 }
 
+export type BllBook = {
+	[k in AtomName]: Book.Definition.Bll<k>
+}
+
 export namespace Book {
 	
 	export type BasicDefinition =

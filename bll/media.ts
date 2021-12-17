@@ -7,7 +7,7 @@ import path from 'path';
 
 import {urn_log} from 'urn-lib';
 
-import {core_config} from '../cnf/defaults';
+import * as conf from '../conf/';
 
 import {Atom, AtomShape} from '../typ/atom';
 // import {Atom} from '../typ/atom';
@@ -28,7 +28,7 @@ export class MediaBLL extends BLL<'media'>{
 	
 	constructor(passport?:Passport){
 		super('media', passport);
-		switch(core_config.storage){
+		switch(conf.get(`storage`)){
 			case 'aws':{
 				this.storage = urn_sto.aws.create();
 				break;
