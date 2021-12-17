@@ -1,5 +1,5 @@
 /**
- * Index module for static objects
+ * Index module for init
  *
  * @packageDocumentation
  */

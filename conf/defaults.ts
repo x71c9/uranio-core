@@ -8,6 +8,8 @@ import {FullConfiguration} from '../typ/conf';
 
 export const core_config:FullConfiguration = {
 	
+	connect_on_init: false,
+	
 	db_type: 'mongo',
 	
 	mongo_main_connection: '',

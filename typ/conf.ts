@@ -27,6 +27,8 @@ type RequiredConfigParams = {
 
 type OptionalConfigParam = {
 	
+	connect_on_init: boolean,
+	
 	mongo_trash_connection: string
 	
 	mongo_log_connection: string
