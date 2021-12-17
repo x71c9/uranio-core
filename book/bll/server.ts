@@ -20,7 +20,10 @@ export function get_all_definitions()
 	const bll_book_def = {} as BllBook;
 	let atom_name:AtomName;
 	for(atom_name in bll_book){
-		(bll_book_def as any)[atom_name] = get_definition(atom_name);
+		const def = get_definition(atom_name);
+		if(def){
+			(bll_book_def as any)[atom_name] = def;
+		}
 	}
 	return bll_book_def;
 }
