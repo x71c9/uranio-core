@@ -10,6 +10,8 @@ const urn_exc = urn_exception.init('CONF_MODULE', `Configuration module`);
 
 import {core_config} from './defaults';
 
+import {AtomName} from '../typ/atom';
+
 import {
 	FullConfiguration,
 	Configuration,
@@ -23,7 +25,7 @@ import {BookPropertyType} from '../typ/common';
 
 import * as book from '../book/';
 
-import {BLL} from '../bll/';
+// import {BLL} from '../bll/';
 
 let _uranio_is_initialized = false;
 
@@ -228,7 +230,7 @@ function _check_if_db_connections_were_set(){
 
 /**
  * NOTE:
- * Mabe this should be before compilation and not at runtime?
+ * Maybe this should be before compilation and not at runtime?
  */
 function _book_validation(){
 	_validate_acl_reference_consistency();
@@ -249,23 +251,25 @@ function _validate_on_errors(){
 	// Maybe check with ts-morph if the function is `async`?
 }
 
-/*
+/**
+ * TODO:
+ * Is this possible?
  * bll.class must be a function that return a BLL class.
  */
 function _validate_bll_classes(){
-	const bll_defs = book.bll.get_all_definitions();
-	for(const [atom_name, bll_def] of Object.entries(bll_defs)){
-		if(
-			typeof bll_def.class !== 'function'
-			|| !(bll_def.class() instanceof BLL)
-		){
-			throw urn_exc.create_invalid_book(
-				`INVALID_BLL_CLASS`,
-				`Atom \`${atom_name}\` has an invalid \`bll\` definition.` +
-				` \`${atom_name}.bll.class\` must be a function that return a BLL class.`
-			);
-		}
-	}
+	// const bll_defs = book.bll.get_all_definitions();
+	// for(const [atom_name, bll_def] of Object.entries(bll_defs)){
+	//   if(
+	//     typeof bll_def.class !== 'function'
+	//     || !(bll_def.class() instanceof BLL)
+	//   ){
+	//     throw urn_exc.create_invalid_book(
+	//       `INVALID_BLL_CLASS`,
+	//       `Atom \`${atom_name}\` has an invalid \`bll\` definition.` +
+	//       ` \`${atom_name}.bll.class\` must be a function that return a BLL class.`
+	//     );
+	//   }
+	// }
 }
 
 /*
@@ -275,60 +279,67 @@ function _validate_auth_atoms(){
 	const atom_defs = book.atom.get_all_definitions();
 	for(const [atom_name, atom_def] of Object.entries(atom_defs)){
 		if(atom_def.authenticate === true){
-			if(typeof atom_def.properties.email !== 'object'){
+			const properties = book.atom.get_all_property_definitions(atom_name as AtomName);
+			if(typeof properties.email !== 'object'){
 				throw urn_exc.create_invalid_book(
 					`INVALID_AUTH_ATOM_MISSING_EMAIL`,
 					`Auth Atom \`${atom_name}\` must have an \`email\` property.`
 				);
 			}else{
-				if(atom_def.properties.email.optional === false){
+				if(properties.email.optional === false){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_OPTIONAL_EMAIL`,
 						`Auth Atom \`${atom_name}.email\` cannot be optional.`
 					);
 				}
-				if(atom_def.properties.email.type !== BookPropertyType.EMAIL){
+				if(properties.email.type !== BookPropertyType.EMAIL){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_EMAIL`,
 						`Auth Atom \`${atom_name}.email\` must be of type BookPropertyType.EMAIL.`
 					);
 				}
 			}
-			if(typeof atom_def.properties.password !== 'object'){
+			if(typeof properties.password !== 'object'){
 				throw urn_exc.create_invalid_book(
 					`INVALID_AUTH_ATOM_MISSING_PASSWORD`,
 					`Auth Atom \`${atom_name}\` must have a \`password\` property.`
 				);
 			}else{
-				if(atom_def.properties.password.optional === false){
+				if(properties.password.optional === false){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_OPTIONAL_PASSWORD`,
 						`Auth Atom \`${atom_name}.password\` cannot be optional.`
 					);
 				}
-				if(atom_def.properties.password.type !== BookPropertyType.ENCRYPTED){
+				if(properties.password.type !== BookPropertyType.ENCRYPTED){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_PASSWORD`,
 						`Auth Atom \`${atom_name}.password\` must be of type BookPropertyType.ENCRYPTED.`
 					);
 				}
 			}
-			if(typeof atom_def.properties.group !== 'object'){
+			if(typeof properties.groups !== 'object'){
 				throw urn_exc.create_invalid_book(
 					`INVALID_AUTH_ATOM_MISSING_GROUP`,
 					`Auth Atom \`${atom_name}\` must have a \`group\` property.`
 				);
 			}else{
-				if(atom_def.properties.group.optional === false){
+				if(properties.groups.optional === false){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_OPTIONAL_GROUP`,
 						`Auth Atom \`${atom_name}.group\` cannot be optional.`
 					);
 				}
-				if(atom_def.properties.group.type !== BookPropertyType.ID){
+				if(properties.groups.type !== BookPropertyType.ATOM_ARRAY){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_GROUP`,
-						`Auth Atom \`${atom_name}.group\` must be of type BookPropertyType.ID.`
+						`Auth Atom \`${atom_name}.group\` must be of type BookPropertyType.ATOM_ARRAY.`
+					);
+				}else if(properties.groups.atom !== 'group'){
+					throw urn_exc.create_invalid_book(
+						`INVALID_AUTH_ATOM_GROUP_ATOM`,
+						`Auth Atom \`${atom_name}.group\` must be of referencing atom \`group\`.` +
+						` Now it is referencing atom \`${properties.groups.atom}\``
 					);
 				}
 			}
