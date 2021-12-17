@@ -25,6 +25,8 @@ import {BookPropertyType} from '../typ/common';
 
 import * as book from '../book/';
 
+import * as db from '../db/';
+
 // import {BLL} from '../bll/';
 
 let _uranio_is_initialized = false;
@@ -39,11 +41,19 @@ export function get<k extends keyof FullConfiguration>(param_name:k)
 export function initialize(config:Configuration):void{
 	Object.assign(core_config, config);
 	_validate_uranio();
+	_connect();
 }
 
 export function initialize_from_environment():void{
 	_set_conf_from_env_variable();
 	_validate_uranio();
+	_connect();
+}
+
+function _connect(){
+	if(get(`connect_on_init`) === true){
+		db.connect();
+	}
 }
 
 function _validate_uranio(){
@@ -107,13 +117,17 @@ function _set_conf_from_env_variable(){
 	}
 	if(
 		typeof process.env.URN_ENCRYPTION_ROUNDS === 'number'
+		|| typeof process.env.URN_ENCRYPTION_ROUNDS === 'string'
+		&& process.env.URN_ENCRYPTION_ROUNDS !== ''
 	){
-		core_config.encryption_rounds = process.env.URN_ENCRYPTION_ROUNDS;
+		core_config.encryption_rounds = Math.max(parseInt(process.env.URN_ENCRYPTION_ROUNDS),0);
 	}
 	if(
 		typeof process.env.URN_MAX_PASSWORD_LENGTH === 'number'
+		|| typeof process.env.URN_MAX_PASSWORD_LENGTH === 'string'
+		&& process.env.URN_MAX_PASSWORD_LENGTH !== ''
 	){
-		core_config.max_password_length = process.env.URN_MAX_PASSWORD_LENGTH;
+		core_config.max_password_length = Math.max(parseInt(process.env.URN_MAX_PASSWORD_LENGTH),0);
 	}
 	if(
 		typeof process.env.URN_STORAGE === 'string'
@@ -144,6 +158,13 @@ function _set_conf_from_env_variable(){
 		&& process.env.URN_AWS_USER_SECRET_ACCESS_KEY !== ''
 	){
 		core_config.aws_user_secret_access_key = process.env.URN_AWS_USER_SECRET_ACCESS_KEY;
+	}
+	if(
+		typeof process.env.URN_CONNECT_ON_INIT === 'boolean'
+		|| typeof process.env.URN_CONNECT_ON_INIT === 'string'
+		&& process.env.URN_CONNECT_ON_INIT !== ''
+	){
+		core_config.connect_on_init = !!process.env.URN_CONNECT_ON_INIT;
 	}
 }
 
@@ -422,13 +443,13 @@ function _check_if_param_exists(param_name:string){
 
 function _check_if_db_names_were_changed(){
 	if(core_config.db_main_name === 'uranio_dev'){
-		urn_log.warn(`You are using default value for db_main_name.`);
+		urn_log.warn(`You are using default value for db_main_name [uranio_dev].`);
 	}
 	if(core_config.db_trash_name === 'uranio_trash_dev'){
-		urn_log.warn(`You are using default value for db_trash_name.`);
+		urn_log.warn(`You are using default value for db_trash_name [uranio_trash_dev].`);
 	}
 	if(core_config.db_log_name === 'uranio_log_dev'){
-		urn_log.warn(`You are using default value for db_log_name.`);
+		urn_log.warn(`You are using default value for db_log_name [uranio_log_dev].`);
 	}
 }
 

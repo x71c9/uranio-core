@@ -26,52 +26,64 @@ import * as mongo_connection from './connection';
 
 import * as book from '../../book/';
 
-// const mongo_main_conn = mongo_connection.create(
-//   'main',
-//   core_config.mongo_main_connection,
-//   core_config.db_main_name
-// );
+export const mongo_app:MongoApp = {};
 
-// const mongo_trash_conn = mongo_connection.create(
-//   'trash',
-//   (core_config.mongo_trash_connection) ?
-//     core_config.mongo_trash_connection : core_config.mongo_main_connection,
-//   core_config.db_trash_name
-// );
+export function create_all_connection():void{
+	_create_connection('main');
+	_create_connection('trash');
+	_create_connection('log');
+}
 
-// const mongo_log_conn = mongo_connection.create(
-//   'log',
-//   (core_config.mongo_log_connection) ?
-//     core_config.mongo_log_connection : core_config.mongo_main_connection,
-//   core_config.db_log_name
-// );
-
-// function _create_main_models(){
-//   const undefined_connection_models = _create_models(mongo_main_conn);
-//   const main_connection_models = _create_models(mongo_main_conn, 'main');
-//   return new Map<AtomName, mongoose.Model<mongoose.Document<any>>>(
-//     [...undefined_connection_models, ...main_connection_models]
-//   );
-// }
-
-// function _create_log_models(){
-//   return _create_models(mongo_log_conn, 'log');
-// }
-
-// function _create_trash_models(){
-//   const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
-//   let atom_name:AtomName;
-//   for(atom_name in atom_book){
-//     const atom_def = atom_book[atom_name] as Book.BasicDefinition;
-//     if(atom_def.connection && atom_def.connection !== 'main')
-//       continue;
-//     const atom_schema_def = _convert_for_trash(generate_mongo_schema_def(atom_name));
-//     const atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
-//     const atom_model = mongo_trash_conn.create_model(atom_name, atom_mongo_schema);
-//     model_by_atom_name.set(atom_name, atom_model);
-//   }
-//   return model_by_atom_name;
-// }
+export function get_model(conn_name:ConnectionName, atom_name:AtomName)
+		:mongoose.Model<mongoose.Document<any>>{
+	
+	_create_connection(conn_name);
+	
+	if(!mongo_app.models){
+		mongo_app.models = {} as MongoModels;
+	}
+	if(!mongo_app.models[conn_name]){
+		switch(conn_name){
+			case 'main':{
+				const undefined_connection_models = _create_models(mongo_app.connections!.main);
+				const main_connection_models = _create_models(mongo_app.connections!.main, 'main');
+				mongo_app.models.main = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>(
+					[...undefined_connection_models, ...main_connection_models]
+				);
+				break;
+			}
+			case 'log':{
+				mongo_app.models.log = _create_models(mongo_app.connections!.log, 'log');
+				break;
+			}
+			case 'trash':{
+				const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
+				let atom_name:AtomName;
+				for(atom_name of book.atom.get_names()){
+					// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
+					const atom_def = book.atom.get_definition(atom_name);
+					if(atom_def.connection && atom_def.connection !== 'main'){
+						continue;
+					}
+					const atom_schema_def = _convert_for_trash(generate_mongo_schema_def(atom_name));
+					const atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
+					const atom_model = mongo_app.connections!.trash.create_model(atom_name, atom_mongo_schema);
+					model_by_atom_name.set(atom_name, atom_model);
+				}
+				mongo_app.models.trash = model_by_atom_name;
+				break;
+			}
+		}
+	}
+	const model = mongo_app.models[conn_name].get(atom_name);
+	if(!model){
+		throw urn_exc.create(
+			`NO_MODEL_FOUND`,
+			`Cannot find model for atom \`${atom_name}\` in connection \`${conn_name}\``
+		);
+	}
+	return model;
+}
 
 function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstance, connection?:ConnectionName){
 	const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
@@ -199,14 +211,6 @@ type MongoModels = {
 	[k in ConnectionName]: Map<AtomName, mongoose.Model<mongoose.Document<any>>>
 }
 
-export const mongo_app:MongoApp = {};
-
-export function create_all_connection():void{
-	_create_connection('main');
-	_create_connection('trash');
-	_create_connection('log');
-}
-
 function _create_connection(conn_name:ConnectionName){
 	if(!mongo_app.connections){
 		mongo_app.connections = {} as MongoConnections;
@@ -228,57 +232,5 @@ function _create_connection(conn_name:ConnectionName){
 	}
 }
 
-function get_model(conn_name:ConnectionName, atom_name:AtomName)
-		:mongoose.Model<mongoose.Document<any>>{
-	
-	_create_connection(conn_name);
-	
-	if(!mongo_app.models){
-		mongo_app.models = {} as MongoModels;
-	}
-	if(!mongo_app.models[conn_name]){
-		switch(conn_name){
-			case 'main':{
-				const undefined_connection_models = _create_models(mongo_app.connections!.main);
-				const main_connection_models = _create_models(mongo_app.connections!.main, 'main');
-				mongo_app.models.main = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>(
-					[...undefined_connection_models, ...main_connection_models]
-				);
-				break;
-			}
-			case 'log':{
-				mongo_app.models.log = _create_models(mongo_app.connections!.log, 'log');
-				break;
-			}
-			case 'trash':{
-				const model_by_atom_name = new Map<AtomName, mongoose.Model<mongoose.Document<any>>>();
-				let atom_name:AtomName;
-				for(atom_name of book.atom.get_names()){
-					// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
-					const atom_def = book.atom.get_definition(atom_name);
-					if(atom_def.connection && atom_def.connection !== 'main'){
-						continue;
-					}
-					const atom_schema_def = _convert_for_trash(generate_mongo_schema_def(atom_name));
-					const atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
-					const atom_model = mongo_app.connections!.trash.create_model(atom_name, atom_mongo_schema);
-					model_by_atom_name.set(atom_name, atom_model);
-				}
-				mongo_app.models.trash = model_by_atom_name;
-				break;
-			}
-		}
-	}
-	const model = mongo_app.models[conn_name].get(atom_name);
-	if(!model){
-		throw urn_exc.create(
-			`NO_MODEL_FOUND`,
-			`Cannot find model for atom \`${atom_name}\` in connection \`${conn_name}\``
-		);
-	}
-	return model;
-}
-
-export {get_model};
 
 
