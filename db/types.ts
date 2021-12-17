@@ -1,5 +1,5 @@
 /**
- * Types for Connection
+ * Types for DB Connection
  *
  * @packageDocumentation
  */

@@ -20,7 +20,7 @@ import {
 
 // import {Book} from '../typ/book_srv';
 
-import {core_config} from '../cnf/defaults';
+import * as conf from '../conf/';
 
 import {BasicDAL, create_basic} from './basic';
 
@@ -46,7 +46,7 @@ export class RecycleDAL<A extends AtomName> extends EncryptDAL<A>{
 			// const atom_def = atom_book[this.atom_name] as Book.BasicDefinition;
 			const atom_def = book.atom.get_definition(this.atom_name);
 			if(!atom_def.connection || atom_def.connection === 'main'){
-				switch(core_config.db_type){
+				switch(conf.get(`db_type`)){
 					case 'mongo':{
 						db_trash_relation = urn_rel.mongo.trash_create<A>(this.atom_name);
 						this._trash_dal = create_basic(this.atom_name, db_trash_relation);

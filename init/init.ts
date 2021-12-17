@@ -6,9 +6,12 @@
 
 import * as types from '../types';
 
-import {core_config} from '../cnf/defaults';
+import * as conf from '../conf/';
 
-export function init(config:types.Configuration)
+export function init(config?:types.Configuration)
 		:void{
-	Object.assign(core_config, config);
+	if(typeof config === 'undefined'){
+		return conf.initialize_from_environment();
+	}
+	return conf.initialize(config);
 }

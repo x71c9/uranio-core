@@ -1,5 +1,5 @@
 /**
- * Index module for Connection methods.
+ * Index module for DB methods.
  *
  * @packageDocumentation
  */

@@ -20,7 +20,7 @@ import {Query} from '../../typ/query';
 
 import {ConnectionName} from '../../typ/book_cln';
 
-import {core_config} from '../../cnf/defaults';
+import * as conf from '../../conf/';
 
 import * as atm_keys from '../../atm/keys';
 
@@ -269,7 +269,7 @@ function _generate_populate_obj<A extends AtomName>(atom_name:A, depth?:number, 
 		:PopulateObject[]{
 	const subatom_keys = atm_keys.get_bond(atom_name);
 	const populate_object = [];
-	if(depth && depth > 0 && depth <= core_config.max_query_depth_allowed && subatom_keys.size){
+	if(depth && depth > 0 && depth <= conf.get(`max_query_depth_allowed`) && subatom_keys.size){
 		for(const k of subatom_keys){
 			populate_object.push(
 				_generate_subatomkey_populate_obj(atom_name, k as string, depth - 1, depth_query)

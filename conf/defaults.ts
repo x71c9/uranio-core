@@ -16,17 +16,22 @@ export const core_config:FullConfiguration = {
 	
 	mongo_log_connection: '',
 	
+	// This must be the same in _check_if_db_names_were_changed method in conf module
 	db_main_name: 'uranio_dev',
 	
+	// This must be the same in _check_if_db_names_were_changed method in conf module
 	db_trash_name: 'uranio_trash_dev',
 	
+	// This must be the same in _check_if_db_names_were_changed method in conf module
 	db_log_name: 'uranio_log_dev',
 	
+	// This must be the same in _check_if_jwt_was_changed method in conf module
 	jwt_private_key: 'A_KEY_THAT_NEED_TO_BE_CHANGED',
 	
-	encryption_round: 12,
+	encryption_rounds: 12,
 	
-	max_password_length: 58, // It should be less than 60. 60 are the hashed string.
+	// It should be less than 60. 60 are the hashed string.
+	max_password_length: 58,
 	
 	max_query_depth_allowed: 3,
 	

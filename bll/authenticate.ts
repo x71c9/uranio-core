@@ -14,7 +14,7 @@ const urn_exc = urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 
 // import {atom_book} from 'uranio-books/atom';
 
-import {core_config} from '../cnf/defaults';
+import * as conf from '../conf/';
 
 import {
 	AtomName,
@@ -58,7 +58,7 @@ class AuthenticationBLL<A extends AuthName> {
 	}
 	
 	public async get_passport(token: string):Promise<Passport>{
-		const decoded_token = jwt.verify(token, core_config.jwt_private_key);
+		const decoded_token = jwt.verify(token, conf.get(`jwt_private_key`));
 		return decoded_token as Passport;
 	}
 	
@@ -97,7 +97,7 @@ class AuthenticationBLL<A extends AuthName> {
 	private _generate_token(auth_atom:AuthAtom<A>)
 			:string{
 		const passport = this._generate_passport(auth_atom);
-		return jwt.sign(passport, core_config.jwt_private_key);
+		return jwt.sign(passport, conf.get(`jwt_private_key`));
 	}
 	
 }

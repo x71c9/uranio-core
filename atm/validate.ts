@@ -26,7 +26,7 @@ import {
 	atom_common_properties,
 } from '../stc/';
 
-import {core_config} from '../cnf/defaults';
+import * as conf from '../conf/';
 
 import * as atm_util from './util';
 
@@ -125,8 +125,8 @@ export function encrypt_property<A extends AtomName>(
 	prop_value:string
 ):true{
 	if(prop_def && prop_def.validation && prop_def.validation.max &&
-		prop_def.validation.max > core_config.max_password_length){
-		prop_def.validation.max = core_config.max_password_length;
+		prop_def.validation.max > conf.get(`max_password_length`)){
+		prop_def.validation.max = conf.get(`max_password_length`);
 	}
 	_custom_validate_string(prop_key, prop_def, prop_value);
 	return true;

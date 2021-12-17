@@ -11,7 +11,7 @@ import AWS from 'aws-sdk';
 // import {urn_log, urn_exception} from 'urn-lib';
 import {urn_log} from 'urn-lib';
 
-import {core_config} from '../../cnf/defaults';
+import * as conf from '../../conf/';
 
 import {Storage, UploadParams} from '../types';
 
@@ -28,8 +28,8 @@ class AWSStorage implements Storage {
 	
 	constructor(){
 		this.s3 = new AWS.S3({
-			accessKeyId: core_config.aws_user_access_key_id,
-			secretAccessKey: core_config.aws_user_secret_access_key,
+			accessKeyId: conf.get(`aws_user_access_key_id`),
+			secretAccessKey: conf.get(`aws_user_secret_access_key`),
 			region: 'eu-south-1'
 		});
 	}
@@ -41,7 +41,7 @@ class AWSStorage implements Storage {
 	):Promise<string>{
 		
 		const aws_params:AWS.S3.PutObjectRequest = {
-			Bucket: core_config.aws_bucket_name,
+			Bucket: conf.get(`aws_bucket_name`),
 			Key: filepath,
 			Body: buffer
 		};
@@ -62,7 +62,7 @@ class AWSStorage implements Storage {
 	
 	public async exists(filepath:string):Promise<boolean>{
 		const params:AWS.S3.GetObjectRequest = {
-			Bucket: core_config.aws_bucket_name,
+			Bucket: conf.get(`aws_bucket_name`),
 			Key: filepath
 		};
 		try{

@@ -28,13 +28,19 @@ export function validate_name(atom_name:string):boolean{
 	return urn_util.object.has_key(atom_book, atom_name);
 }
 
+export function get_all_definitions():Book{
+	return atom_book as unknown as Book;
+}
+
 export function get_definition<A extends AtomName>(atom_name:A)
 		:Book.BasicDefinition{
 	return atom_book[atom_name] as unknown as Book.BasicDefinition;
 }
 
-export function get_property_definition<A extends AtomName>(atom_name:A, property_name:keyof Book.Definition.Properties)
-		:Book.Definition.Property{
+export function get_property_definition<A extends AtomName>(
+	atom_name:A,
+	property_name:keyof Book.Definition.Properties
+):Book.Definition.Property{
 	const prop_defs = atom_book[atom_name].properties;
 	if(urn_util.object.has_key(prop_defs, property_name)){
 		return prop_defs[property_name];
@@ -43,7 +49,10 @@ export function get_property_definition<A extends AtomName>(atom_name:A, propert
 	}else if(urn_util.object.has_key(atom_common_properties, property_name)){
 		return atom_common_properties[property_name];
 	}
-	throw urn_exc.create('INVALID_PROPERTY_NAME', `Definition for \`${property_name}\` for Atom \`${atom_name}\` not found.`);
+	throw urn_exc.create(
+		'INVALID_PROPERTY_NAME',
+		`Definition for \`${property_name}\` for Atom \`${atom_name}\` not found.`
+	);
 }
 
 export function get_custom_property_definitions<A extends AtomName>(atom_name:A)

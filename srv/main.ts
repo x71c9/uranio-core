@@ -24,13 +24,19 @@ import * as stc from '../stc/';
 
 export {stc};
 
+import * as db from '../db/';
+
+export {db};
+
+import * as conf from '../conf/';
+
+export {conf};
+
 /*
  * First level methods.
  * If other methods are added, urn-cli must be updated.
  * Go to urn-cli/src/cmd/transpose.ts and
  * add the new method names.
  */
-export * from '../cnn/';
-
 export * from '../init/';
 
