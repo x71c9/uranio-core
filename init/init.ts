@@ -6,7 +6,7 @@
 
 import {urn_log, urn_exception} from 'urn-lib';
 
-const urn_exc = urn_exception.init('INIT_MODULE', `Init module`);
+const urn_exc = urn_exception.init('INIT_CORE_MODULE', `Core init module`);
 
 import {core_config} from '../conf/defaults';
 
@@ -242,13 +242,13 @@ function _check_number_values(){
 			`Config max_password_lenght value cannot be greater than 59.`
 		);
 	}
-	if(core_config.encryption_rounds >= 0){
+	if(core_config.encryption_rounds < 0){
 		throw urn_exc.create_not_initialized(
 			`INVALID_ENCRYPTION_ROUNDS`,
 			`Config encryption_rounds must be a natural number.`
 		);
 	}
-	if(core_config.max_query_depth_allowed >= 0){
+	if(core_config.max_query_depth_allowed < 0){
 		throw urn_exc.create_not_initialized(
 			`INVALID_MAX_QUERY_DEPTH_ALLOWED`,
 			`Config max_query_depth_allowed must be a natural number.`

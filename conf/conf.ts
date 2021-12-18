@@ -6,13 +6,13 @@
 
 import {urn_util, urn_exception} from 'urn-lib';
 
-const urn_exc = urn_exception.init('CONF_MODULE', `Configuration module`);
+const urn_exc = urn_exception.init('CONF_CORE_MODULE', `Core configuration module`);
 
 import {core_config} from './defaults';
 
 import * as types from '../types';
 
-let _is_uranio_initialized = false;
+let _is_core_initialized = false;
 
 export function get<k extends keyof types.FullConfiguration>(param_name:k)
 		:typeof core_config[k]{
@@ -22,11 +22,11 @@ export function get<k extends keyof types.FullConfiguration>(param_name:k)
 }
 
 export function is_initialized():boolean{
-	return _is_uranio_initialized;
+	return _is_core_initialized;
 }
 
 export function set_initialize(is_initialized:boolean):void{
-	_is_uranio_initialized = is_initialized;
+	_is_core_initialized = is_initialized;
 }
 
 export function set_from_env(repo_config:types.FullConfiguration):void{

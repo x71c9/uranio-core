@@ -117,13 +117,7 @@ export const bll = {
 	superuser:{},
 	user:{},
 	group:{},
-	media: {
-		bll: {
-			class: (passport?:uranio.types.Passport) => {
-				return uranio.bll.media.create(passport);
-			}
-		}
-	}
+	media: {}
 } as const;
 
 export const dock = {
