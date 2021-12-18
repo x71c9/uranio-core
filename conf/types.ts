@@ -1,0 +1,8 @@
+/**
+ * Conf type module
+ *
+ * @packageDocumentation
+ */
+
+
+
