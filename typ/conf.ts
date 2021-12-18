@@ -4,7 +4,6 @@
  * @packageDocumentation
  */
 
-
 export type DatabaseType = 'mongo'; // | 'mysql'
 
 export type StorageType = 'aws'; // | 'gcloud' | 'localhost'
@@ -54,4 +53,3 @@ type OptionalConfigParam = {
 export type Configuration = RequiredConfigParams & Partial<OptionalConfigParam>;
 
 export type FullConfiguration = RequiredConfigParams & OptionalConfigParam;
-
