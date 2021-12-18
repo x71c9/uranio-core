@@ -10,12 +10,6 @@ const urn_exc = urn_exception.init('INIT_MODULE', `Init module`);
 
 import {core_config} from '../conf/defaults';
 
-import {env_vars_by_type, core_config_by_env} from '../conf/env';
-
-import {BookSecurityType} from '../typ/book_srv';
-
-import {BookPropertyType} from '../typ/common';
-
 import * as types from '../types';
 
 import * as conf from '../conf/';
@@ -24,32 +18,22 @@ import * as book from '../book/';
 
 import * as db from '../db/';
 
-let _is_uranio_initialized = false;
-
-export function is_initialized():boolean{
-	return _is_uranio_initialized;
-}
-
 export function init(config?:types.Configuration)
 		:void{
 	if(typeof config === 'undefined'){
-		_set_variable_from_environment();
+		conf.set_from_env(core_config);
 	}else{
-		_set_variable(config);
+		conf.set(core_config, config);
 	}
-	_validate_variables();
-	_validate_book();
+	_validate_core_variables();
+	_validate_core_book();
 	
-	_set_initialize();
+	conf.set_initialize(true);
 	
-	_connect();
+	_core_connect();
 }
 
-function _set_initialize(){
-	_is_uranio_initialized = true;
-}
-
-function _connect(){
+function _core_connect(){
 	if(conf.get(`connect_on_init`) === true){
 		db.connect();
 	}
@@ -59,7 +43,7 @@ function _connect(){
  * NOTE:
  * Maybe this should be before compilation and not at runtime?
  */
-function _validate_book(){
+function _validate_core_book(){
 	_validate_acl_reference_consistency();
 	_validate_atoms_reference_on_the_same_connection();
 	_validate_auth_atoms();
@@ -119,7 +103,7 @@ function _validate_auth_atoms(){
 						`Auth Atom \`${atom_name}.email\` cannot be optional.`
 					);
 				}
-				if(properties.email.type !== BookPropertyType.EMAIL){
+				if(properties.email.type !== types.BookPropertyType.EMAIL){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_EMAIL`,
 						`Auth Atom \`${atom_name}.email\` must be of type BookPropertyType.EMAIL.`
@@ -138,7 +122,7 @@ function _validate_auth_atoms(){
 						`Auth Atom \`${atom_name}.password\` cannot be optional.`
 					);
 				}
-				if(properties.password.type !== BookPropertyType.ENCRYPTED){
+				if(properties.password.type !== types.BookPropertyType.ENCRYPTED){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_PASSWORD`,
 						`Auth Atom \`${atom_name}.password\` must be of type BookPropertyType.ENCRYPTED.`
@@ -157,7 +141,7 @@ function _validate_auth_atoms(){
 						`Auth Atom \`${atom_name}.group\` cannot be optional.`
 					);
 				}
-				if(properties.groups.type !== BookPropertyType.ATOM_ARRAY){
+				if(properties.groups.type !== types.BookPropertyType.ATOM_ARRAY){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_GROUP`,
 						`Auth Atom \`${atom_name}.group\` must be of type BookPropertyType.ATOM_ARRAY.`
@@ -187,8 +171,8 @@ function _validate_atoms_reference_on_the_same_connection(){
 		for(const [_prop_key, prop_def] of Object.entries(atom_def.properties)){
 			if(
 				(
-					prop_def.type === BookPropertyType.ATOM
-					|| prop_def.type === BookPropertyType.ATOM_ARRAY
+					prop_def.type === types.BookPropertyType.ATOM
+					|| prop_def.type === types.BookPropertyType.ATOM_ARRAY
 				)
 				&& connection_by_atom[prop_def.atom] !== connection_by_atom[atom_name]
 			){
@@ -215,7 +199,7 @@ function _validate_acl_reference_consistency(){
 	for(const [atom_name, atom_def] of Object.entries(atom_defs)){
 		if(
 			typeof atom_def.security !== 'string'
-			&& atom_def.security?.type === BookSecurityType.UNIFORM
+			&& atom_def.security?.type === types.BookSecurityType.UNIFORM
 			&& typeof atom_def.security?._r !== 'undefined'
 		){
 			not_public_atoms.push(atom_name);
@@ -226,8 +210,8 @@ function _validate_acl_reference_consistency(){
 		for(const [prop_key, prop_def] of Object.entries(prop_defs)){
 			if(
 				(
-					prop_def.type === BookPropertyType.ATOM
-					|| prop_def.type === BookPropertyType.ATOM_ARRAY
+					prop_def.type === types.BookPropertyType.ATOM
+					|| prop_def.type === types.BookPropertyType.ATOM_ARRAY
 				)
 				&& not_public_atoms.includes(prop_def.atom)
 				&& prop_def.optional !== true
@@ -243,19 +227,31 @@ function _validate_acl_reference_consistency(){
 	}
 }
 
-function _validate_variables(){
+function _validate_core_variables(){
 	_check_if_jwt_key_has_changed();
 	_check_if_db_names_have_changed();
 	_check_if_db_connections_were_set();
 	_check_if_storage_params_were_set();
-	_check_max_password_length();
+	_check_number_values();
 }
 
-function _check_max_password_length(){
+function _check_number_values(){
 	if(core_config.max_password_length >= 60){
 		throw urn_exc.create_not_initialized(
 			`INVALID_MAX_PASSWORD_LENGHT`,
 			`Config max_password_lenght value cannot be greater than 59.`
+		);
+	}
+	if(core_config.encryption_rounds >= 0){
+		throw urn_exc.create_not_initialized(
+			`INVALID_ENCRYPTION_ROUNDS`,
+			`Config encryption_rounds must be a natural number.`
+		);
+	}
+	if(core_config.max_query_depth_allowed >= 0){
+		throw urn_exc.create_not_initialized(
+			`INVALID_MAX_QUERY_DEPTH_ALLOWED`,
+			`Config max_query_depth_allowed must be a natural number.`
 		);
 	}
 }
@@ -341,72 +337,6 @@ function _check_if_jwt_key_has_changed(){
 			`JWT_KEY_NOT_CHANGED`,
 			`You must changed the value of jwt key for encryption.`
 		);
-	}
-}
-
-function _set_variable(config:types.Configuration):void{
-	Object.assign(core_config, config);
-}
-
-function _set_variable_from_environment():void{
-	for(const [env_type, env_vars] of Object.entries(env_vars_by_type)){
-		for(const env_var of env_vars){
-			switch(env_type as keyof typeof env_vars_by_type){
-				case 'natural':{
-					if(
-						typeof process.env[env_var] === 'number'
-						|| typeof process.env[env_var] === 'string'
-						&& process.env[env_var] !== ''
-					){
-						(core_config as any)[core_config_by_env[env_var]] =
-							Math.max(parseInt(process.env[env_var]!),0);
-					}
-					break;
-				}
-				case 'integer':{
-					if(
-						typeof process.env[env_var] === 'number'
-						|| typeof process.env[env_var] === 'string'
-						&& process.env[env_var] !== ''
-					){
-						(core_config as any)[core_config_by_env[env_var]] =
-							parseInt(process.env[env_var] as any);
-					}
-					break;
-				}
-				case 'float':{
-					if(
-						typeof process.env[env_var] === 'number'
-						|| typeof process.env[env_var] === 'string'
-						&& process.env[env_var] !== ''
-					){
-						(core_config as any)[core_config_by_env[env_var]] =
-							parseFloat(process.env[env_var] as any);
-					}
-					break;
-				}
-				case 'boolean':{
-					if(
-						typeof process.env[env_var] === 'boolean'
-						|| typeof process.env[env_var] === 'string'
-						&& process.env[env_var] !== ''
-					){
-						(core_config as any)[core_config_by_env[env_var]] =
-							(process.env[env_var] === 'true') || (process.env[env_var] as any === true);
-					}
-					break;
-				}
-				case 'string':{
-					if(
-						typeof process.env[env_var] === 'string'
-						&& process.env[env_var] !== ''
-					){
-						(core_config as any)[core_config_by_env[env_var]] = process.env[env_var];
-					}
-					break;
-				}
-			}
-		}
 	}
 }
 
