@@ -31,13 +31,6 @@ import * as db from '../db/';
 
 let _uranio_is_initialized = false;
 
-export function get<k extends keyof FullConfiguration>(param_name:k)
-		:typeof core_config[k]{
-	_check_if_uranio_was_initialized();
-	_check_if_param_exists(param_name);
-	return core_config[param_name];
-}
-
 export function initialize(config:Configuration):void{
 	Object.assign(core_config, config);
 	_validate_uranio();
@@ -48,6 +41,13 @@ export function initialize_from_environment():void{
 	_set_conf_from_env_variable();
 	_validate_uranio();
 	_connect();
+}
+
+export function get<k extends keyof FullConfiguration>(param_name:k)
+		:typeof core_config[k]{
+	_check_if_uranio_was_initialized();
+	_check_if_param_exists(param_name);
+	return core_config[param_name];
 }
 
 function _connect(){
