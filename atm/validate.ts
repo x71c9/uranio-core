@@ -26,7 +26,8 @@ import {
 	atom_common_properties,
 } from '../stc/';
 
-import * as conf from '../conf/';
+// This will import server on client
+// import * as conf from '../conf/';
 
 import * as atm_util from './util';
 
@@ -124,10 +125,10 @@ export function encrypt_property<A extends AtomName>(
 	prop_def:Book.Definition.Property.Encrypted,
 	prop_value:string
 ):true{
-	if(prop_def && prop_def.validation && prop_def.validation.max &&
-		prop_def.validation.max > conf.get(`max_password_length`)){
-		prop_def.validation.max = conf.get(`max_password_length`);
-	}
+	// if(prop_def && prop_def.validation && prop_def.validation.max &&
+	//   prop_def.validation.max > conf.get(`max_password_length`)){
+	//   prop_def.validation.max = conf.get(`max_password_length`);
+	// }
 	_custom_validate_string(prop_key, prop_def, prop_value);
 	return true;
 }
