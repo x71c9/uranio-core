@@ -15,6 +15,7 @@ import {atom_book} from 'uranio-books/atom';
 
 import {
 	AtomName,
+	AuthName
 } from '../../cln/types';
 
 import {Book} from '../../typ/book_cln';
@@ -24,8 +25,16 @@ import {
 	atom_common_properties,
 } from '../../stc/';
 
-export function validate_name(atom_name:string):boolean{
+export function validate_name(atom_name:string):atom_name is AtomName{
 	return urn_util.object.has_key(atom_book, atom_name);
+}
+
+export function validate_auth_name(auth_name:string):auth_name is AuthName{
+	if(!validate_name(auth_name)){
+		return false;
+	}
+	const atom_def = get_definition(auth_name as AtomName);
+	return atom_def.authenticate === true;
 }
 
 export function get_all_definitions():Book{
