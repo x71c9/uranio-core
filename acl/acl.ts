@@ -49,12 +49,13 @@ import {
 import {Query} from '../typ/query';
 
 import {
-	// Book,
 	BookSecurityType,
 	BookPermissionType,
 } from '../typ/book_srv';
 
 import {BookPropertyType, RealType} from '../typ/common';
+
+import {AuthAction} from '../typ/auth';
 
 import {AccessLayer} from '../typ/layer';
 
@@ -247,6 +248,19 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 		
 		const acl_res = await this._dal.delete_by_id(id);
 		return acl_res;
+	}
+	
+	public async authorize(action:AuthAction, id?:string)
+			:Promise<true>{
+		if(action === AuthAction.READ){
+			this._can_uniform_read();
+		}else if(action === AuthAction.WRITE){
+			this._can_uniform_write();
+			if(typeof id !== 'undefined' && this._security_type === BookSecurityType.GRANULAR){
+				this._can_atom_write(id);
+			}
+		}
+		return true;
 	}
 	
 }

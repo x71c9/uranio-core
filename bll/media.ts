@@ -10,7 +10,8 @@ import {urn_log} from 'urn-lib';
 import * as conf from '../conf/';
 
 import {Atom, AtomShape} from '../typ/atom';
-// import {Atom} from '../typ/atom';
+
+import {AuthAction} from '../typ/auth';
 
 import {Passport} from '../typ/auth';
 
@@ -41,8 +42,11 @@ export class MediaBLL extends BLL<'media'>{
 		buffer:Buffer | ArrayBuffer | Blob,
 		params?:Partial<InsertFileParams>
 	):Promise<Atom<'media'>>{
+		
+		await super.authorize(AuthAction.WRITE);
+		
 		let new_filepath = filepath;
-		if(!params || typeof params.override === 'undefined' || params.override === true){
+		if(!params || typeof params.override === 'undefined' || params.override === false){
 			while(await this._is_already_stored(new_filepath)){
 				new_filepath = _next_filepath(new_filepath);
 			}
