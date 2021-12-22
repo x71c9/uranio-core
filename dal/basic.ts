@@ -24,6 +24,8 @@ import {
 
 import {AccessLayer} from '../typ/layer';
 
+import {AuthAction} from '../typ/auth';
+
 import {Query} from '../typ/query';
 
 @urn_log.util.decorators.debug_constructor
@@ -76,6 +78,10 @@ export class BasicDAL<A extends AtomName> implements AccessLayer<A>{
 		return await this._db_relation.delete_by_id(id);
 	}
 	
+	public async authorize(_action:AuthAction, _id?:string)
+			:Promise<true>{
+		return true;
+	}
 }
 
 export function create_basic<A extends AtomName>(atom_name:A, db_relation:urn_rel.Relation<A>)

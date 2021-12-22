@@ -19,6 +19,8 @@ import {
 	Molecule,
 } from '../typ/atom';
 
+import {AuthAction} from '../typ/auth';
+
 import {AccessLayer} from '../typ/layer';
 
 import {Query} from '../typ/query';
@@ -80,6 +82,11 @@ export class BasicBLL<A extends AtomName> {
 	public async remove_one<D extends Depth>(molecule:Molecule<A,D>)
 			:Promise<Atom<A>>{
 		return await this.remove_by_id(molecule._id);
+	}
+	
+	public async authorize(action:AuthAction, id?:string)
+			:Promise<true>{
+		return await this._al.authorize(action, id);
 	}
 	
 }

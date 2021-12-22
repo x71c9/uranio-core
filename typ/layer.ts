@@ -8,6 +8,8 @@ import {AtomName, Depth, Molecule, Atom, AtomShape} from './atom';
 
 import {Query} from './query';
 
+import {AuthAction} from './auth';
+
 export interface AccessLayer<A extends AtomName> {
 	
 	select<D extends Depth>(query:Query<A>, options?:Query.Options<A,D>):Promise<Molecule<A,D>[]>
@@ -23,5 +25,7 @@ export interface AccessLayer<A extends AtomName> {
 	alter_by_id(id:string, partial_atom:Partial<AtomShape<A>>):Promise<Atom<A>>
 	
 	delete_by_id(id:string):Promise<Atom<A>>
+	
+	authorize(action:AuthAction, id?:string):Promise<true>
 	
 }
