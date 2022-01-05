@@ -33,7 +33,7 @@ export const enum BookPermissionType {
 }
 
 export type Book = {
-	[k in AtomName]: Book.Definition<k>;
+	[k in AtomName]?: Book.Definition<k>;
 }
 
 export type BllBook = {
