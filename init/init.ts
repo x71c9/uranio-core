@@ -18,6 +18,8 @@ import * as book from '../book/';
 
 import * as db from '../db/';
 
+import * as bll from '../bll/';
+
 export function init(config?:types.Configuration)
 		:void{
 	if(typeof config === 'undefined'){
@@ -31,6 +33,35 @@ export function init(config?:types.Configuration)
 	conf.set_initialize(true);
 	
 	_core_connect();
+	
+	_create_superuser();
+	
+}
+
+async function _create_superuser(){
+	const auth_bll = bll.auth.create('superuser');
+	try{
+		
+		await auth_bll.authenticate(core_config.superuser_email, core_config.superuser_password);
+		urn_log.debug(`Main superuser [${core_config.superuser_email}] already in database.`);
+		
+	}catch(err){
+		const bll_superuser = bll.basic.create('superuser');
+		try{
+			const one_su = await bll_superuser.find_one({email: core_config.superuser_email});
+			urn_log.warn(`Main superuser [${core_config.superuser_email}] already in database but with wrong password.`);
+			await bll_superuser.remove_by_id(one_su._id);
+			urn_log.debug(`Main superuser [${core_config.superuser_email}] deleted.`);
+		}
+		finally{
+			const superuser = {
+				email: core_config.superuser_email,
+				password: core_config.superuser_password
+			};
+			const response = await bll_superuser.insert_new(superuser);
+			urn_log.debug(`Main superuser [${core_config.superuser_email}] [${response._id}] created.`);
+		}
+	}
 }
 
 function _core_connect(){
@@ -231,6 +262,8 @@ function _validate_core_variables(){
 	_check_if_jwt_key_has_changed();
 	_check_if_db_names_have_changed();
 	_check_if_db_connections_were_set();
+	_check_if_db_connections_were_set();
+	_check_if_superuser_was_set();
 	_check_if_storage_params_were_set();
 	_check_number_values();
 }
@@ -337,6 +370,15 @@ function _check_if_jwt_key_has_changed(){
 			`JWT_KEY_NOT_CHANGED`,
 			`You must changed the value of jwt key for encryption.`
 		);
+	}
+}
+
+function _check_if_superuser_was_set(){
+	if(core_config.superuser_email === ''){
+		urn_log.warn(`Invalid superuser email.`);
+	}
+	if(core_config.superuser_password === ''){
+		urn_log.warn(`Invalid superuser password.`);
 	}
 }
 
