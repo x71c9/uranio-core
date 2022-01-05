@@ -65,6 +65,8 @@ export namespace Book {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		// export import Property = book_cln.Book.Definition.Property;
 		
+		export type Property = book_cln.Book.Definition.Property;
+		
 		export namespace Property {
 			
 			export type SharedFields = book_cln.Book.Definition.Property.SharedFields;
