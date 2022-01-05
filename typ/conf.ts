@@ -20,6 +20,10 @@ type RequiredConfigParams = {
 	
 	db_log_name: string
 	
+	superuser_email: string
+	
+	superuser_password: string
+	
 	jwt_private_key: string
 	
 }
