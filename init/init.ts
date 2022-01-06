@@ -120,7 +120,7 @@ function _validate_bll_classes(){
 function _validate_auth_atoms(){
 	const atom_defs = book.atom.get_all_definitions();
 	for(const [atom_name, atom_def] of Object.entries(atom_defs)){
-		if(atom_def.authenticate === true){
+		if(atom_def && atom_def.authenticate === true){
 			const properties = book.atom.get_all_property_definitions(atom_name as types.AtomName);
 			if(typeof properties.email !== 'object'){
 				throw urn_exc.create_invalid_book(
@@ -196,9 +196,15 @@ function _validate_atoms_reference_on_the_same_connection(){
 	const connection_by_atom = {} as ConnectionByAtom;
 	const atom_defs = book.atom.get_all_definitions();
 	for(const [atom_name, atom_def] of Object.entries(atom_defs)){
-		connection_by_atom[atom_name] = atom_def.connection || 'main';
+		connection_by_atom[atom_name] = 'main';
+		if(atom_def && typeof atom_def.connection === 'string'){
+			connection_by_atom[atom_name] = atom_def.connection;
+		}
 	}
 	for(const [atom_name, atom_def] of Object.entries(atom_defs)){
+		if(!atom_def){
+			continue;
+		}
 		for(const [_prop_key, prop_def] of Object.entries(atom_def.properties)){
 			if(
 				(
@@ -229,7 +235,8 @@ function _validate_acl_reference_consistency(){
 	const not_public_atoms = [];
 	for(const [atom_name, atom_def] of Object.entries(atom_defs)){
 		if(
-			typeof atom_def.security !== 'string'
+			atom_def
+			&& typeof atom_def.security !== 'string'
 			&& atom_def.security?.type === types.BookSecurityType.UNIFORM
 			&& typeof atom_def.security?._r !== 'undefined'
 		){
@@ -237,6 +244,9 @@ function _validate_acl_reference_consistency(){
 		}
 	}
 	for(const [parent_atom_name, parent_atom_def] of Object.entries(atom_defs)){
+		if(!parent_atom_def){
+			continue;
+		}
 		const prop_defs = parent_atom_def.properties;
 		for(const [prop_key, prop_def] of Object.entries(prop_defs)){
 			if(
