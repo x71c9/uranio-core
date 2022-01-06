@@ -8,8 +8,6 @@ import {FullConfiguration} from '../typ/conf';
 
 export const core_config:FullConfiguration = {
 	
-	connect_on_init: false,
-	
 	db_type: 'mongo',
 	
 	mongo_main_connection: '',
@@ -40,6 +38,8 @@ export const core_config:FullConfiguration = {
 	max_password_length: 58,
 	
 	max_query_depth_allowed: 3,
+	
+	connect_on_init: false,
 	
 	storage: 'aws',
 	
