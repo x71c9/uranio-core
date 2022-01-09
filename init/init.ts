@@ -34,7 +34,9 @@ export function init(config?:types.Configuration)
 	
 	_core_connect();
 	
-	_create_superuser();
+	if(conf.get(`create_superuser_on_init`) === true){
+		_create_superuser();
+	}
 	
 }
 
