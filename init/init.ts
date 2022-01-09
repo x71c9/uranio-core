@@ -46,7 +46,7 @@ async function _create_superuser(){
 		urn_log.debug(`Main superuser [${core_config.superuser_email}] already in database.`);
 		
 	}catch(err){ // cannot auth with config email and password
-		const bll_superuser = bll.basic.create('superuser');
+		const bll_superuser = bll.create('superuser');
 		try{
 			const one_su = await bll_superuser.find_one({email: core_config.superuser_email});
 			urn_log.warn(`Main superuser [${core_config.superuser_email}] already in database but with wrong password.`);
