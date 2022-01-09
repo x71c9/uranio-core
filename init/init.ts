@@ -46,7 +46,7 @@ async function _create_superuser(){
 		urn_log.debug(`Main superuser [${core_config.superuser_email}] already in database.`);
 		
 	}catch(err){ // cannot auth with config email and password
-		const bll_superuser = bll.create('superuser');
+		const bll_superuser = bll.basic.create('superuser');
 		try{
 			const one_su = await bll_superuser.find_one({email: core_config.superuser_email});
 			urn_log.warn(`Main superuser [${core_config.superuser_email}] already in database but with wrong password.`);
@@ -54,12 +54,19 @@ async function _create_superuser(){
 			urn_log.debug(`Main superuser [${core_config.superuser_email}] deleted.`);
 			// eslint-disable-next-line
 		}catch(err){} // If there is no user it throws an error, but nothing should be done.
-		const superuser = {
+		const superuser_shape = {
 			email: core_config.superuser_email,
 			password: core_config.superuser_password
 		};
-		const response = await bll_superuser.insert_new(superuser);
-		urn_log.debug(`Main superuser [${core_config.superuser_email}] [${response._id}] created.`);
+		const superuser = await bll_superuser.insert_new(superuser_shape);
+		
+		const bll_group = bll.basic.create('group');
+		const group = await bll_group.insert_new({name: superuser.email});
+		
+		superuser.groups = [group._id];
+		await bll_superuser.update_one(superuser);
+		
+		urn_log.debug(`Main superuser [${core_config.superuser_email}] [${superuser._id}] created.`);
 	}
 }
 

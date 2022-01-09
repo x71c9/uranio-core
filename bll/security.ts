@@ -41,7 +41,7 @@ function _return_acl<A extends AtomName>(atom_name:A, passport?:Passport) {
 	return ():AccessLayer<A> => {
 		
 		let groups:string[] = [];
-
+		
 		if(passport){
 			
 			is_valid_passport(passport);
