@@ -40,7 +40,7 @@ type OptionalConfigParam = {
 	
 	max_password_length: number
 	
-	create_superuser_on_init: boolean
+	superuser_create_on_init: boolean
 	
 	max_query_depth_allowed: 0 | 1 | 2 | 3
 	

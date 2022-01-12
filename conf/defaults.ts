@@ -29,7 +29,7 @@ export const core_config:FullConfiguration = {
 	
 	superuser_password: '',
 	
-	create_superuser_on_init: false,
+	superuser_create_on_init: false,
 	
 	// This must be the same in _check_if_jwt_was_changed method in conf module
 	jwt_private_key: 'A_KEY_THAT_NEED_TO_BE_CHANGED',
