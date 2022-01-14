@@ -16,13 +16,13 @@ will be available in the future.
 
 ### Atoms
 
-In URANIO relation are called **Atom**. Uranio CORE provides default _Atoms_,
-see section [Default Atoms](#default-atoms).
+In URANIO a database record is called **Atom**. Uranio CORE provides default
+_Atom_ types, see section [Default Atoms](#default-atoms).
 
-More _Atoms_ can be defined in the constant `atom_book` inside `src/book.ts`.
+More _Atom_ types can be defined in `atom_book` inside `src/book.ts`.
 > See documentation for [book.ts]().
 
-For example there can be a _Product Atom_.
+For example there can be a _Product Atom_ type.
 
 The type of the object that represents the _Product Atom_ will be `Atom<'product'>`.
 
