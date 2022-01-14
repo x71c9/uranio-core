@@ -1,4 +1,4 @@
-## URANIO-CORE
+## URANIO CORE
 
 Uranio CORE provides the (BLL) Business Logic Layer classes for an API service.
 
