@@ -78,7 +78,7 @@ const product:Atom<'product'> = {
 };
 ```
 
-Type `Atom` represents the type of the object stored in the database. Therefore
+Type `Atom` **represents the type of the object stored in the database**. Therefore
 it has, among the user defined properties, also the following ones:
 - `_id`
 - `_date`
@@ -157,18 +157,33 @@ const product:Molecule<'order', 1> = {
 	}
 };
 ```
-And type `Molecule<'order', 0>` will be exactly like `Atom<'order'>`:
+
+`Molecule<'order', 0>` is exactly like `Atom<'order'>`:
 
 ```typescript
 const product:Molecule<'order', 0> = {
 	_id: '61dec7150529224d13ea7994',
 	_date: '2022-01-12T12:18:29.617Z',
-	products: ['61dec7150529224d13ea7997', '61de9f518fb75c70ad33310a']
+	products: ['61dec7150529224d13ea7997', '61de9f518fb75c70ad33310a'],
 	customer: '61dc3434a99090002c28cb4b'
 };
 ```
 
-### BLL Methods
+
+### BLL
+
+Uranio CORE provides BLL classes of the Atoms defined in the Book.
+
+> See Book documentation [book.ts]()
+
+```typescript
+import uranio from 'uranio';
+
+const products_bll = uranio.bll.create('product');
+const product = await products_bll.find_by_id('61dec7150529224d13ea7997');
+```
+
+#### BLL Methods
 
 The BLL provides the following methods to each realtion:
 
@@ -182,6 +197,7 @@ The BLL provides the following methods to each realtion:
 - `remove_by_id`
 - `remove_one`
 - `authorize`
+- `upload` (available only for Atom `media`)
 
 ### Authentication
 
