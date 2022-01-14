@@ -26,12 +26,19 @@ class AWSStorage implements Storage {
 	
 	protected s3:AWS.S3;
 	
+	public base_url:string;
+	
 	constructor(){
+		
+		const bucket_name = conf.get('aws_bucket_name');
+		const bucket_region = conf.get('aws_bucket_region');
+		
 		this.s3 = new AWS.S3({
 			accessKeyId: conf.get(`aws_user_access_key_id`),
 			secretAccessKey: conf.get(`aws_user_secret_access_key`),
-			region: 'eu-south-1'
+			region: bucket_region
 		});
+		this.base_url = `https://${bucket_name}.s3.${bucket_region}.amazonaws.com`;
 	}
 	
 	public async upload(

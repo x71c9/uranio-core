@@ -11,9 +11,11 @@
 export interface Storage {
 	
 	upload(filename:string, buffer:Buffer | ArrayBuffer | Blob, params?:Partial<UploadParams>)
-			:Promise<string>;
+		:Promise<string>;
 	
 	exists(filename:string):Promise<boolean>
+	
+	base_url:string
 	
 }
 

@@ -15,7 +15,6 @@ import {AuthBLL} from './auth';
 export class BLL<A extends AtomName> extends AuthBLL<A>{}
 
 
-
 /**
  * Class @decorator function for loggin constructor with arguments
  *

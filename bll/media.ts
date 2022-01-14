@@ -9,13 +9,13 @@ import {urn_log} from 'urn-lib';
 
 import * as conf from '../conf/';
 
-import {Atom, AtomShape} from '../typ/atom';
+import {Atom, AtomShape, Depth, Molecule} from '../typ/atom';
 
-import {AuthAction} from '../typ/auth';
+import {Query} from '../typ/query';
 
-import {Passport} from '../typ/auth';
+import {AuthAction, Passport} from '../typ/auth';
 
-import * as urn_sto from '../sto/';
+import * as sto from '../sto/';
 
 import {BLL} from './bll';
 
@@ -25,13 +25,13 @@ import {InsertFileParams} from './types';
 @urn_log.util.decorators.debug_methods
 export class MediaBLL extends BLL<'media'>{
 	
-	protected storage:urn_sto.Storage;
+	protected storage:sto.Storage;
 	
 	constructor(passport?:Passport){
 		super('media', passport);
 		switch(conf.get(`storage`)){
 			case 'aws':{
-				this.storage = urn_sto.aws.create();
+				this.storage = sto.aws.create();
 				break;
 			}
 		}
@@ -51,7 +51,7 @@ export class MediaBLL extends BLL<'media'>{
 				new_filepath = _next_filepath(new_filepath);
 			}
 		}
-		const upload_params:Partial<urn_sto.UploadParams> = {};
+		const upload_params:Partial<sto.UploadParams> = {};
 		if(params){
 			if(typeof params.content_type === 'string' && params.content_type !== ''){
 				upload_params.content_type = params.content_type;
@@ -75,6 +75,69 @@ export class MediaBLL extends BLL<'media'>{
 		// }
 		const atom = await super.insert_new(atom_shape);
 		return atom;
+	}
+	
+	public async find<D extends Depth>(query:Query<'media'>, options?:Query.Options<'media',D>)
+			:Promise<Molecule<'media',D>[]>{
+		const resp = await this._al.select(query, options);
+		return this._array_with_full_src(resp);
+	}
+	
+	public async find_by_id<D extends Depth>(id:string, options?:Query.Options<'media',D>)
+			:Promise<Molecule<'media',D>>{
+		const resp = await this._al.select_by_id(id, options);
+		return this._with_full_src(resp);
+	}
+	
+	public async find_one<D extends Depth>(query:Query<'media'>, options?:Query.Options<'media',D>)
+			:Promise<Molecule<'media',D>>{
+		const resp = await this._al.select_one(query, options);
+		return this._with_full_src(resp);
+	}
+	
+	public async insert_new(atom_shape:AtomShape<'media'>)
+			:Promise<Atom<'media'>>{
+		const media_shape = this._remove_full_src(atom_shape);
+		const resp = await this._al.insert_one(media_shape);
+		return this._with_full_src(resp);
+	}
+	
+	public async update_by_id(id:string, partial_atom:Partial<AtomShape<'media'>>)
+			:Promise<Atom<'media'>>{
+		const partial_media = this._remove_full_src(partial_atom);
+		const resp = await this._al.alter_by_id(id, partial_media);
+		return this._with_full_src(resp);
+	}
+	
+	public async update_one(atom:Atom<'media'>)
+			:Promise<Atom<'media'>>{
+		const media = this._remove_full_src(atom);
+		const resp = await this.update_by_id(media._id, media as Partial<AtomShape<'media'>>);
+		return this._with_full_src(resp);
+	}
+	
+	private _remove_full_src(media:Atom<'media'>):Atom<'media'>;
+	private _remove_full_src(media:AtomShape<'media'>):AtomShape<'media'>;
+	private _remove_full_src(media:Partial<AtomShape<'media'>>):Partial<AtomShape<'media'>>;
+	private _remove_full_src(media:Partial<AtomShape<'media'>>):Partial<AtomShape<'media'>>{
+		if(typeof media.src === 'string' && media.src.indexOf(this.storage.base_url) === 0){
+			media.src = media.src.replace(this.storage.base_url, '');
+		}
+		return media;
+	}
+	
+	private _with_full_src<D extends Depth>(media:Molecule<'media',D>)
+			:Molecule<'media',D>{
+		media.src = `${this.storage.base_url}/${media.src}`;
+		return media;
+	}
+	
+	private _array_with_full_src<D extends Depth>(medias:Molecule<'media',D>[])
+			:Molecule<'media',D>[]{
+		for(const media of medias){
+			media.src = `${this.storage.base_url}/${media.src}`;
+		}
+		return medias;
 	}
 	
 	private async _is_already_stored(filepath:string):Promise<boolean>{
