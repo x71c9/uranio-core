@@ -205,8 +205,17 @@ Uranio CORE provides a BLL for authentication:
 
 ```typescript
 const auth_bll = uranio.bll.auth.create('superuser');
-const token = await auth_bll.authenticate('email@email.com', '[PASSOWRD]');
+const urn_response = await auth_bll.authenticate('email@email.com', '[PASSOWRD]');
+if(urn_response.success){
+	const token = urn_response.payload.token;
+}
 ```
+> `auth_bll.authenticate` will responde with a `Set-Cookie` Header.
+> The cookie is `HttpOnly; SameSite=Strict; Secure;`. Therefore the browser
+> will send the `token` for each request without JS needed.
+>
+> However if the application is calling the API from another server the token is
+> needed in order to make a call.
 
 `bll.auth.create` accept only `AuthAtom`.
 
