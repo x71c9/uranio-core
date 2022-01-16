@@ -170,9 +170,9 @@ const product:Molecule<'order', 0> = {
 ```
 
 
-### BLL
+### BLL: Business Logic Layer
 
-Uranio CORE provides BLL classes of the Atoms defined in the Book.
+Uranio CORE provides BLL classes for the Atoms defined in Book.
 
 > See Book documentation [book.ts]()
 
@@ -199,6 +199,7 @@ The BLL provides the following methods to each realtion:
 - `authorize`
 - `upload` (available only for Atom `media`)
 
+
 ### Authentication
 
 Uranio CORE provides a BLL for authentication:
@@ -210,14 +211,9 @@ if(urn_response.success){
 	const token = urn_response.payload.token;
 }
 ```
-> `auth_bll.authenticate` will responde with a `Set-Cookie` Header.
-> The cookie is `HttpOnly; SameSite=Strict; Secure;`. Therefore the browser
-> will send the `token` for each request without JS needed.
->
-> However if the application is calling the API from another server the token is
-> needed in order to make a call.
-
 `bll.auth.create` accept only `AuthAtom`.
+
+> See [`AuthAtoms`](#auth-atoms)
 
 The method `authenticate` returns a token that can be use for authorization.
 
@@ -227,6 +223,50 @@ const products_bll = uranio.bll.create('product', passport);
 const products = await products_bll.find({});
 ```
 
+### AuthAtoms
+
+**AuthAtoms** are Atoms that can authenticate. In order to define an AuthAtom,
+it must have the attribute `authenticate` equal to `true` in `book.ts`.
+```typescript
+// src/book.ts
+export default atom_book:uranio.types.Book = {
+	customer:{
+		authenticate: true,
+		...
+	}
+}
+```
+
+Type `AuthName` is the union of all the Atom names that can authenticate.
+
+AuthAtoms must have the properties `email` and `password` defined like so:
+
+```typescript
+// src/book.ts
+
+export default atom_book:uranio.types.Book = {
+	customer:{
+		authenticate: true,
+		properties:{
+			email:{
+				type: uranio.types.BookPropertyType.EMAIL,
+				...
+			},
+			password:{
+				type: uranio.types.BookPropertyType.ENCRYPTED,
+				...
+			}
+		}
+	}
+}
+```
+
+When a new AuthAtom is created, it will be created also the _Group_ for it, so
+that each AuthAtom has at least its own group.
+
+**Groups** are necessary for passing the ACL (Access Control Layer).
+
+> See [ACL Section](#access-control-layer)
 
 ### Default Atoms
 
@@ -244,9 +284,13 @@ Uranio CORE provides the following relations:
 Superusers are user that bypass the ACL (Access Control Layer). They can interact with
 the DB without authentication.
 
+> Superuser are [AuthAtom](#auth-atom)
+
 ##### User
 
 Users are entities that can interact with the DB after they have been authenticated.
+
+> User are [AuthAtom](#auth-atom)
 
 ##### Group
 
