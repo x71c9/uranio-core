@@ -198,6 +198,7 @@ The BLL provides the following methods to each realtion:
 - `remove_one`
 - `authorize`
 - `upload` (available only for Atom `media`)
+- `presigned` (available only for Atom `media`)
 
 
 ### Authentication

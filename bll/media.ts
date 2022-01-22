@@ -77,6 +77,26 @@ export class MediaBLL extends BLL<'media'>{
 		return atom;
 	}
 	
+	public async presigned(
+		filepath: string,
+		params?:Partial<InsertFileParams>
+	):Promise<string>{
+		
+		await super.authorize(AuthAction.WRITE);
+		
+		const upload_params:Partial<sto.UploadParams> = {};
+		if(params){
+			if(typeof params.content_type === 'string' && params.content_type !== ''){
+				upload_params.content_type = params.content_type;
+			}
+			if(typeof params.content_length === 'number' && params.content_length > 0){
+				upload_params.content_length = params.content_length;
+			}
+		}
+		const presigned_url = await this.storage.presigned(filepath, upload_params);
+		return presigned_url;
+	}
+	
 	public async find<D extends Depth>(query:Query<'media'>, options?:Query.Options<'media',D>)
 			:Promise<Molecule<'media',D>[]>{
 		const resp = await this._al.select(query, options);

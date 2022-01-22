@@ -67,6 +67,32 @@ class AWSStorage implements Storage {
 		return aws_reponse.Key;
 	}
 	
+	public async presigned(
+		filepath:string,
+		params?:Partial<UploadParams>
+	):Promise<string>{
+		
+		const aws_params = {
+			Bucket: conf.get(`aws_bucket_name`),
+			Key: filepath,
+			Expires: 60 // 1 minute
+		};
+		
+		if(params){
+		//   if(typeof params.content_type === 'string' && params.content_type !== ''){
+		//     aws_params.ContentType = params.content_type;
+		//   }
+			if(typeof params.content_length === 'string' && params.content_length > 0){
+				// aws_params.ContentLength = params.content_length;
+				aws_params.Expires = params.content_length * .5;
+			}
+		}
+		
+		const aws_reponse = await this.s3.getSignedUrl('putObject', aws_params);
+		
+		return aws_reponse;
+	}
+	
 	public async exists(filepath:string):Promise<boolean>{
 		const params:AWS.S3.GetObjectRequest = {
 			Bucket: conf.get(`aws_bucket_name`),
