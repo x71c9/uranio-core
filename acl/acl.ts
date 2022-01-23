@@ -123,6 +123,17 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 		return true;
 	}
 	
+	protected async _can_atom_write_multiple(ids:string[])
+			:Promise<boolean>{
+		const atoms = await this._dal.select_multiple(ids);
+		for(const atom of atoms){
+			if(!atom._w || !this.user_groups.includes(atom._w)){
+				throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Write unauthorized');
+			}
+		}
+		return true;
+	}
+	
 	public filter_uniform_bond_properties<D extends Depth>(molecule:Molecule<A,D>, depth = 0)
 			:Molecule<A,D>{
 		const bond_keys = atm_keys.get_bond(this.atom_name);
@@ -263,10 +274,66 @@ export class ACL<A extends AtomName> implements AccessLayer<A>{
 		return true;
 	}
 	
+	public async select_multiple<D extends Depth>(ids:string[], options?:Query.Options<A,D>)
+			:Promise<Molecule<A,D>[]>{
+		
+		this._can_uniform_read();
+		
+		let query = {_id: {$in: ids}} as Query<A>;
+		if(this._security_type === BookSecurityType.GRANULAR){
+			query = {$and: [query, this._read_query]};
+			if(!options){
+				options = {};
+			}
+			// options.depth_query = query;
+			options.depth_query = this._read_query;
+		}
+		const molecules = await this._dal.select(query, options);
+		return molecules.map((m) => {
+			const depth = (options) ? options.depth : 0;
+			return this.filter_uniform_bond_properties(m, depth);
+		});
+	}
+	
+	public async alter_multiple(ids:string[], partial_atom:Partial<AtomShape<A>>)
+			:Promise<Atom<A>[]>{
+		
+		this._can_uniform_write();
+		
+		if(this._security_type === BookSecurityType.GRANULAR){
+			this._can_atom_write_multiple(ids);
+		}
+		
+		return await this._dal.alter_multiple(ids, partial_atom);
+	}
+	
+	public async insert_multiple(atom_shapes:AtomShape<A>[])
+			:Promise<Atom<A>[]>{
+		
+		this._can_uniform_write();
+		
+		return await this._dal.insert_multiple(atom_shapes);
+	}
+	
+	public async delete_multiple(ids:string[])
+			:Promise<Atom<A>[]>{
+		
+		this._can_uniform_write();
+		
+		if(this._security_type === BookSecurityType.GRANULAR){
+			this._can_atom_write_multiple(ids);
+		}
+		
+		const acl_res = await this._dal.delete_multiple(ids);
+		return acl_res;
+	}
+	
 }
 
-export function create<A extends AtomName>(atom_name:A, user_groups:RealType<BookPropertyType.ID>[])
-		:ACL<A>{
+export function create<A extends AtomName>(
+	atom_name:A,
+	user_groups:RealType<BookPropertyType.ID>[]
+):ACL<A>{
 	urn_log.fn_debug(`Create ACL [${atom_name}]`, user_groups);
 	return new ACL<A>(atom_name, user_groups);
 }

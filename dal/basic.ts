@@ -82,6 +82,27 @@ export class BasicDAL<A extends AtomName> implements AccessLayer<A>{
 			:Promise<true>{
 		return true;
 	}
+	
+	public async select_multiple<D extends Depth>(ids:string[], options?:Query.Options<A,D>)
+			:Promise<Molecule<A,D>[]>{
+		return await this._db_relation.select({_id: {$in: ids}} as Query<A>, options);
+	}
+	
+	public async alter_multiple(ids:string[], partial_atom:Partial<AtomShape<A>>)
+			:Promise<Atom<A>[]>{
+		return await this._db_relation.alter_multiple(ids, partial_atom);
+	}
+	
+	public async insert_multiple(atom_shapes:AtomShape<A>[])
+			:Promise<Atom<A>[]>{
+		return await this._db_relation.insert_multiple(atom_shapes);
+	}
+	
+	public async delete_multiple(ids:string[]):Promise<Atom<A>[]>{
+		return await this._db_relation.delete_multiple(ids);
+	}
+	
+	
 }
 
 export function create_basic<A extends AtomName>(atom_name:A, db_relation:urn_rel.Relation<A>)
