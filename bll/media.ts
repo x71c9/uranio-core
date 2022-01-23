@@ -136,6 +136,34 @@ export class MediaBLL extends BLL<'media'>{
 		return this._with_full_src(resp);
 	}
 	
+	public async update_multiple(ids:string[], partial_atom:Partial<AtomShape<'media'>>)
+			:Promise<Atom<'media'>[]>{
+		const partial_media = this._remove_full_src(partial_atom);
+		const resp = await this._al.alter_multiple(ids, partial_media as Partial<AtomShape<'media'>>);
+		return this._with_full_src(resp);
+	}
+	
+	public async find_multiple<D extends Depth>(ids:string[])
+			:Promise<Molecule<'media',D>[]>{
+		const resp = await this._al.select_multiple<D>(ids);
+		return this._with_full_src(resp);
+	}
+	
+	public async insert_multiple(atom_shapes:AtomShape<'media'>[])
+			:Promise<Atom<'media'>[]>{
+		for(let shape of atom_shapes){
+			shape = this._remove_full_src(shape);
+		}
+		const resp = await this._al.insert_multiple(atom_shapes);
+		return this._with_full_src(resp);
+	}
+	
+	public async remove_multiple(ids:string[])
+			:Promise<Atom<'media'>[]>{
+		const resp = await this._al.delete_multiple(ids);
+		return this._with_full_src(resp);
+	}
+	
 	private _remove_full_src(media:Atom<'media'>):Atom<'media'>;
 	private _remove_full_src(media:AtomShape<'media'>):AtomShape<'media'>;
 	private _remove_full_src(media:Partial<AtomShape<'media'>>):Partial<AtomShape<'media'>>;
@@ -146,8 +174,16 @@ export class MediaBLL extends BLL<'media'>{
 		return media;
 	}
 	
-	private _with_full_src<D extends Depth>(media:Molecule<'media',D>)
-			:Molecule<'media',D>{
+	private _with_full_src<D extends Depth>(media:Molecule<'media',D>[]):Molecule<'media',D>[]
+	private _with_full_src<D extends Depth>(media:Molecule<'media',D>):Molecule<'media',D>
+	private _with_full_src<D extends Depth>(media:Molecule<'media',D> | Molecule<'media',D>[])
+			:Molecule<'media',D> | Molecule<'media',D>[]{
+		if(Array.isArray(media)){
+			for(const m of media){
+				m.src = `${this.storage.base_url}/${m.src}`;
+			}
+			return media;
+		}
 		media.src = `${this.storage.base_url}/${media.src}`;
 		return media;
 	}

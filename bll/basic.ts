@@ -89,6 +89,26 @@ export class BasicBLL<A extends AtomName> {
 		return await this._al.authorize(action, id);
 	}
 	
+	public async find_multiple<D extends Depth>(ids:string[], options?:Query.Options<A,D>)
+			:Promise<Molecule<A,D>[]>{
+		return await this._al.select_multiple(ids, options);
+	}
+	
+	public async update_multiple(ids:string[], partial_atom:Partial<AtomShape<A>>)
+			:Promise<Atom<A>[]>{
+		return await this._al.alter_multiple(ids, partial_atom);
+	}
+	
+	public async insert_multiple(atom_shapes:AtomShape<A>[])
+			:Promise<Atom<A>[]>{
+		return await this._al.insert_multiple(atom_shapes);
+	}
+	
+	public async remove_multiple(ids:string[])
+			:Promise<Atom<A>[]>{
+		return await this._al.delete_multiple(ids);
+	}
+	
 }
 
 export function create<A extends AtomName>(atom_name:A)
