@@ -215,12 +215,15 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 			$set: partial_atom,
 			$unset: $unset
 		};
-		const mon_update_res =
-			await this._raw.update({_id: {$in: ids}}, update, {new: true, lean: true}) as unknown;
+		const mon_update_res = await this._raw.updateMany(
+			{_id: {$in: ids}},
+			update,
+			{new: true, lean: true}
+		) as unknown; // Return a Query with how many records were updated.
 		if(mon_update_res === null){
 			throw urn_exc.create_not_found('ALTER_MULTIPLE_ID_NOT_FOUND', `Cannot alter_multiple. Records not found.`);
 		}
-		return _clean_atoms<A>(this.atom_name, mon_update_res as Atom<A>[]);
+		return await this.select<0>({_id: {$in: ids}} as Query<A>);
 	}
 	
 	public async insert_multiple(atom_shapes:AtomShape<A>[])
@@ -254,16 +257,18 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 				throw urn_exc.create_invalid_request('DEL_BY_ID_INVALID_ID', err_msg);
 			}
 		}
-		const mon_delete_res =
-			await this._raw.deleteMany({_id: {$in: ids}});
-		if(!Array.isArray(mon_delete_res)){
+		const almost_deleted_docs = await this.select<0>({_id: {$in: ids}} as Query<A>);
+		// Return a Query with how many records were deleted.
+		const mon_delete_res = await this._raw.deleteMany({_id: {$in: ids}});
+		if(mon_delete_res === null){
 			throw urn_exc.create_not_found('DEL_MULTIPLE_NOT_FOUND', `Cannot delete_multiple.`);
 		}
-		const cleaned_atoms:Atom<A>[] = [];
-		for(const db_atom of mon_delete_res){
-			cleaned_atoms.push(_clean_atom(this.atom_name, db_atom.toObject() as Atom<A>));
-		}
-		return cleaned_atoms;
+		// const cleaned_atoms:Atom<A>[] = [];
+		// for(const db_atom of mon_delete_res){
+		//   cleaned_atoms.push(_clean_atom(this.atom_name, db_atom.toObject() as Atom<A>));
+		// }
+		// return cleaned_atoms;
+		return almost_deleted_docs;
 	}
 	
 	public is_valid_id(id:string)
