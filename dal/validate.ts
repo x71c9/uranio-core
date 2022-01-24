@@ -113,7 +113,8 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 		const db_records = await super.alter_multiple(ids, partial_atom);
 		const validated_db_records:Atom<A>[] = [];
 		for(const db_record of db_records){
-			validated_db_records.push(await this.validate(db_record));
+			const validated_db_record = await this.validate(db_record);
+			validated_db_records.push(validated_db_record);
 		}
 		return validated_db_records;
 	}
@@ -128,7 +129,8 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 		const db_records = await super.insert_multiple(atom_shapes);
 		const validated_db_records:Atom<A>[] = [];
 		for(const db_record of db_records){
-			validated_db_records.push(await this.validate(db_record));
+			const validated_db_record = await this.validate(db_record);
+			validated_db_records.push(validated_db_record);
 		}
 		return validated_db_records;
 	}
@@ -138,7 +140,8 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 		const db_records = await super.delete_multiple(ids);
 		const validated_db_records:Atom<A>[] = [];
 		for(const db_record of db_records){
-			validated_db_records.push(await this.validate(db_record));
+			const validated_db_record = await this.validate(db_record);
+			validated_db_records.push(validated_db_record);
 		}
 		return validated_db_records;
 	}

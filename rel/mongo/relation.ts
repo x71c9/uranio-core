@@ -236,7 +236,15 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		if(!Array.isArray(mon_insert_many_res)){
 			throw urn_exc.create('INSERT_MULTIPLE_FAILED', `Cannot insert_multiple.`);
 		}
-		return _clean_atoms<A>(this.atom_name, mon_insert_many_res as Atom<A>[]);
+		const string_id_atoms:Atom<A>[] = [];
+		for(const db_atom of mon_insert_many_res){
+			const clean_atom = {
+				...db_atom.toObject()
+			};
+			clean_atom._id = db_atom._id.toString();
+			string_id_atoms.push(clean_atom);
+		}
+		return _clean_atoms<A>(this.atom_name, string_id_atoms as Atom<A>[]);
 	}
 	
 	public async delete_multiple(ids:string[]):Promise<Atom<A>[]>{
