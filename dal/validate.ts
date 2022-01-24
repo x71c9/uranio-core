@@ -11,8 +11,6 @@ import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('VAL_DAL', 'ValidateDAL');
 
-// import {atom_book} from 'uranio-books/atom';
-
 import * as atm_validate from '../atm/validate';
 
 import * as atm_keys from '../atm/keys';
@@ -27,16 +25,17 @@ import {
 	Molecule
 } from '../typ/atom';
 
-// import { Book } from '../typ/book_cln';
-
 import { BookPropertyType } from '../typ/common';
 
 import { atom_hard_properties, atom_common_properties } from "../stc/";
 
-
 import {Query} from '../typ/query';
 
 import {RelationDAL} from './rel';
+
+type Equals<A extends AtomName> = {
+	[k in keyof Atom<A>]: any
+}
 
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods
@@ -99,6 +98,133 @@ export class ValidateDAL<A extends AtomName> extends RelationDAL<A>{
 		let db_record = await super.delete_by_id(id);
 		db_record = await this.validate(db_record);
 		return db_record;
+	}
+	
+	public async select_multiple<D extends Depth>(ids:string[], options?:Query.Options<A,D>)
+			:Promise<Molecule<A,D>[]>{
+		return await this.select({_id: {$in: ids}} as Query<A>, options);
+	}
+	
+	public async alter_multiple(ids:string[], partial_atom:Partial<AtomShape<A>>)
+			:Promise<Atom<A>[]>{
+		atm_validate.atom_partial(this.atom_name, partial_atom);
+		_check_ids(this.atom_name, partial_atom, this._db_relation.is_valid_id);
+		await this._check_unique_multiple_ids(partial_atom, ids);
+		const db_records = await super.alter_multiple(ids, partial_atom);
+		const validated_db_records:Atom<A>[] = [];
+		for(const db_record of db_records){
+			validated_db_records.push(await this.validate(db_record));
+		}
+		return validated_db_records;
+	}
+	
+	public async insert_multiple(atom_shapes:AtomShape<A>[])
+			:Promise<Atom<A>[]>{
+		for(const atom_shape of atom_shapes){
+			atm_validate.atom_shape(this.atom_name, atom_shape);
+			_check_ids(this.atom_name, atom_shape, this._db_relation.is_valid_id);
+		}
+		await this._check_unique_multiple(atom_shapes as Partial<AtomShape<A>>[]);
+		const db_records = await super.insert_multiple(atom_shapes);
+		const validated_db_records:Atom<A>[] = [];
+		for(const db_record of db_records){
+			validated_db_records.push(await this.validate(db_record));
+		}
+		return validated_db_records;
+	}
+	
+	public async delete_multiple(ids:string[])
+			:Promise<Atom<A>[]>{
+		const db_records = await super.delete_multiple(ids);
+		const validated_db_records:Atom<A>[] = [];
+		for(const db_record of db_records){
+			validated_db_records.push(await this.validate(db_record));
+		}
+		return validated_db_records;
+	}
+	
+	protected async _check_unique_multiple(partial_atoms:Partial<AtomShape<A>>[])
+			:Promise<true>{
+		const $or = [];
+		const unique_keys = atm_keys.get_unique(this.atom_name);
+		for(const k of unique_keys){
+			for(const partial_atom of partial_atoms){
+				$or.push({[k]: partial_atom[k]});
+			}
+		}
+		if($or.length === 0){
+			return true;
+		}
+		let query:Query<A> = {};
+		query = {$or: $or};
+		try{
+			const res_select_one = await this.select_one(query);
+			const equal_values:Equals<A> = {} as Equals<A>;
+			for(const partial_atom of partial_atoms){
+				for(const k of unique_keys){
+					if(partial_atom[k] === res_select_one[k]){
+						equal_values[k] = res_select_one[k];
+					}
+				}
+			}
+			let err_msg = `Atom unique fields are already in the database.`;
+			err_msg += ` Duplicate fields: ${urn_util.json.safe_stringify_oneline(equal_values)}.`;
+			throw urn_exc.create_invalid_request('CHECK_UNIQUE_DUPLICATE', err_msg);
+		}catch(e){
+			const err = e as any;
+			if(err.type && err.type === urn_exception.ExceptionType.NOT_FOUND){
+				return true;
+			}
+			throw err;
+		}
+		// return true;
+	}
+	
+	protected async _check_unique_multiple_ids(partial_atom:Partial<AtomShape<A>>, ids:string[])
+			:Promise<true>{
+		const $or = [];
+		const unique_keys = atm_keys.get_unique(this.atom_name);
+		for(const k of unique_keys){
+			$or.push({[k]: partial_atom[k]});
+		}
+		if($or.length === 0){
+			return true;
+		}
+		let query:Query<A> = {};
+		if(!Array.isArray(ids)){
+			throw urn_exc.create_invalid_request(
+				`INVALID_IDs`,
+				`Invalid \`ids\` parameters.`
+			);
+		}
+		for(const id of ids){
+			if(!this._db_relation.is_valid_id(id)){
+				throw urn_exc.create_invalid_request(
+					`INVALID_ID`,
+					`Invalid _id.`
+				);
+			}
+		}
+		query = {$and: [{_id: {$in: ids}}, {$or: $or}]} as Query<A>;
+		try{
+			const res_select_one = await this.select_one(query);
+			const equal_values:Set<keyof Atom<A>> = new Set();
+			for(const k of unique_keys){
+				if(partial_atom[k] === res_select_one[k]){
+					equal_values.add(k);
+				}
+			}
+			let err_msg = `Atom unique fields are already in the database.`;
+			err_msg += ` Duplicate fields: ${urn_util.json.safe_stringify_oneline(equal_values)}.`;
+			throw urn_exc.create_invalid_request('CHECK_UNIQUE_DUPLICATE', err_msg);
+		}catch(e){
+			const err = e as any;
+			if(err.type && err.type === urn_exception.ExceptionType.NOT_FOUND){
+				return true;
+			}
+			throw err;
+		}
+		// return true;
 	}
 	
 	protected async _check_unique(partial_atom:Partial<AtomShape<A>>, id?:string)

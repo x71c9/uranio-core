@@ -28,7 +28,7 @@ export interface AccessLayer<A extends AtomName> {
 	
 	authorize(action:AuthAction, id?:string):Promise<true>
 	
-	select_multiple<D extends Depth>(ids:string[], options?:Query.Options<A,D>):Promise<Molecule<A,D>[]>
+	// select_multiple<D extends Depth>(ids:string[], options?:Query.Options<A,D>):Promise<Molecule<A,D>[]>
 	
 	alter_multiple(ids:string[], partial_atom:Partial<AtomShape<A>>):Promise<Atom<A>[]>
 	
