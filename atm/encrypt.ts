@@ -40,8 +40,8 @@ export async function property<A extends AtomName>
 }
 
 export async function properties<A extends AtomName>(atom_name:A, atom:AtomShape<A>):Promise<AtomShape<A>>
-export async function properties<A extends AtomName>(atom_name:A, atom:Partial<AtomShape<A>>)
-		:Promise<Partial<AtomShape<A>>>{
+export async function properties<A extends AtomName>(atom_name:A, atom:Partial<AtomShape<A>>):Promise<Partial<AtomShape<A>>>
+export async function properties<A extends AtomName>(atom_name:A, atom:AtomShape<A> | Partial<AtomShape<A>>):Promise<AtomShape<A> | Partial<AtomShape<A>>>{
 	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	let k:keyof AtomShape<A>;

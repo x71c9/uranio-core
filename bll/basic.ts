@@ -91,8 +91,13 @@ export class BasicBLL<A extends AtomName> {
 	
 	public async find_multiple<D extends Depth>(ids:string[], options?:Query.Options<A,D>)
 			:Promise<Molecule<A,D>[]>{
-		return await this._al.select_multiple(ids, options);
+		return await this._al.select({_id: {$in: ids}} as Query<A>, options);
 	}
+	
+	// public async find_multiple<D extends Depth>(ids:string[], options?:Query.Options<A,D>)
+	//     :Promise<Molecule<A,D>[]>{
+	//   return await this._al.select_multiple(ids, options);
+	// }
 	
 	public async update_multiple(ids:string[], partial_atom:Partial<AtomShape<A>>)
 			:Promise<Atom<A>[]>{

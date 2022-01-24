@@ -143,11 +143,11 @@ export class MediaBLL extends BLL<'media'>{
 		return this._with_full_src(resp);
 	}
 	
-	public async find_multiple<D extends Depth>(ids:string[])
-			:Promise<Molecule<'media',D>[]>{
-		const resp = await this._al.select_multiple<D>(ids);
-		return this._with_full_src(resp);
-	}
+	// public async find_multiple<D extends Depth>(ids:string[])
+	//     :Promise<Molecule<'media',D>[]>{
+	//   const resp = await this._al.select_multiple<D>(ids);
+	//   return this._with_full_src(resp);
+	// }
 	
 	public async insert_multiple(atom_shapes:AtomShape<'media'>[])
 			:Promise<Atom<'media'>[]>{

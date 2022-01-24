@@ -201,6 +201,63 @@ export class MongooseRelation<A extends AtomName> implements Relation<A> {
 		return _clean_atom(this.atom_name, mon_delete_res.toObject() as Atom<A>);
 	}
 	
+	public async alter_multiple(ids:string[], partial_atom:Partial<AtomShape<A>>)
+			:Promise<Atom<A>[]>{
+		for(const id of ids){
+			if(typeof id !== 'string' || id === '' || !this.is_valid_id(id)){
+				const err_msg = `Cannot alter_multiple. Invalid id.`;
+				throw urn_exc.create_invalid_request('ALTER_MULTIPLE_INVALID_ID', err_msg);
+			}
+		}
+		const $unset = _find_unsets(this.atom_name, partial_atom);
+		partial_atom = _clean_unset(this.atom_name, partial_atom);
+		const update = {
+			$set: partial_atom,
+			$unset: $unset
+		};
+		const mon_update_res =
+			await this._raw.update({_id: {$in: ids}}, update, {new: true, lean: true}) as unknown;
+		if(mon_update_res === null){
+			throw urn_exc.create_not_found('ALTER_MULTIPLE_ID_NOT_FOUND', `Cannot alter_multiple. Records not found.`);
+		}
+		return _clean_atoms<A>(this.atom_name, mon_update_res as Atom<A>[]);
+	}
+	
+	public async insert_multiple(atom_shapes:AtomShape<A>[])
+			:Promise<Atom<A>[]>{
+		const shapes_no_id:AtomShape<A>[] = [];
+		for(const atom_shape of atom_shapes){
+			if(urn_util.object.has_key(atom_shape, '_id')){
+				delete (atom_shape as any)._id;
+			}
+			shapes_no_id.push(atom_shape);
+		}
+		const mon_insert_many_res = await this._raw.insertMany(shapes_no_id, {lean: true}) as unknown;
+		if(!Array.isArray(mon_insert_many_res)){
+			throw urn_exc.create('INSERT_MULTIPLE_FAILED', `Cannot insert_multiple.`);
+		}
+		return _clean_atoms<A>(this.atom_name, mon_insert_many_res as Atom<A>[]);
+	}
+	
+	public async delete_multiple(ids:string[]):Promise<Atom<A>[]>{
+		for(const id of ids){
+			if(typeof id !== 'string' || id === '' || !this.is_valid_id(id)){
+				const err_msg = `Cannot delete_by_id. Invalid id param.`;
+				throw urn_exc.create_invalid_request('DEL_BY_ID_INVALID_ID', err_msg);
+			}
+		}
+		const mon_delete_res =
+			await this._raw.deleteMany({_id: {$in: ids}});
+		if(!Array.isArray(mon_delete_res)){
+			throw urn_exc.create_not_found('DEL_MULTIPLE_NOT_FOUND', `Cannot delete_multiple.`);
+		}
+		const cleaned_atoms:Atom<A>[] = [];
+		for(const db_atom of mon_delete_res){
+			cleaned_atoms.push(_clean_atom(this.atom_name, db_atom.toObject() as Atom<A>));
+		}
+		return cleaned_atoms;
+	}
+	
 	public is_valid_id(id:string)
 		:boolean{
 		return _is_valid_id(id);
@@ -279,6 +336,14 @@ function _generate_populate_obj<A extends AtomName>(atom_name:A, depth?:number, 
 	return populate_object;
 }
 	
+function _clean_atoms<A extends AtomName>(atom_name:A, atoms:Atom<A>[]):Atom<A>[]{
+	const cleaned_atoms:Atom<A>[] = [];
+	for(const atom of atoms){
+		cleaned_atoms.push(_clean_atom(atom_name, atom));
+	}
+	return cleaned_atoms;
+}
+
 function _clean_atom<A extends AtomName>(atom_name:A, atom:Atom<A>)
 		:Atom<A>{
 	if(atom._id){

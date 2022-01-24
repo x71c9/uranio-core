@@ -34,11 +34,9 @@ export class RecycleDAL<A extends AtomName> extends EncryptDAL<A>{
 	
 	private _trash_dal?:BasicDAL<A>;
 	
-	constructor(atom_name:A) {
-		
-		super(atom_name);
-		
-	}
+	// constructor(atom_name:A) {
+	//   super(atom_name);
+	// }
 	
 	public get trash_dal():BasicDAL<A>{
 		if(this._trash_dal === undefined){
@@ -72,6 +70,20 @@ export class RecycleDAL<A extends AtomName> extends EncryptDAL<A>{
 		// db_res_delete._id = id;
 		return db_res_delete;
 	}
+	
+	public async delete_multiple(ids:string[])
+			:Promise<Atom<A>[]>{
+		const db_res_delete = await super.delete_multiple(ids);
+		if(!this.trash_dal)
+			return db_res_delete;
+		for(const del of db_res_delete){
+			del._deleted_from = del._id;
+		}
+		await this.trash_dal.insert_multiple(db_res_delete);
+		// db_res_delete._id = id;
+		return db_res_delete;
+	}
+	
 }
 
 export function create_recycle<A extends AtomName>(atom_name:A)
