@@ -203,7 +203,7 @@ export type ConnectionInstance = InstanceType<typeof MongooseDBConnection>;
 
 export function create(con_name:ConnectionName, mongo_connection:string, db_name:string)
 		:ConnectionInstance{
-	urn_log.debug(`Create MongooseDBConnection [${con_name}]`);
+	urn_log.fn_debug(`Create MongooseDBConnection [${con_name}]`);
 	return new MongooseDBConnection(con_name, mongo_connection, db_name);
 }
 
