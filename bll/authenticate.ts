@@ -12,8 +12,6 @@ import {urn_util, urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 
-// import {atom_book} from 'uranio-books/atom';
-
 import * as conf from '../conf/';
 
 import {
@@ -112,7 +110,6 @@ export function create<A extends AuthName>(atom_name:A)
 
 export function is_public_request<A extends AtomName>(atom_name:A, action: AuthAction)
 		:boolean{
-	// const atom_def = atom_book[atom_name] as Book.BasicDefinition;
 	const atom_def = book.atom.get_definition(atom_name);
 	
 	if(action === AuthAction.READ){

@@ -4,8 +4,6 @@
  * @packageDocumentation
  */
 
-// import {atom_book} from 'uranio-books/atom';
-
 import {
 	AtomName,
 	Atom,
@@ -26,7 +24,6 @@ import * as book from '../book/client';
 export function get_optional<A extends AtomName>(atom_name:A)
 		:Set<keyof Atom<A>>{
 	const optional_keys = new Set<keyof Atom<A>>();
-	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
@@ -47,7 +44,6 @@ export function get_optional<A extends AtomName>(atom_name:A)
 export function get_hidden<A extends AtomName>(atom_name:A)
 		:Set<keyof Atom<A>>{
 	const hidden_keys = new Set<keyof Atom<A>>();
-	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
@@ -68,7 +64,6 @@ export function get_hidden<A extends AtomName>(atom_name:A)
 export function get_encrypted<A extends AtomName>(atom_name:A)
 		:Set<keyof Atom<A>>{
 	const encrypt_keys = new Set<keyof Atom<A>>();
-	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
@@ -91,7 +86,6 @@ export function get_encrypted<A extends AtomName>(atom_name:A)
 export function get_unique<A extends AtomName>(atom_name:A)
 		:Set<keyof AtomShape<A>>{
 	const unique_keys = new Set<keyof AtomShape<A>>();
-	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
@@ -112,7 +106,6 @@ export function get_unique<A extends AtomName>(atom_name:A)
 export function get_bond<A extends AtomName>(atom_name:A)
 		:Set<keyof Molecule<A>>{
 	const subatom_keys = new Set<keyof Molecule<A>>();
-	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
@@ -126,7 +119,6 @@ export function get_bond<A extends AtomName>(atom_name:A)
 export function get_bond_array<A extends AtomName>(atom_name:A)
 		:Set<keyof AtomShape<A>>{
 	const subatom_keys = new Set<keyof AtomShape<A>>();
-	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
@@ -140,7 +132,6 @@ export function get_bond_array<A extends AtomName>(atom_name:A)
 export function get_bond_non_array<A extends AtomName>(atom_name:A)
 		:Set<keyof AtomShape<A>>{
 	const subatom_keys = new Set<keyof AtomShape<A>>();
-	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;

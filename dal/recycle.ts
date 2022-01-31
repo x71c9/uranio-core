@@ -9,8 +9,6 @@
 
 import {urn_log} from 'urn-lib';
 
-// import {atom_book} from 'uranio-books/atom';
-
 import * as urn_rel from '../rel/';
 
 import {
@@ -41,7 +39,6 @@ export class RecycleDAL<A extends AtomName> extends EncryptDAL<A>{
 	public get trash_dal():BasicDAL<A>{
 		if(this._trash_dal === undefined){
 			let db_trash_relation:urn_rel.Relation<A>;
-			// const atom_def = atom_book[this.atom_name] as Book.BasicDefinition;
 			const atom_def = book.atom.get_definition(this.atom_name);
 			if(!atom_def.connection || atom_def.connection === 'main'){
 				switch(conf.get(`db_type`)){

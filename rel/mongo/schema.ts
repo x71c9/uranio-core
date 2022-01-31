@@ -4,8 +4,6 @@
  * @packageDocumentation
  */
 
-// import {atom_book} from 'uranio-books/atom';
-
 import mongoose from 'mongoose';
 
 import {urn_util} from 'urn-lib';
@@ -27,12 +25,6 @@ import {BookPropertyType} from '../../typ/common';
 
 export function generate_mongo_schema_def<A extends AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{
-	// const prop_defs = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	// const properties = {
-	//   ...atom_hard_properties,
-	//   ...atom_common_properties,
-	//   ...prop_defs
-	// };
 	const properties = book.atom.get_all_property_definitions(atom_name);
 	let mongoose_schema_def = {};
 	for(const [k,v] of Object.entries(properties)){

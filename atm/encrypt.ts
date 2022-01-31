@@ -4,8 +4,6 @@
  * @packageDocumentation
  */
 
-// import {atom_book} from 'uranio-books/atom';
-
 import bcrypt from 'bcryptjs';
 
 import {urn_util} from 'urn-lib';
@@ -27,8 +25,6 @@ import {
 export async function property<A extends AtomName>
 (atom_name:A, prop_key:keyof Atom<A>, prop_value:string)
 		:Promise<string>{
-	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	// const prop_defs = book.get_custom_property_definitions(atom_name);
 	const prop_def = book.atom.get_property_definition(atom_name, prop_key as string);
 	validate.encrypt_property(prop_key, prop_def as Book.Definition.Property.Encrypted, prop_value);
 	// *********
@@ -42,7 +38,6 @@ export async function property<A extends AtomName>
 export async function properties<A extends AtomName>(atom_name:A, atom:AtomShape<A>):Promise<AtomShape<A>>
 export async function properties<A extends AtomName>(atom_name:A, atom:Partial<AtomShape<A>>):Promise<Partial<AtomShape<A>>>
 export async function properties<A extends AtomName>(atom_name:A, atom:AtomShape<A> | Partial<AtomShape<A>>):Promise<AtomShape<A> | Partial<AtomShape<A>>>{
-	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	let k:keyof AtomShape<A>;
 	for(k in atom){
