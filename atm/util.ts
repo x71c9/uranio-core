@@ -162,19 +162,6 @@ function _hide_hidden_properties_single_molecule<A extends AtomName, D extends D
 
 export function is_optional_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>)
 		:boolean{
-	// const atom_props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
-	// let prop_def = undefined;
-	// if(urn_util.object.has_key(atom_hard_properties, key)){
-	//   prop_def = atom_hard_properties[key];
-	// }else if(urn_util.object.has_key(atom_common_properties, key)){
-	//   prop_def = atom_common_properties[key];
-	// }else if(urn_util.object.has_key(atom_props, key)){
-	//   prop_def = atom_props[key];
-	// }
-	// if(!prop_def){
-	//   const err_msg = `Atom property definition missing for atom \`${atom_name}\` property \`${key}\``;
-	//   throw urn_exc.create('IS_OPTIONAL_MISSING_ATM_PROP_DEFINITION', err_msg);
-	// }
 	const prop_def = book.atom.get_property_definition(atom_name, key as string);
 	return (
 		prop_def &&
@@ -187,16 +174,6 @@ export function has_property<A extends AtomName>(atom_name:A, key:string):boolea
 export function has_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>):boolean;
 export function has_property<A extends AtomName>(atom_name:A, key:keyof Atom<A>|string)
 		:boolean{
-	// if(urn_util.object.has_key(atom_hard_properties, key)){
-	//   return true;
-	// }
-	// if(urn_util.object.has_key(atom_common_properties, key)){
-	//   return true;
-	// }
-	// if(urn_util.object.has_key(atom_book[atom_name]['properties'], key)){
-	//   return true;
-	// }
-	// return false;
 	return book.atom.has_property(atom_name, key as string);
 }
 

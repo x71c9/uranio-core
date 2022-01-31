@@ -4,8 +4,6 @@
  * @packageDocumentation
  */
 
-// import {atom_book} from 'uranio-books/atom';
-
 import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init(`VALIDATION`, `Validate module`);
@@ -136,7 +134,6 @@ export function encrypt_property<A extends AtomName>(
 
 function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomShape<A>)
 		:true{
-	// const atom_props = atom_book[atom_name]['properties'];
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	const missin_props:string[] = [];
 	for(const [k] of Object.entries(prop_defs)){
@@ -159,7 +156,6 @@ function _has_all_properties<A extends AtomName>(atom_name:A, atom_shape:AtomSha
 
 function _has_no_other_properties<A extends AtomName>(atom_name:A, partial_atom:Partial<AtomShape<A>>)
 		:true{
-	// const atom_props = atom_book[atom_name]['properties'];
 	const prop_defs = book.atom.get_custom_property_definitions(atom_name);
 	const extra_props:string[] = [];
 	for(const k in partial_atom){
@@ -207,7 +203,6 @@ function _validate_primitive_properties<A extends AtomName>(
 	atom_name:A,
 	partial_atom:Partial<AtomShape<A>>
 ):true{
-	// const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const props = book.atom.get_custom_property_definitions(atom_name);
 	let k:keyof typeof partial_atom;
 	for(k in partial_atom){
@@ -244,7 +239,6 @@ function _validate_partial_atom_bond_properties<A extends AtomName>(
 	atom_name:A,
 	partial_atom:Partial<AtomShape<A>>
 ):true{
-	// const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const props = book.atom.get_custom_property_definitions(atom_name);
 	let k:keyof typeof partial_atom;
 	for(k in partial_atom){
@@ -283,7 +277,6 @@ function _validate_molecule_bond_properties<A extends AtomName, D extends Depth>
 	molecule: Molecule<A,D>,
 	depth?:D
 ):true{
-	// const props = atom_book[atom_name]['properties'] as Book.Definition.Properties;
 	const props = book.atom.get_custom_property_definitions(atom_name);
 	const bond_keys = atm_keys.get_bond(atom_name);
 	for(const k of bond_keys){
