@@ -25,7 +25,7 @@
 		"express-fileupload": "^1.2.1",
 		"jsonwebtoken": "^8.5.1",
 		"module-alias": "^2.2.2",
-		"mongoose": "^6.1.10",
+		"mongoose": "^5.11.15",
 		"saslprep": "^1.0.3",
 		"uranio-schema": "ssh://git@github.com/nbl7/uranio-schema.git",
 		"urn-lib": "ssh://git@github.com/nbl7/uranio-lib.git"
