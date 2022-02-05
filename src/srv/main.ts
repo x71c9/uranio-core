@@ -14,9 +14,9 @@ import * as bll from '../bll/';
 
 export {bll};
 
-import * as atm from '../atm/';
+import * as atom from '../atm/';
 
-export {atm};
+export {atom};
 
 import * as book from '../book/';
 
@@ -29,6 +29,10 @@ export {db};
 import * as conf from '../conf/';
 
 export {conf};
+
+import * as util from '../util/';
+
+export {util};
 
 /*
  * First level methods.

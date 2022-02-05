@@ -27,20 +27,22 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.conf = exports.db = exports.book = exports.atm = exports.bll = exports.types = void 0;
+exports.util = exports.conf = exports.db = exports.book = exports.atom = exports.bll = exports.types = void 0;
 const types = __importStar(require("./types"));
 exports.types = types;
 __exportStar(require("../sch/"), exports);
 const bll = __importStar(require("../bll/"));
 exports.bll = bll;
-const atm = __importStar(require("../atm/"));
-exports.atm = atm;
+const atom = __importStar(require("../atm/"));
+exports.atom = atom;
 const book = __importStar(require("../book/"));
 exports.book = book;
 const db = __importStar(require("../db/"));
 exports.db = db;
 const conf = __importStar(require("../conf/"));
 exports.conf = conf;
+const util = __importStar(require("../util/"));
+exports.util = util;
 /*
  * First level methods.
  * If other methods are added, urn-cli must be updated.
