@@ -1,9 +1,9 @@
 {
-	"name": "new-uranio-core",
+	"name": "uranio-core",
 	"version": "0.0.1",
 	"description": "Uranio core",
 	"main": "dist/index.js",
-	"repository": "git@github.com:nbl7/new-uranio-core.git",
+	"repository": "git@github.com:nbl7/uranio-core.git",
 	"author": "Andrea Reni <mail@nbl7.net>",
 	"scripts": {
 		"dev": "npx tsc-watch --onSuccess \"node -r source-map-support/register -r dotenv/config ./dist/run.js\""
