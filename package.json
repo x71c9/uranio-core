@@ -1,6 +1,6 @@
 {
 	"name": "uranio-core",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Uranio core",
 	"main": "dist/index.js",
 	"repository": "git@github.com:nbl7/uranio-core.git",
