@@ -1,4 +1,7 @@
 node_modules/
 *.swp
 .env
+yarn.lock
+package-lock.json
+yarn-error.json
 
