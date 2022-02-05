@@ -14,7 +14,7 @@ import {atom_book} from '../book';
 
 import * as common from './common';
 
-export function add(atom_name:string, atom_definition:Book.Definition):Book{
+export function add_definition(atom_name:string, atom_definition:Book.Definition):Book{
 	const atom_book_def:Book = {};
 	atom_book_def[atom_name] = atom_definition;
 	Object.assign(atom_book, {...atom_book_def, ...atom_book});

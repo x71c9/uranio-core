@@ -5,7 +5,7 @@
  */
 import { Book } from '../typ/book_srv';
 import { schema } from '../sch/';
-export declare function add(atom_name: string, atom_definition: Book.Definition): Book;
+export declare function add_definition(atom_name: string, atom_definition: Book.Definition): Book;
 export declare function get_names(): schema.AtomName[];
 export declare function validate_name(atom_name: string): boolean;
 export declare function get_all_definitions(): Book;
