@@ -2608,6 +2608,10 @@ unbox-primitive@^1.0.1:
     tsc-watch "^4.5.0"
     typescript "^4.4.3"
 
+"uranio-schema@ssh://git@github.com/nbl7/uranio-schema.git":
+  version "0.0.1"
+  resolved "ssh://git@github.com/nbl7/uranio-schema.git#6e6901b1346cee49b37cb9fecbb324777df5509e"
+
 uri-js@^4.2.2:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/uri-js/-/uri-js-4.4.1.tgz#9b1a52595225859e55f669d928f88c6c57f2a77e"
