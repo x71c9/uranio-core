@@ -67,11 +67,23 @@ export function generate():void{
 	
 	txt += _generate_atom_type(atom_names);
 	
+	txt += _generate_last_export();
+	
 	const caller_path = caller();
 	const declaraion_path = `${path.dirname(caller_path)}/schema/index.d.ts`;
 	_replace_text(declaraion_path, txt);
 	
 	urn_log.debug(`Schema generated.`);
+}
+
+/**
+ * This syntax is needed in order to make the declaration exports only types
+ * with `export` in front.
+ * Without this the declaration file will export all the types defined
+ * in the module, also the ones without `export`
+ */
+function _generate_last_export(){
+	return '\n\n\texport {};'
 }
 
 function _replace_text(path:string, txt:string){

@@ -64,12 +64,22 @@ function generate() {
     txt += _generate_atom_types(atom_names);
     txt += _generate_atom_shape_type(atom_names);
     txt += _generate_atom_type(atom_names);
+    txt += _generate_last_export();
     const caller_path = (0, caller_1.default)();
     const declaraion_path = `${path_1.default.dirname(caller_path)}/schema/index.d.ts`;
     _replace_text(declaraion_path, txt);
     urn_lib_1.urn_log.debug(`Schema generated.`);
 }
 exports.generate = generate;
+/**
+ * This syntax is needed in order to make the declaration exports only types
+ * with `export` in front.
+ * Without this the declaration file will export all the types defined
+ * in the module, also the ones without `export`
+ */
+function _generate_last_export() {
+    return '\n\n\texport {};';
+}
 function _replace_text(path, txt) {
     if (!fs_1.default.existsSync(path)) {
         fs_1.default.writeFileSync(path, '');
