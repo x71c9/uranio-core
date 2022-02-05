@@ -10,12 +10,6 @@ export {types};
 
 export * from '../sch/';
 
-// import * as schema from '../sch/';
-
-// schema.
-
-// export {schema};
-
 import * as bll from '../bll/';
 
 export {bll};
