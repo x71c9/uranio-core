@@ -71,8 +71,19 @@ export function generate():void{
 	
 	txt += _generate_last_export();
 	
-	const caller_path = caller();
-	const declaraion_path = `${path.dirname(caller_path)}/schema/index.d.ts`;
+	let root_path = '.';
+	for(const argv of process.argv){
+		const splitted = argv.split('=');
+		if(
+			splitted[0] === 'urn_generate_src'
+			&& typeof splitted[1] === 'string'
+			&& splitted[1] !== ''
+		){
+			root_path = splitted[1];
+		}
+	}
+	// const caller_path = caller();
+	const declaraion_path = `${root_path}/schema/index.d.ts`;
 	_replace_text(declaraion_path, txt);
 	
 	urn_log.debug(`Schema generated.`);
@@ -85,7 +96,7 @@ export function generate():void{
  * in the module, also the ones without `export`
  */
 function _generate_last_export(){
-	return '\n\n\texport {};'
+	return '\n\n\texport {};';
 }
 
 function _replace_text(path:string, txt:string){

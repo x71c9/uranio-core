@@ -29,8 +29,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generate = void 0;
 const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
-const caller_1 = __importDefault(require("caller"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 const stc_1 = require("../stc/");
@@ -66,8 +64,17 @@ function generate() {
     txt += _generate_atom_shape_type(atom_names);
     txt += _generate_atom_type(atom_names);
     txt += _generate_last_export();
-    const caller_path = (0, caller_1.default)();
-    const declaraion_path = `${path_1.default.dirname(caller_path)}/schema/index.d.ts`;
+    let root_path = '.';
+    for (const argv of process.argv) {
+        const splitted = argv.split('=');
+        if (splitted[0] === 'urn_generate_src'
+            && typeof splitted[1] === 'string'
+            && splitted[1] !== '') {
+            root_path = splitted[1];
+        }
+    }
+    // const caller_path = caller();
+    const declaraion_path = `${root_path}/schema/index.d.ts`;
     _replace_text(declaraion_path, txt);
     urn_lib_1.urn_log.debug(`Schema generated.`);
 }
