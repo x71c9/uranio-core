@@ -14,8 +14,8 @@ exports.atom_book = {
         authenticate: true,
         plural: 'superusers',
         security: {
-            type: "UNIFORM" /* UNIFORM */,
-            _r: "NOBODY" /* NOBODY */
+            type: book_srv_1.BookSecurity.UNIFORM,
+            _r: book_srv_1.BookPermission.NOBODY
         },
         properties: {
             email: {
@@ -47,7 +47,7 @@ exports.atom_book = {
         authenticate: true,
         plural: 'users',
         security: {
-            type: "GRANULAR" /* GRANULAR */
+            type: book_srv_1.BookSecurity.GRANULAR
         },
         properties: {
             email: {

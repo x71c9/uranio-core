@@ -13,7 +13,17 @@
  * @packageDocumentation
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BookProperty = void 0;
+exports.BookPermission = exports.BookSecurity = exports.BookProperty = void 0;
 const book_cln_1 = require("./book_cln");
 Object.defineProperty(exports, "BookProperty", { enumerable: true, get: function () { return book_cln_1.BookProperty; } });
+var BookSecurity;
+(function (BookSecurity) {
+    BookSecurity["UNIFORM"] = "UNIFORM";
+    BookSecurity["GRANULAR"] = "GRANULAR";
+})(BookSecurity = exports.BookSecurity || (exports.BookSecurity = {}));
+var BookPermission;
+(function (BookPermission) {
+    BookPermission["NOBODY"] = "NOBODY";
+    BookPermission["PUBLIC"] = "PUBLIC";
+})(BookPermission = exports.BookPermission || (exports.BookPermission = {}));
 //# sourceMappingURL=book_srv.js.map

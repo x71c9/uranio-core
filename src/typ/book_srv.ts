@@ -28,12 +28,12 @@ export {BookProperty};
 
 import * as book_cln from './book_cln';
 
-export const enum BookSecurity {
+export enum BookSecurity {
 	UNIFORM = 'UNIFORM',
 	GRANULAR = 'GRANULAR'
 }
 
-export const enum BookPermission {
+export enum BookPermission {
 	NOBODY = 'NOBODY',
 	PUBLIC = 'PUBLIC'
 }
