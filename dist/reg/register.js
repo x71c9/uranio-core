@@ -23,19 +23,27 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.register = void 0;
-// import path from 'path';
-// import caller from 'caller';
-// import {urn_log} from 'urn-lib';
+const path_1 = __importDefault(require("path"));
+const caller_1 = __importDefault(require("caller"));
+const urn_lib_1 = require("urn-lib");
 const book = __importStar(require("../book/"));
-function register(atom_name, atom_definition) {
-    // const caller_path = caller();
-    // urn_log.debug(`Register Caller: ${caller_path}`);
-    // const dirname = path.dirname(caller_path);
-    // const atom_dir_name = dirname.split('/').slice(-1)[0];
-    // book.add_definition(atom_dir_name, atom_definition);
-    book.add_definition(atom_name, atom_definition);
+function register(atom_definition, atom_name) {
+    let final_atom_name = `undefined_atom`;
+    if (!atom_name) {
+        const caller_path = (0, caller_1.default)();
+        console.log(caller_path);
+        const dirname = path_1.default.dirname(caller_path);
+        final_atom_name =
+            dirname.split('/').slice(-1)[0].replace('.', '_').replace('-', '_');
+    }
+    urn_lib_1.urn_log.debug(`Registering atom [${final_atom_name}]...`);
+    book.add_definition(final_atom_name, atom_definition);
+    urn_lib_1.urn_log.debug(`Atom [${final_atom_name}] registered.`);
     return atom_definition;
 }
 exports.register = register;
