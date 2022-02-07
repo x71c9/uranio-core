@@ -15,7 +15,7 @@ const urn_exc = urn_exception.init('BOOK_METHODS_MODULE', `Book methods module`)
 
 import {schema} from '../sch/';
 
-import {atom_book} from '../book';
+import {atom_book} from '../base';
 
 // import {
 //   schema.AtomName,

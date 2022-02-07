@@ -10,7 +10,7 @@ import {Book} from '../typ/book_srv';
 
 import {schema} from '../sch/';
 
-import {atom_book} from '../book';
+import {atom_book} from '../base';
 
 import * as common from './common';
 
