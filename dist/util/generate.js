@@ -39,7 +39,7 @@ const types = __importStar(require("../types"));
 function generate() {
     urn_lib_1.urn_log.debug('Generating uranio schema...');
     const atom_book = book.get_all_definitions();
-    urn_lib_1.urn_log.debug(atom_book);
+    // urn_log.debug(atom_book);
     const atom_names = [];
     const auth_names = [];
     const log_names = [];

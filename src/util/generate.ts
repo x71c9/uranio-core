@@ -28,7 +28,7 @@ export function generate():void{
 	
 	const atom_book = book.get_all_definitions();
 	
-	urn_log.debug(atom_book);
+	// urn_log.debug(atom_book);
 	
 	const atom_names:string[] = [];
 	const auth_names:string[] = [];
