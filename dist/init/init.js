@@ -209,7 +209,7 @@ function _validate_acl_reference_consistency() {
     for (const [atom_name, atom_def] of Object.entries(atom_defs)) {
         if (atom_def
             && typeof atom_def.security !== 'string'
-            && ((_a = atom_def.security) === null || _a === void 0 ? void 0 : _a.type) === "UNIFORM" /* UNIFORM */
+            && ((_a = atom_def.security) === null || _a === void 0 ? void 0 : _a.type) === types.BookSecurity.UNIFORM
             && typeof ((_b = atom_def.security) === null || _b === void 0 ? void 0 : _b._r) !== 'undefined') {
             not_public_atoms.push(atom_name);
         }

@@ -17,11 +17,11 @@ import { Passport } from './auth';
 import { BookProperty } from './book_cln';
 export { BookProperty };
 import * as book_cln from './book_cln';
-export declare const enum BookSecurity {
+export declare enum BookSecurity {
     UNIFORM = "UNIFORM",
     GRANULAR = "GRANULAR"
 }
-export declare const enum BookPermission {
+export declare enum BookPermission {
     NOBODY = "NOBODY",
     PUBLIC = "PUBLIC"
 }

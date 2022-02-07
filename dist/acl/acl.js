@@ -58,6 +58,7 @@ const urn_exc = urn_lib_1.urn_exception.init('ACL', 'Access Control Module');
 const urn_dal = __importStar(require("../dal/"));
 const atm_keys = __importStar(require("../atm/keys"));
 const atm_util = __importStar(require("../atm/util"));
+const book_srv_1 = require("../typ/book_srv");
 const auth_1 = require("../typ/auth");
 const book = __importStar(require("../book/"));
 let ACL = class ACL {
@@ -67,12 +68,12 @@ let ACL = class ACL {
         this._dal = urn_dal.create(atom_name);
         const atom_def = book.get_definition(atom_name);
         const security = atom_def['security'];
-        this._security_type = "UNIFORM" /* UNIFORM */;
+        this._security_type = book_srv_1.BookSecurity.UNIFORM;
         this._read = undefined;
         this._write = undefined;
         if (security) {
             if (typeof security === 'string') {
-                if (security === "GRANULAR" /* GRANULAR */) {
+                if (security === book_srv_1.BookSecurity.GRANULAR) {
                     this._security_type = security;
                 }
             }
@@ -84,15 +85,15 @@ let ACL = class ACL {
         this._read_query = { $or: [{ _r: { $exists: 0 } }, { _r: { $in: user_groups } }] };
     }
     _can_uniform_read() {
-        if (this._security_type === "UNIFORM" /* UNIFORM */) {
-            if (this._read === "NOBODY" /* NOBODY */ || (this._read && !this.user_groups.includes(this._read))) {
+        if (this._security_type === book_srv_1.BookSecurity.UNIFORM) {
+            if (this._read === book_srv_1.BookPermission.NOBODY || (this._read && !this.user_groups.includes(this._read))) {
                 throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Read unauthorized');
             }
         }
     }
     _can_uniform_write() {
-        if (this._security_type === "UNIFORM" /* UNIFORM */) {
-            if (this._write !== "PUBLIC" /* PUBLIC */ && (!this._write || !this.user_groups.includes(this._write))) {
+        if (this._security_type === book_srv_1.BookSecurity.UNIFORM) {
+            if (this._write !== book_srv_1.BookPermission.PUBLIC && (!this._write || !this.user_groups.includes(this._write))) {
                 throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Write unauthorized');
             }
         }
@@ -148,7 +149,7 @@ let ACL = class ACL {
     }
     async select(query, options) {
         this._can_uniform_read();
-        if (this._security_type === "GRANULAR" /* GRANULAR */) {
+        if (this._security_type === book_srv_1.BookSecurity.GRANULAR) {
             query = { $and: [query, this._read_query] };
             if (!options) {
                 options = {};
@@ -165,7 +166,7 @@ let ACL = class ACL {
     async select_by_id(id, options) {
         this._can_uniform_read();
         let query = { _id: id };
-        if (options && this._security_type === "GRANULAR" /* GRANULAR */) {
+        if (options && this._security_type === book_srv_1.BookSecurity.GRANULAR) {
             query = { $and: [query, this._read_query] };
             // options.depth_query = query;
             options.depth_query = this._read_query;
@@ -174,7 +175,7 @@ let ACL = class ACL {
     }
     async select_one(query, options) {
         this._can_uniform_read();
-        if (this._security_type === "GRANULAR" /* GRANULAR */) {
+        if (this._security_type === book_srv_1.BookSecurity.GRANULAR) {
             query = { $and: [query, this._read_query] };
             if (!options) {
                 options = {};
@@ -186,7 +187,7 @@ let ACL = class ACL {
     }
     async count(query) {
         this._can_uniform_read();
-        if (this._security_type === "GRANULAR" /* GRANULAR */) {
+        if (this._security_type === book_srv_1.BookSecurity.GRANULAR) {
             query = { $and: [query, this._read_query] };
         }
         return await this._dal.count(query);
@@ -197,14 +198,14 @@ let ACL = class ACL {
     }
     async alter_by_id(id, partial_atom) {
         this._can_uniform_write();
-        if (this._security_type === "GRANULAR" /* GRANULAR */) {
+        if (this._security_type === book_srv_1.BookSecurity.GRANULAR) {
             this._can_atom_write(id);
         }
         return await this._dal.alter_by_id(id, partial_atom);
     }
     async delete_by_id(id) {
         this._can_uniform_write();
-        if (this._security_type === "GRANULAR" /* GRANULAR */) {
+        if (this._security_type === book_srv_1.BookSecurity.GRANULAR) {
             this._can_atom_write(id);
         }
         const acl_res = await this._dal.delete_by_id(id);
@@ -216,7 +217,7 @@ let ACL = class ACL {
         }
         else if (action === auth_1.AuthAction.WRITE) {
             this._can_uniform_write();
-            if (typeof id !== 'undefined' && this._security_type === "GRANULAR" /* GRANULAR */) {
+            if (typeof id !== 'undefined' && this._security_type === book_srv_1.BookSecurity.GRANULAR) {
                 this._can_atom_write(id);
             }
         }
@@ -225,7 +226,7 @@ let ACL = class ACL {
     async select_multiple(ids, options) {
         this._can_uniform_read();
         let query = { _id: { $in: ids } };
-        if (this._security_type === "GRANULAR" /* GRANULAR */) {
+        if (this._security_type === book_srv_1.BookSecurity.GRANULAR) {
             query = { $and: [query, this._read_query] };
             if (!options) {
                 options = {};
@@ -241,7 +242,7 @@ let ACL = class ACL {
     }
     async alter_multiple(ids, partial_atom) {
         this._can_uniform_write();
-        if (this._security_type === "GRANULAR" /* GRANULAR */) {
+        if (this._security_type === book_srv_1.BookSecurity.GRANULAR) {
             this._can_atom_write_multiple(ids);
         }
         return await this._dal.alter_multiple(ids, partial_atom);
@@ -252,7 +253,7 @@ let ACL = class ACL {
     }
     async delete_multiple(ids) {
         this._can_uniform_write();
-        if (this._security_type === "GRANULAR" /* GRANULAR */) {
+        if (this._security_type === book_srv_1.BookSecurity.GRANULAR) {
             this._can_atom_write_multiple(ids);
         }
         const acl_res = await this._dal.delete_multiple(ids);
