@@ -10,7 +10,7 @@ import {urn_log} from 'urn-lib';
 
 import {schema} from '../sch/';
 
-import {atom_book} from '../book';
+import {atom_book} from '../base';
 
 import {Passport} from '../typ/auth';
 

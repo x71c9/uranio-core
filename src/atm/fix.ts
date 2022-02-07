@@ -56,7 +56,7 @@ export function property<A extends schema.AtomName, D extends schema.Depth>(
 		}else{
 			err_msg += ` Fix method not defined.`;
 			err_msg += ` Please define a \`default\` value or a \`on_error\` function`;
-			err_msg += ` in src/book.ts`;
+			err_msg += ` in atom definition.`;
 		}
 		err_msg += ` For schema.Atom \`${atom_name}\` property \`${key}\``;
 		throw urn_exc.create('CANNOT_FIX', err_msg);

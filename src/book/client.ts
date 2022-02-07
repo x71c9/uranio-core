@@ -10,7 +10,7 @@ import {schema} from '../sch/';
 
 // import {schema.AtomName} from '../../cln/types';
 
-import {atom_book} from '../book';
+import {atom_book} from '../base';
 
 export * from './common';
 

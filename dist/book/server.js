@@ -25,17 +25,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.has_property = exports.get_all_property_definitions = exports.get_custom_property_definitions = exports.get_property_definition = exports.get_definition = exports.get_all_definitions = exports.validate_name = exports.get_names = exports.add_definition = void 0;
-const book_1 = require("../book");
+const base_1 = require("../base");
 const common = __importStar(require("./common"));
 function add_definition(atom_name, atom_definition) {
     const atom_book_def = {};
     atom_book_def[atom_name] = atom_definition;
-    Object.assign(book_1.atom_book, { ...atom_book_def, ...book_1.atom_book });
-    return book_1.atom_book;
+    Object.assign(base_1.atom_book, { ...atom_book_def, ...base_1.atom_book });
+    return base_1.atom_book;
 }
 exports.add_definition = add_definition;
 function get_names() {
-    return Object.keys(book_1.atom_book);
+    return Object.keys(base_1.atom_book);
 }
 exports.get_names = get_names;
 function validate_name(atom_name) {
@@ -43,7 +43,7 @@ function validate_name(atom_name) {
 }
 exports.validate_name = validate_name;
 function get_all_definitions() {
-    return book_1.atom_book;
+    return base_1.atom_book;
 }
 exports.get_all_definitions = get_all_definitions;
 function get_definition(atom_name) {

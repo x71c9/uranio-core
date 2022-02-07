@@ -17,10 +17,10 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.get_names = void 0;
 // import {schema.AtomName} from '../../cln/types';
-const book_1 = require("../book");
+const base_1 = require("../base");
 __exportStar(require("./common"), exports);
 function get_names() {
-    return Object.keys(book_1.atom_book);
+    return Object.keys(base_1.atom_book);
 }
 exports.get_names = get_names;
 //# sourceMappingURL=client.js.map
