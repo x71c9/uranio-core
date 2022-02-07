@@ -34,7 +34,10 @@ const urn_lib_1 = require("urn-lib");
 const book = __importStar(require("../book/"));
 function register(atom_definition, atom_name) {
     let final_atom_name = `undefined_atom`;
-    if (!atom_name) {
+    if (atom_name) {
+        final_atom_name = atom_name;
+    }
+    else {
         const caller_path = (0, caller_1.default)();
         console.log(caller_path);
         const dirname = path_1.default.dirname(caller_path);
