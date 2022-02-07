@@ -6,9 +6,9 @@
 
 import fs from 'fs';
 
-import path from 'path';
+// import path from 'path';
 
-import caller from 'caller';
+// import caller from 'caller';
 
 import {urn_util, urn_exception, urn_log} from 'urn-lib';
 
@@ -71,20 +71,26 @@ export function generate():void{
 	
 	txt += _generate_last_export();
 	
-	let root_path = '.';
+	let output_path = '.';
+	let base_schema = './schema/index.d.ts';
 	for(const argv of process.argv){
 		const splitted = argv.split('=');
 		if(
-			splitted[0] === 'urn_generate_src'
+			splitted[0] === 'urn_generate_output'
 			&& typeof splitted[1] === 'string'
 			&& splitted[1] !== ''
 		){
-			root_path = splitted[1];
+			output_path = splitted[1];
+		}else if(
+			splitted[0] === 'urn_generate_base_schema'
+			&& typeof splitted[1] === 'string'
+			&& splitted[1] !== ''
+		){
+			base_schema = splitted[1];
 		}
 	}
 	// const caller_path = caller();
-	const declaraion_path = `${root_path}/schema/index.d.ts`;
-	_replace_text(declaraion_path, txt);
+	_replace_text(base_schema, output_path, txt);
 	
 	urn_log.debug(`Schema generated.`);
 }
@@ -99,11 +105,11 @@ function _generate_last_export(){
 	return '\n\n\texport {};';
 }
 
-function _replace_text(path:string, txt:string){
-	if(!fs.existsSync(path)){
-		fs.writeFileSync(path, '');
+function _replace_text(base_schema_path:string, output_path:string, txt:string){
+	if(!fs.existsSync(output_path)){
+		fs.writeFileSync(output_path, '');
 	}
-	const data = fs.readFileSync(path, {encoding: 'utf8'});
+	const data = fs.readFileSync(base_schema_path, {encoding: 'utf8'});
 	
 	const data_start = data.split('/** --uranio-generate-start */');
 	const data_end = data_start[1].split('/** --uranio-generate-end */');
@@ -115,7 +121,7 @@ function _replace_text(path:string, txt:string){
 	new_data += `/** --uranio-generate-end */`;
 	new_data += data_end[1];
 	
-	fs.writeFileSync(path, new_data);
+	fs.writeFileSync(output_path, new_data);
 }
 
 function _generate_atom_type(atom_names:string[]){
