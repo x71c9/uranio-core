@@ -30,9 +30,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.register = void 0;
 const path_1 = __importDefault(require("path"));
 const caller_1 = __importDefault(require("caller"));
+const urn_lib_1 = require("urn-lib");
 const book = __importStar(require("../book/"));
 function register(atom_definition) {
     const caller_path = (0, caller_1.default)();
+    urn_lib_1.urn_log.debug(`Register Caller: ${caller_path}`);
     const dirname = path_1.default.dirname(caller_path);
     const atom_dir_name = dirname.split('/').slice(-1)[0];
     book.add_definition(atom_dir_name, atom_definition);
