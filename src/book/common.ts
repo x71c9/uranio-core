@@ -51,27 +51,34 @@ export function get_property_definition<A extends schema.AtomName>(
 	atom_name:A,
 	property_name:keyof Book.Definition.Properties
 ):Book.Definition.Property{
-	const prop_defs = atom_book[atom_name].properties;
-	if(urn_util.object.has_key(prop_defs, property_name)){
-		return prop_defs[property_name];
-	}else if(urn_util.object.has_key(atom_hard_properties, property_name)){
-		return atom_hard_properties[property_name];
-	}else if(urn_util.object.has_key(atom_common_properties, property_name)){
-		return atom_common_properties[property_name];
+	// const prop_defs = atom_book[atom_name].properties;
+	// if(urn_util.object.has_key(prop_defs, property_name)){
+	//   return prop_defs[property_name];
+	// }else if(urn_util.object.has_key(atom_hard_properties, property_name)){
+	//   return atom_hard_properties[property_name];
+	// }else if(urn_util.object.has_key(atom_common_properties, property_name)){
+	//   return atom_common_properties[property_name];
+	// }
+	const all_prop_def = get_all_property_definitions(atom_name);
+	if(!urn_util.object.has_key(all_prop_def, property_name)){
+		throw urn_exc.create(
+			'INVALID_PROPERTY_NAME',
+			`Definition for \`${property_name}\` for Atom \`${atom_name}\` not found.`
+		);
 	}
-	throw urn_exc.create(
-		'INVALID_PROPERTY_NAME',
-		`Definition for \`${property_name}\` for schema.Atom \`${atom_name}\` not found.`
-	);
+	return all_prop_def[property_name];
 }
 
-export function get_custom_property_definitions<A extends schema.AtomName>(atom_name:A)
-		:Book.Definition.Properties{
+export function get_custom_property_definitions<A extends schema.AtomName>(
+	atom_name:A
+):Book.Definition.Properties{
 	const atom_def = atom_book[atom_name] as unknown as Book.Definition;
 	return atom_def.properties as Book.Definition.Properties;
 }
-export function get_all_property_definitions<A extends schema.AtomName>(atom_name:A)
-		:Book.Definition.Properties{
+
+export function get_all_property_definitions<A extends schema.AtomName>(
+	atom_name:A
+):Book.Definition.Properties{
 	const custom_defs = get_custom_property_definitions(atom_name);
 	const prop_defs = {
 		...atom_hard_properties,
@@ -94,3 +101,4 @@ export function has_property<A extends schema.AtomName>(atom_name:A, key:string)
 	}
 	return false;
 }
+
