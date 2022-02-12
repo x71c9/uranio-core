@@ -5,7 +5,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 export declare type ConnectionName = 'main' | 'trash' | 'log';
 export declare enum BookProperty {
     ID = "ID",

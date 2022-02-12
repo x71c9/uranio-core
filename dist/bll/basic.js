@@ -35,7 +35,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = exports.BasicBLL = void 0;
 const urn_lib_1 = require("urn-lib");
-const urn_dal = __importStar(require("../dal/"));
+const urn_dal = __importStar(require("../dal/index"));
 let BasicBLL = class BasicBLL {
     constructor(atom_name, init_access_layer) {
         this.atom_name = atom_name;

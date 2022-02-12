@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { atom_book } from '../base';
 import { Passport } from '../typ/auth';
 import { BLL } from './bll';

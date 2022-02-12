@@ -37,9 +37,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_main = exports.RelationDAL = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('CONN_DAL', 'RelationDAL');
-const urn_rel = __importStar(require("../rel/"));
-const book = __importStar(require("../book/"));
-const conf = __importStar(require("../conf/"));
+const urn_rel = __importStar(require("../rel/index"));
+const book = __importStar(require("../book/index"));
+const conf = __importStar(require("../conf/index"));
 const basic_1 = require("./basic");
 let RelationDAL = class RelationDAL extends basic_1.BasicDAL {
     constructor(atom_name) {

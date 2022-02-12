@@ -35,11 +35,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_recycle = exports.RecycleDAL = void 0;
 const urn_lib_1 = require("urn-lib");
-const urn_rel = __importStar(require("../rel/"));
-const conf = __importStar(require("../conf/"));
+const urn_rel = __importStar(require("../rel/index"));
+const conf = __importStar(require("../conf/index"));
 const basic_1 = require("./basic");
 const encrypt_1 = require("./encrypt");
-const book = __importStar(require("../book/"));
+const book = __importStar(require("../book/index"));
 let RecycleDAL = class RecycleDAL extends encrypt_1.EncryptDAL {
     // constructor(atom_name:A) {
     //   super(atom_name);

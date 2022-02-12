@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 import { Book } from '../typ/book_srv';
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 export declare function add_definition(atom_name: string, atom_definition: Book.Definition): Book;
 export declare function get_names(): schema.AtomName[];
 export declare function validate_name(atom_name: string): boolean;

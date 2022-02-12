@@ -31,10 +31,10 @@ exports.get_model = exports.create_all_connection = exports.mongo_app = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('MONGO_APP', 'Mongoose Models App');
-const conf = __importStar(require("../../conf/"));
+const conf = __importStar(require("../../conf/index"));
 const schema_1 = require("./schema");
 const mongo_connection = __importStar(require("./connection"));
-const book = __importStar(require("../../book/"));
+const book = __importStar(require("../../book/index"));
 const book_srv_1 = require("../../typ/book_srv");
 exports.mongo_app = {};
 function create_all_connection() {

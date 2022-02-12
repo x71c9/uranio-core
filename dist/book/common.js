@@ -12,7 +12,7 @@ exports.has_property = exports.get_all_property_definitions = exports.get_custom
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('BOOK_METHODS_MODULE', `Book methods module`);
 const base_1 = require("../base");
-const stc_1 = require("../stc/");
+const index_1 = require("../stc/index");
 function validate_name(atom_name) {
     return urn_lib_1.urn_util.object.has_key(base_1.atom_book, atom_name);
 }
@@ -38,11 +38,11 @@ function get_property_definition(atom_name, property_name) {
     if (urn_lib_1.urn_util.object.has_key(prop_defs, property_name)) {
         return prop_defs[property_name];
     }
-    else if (urn_lib_1.urn_util.object.has_key(stc_1.atom_hard_properties, property_name)) {
-        return stc_1.atom_hard_properties[property_name];
+    else if (urn_lib_1.urn_util.object.has_key(index_1.atom_hard_properties, property_name)) {
+        return index_1.atom_hard_properties[property_name];
     }
-    else if (urn_lib_1.urn_util.object.has_key(stc_1.atom_common_properties, property_name)) {
-        return stc_1.atom_common_properties[property_name];
+    else if (urn_lib_1.urn_util.object.has_key(index_1.atom_common_properties, property_name)) {
+        return index_1.atom_common_properties[property_name];
     }
     throw urn_exc.create('INVALID_PROPERTY_NAME', `Definition for \`${property_name}\` for schema.Atom \`${atom_name}\` not found.`);
 }
@@ -55,18 +55,18 @@ exports.get_custom_property_definitions = get_custom_property_definitions;
 function get_all_property_definitions(atom_name) {
     const custom_defs = get_custom_property_definitions(atom_name);
     const prop_defs = {
-        ...stc_1.atom_hard_properties,
-        ...stc_1.atom_common_properties,
+        ...index_1.atom_hard_properties,
+        ...index_1.atom_common_properties,
         ...custom_defs
     };
     return prop_defs;
 }
 exports.get_all_property_definitions = get_all_property_definitions;
 function has_property(atom_name, key) {
-    if (urn_lib_1.urn_util.object.has_key(stc_1.atom_hard_properties, key)) {
+    if (urn_lib_1.urn_util.object.has_key(index_1.atom_hard_properties, key)) {
         return true;
     }
-    if (urn_lib_1.urn_util.object.has_key(stc_1.atom_common_properties, key)) {
+    if (urn_lib_1.urn_util.object.has_key(index_1.atom_common_properties, key)) {
         return true;
     }
     if (urn_lib_1.urn_util.object.has_key(base_1.atom_book[atom_name]['properties'], key)) {

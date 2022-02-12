@@ -32,8 +32,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthBLL = void 0;
 const urn_lib_1 = require("urn-lib");
-const atm = __importStar(require("../atm/"));
-const insta = __importStar(require("../nst/"));
+const atm = __importStar(require("../atm/index"));
+const insta = __importStar(require("../nst/index"));
 const security_1 = require("./security");
 let AuthBLL = class AuthBLL extends security_1.SecurityBLL {
     async insert_new(atom_shape) {

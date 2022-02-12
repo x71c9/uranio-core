@@ -7,7 +7,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.atom_book = void 0;
 // import schema from 'uranio-schema';
-// import {schema} from './sch/';
+// import {schema} from './sch/index';
 const book_srv_1 = require("./typ/book_srv");
 exports.atom_book = {
     superuser: {

@@ -31,7 +31,7 @@ exports.register = void 0;
 const path_1 = __importDefault(require("path"));
 const caller_1 = __importDefault(require("caller"));
 const urn_lib_1 = require("urn-lib");
-const book = __importStar(require("../book/"));
+const book = __importStar(require("../book/index"));
 function register(atom_definition, atom_name) {
     let final_atom_name = `undefined_atom`;
     if (atom_name) {

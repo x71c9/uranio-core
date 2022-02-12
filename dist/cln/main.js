@@ -30,11 +30,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.book = exports.atm = exports.types = void 0;
 const types = __importStar(require("./types"));
 exports.types = types;
-const atm = __importStar(require("../atm/"));
+const atm = __importStar(require("../atm/index"));
 exports.atm = atm;
 const book = __importStar(require("../book/client"));
 exports.book = book;
-__exportStar(require("../sch/"), exports);
+__exportStar(require("../sch/index"), exports);
 // import schema from 'uranio-schema';
 // export {schema};
 //# sourceMappingURL=main.js.map

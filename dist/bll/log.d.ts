@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { BasicBLL } from './basic';
 declare class LogBLL<A extends schema.LogName> extends BasicBLL<A> {
     constructor(log_name: A);

@@ -5,18 +5,18 @@
  */
 import * as types from './types';
 export { types };
-export * from '../sch/';
-import * as bll from '../bll/';
+export * from '../sch/index';
+import * as bll from '../bll/index';
 export { bll };
-import * as atom from '../atm/';
+import * as atom from '../atm/index';
 export { atom };
-import * as book from '../book/';
+import * as book from '../book/index';
 export { book };
-import * as db from '../db/';
+import * as db from '../db/index';
 export { db };
-import * as conf from '../conf/';
+import * as conf from '../conf/index';
 export { conf };
-import * as util from '../util/';
+import * as util from '../util/index';
 export { util };
-export * from '../init/';
-export * from '../reg/';
+export * from '../init/index';
+export * from '../reg/index';

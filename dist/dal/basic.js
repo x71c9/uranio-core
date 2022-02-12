@@ -35,7 +35,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_basic = exports.BasicDAL = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('BASIC_DAL', 'BasicDAL');
-const urn_validators = __importStar(require("../val/"));
+const urn_validators = __importStar(require("../val/index"));
 let BasicDAL = class BasicDAL {
     constructor(atom_name, _db_relation) {
         this.atom_name = atom_name;

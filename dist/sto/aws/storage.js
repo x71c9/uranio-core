@@ -38,7 +38,7 @@ exports.create = void 0;
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 // import {urn_log, urn_exception} from 'urn-lib';
 const urn_lib_1 = require("urn-lib");
-const conf = __importStar(require("../../conf/"));
+const conf = __importStar(require("../../conf/index"));
 // const urn_exc = urn_exception.init('UPLOADER_AWS', 'AWS Uploader');
 /**
  * AWS Storage class

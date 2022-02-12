@@ -33,8 +33,8 @@ const fs_1 = __importDefault(require("fs"));
 // import caller from 'caller';
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
-const stc_1 = require("../stc/");
-const book = __importStar(require("../book/"));
+const index_1 = require("../stc/index");
+const book = __importStar(require("../book/index"));
 const types = __importStar(require("../types"));
 function generate() {
     urn_lib_1.urn_log.debug('Generating uranio schema...');
@@ -232,7 +232,7 @@ function _generate_atom_shapes(atom_book) {
                     break;
                 }
                 default: {
-                    text += `\t\t${key}${optional}: ${stc_1.real_book_property_type[prop_def.type]}\n`;
+                    text += `\t\t${key}${optional}: ${index_1.real_book_property_type[prop_def.type]}\n`;
                 }
             }
         }

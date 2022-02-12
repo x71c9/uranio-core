@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { AuthBLL } from './auth';
 export declare class BLL<A extends schema.AtomName> extends AuthBLL<A> {
 }

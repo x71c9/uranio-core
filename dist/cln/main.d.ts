@@ -5,8 +5,8 @@
  */
 import * as types from './types';
 export { types };
-import * as atm from '../atm/';
+import * as atm from '../atm/index';
 export { atm };
 import * as book from '../book/client';
 export { book };
-export * from '../sch/';
+export * from '../sch/index';

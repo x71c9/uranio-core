@@ -29,10 +29,10 @@ const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('INIT_CORE_MODULE', `Core init module`);
 const defaults_1 = require("../conf/defaults");
 const types = __importStar(require("../types"));
-const conf = __importStar(require("../conf/"));
-const book = __importStar(require("../book/"));
-const db = __importStar(require("../db/"));
-const bll = __importStar(require("../bll/"));
+const conf = __importStar(require("../conf/index"));
+const book = __importStar(require("../book/index"));
+const db = __importStar(require("../db/index"));
+const bll = __importStar(require("../bll/index"));
 function init(config) {
     if (typeof config === 'undefined') {
         conf.set_from_env(defaults_1.core_config);

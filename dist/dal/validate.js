@@ -38,9 +38,9 @@ const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('VAL_DAL', 'ValidateDAL');
 const atm_validate = __importStar(require("../atm/validate"));
 const atm_keys = __importStar(require("../atm/keys"));
-const book = __importStar(require("../book/"));
+const book = __importStar(require("../book/index"));
 const types = __importStar(require("../types"));
-const stc_1 = require("../stc/");
+const index_1 = require("../stc/index");
 const rel_1 = require("./rel");
 let ValidateDAL = class ValidateDAL extends rel_1.RelationDAL {
     async select(query, options) {
@@ -256,11 +256,11 @@ function _check_ids(atom_name, partial_atom, is_valid_id) {
     let k;
     for (k in partial_atom) {
         let prop_def = undefined;
-        if (urn_lib_1.urn_util.object.has_key(stc_1.atom_hard_properties, k)) {
-            prop_def = stc_1.atom_hard_properties[k];
+        if (urn_lib_1.urn_util.object.has_key(index_1.atom_hard_properties, k)) {
+            prop_def = index_1.atom_hard_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(stc_1.atom_common_properties, k)) {
-            prop_def = stc_1.atom_common_properties[k];
+        else if (urn_lib_1.urn_util.object.has_key(index_1.atom_common_properties, k)) {
+            prop_def = index_1.atom_common_properties[k];
         }
         else if (urn_lib_1.urn_util.object.has_key(props, k)) {
             prop_def = props[k];

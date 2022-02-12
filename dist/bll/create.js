@@ -28,7 +28,7 @@ exports.create = void 0;
 const urn_lib_1 = require("urn-lib");
 const media_1 = require("./media");
 const bll_1 = require("./bll");
-const book = __importStar(require("../book/"));
+const book = __importStar(require("../book/index"));
 function create(atom_name, passport) {
     urn_lib_1.urn_log.fn_debug(`Create BLL [${atom_name}]`);
     const atom_def = book.get_definition(atom_name);
