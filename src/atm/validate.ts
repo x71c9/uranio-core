@@ -10,7 +10,7 @@ const urn_exc = urn_exception.init(`VALIDATION`, `Validate module`);
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
 import {
 	BookProperty,
@@ -18,10 +18,10 @@ import {
 
 import {Book} from '../cln/types';
 
-import {atom_hard_properties, atom_common_properties} from '../stc/';
+import {atom_hard_properties, atom_common_properties} from '../stc/index';
 
 // This will import server on client
-// import * as conf from '../conf/';
+// import * as conf from '../conf/index';
 
 import * as atm_util from './util';
 

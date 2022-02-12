@@ -6,13 +6,13 @@
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
 import {Book, BookProperty} from '../typ/book_cln';
 
 import * as book from '../book/client';
 
-import {atom_common_properties} from '../stc/';
+import {atom_common_properties} from '../stc/index';
 
 export function get_optional<A extends schema.AtomName>(atom_name:A)
 		:Set<keyof schema.Atom<A>>{

@@ -14,11 +14,11 @@ import {urn_util, urn_exception, urn_log} from 'urn-lib';
 
 const urn_exc = urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
-import {real_book_property_type} from '../stc/';
+import {real_book_property_type} from '../stc/index';
 
-import * as book from '../book/';
+import * as book from '../book/index';
 
 import * as types from '../types';
 

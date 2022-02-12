@@ -9,13 +9,13 @@ import {urn_log} from 'urn-lib';
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
-import * as conf from '../conf/';
+import * as conf from '../conf/index';
 
 import {AuthAction, Passport} from '../typ/auth';
 
-import * as sto from '../sto/';
+import * as sto from '../sto/index';
 
 import {BLL} from './bll';
 

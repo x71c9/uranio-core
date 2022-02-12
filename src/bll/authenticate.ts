@@ -14,16 +14,16 @@ const urn_exc = urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
-import * as conf from '../conf/';
+import * as conf from '../conf/index';
 
 import {
 	BookSecurity,
 	BookPermission,
 } from '../typ/book_srv';
 
-import {abstract_passport} from '../stc/';
+import {abstract_passport} from '../stc/index';
 
 import {
 	Passport,
@@ -36,7 +36,7 @@ import * as atm_validate from '../atm/validate';
 
 import * as atm_util from '../atm/util';
 
-import * as book from '../book/';
+import * as book from '../book/index';
 
 import {create as create_basic, BasicBLL} from './basic';
 

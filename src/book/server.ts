@@ -8,7 +8,7 @@ import {Book} from '../typ/book_srv';
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
 import {atom_book} from '../base';
 

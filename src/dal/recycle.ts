@@ -11,17 +11,17 @@ import {urn_log} from 'urn-lib';
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
-import * as urn_rel from '../rel/';
+import * as urn_rel from '../rel/index';
 
-import * as conf from '../conf/';
+import * as conf from '../conf/index';
 
 import {BasicDAL, create_basic} from './basic';
 
 import {EncryptDAL} from './encrypt';
 
-import * as book from '../book/';
+import * as book from '../book/index';
 
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods

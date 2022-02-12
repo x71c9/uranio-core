@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import * as bll from '../bll/';
+import * as bll from '../bll/index';
 
 type ApiInstance<T> = T | undefined;
 

@@ -8,11 +8,11 @@ import {urn_log} from 'urn-lib';
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
-import * as atm from '../atm/';
+import * as atm from '../atm/index';
 
-import * as insta from '../nst/';
+import * as insta from '../nst/index';
 
 import {SecurityBLL} from './security';
 

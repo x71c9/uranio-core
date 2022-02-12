@@ -11,7 +11,7 @@ import AWS from 'aws-sdk';
 // import {urn_log, urn_exception} from 'urn-lib';
 import {urn_log} from 'urn-lib';
 
-import * as conf from '../../conf/';
+import * as conf from '../../conf/index';
 
 import {Storage, UploadParams} from '../types';
 

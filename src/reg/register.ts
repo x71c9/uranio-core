@@ -10,7 +10,7 @@ import caller from 'caller';
 
 import {urn_log} from 'urn-lib';
 
-import * as book from '../book/';
+import * as book from '../book/index';
 
 import * as types from '../types';
 

@@ -10,11 +10,11 @@ import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../../sch/';
+import {schema} from '../../sch/index';
 
 import {ConnectionName} from '../../typ/book_cln';
 
-import * as conf from '../../conf/';
+import * as conf from '../../conf/index';
 
 import * as atm_keys from '../../atm/keys';
 

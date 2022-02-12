@@ -6,9 +6,9 @@
 
 // import schema from 'uranio-schema';
 
-// import {schema} from '../sch/';
+// import {schema} from '../sch/index';
 
-import {abstract_passport} from '../stc/';
+import {abstract_passport} from '../stc/index';
 
 import {Database, Storage} from './conf';
 
