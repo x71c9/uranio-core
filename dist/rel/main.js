@@ -28,7 +28,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mongo = void 0;
-const urn_mongo = __importStar(require("./mongo/"));
+const urn_mongo = __importStar(require("./mongo/index"));
 exports.mongo = urn_mongo;
 __exportStar(require("./types"), exports);
 //# sourceMappingURL=main.js.map

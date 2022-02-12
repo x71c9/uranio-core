@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.get_bll_group = void 0;
-const bll = __importStar(require("../bll/"));
+const bll = __importStar(require("../bll/index"));
 let core_bll_group;
 function get_bll_group() {
     if (!core_bll_group) {

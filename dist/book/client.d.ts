@@ -3,6 +3,6 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 export * from './common';
 export declare function get_names(): schema.AtomName[];

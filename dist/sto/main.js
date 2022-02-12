@@ -28,7 +28,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.aws = void 0;
-const urn_aws = __importStar(require("./aws/"));
+const urn_aws = __importStar(require("./aws/index"));
 exports.aws = urn_aws;
 __exportStar(require("./types"), exports);
 //# sourceMappingURL=main.js.map

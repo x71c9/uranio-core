@@ -6,7 +6,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { AuthAction } from '../typ/auth';
 import { AccessLayer } from '../typ/layer';
 export declare class BasicBLL<A extends schema.AtomName> {

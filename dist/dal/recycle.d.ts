@@ -6,7 +6,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { BasicDAL } from './basic';
 import { EncryptDAL } from './encrypt';
 export declare class RecycleDAL<A extends schema.AtomName> extends EncryptDAL<A> {

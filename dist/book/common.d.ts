@@ -6,7 +6,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { Book } from '../typ/book_cln';
 export declare function validate_name(atom_name: string): atom_name is schema.AtomName;
 export declare function validate_auth_name(auth_name: string): auth_name is schema.AuthName;

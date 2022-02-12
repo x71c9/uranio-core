@@ -8,7 +8,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { ValidateDAL } from './validate';
 export declare class EncryptDAL<A extends schema.AtomName> extends ValidateDAL<A> {
     private abstract_dal;

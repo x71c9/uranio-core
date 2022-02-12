@@ -3,6 +3,6 @@
  *
  * @packageDocumentation
  */
-import * as urn_aws from './aws/';
+import * as urn_aws from './aws/index';
 export * from './types';
 export { urn_aws as aws };

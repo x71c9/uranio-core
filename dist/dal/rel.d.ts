@@ -7,7 +7,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { BasicDAL } from './basic';
 export declare class RelationDAL<A extends schema.AtomName> extends BasicDAL<A> {
     constructor(atom_name: A);

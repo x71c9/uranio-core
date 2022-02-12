@@ -27,7 +27,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.get_bond_non_array = exports.get_bond_array = exports.get_bond = exports.get_unique = exports.get_encrypted = exports.get_hidden = exports.get_optional = void 0;
 const book_cln_1 = require("../typ/book_cln");
 const book = __importStar(require("../book/client"));
-const stc_1 = require("../stc/");
+const index_1 = require("../stc/index");
 function get_optional(atom_name) {
     const optional_keys = new Set();
     const prop_defs = book.get_custom_property_definitions(atom_name);
@@ -38,8 +38,8 @@ function get_optional(atom_name) {
         }
     }
     let k;
-    for (k in stc_1.atom_common_properties) {
-        const prop = stc_1.atom_common_properties[k];
+    for (k in index_1.atom_common_properties) {
+        const prop = index_1.atom_common_properties[k];
         if (prop.optional && prop.optional === true) {
             optional_keys.add(k);
         }
@@ -57,8 +57,8 @@ function get_hidden(atom_name) {
         }
     }
     let k;
-    for (k in stc_1.atom_common_properties) {
-        const prop = stc_1.atom_common_properties[k];
+    for (k in index_1.atom_common_properties) {
+        const prop = index_1.atom_common_properties[k];
         if (prop.hidden && prop.hidden === true) {
             hidden_keys.add(k);
         }
@@ -76,8 +76,8 @@ function get_encrypted(atom_name) {
         }
     }
     let k;
-    for (k in stc_1.atom_common_properties) {
-        const prop = stc_1.atom_common_properties[k];
+    for (k in index_1.atom_common_properties) {
+        const prop = index_1.atom_common_properties[k];
         // eslint-disable-next-line
         // @ts-ignore
         if (prop.type && prop.type === book_cln_1.BookProperty.ENCRYPTED) {
@@ -97,8 +97,8 @@ function get_unique(atom_name) {
         }
     }
     let k;
-    for (k in stc_1.atom_common_properties) {
-        const prop = stc_1.atom_common_properties[k];
+    for (k in index_1.atom_common_properties) {
+        const prop = index_1.atom_common_properties[k];
         if (prop.unique && prop.unique === true) {
             unique_keys.add(k);
         }

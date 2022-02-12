@@ -3,6 +3,16 @@
 	"version": "0.0.3",
 	"description": "Uranio core",
 	"main": "dist/index.js",
+	"exports": {
+		".": "./dist/index.js",
+		"./client": "./dist/client.js"
+	},
+	"typesVersions": {
+		"*": {
+			"*": ["dist/index.d.ts"],
+			"client": ["dist/client.d.ts"]
+		}
+	},
 	"repository": "git@github.com:nbl7/uranio-core.git",
 	"author": "Andrea Reni <mail@nbl7.net>",
 	"scripts": {

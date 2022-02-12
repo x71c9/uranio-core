@@ -25,8 +25,8 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
-import * as urn_dal from '../dal/';
+import { schema } from '../sch/index';
+import * as urn_dal from '../dal/index';
 import { BookSecurity } from '../typ/book_srv';
 import { AuthAction } from '../typ/auth';
 import { AccessLayer } from '../typ/layer';

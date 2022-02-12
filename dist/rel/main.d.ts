@@ -3,6 +3,6 @@
  *
  * @packageDocumentation
  */
-import * as urn_mongo from './mongo/';
+import * as urn_mongo from './mongo/index';
 export * from './types';
 export { urn_mongo as mongo };

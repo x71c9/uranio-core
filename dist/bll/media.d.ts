@@ -1,7 +1,7 @@
 /// <reference types="node" />
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { Passport } from '../typ/auth';
-import * as sto from '../sto/';
+import * as sto from '../sto/index';
 import { BLL } from './bll';
 import { InsertFileParams } from './types';
 export declare class MediaBLL extends BLL<'media'> {

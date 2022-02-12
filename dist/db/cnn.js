@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.disconnect = exports.connect = void 0;
-const conf = __importStar(require("../conf/"));
+const conf = __importStar(require("../conf/index"));
 const models_1 = require("../rel/mongo/models");
 function connect() {
     switch (conf.get(`db_type`)) {

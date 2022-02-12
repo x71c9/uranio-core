@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 import mongoose from 'mongoose';
-import { schema } from '../../sch/';
+import { schema } from '../../sch/index';
 import { ConnectionName } from '../../typ/book_cln';
 import { Relation } from '../types';
 /**

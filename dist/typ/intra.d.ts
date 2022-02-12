@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { abstract_passport } from '../stc/';
+import { abstract_passport } from '../stc/index';
 import { Database, Storage } from './conf';
 export declare type PassportKey = keyof typeof abstract_passport;
 export declare type RequiredConfigParams = {

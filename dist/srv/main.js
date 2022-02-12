@@ -30,18 +30,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.util = exports.conf = exports.db = exports.book = exports.atom = exports.bll = exports.types = void 0;
 const types = __importStar(require("./types"));
 exports.types = types;
-__exportStar(require("../sch/"), exports);
-const bll = __importStar(require("../bll/"));
+__exportStar(require("../sch/index"), exports);
+const bll = __importStar(require("../bll/index"));
 exports.bll = bll;
-const atom = __importStar(require("../atm/"));
+const atom = __importStar(require("../atm/index"));
 exports.atom = atom;
-const book = __importStar(require("../book/"));
+const book = __importStar(require("../book/index"));
 exports.book = book;
-const db = __importStar(require("../db/"));
+const db = __importStar(require("../db/index"));
 exports.db = db;
-const conf = __importStar(require("../conf/"));
+const conf = __importStar(require("../conf/index"));
 exports.conf = conf;
-const util = __importStar(require("../util/"));
+const util = __importStar(require("../util/index"));
 exports.util = util;
 /*
  * First level methods.
@@ -49,6 +49,6 @@ exports.util = util;
  * Go to urn-cli/src/cmd/transpose.ts and
  * add the new method names.
  */
-__exportStar(require("../init/"), exports);
-__exportStar(require("../reg/"), exports);
+__exportStar(require("../init/index"), exports);
+__exportStar(require("../reg/index"), exports);
 //# sourceMappingURL=main.js.map

@@ -11,7 +11,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { BLL } from '../bll/bll';
 import { Passport } from './auth';
 import { BookProperty } from './book_cln';

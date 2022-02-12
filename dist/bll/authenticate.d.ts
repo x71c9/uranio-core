@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/';
+import { schema } from '../sch/index';
 import { Passport, AuthAction } from '../typ/auth';
 declare class AuthenticationBLL<A extends schema.AuthName> {
     private _atom_name;
