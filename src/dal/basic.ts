@@ -12,11 +12,11 @@ const urn_exc = urn_exception.init('BASIC_DAL', 'BasicDAL');
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
-import * as urn_rel from '../rel/';
+import * as urn_rel from '../rel/index';
 
-import * as urn_validators from '../val/';
+import * as urn_validators from '../val/index';
 
 import {AuthAction} from '../typ/auth';
 

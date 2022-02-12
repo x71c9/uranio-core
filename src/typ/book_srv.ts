@@ -14,7 +14,7 @@
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
 import {BLL} from '../bll/bll';
 

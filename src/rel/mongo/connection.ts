@@ -10,7 +10,7 @@ import {urn_log,  urn_exception} from 'urn-lib';
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../../sch/';
+import {schema} from '../../sch/index';
 
 import {ConnectionName} from '../../typ/book_cln';
 

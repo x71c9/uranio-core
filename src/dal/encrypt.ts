@@ -15,11 +15,11 @@ const urn_exc = urn_exception.init(`DAL_ENCRYPT`, `Encryption DAL.`);
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
 import * as atm_encrypt from '../atm/encrypt';
 
-import * as book from '../book/';
+import * as book from '../book/index';
 
 import * as types from '../types';
 

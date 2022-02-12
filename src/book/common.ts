@@ -13,7 +13,7 @@ const urn_exc = urn_exception.init('BOOK_METHODS_MODULE', `Book methods module`)
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
 import {atom_book} from '../base';
 
@@ -24,7 +24,7 @@ import {atom_book} from '../base';
 
 import {Book} from '../typ/book_cln';
 
-import {atom_hard_properties, atom_common_properties} from '../stc/';
+import {atom_hard_properties, atom_common_properties} from '../stc/index';
 
 export function validate_name(atom_name:string):atom_name is schema.AtomName{
 	return urn_util.object.has_key(atom_book, atom_name);

@@ -11,9 +11,9 @@ import {urn_log} from 'urn-lib';
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
-import * as urn_dal from '../dal/';
+import * as urn_dal from '../dal/index';
 
 import {AuthAction} from '../typ/auth';
 

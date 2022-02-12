@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import * as conf from '../conf/';
+import * as conf from '../conf/index';
 
 import {mongo_app, create_all_connection} from '../rel/mongo/models';
 

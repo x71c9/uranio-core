@@ -6,7 +6,7 @@
 
 // import schema from 'uranio-schema';
 
-// import {schema} from './sch/';
+// import {schema} from './sch/index';
 
 import {BookProperty, BookSecurity, BookPermission} from './typ/book_srv';
 

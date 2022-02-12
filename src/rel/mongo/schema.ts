@@ -10,13 +10,13 @@ import {urn_util} from 'urn-lib';
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../../sch/';
+import {schema} from '../../sch/index';
 
-import {atom_hard_properties} from '../../stc/';
+import {atom_hard_properties} from '../../stc/index';
 
 import * as atm_util from '../../atm/util';
 
-import * as book from '../../book/';
+import * as book from '../../book/index';
 
 import {Book, BookProperty} from '../../typ/book_srv';
 

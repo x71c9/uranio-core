@@ -10,7 +10,7 @@ const urn_exc = urn_exception.init('ATOM_UTIL', `schema.Atom Util module`);
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
 import * as keys from './keys';
 

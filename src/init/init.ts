@@ -10,19 +10,19 @@ const urn_exc = urn_exception.init('INIT_CORE_MODULE', `Core init module`);
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
 import {core_config} from '../conf/defaults';
 
 import * as types from '../types';
 
-import * as conf from '../conf/';
+import * as conf from '../conf/index';
 
-import * as book from '../book/';
+import * as book from '../book/index';
 
-import * as db from '../db/';
+import * as db from '../db/index';
 
-import * as bll from '../bll/';
+import * as bll from '../bll/index';
 
 export function init(config?:types.Configuration)
 		:void{

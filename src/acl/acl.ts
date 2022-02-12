@@ -30,9 +30,9 @@ import {urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ACL', 'Access Control Module');
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
-import * as urn_dal from '../dal/';
+import * as urn_dal from '../dal/index';
 
 import * as atm_keys from '../atm/keys';
 
@@ -44,7 +44,7 @@ import {AuthAction} from '../typ/auth';
 
 import {AccessLayer} from '../typ/layer';
 
-import * as book from '../book/';
+import * as book from '../book/index';
 
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods

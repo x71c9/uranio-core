@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import * as urn_mongo from './mongo/';
+import * as urn_mongo from './mongo/index';
 
 export * from './types';
 

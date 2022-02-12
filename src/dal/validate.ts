@@ -13,17 +13,17 @@ const urn_exc = urn_exception.init('VAL_DAL', 'ValidateDAL');
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
 import * as atm_validate from '../atm/validate';
 
 import * as atm_keys from '../atm/keys';
 
-import * as book from '../book/';
+import * as book from '../book/index';
 
 import * as types from '../types';
 
-import {atom_hard_properties, atom_common_properties} from '../stc/';
+import {atom_hard_properties, atom_common_properties} from '../stc/index';
 
 import {RelationDAL} from './rel';
 

@@ -8,7 +8,7 @@ import bcrypt from 'bcryptjs';
 
 import {urn_util} from 'urn-lib';
 
-import * as conf from '../conf/';
+import * as conf from '../conf/index';
 
 import * as book from '../book/client';
 
@@ -26,7 +26,7 @@ import {Book, BookProperty} from '../cln/types';
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/';
+import {schema} from '../sch/index';
 
 export async function property<A extends schema.AtomName, D extends schema.Depth = 0>
 (atom_name:A, prop_key:keyof schema.Molecule<A,D>, prop_value:string)
