@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 import { schema } from '../sch/index';
-import { atom_book } from '../base';
+import { atom_book } from '../atoms';
 import { Passport } from '../typ/auth';
 import { BLL } from './bll';
 export declare type BLLInstance = InstanceType<typeof BLL>;

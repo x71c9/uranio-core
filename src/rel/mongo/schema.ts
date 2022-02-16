@@ -22,7 +22,7 @@ import {Book, BookProperty} from '../../typ/book_srv';
 
 export function generate_mongo_schema_def<A extends schema.AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{
-	const properties = book.get_all_property_definitions(atom_name);
+	const properties = book.get_full_properties_definition(atom_name);
 	let mongoose_schema_def = {};
 	for(const [k,v] of Object.entries(properties)){
 		if(k === '_id')

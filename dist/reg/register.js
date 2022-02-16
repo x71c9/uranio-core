@@ -39,7 +39,7 @@ function register(atom_definition, atom_name) {
     }
     else {
         const caller_path = (0, caller_1.default)();
-        console.log(caller_path);
+        // console.log(caller_path);
         const dirname = path_1.default.dirname(caller_path);
         final_atom_name =
             dirname.split('/').slice(-1)[0].replace('.', '_').replace('-', '_');
@@ -47,7 +47,7 @@ function register(atom_definition, atom_name) {
     urn_lib_1.urn_log.debug(`Registering atom [${final_atom_name}]...`);
     book.add_definition(final_atom_name, atom_definition);
     urn_lib_1.urn_log.debug(`Atom [${final_atom_name}] registered.`);
-    return atom_definition;
+    return final_atom_name;
 }
 exports.register = register;
 //# sourceMappingURL=register.js.map

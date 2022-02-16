@@ -10,13 +10,16 @@ const urn_exc = urn_exception.init('CONF_CORE_MODULE', `Core configuration modul
 
 import {core_config} from './defaults';
 
+export {core_config as defaults};
+
 import * as types from '../types';
 
-import {FullConfiguration} from '../typ/intra';
+// import {FullConfiguration} from '../typ/intra';
+import {Configuration} from '../typ/conf';
 
 let _is_core_initialized = false;
 
-export function get<k extends keyof FullConfiguration>(param_name:k)
+export function get<k extends keyof Configuration>(param_name:k)
 		:typeof core_config[k]{
 	_check_if_uranio_was_initialized();
 	_check_if_param_exists(param_name);
@@ -31,12 +34,12 @@ export function set_initialize(is_initialized:boolean):void{
 	_is_core_initialized = is_initialized;
 }
 
-export function set_from_env(repo_config:FullConfiguration):void{
+export function set_from_env(repo_config:Required<Configuration>):void{
 	const config = _get_env_vars(repo_config);
 	set(repo_config, config);
 }
 
-export function set(repo_config:FullConfiguration, config:types.Configuration)
+export function set(repo_config:Required<Configuration>, config:types.Configuration)
 		:void{
 	_validate_config_types(repo_config, config);
 	Object.assign(repo_config, config);
@@ -82,7 +85,7 @@ function _get_env_vars(repo_config:types.Configuration):types.Configuration{
 	return config;
 }
 
-function _validate_config_types(repo_config:FullConfiguration, config:types.Configuration){
+function _validate_config_types(repo_config:Required<Configuration>, config:types.Configuration){
 	for(const [config_key, config_value] of Object.entries(config)){
 		const key = config_key as keyof typeof repo_config;
 		if(typeof config_value !== typeof repo_config[key]){

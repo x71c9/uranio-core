@@ -3,5 +3,5 @@
  *
  * @packageDocumentation
  */
-import { FullConfiguration } from '../typ/intra';
-export declare const core_config: FullConfiguration;
+import { Configuration } from '../typ/conf';
+export declare const core_config: Required<Configuration>;

@@ -39,7 +39,7 @@ export enum BookPermission {
 }
 
 export type Book = {
-	[k:string]: Book.Definition;
+	[A in schema.AtomName]: Book.Definition<A>;
 }
 
 // export type BllBook = {
@@ -53,16 +53,20 @@ export namespace Book {
 	//   security?: BookSecurityType | Definition.Security
 	// }
 	
-	export type Definition =
+	export type Definition<A extends schema.AtomName> =
 		book_cln.Book.Definition & {
 		security?: BookSecurity | Definition.Security
-		bll?: Definition.Bll
+		// bll?: Definition.Bll
+		bll?: Definition.Bll<A>
 	}
 	
 	export namespace Definition {
 		
-		export type Bll = {
-			class: <A extends schema.AtomName>(passport?:Passport) => BLL<A> ;
+		// export type Bll = {
+		//   class: <A extends schema.AtomName>(passport?:Passport) => BLL<A> ;
+		// }
+		export type Bll<A extends schema.AtomName> = {
+			class: (passport?:Passport) => BLL<A> ;
 		}
 		
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars

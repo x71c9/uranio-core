@@ -102,7 +102,7 @@ export function generate():void{
  * in the module, also the ones without `export`
  */
 function _generate_last_export(){
-	return '\n\n\texport {};';
+	return '\n\texport {};';
 }
 
 function _replace_text(base_schema_path:string, output_path:string, txt:string){
