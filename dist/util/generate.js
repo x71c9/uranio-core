@@ -93,7 +93,7 @@ exports.generate = generate;
  * in the module, also the ones without `export`
  */
 function _generate_last_export() {
-    return '\n\n\texport {};';
+    return '\n\texport {};';
 }
 function _replace_text(base_schema_path, output_path, txt) {
     if (!fs_1.default.existsSync(output_path)) {

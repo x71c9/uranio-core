@@ -4,9 +4,10 @@
  * @packageDocumentation
  */
 
-import {FullConfiguration} from '../typ/intra';
+// import {FullConfiguration} from '../typ/intra';
+import {Configuration} from '../typ/conf';
 
-export const core_config:FullConfiguration = {
+export const core_config:Required<Configuration> = {
 	
 	db_type: 'mongo',
 	

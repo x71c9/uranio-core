@@ -16,7 +16,8 @@ const urn_exc = urn_exception.init('MONGO_APP', 'Mongoose Models App');
 
 import {ConnectionName} from '../../typ/book_cln';
 
-import {FullConfiguration} from '../../typ/intra';
+// import {FullConfiguration} from '../../typ/intra';
+import {Configuration} from '../../typ/conf';
 
 import * as conf from '../../conf/index';
 
@@ -215,8 +216,8 @@ function _create_connection(conn_name:ConnectionName){
 		mongo_app.connections = {} as MongoConnections;
 	}
 	if(!mongo_app.connections[conn_name]){
-		const mongo_conn_string = conf.get(`mongo_${conn_name}_connection` as keyof FullConfiguration);
-		const mongo_db_string = conf.get(`db_${conn_name}_name` as keyof FullConfiguration);
+		const mongo_conn_string = conf.get(`mongo_${conn_name}_connection` as keyof Configuration);
+		const mongo_db_string = conf.get(`db_${conn_name}_name` as keyof Configuration);
 		
 		const conf_connection_name = (conn_name !== 'main' && typeof mongo_conn_string === 'string') ?
 			mongo_conn_string : conf.get(`mongo_main_connection`);

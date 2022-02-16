@@ -67,7 +67,7 @@ let EncryptDAL = class EncryptDAL extends validate_1.ValidateDAL {
         return super.alter_multiple(ids, partial_atom);
     }
     async _encrypt_changed_properties(id, atom) {
-        const all_props = book.get_all_property_definitions(this.atom_name);
+        const all_props = book.get_full_properties_definition(this.atom_name);
         let k;
         for (k in atom) {
             const prop_def = all_props[k];

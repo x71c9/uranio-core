@@ -26,16 +26,16 @@ export declare enum BookPermission {
     PUBLIC = "PUBLIC"
 }
 export declare type Book = {
-    [k: string]: Book.Definition;
+    [A in schema.AtomName]: Book.Definition<A>;
 };
 export declare namespace Book {
-    type Definition = book_cln.Book.Definition & {
+    type Definition<A extends schema.AtomName> = book_cln.Book.Definition & {
         security?: BookSecurity | Definition.Security;
-        bll?: Definition.Bll;
+        bll?: Definition.Bll<A>;
     };
     namespace Definition {
-        type Bll = {
-            class: <A extends schema.AtomName>(passport?: Passport) => BLL<A>;
+        type Bll<A extends schema.AtomName> = {
+            class: (passport?: Passport) => BLL<A>;
         };
         type Properties = book_cln.Book.Definition.Properties;
         type Property = book_cln.Book.Definition.Property;
