@@ -6,10 +6,6 @@
 
 import fs from 'fs';
 
-// import path from 'path';
-
-// import caller from 'caller';
-
 import {urn_util, urn_exception, urn_log} from 'urn-lib';
 
 const urn_exc = urn_exception.init(`REGISTER_MODULE`, `Register module.`);
@@ -22,14 +18,41 @@ import * as book from '../book/index';
 
 import * as types from '../types';
 
+let urn_generate_base_schema = `./types/schema.d.ts`;
+let urn_generate_output_dir = `.`;
+
 export function generate():void{
 	
 	urn_log.debug('Generating uranio schema...');
 	
+	const text = _generate_schema_text();
+	_save_schema_declaration_file(text);
+	
+	urn_log.debug(`Schema generated.`);
+}
+
+function _save_schema_declaration_file(text:string){
+	for(const argv of process.argv){
+		const splitted = argv.split('=');
+		if(
+			splitted[0] === 'urn_generate_base_schema'
+			&& typeof splitted[1] === 'string'
+			&& splitted[1] !== ''
+		){
+			urn_generate_base_schema = splitted[1];
+		}else if(
+			splitted[0] === 'urn_generate_output_dir'
+			&& typeof splitted[1] === 'string'
+			&& splitted[1] !== ''
+		){
+			urn_generate_output_dir = splitted[1];
+		}
+	}
+	_replace_text(urn_generate_base_schema, urn_generate_output_dir, text);
+}
+
+function _generate_schema_text(){
 	const atom_book = book.get_all_definitions();
-	
-	// urn_log.debug(atom_book);
-	
 	const atom_names:string[] = [];
 	const auth_names:string[] = [];
 	const log_names:string[] = [];
@@ -42,57 +65,21 @@ export function generate():void{
 			log_names.push(atom_name);
 		}
 	}
-	
 	let txt = '';
-	
 	txt += _generate_union_names(`AtomName`, atom_names);
-	
 	txt += _generate_union_names(`AuthName`, auth_names);
-	
 	txt += _generate_union_names(`LogName`, log_names);
-	
 	txt += _generate_atom_shapes(atom_book);
-	
 	txt += _generate_bond_properties(atom_book);
-	
 	txt += _generate_bond_shape_depth(0, atom_book);
-	
 	txt += _generate_bond_shape_depth(1, atom_book);
-	
 	txt += _generate_bond_shape_depth(2, atom_book);
-	
 	txt += _generate_bond_shape_depth(3, atom_book);
-	
 	txt += _generate_atom_types(atom_names);
-	
 	txt += _generate_atom_shape_type(atom_names);
-	
 	txt += _generate_atom_type(atom_names);
-	
 	txt += _generate_last_export();
-	
-	let output_path = '.';
-	let base_schema = './schema/index.d.ts';
-	for(const argv of process.argv){
-		const splitted = argv.split('=');
-		if(
-			splitted[0] === 'urn_generate_output'
-			&& typeof splitted[1] === 'string'
-			&& splitted[1] !== ''
-		){
-			output_path = splitted[1];
-		}else if(
-			splitted[0] === 'urn_generate_base_schema'
-			&& typeof splitted[1] === 'string'
-			&& splitted[1] !== ''
-		){
-			base_schema = splitted[1];
-		}
-	}
-	// const caller_path = caller();
-	_replace_text(base_schema, output_path, txt);
-	
-	urn_log.debug(`Schema generated.`);
+	return txt;
 }
 
 /**
@@ -105,10 +92,8 @@ function _generate_last_export(){
 	return '\n\texport {};';
 }
 
-function _replace_text(base_schema_path:string, output_path:string, txt:string){
-	if(!fs.existsSync(output_path)){
-		fs.writeFileSync(output_path, '');
-	}
+function _replace_text(base_schema_path:string, output_dir_path:string, txt:string){
+	
 	const data = fs.readFileSync(base_schema_path, {encoding: 'utf8'});
 	
 	const data_start = data.split('/** --uranio-generate-start */');
@@ -121,7 +106,7 @@ function _replace_text(base_schema_path:string, output_path:string, txt:string){
 	new_data += `/** --uranio-generate-end */`;
 	new_data += data_end[1];
 	
-	fs.writeFileSync(output_path, new_data);
+	fs.writeFileSync(`${output_dir_path}/schema.d.ts`, new_data);
 }
 
 function _generate_atom_type(atom_names:string[]){

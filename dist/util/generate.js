@@ -29,17 +29,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generate = void 0;
 const fs_1 = __importDefault(require("fs"));
-// import path from 'path';
-// import caller from 'caller';
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 const index_1 = require("../stc/index");
 const book = __importStar(require("../book/index"));
 const types = __importStar(require("../types"));
+let urn_generate_base_schema = `./types/schema.d.ts`;
+let urn_generate_output_dir = `.`;
 function generate() {
     urn_lib_1.urn_log.debug('Generating uranio schema...');
+    const text = _generate_schema_text();
+    _save_schema_declaration_file(text);
+    urn_lib_1.urn_log.debug(`Schema generated.`);
+}
+exports.generate = generate;
+function _save_schema_declaration_file(text) {
+    for (const argv of process.argv) {
+        const splitted = argv.split('=');
+        if (splitted[0] === 'urn_generate_base_schema'
+            && typeof splitted[1] === 'string'
+            && splitted[1] !== '') {
+            urn_generate_base_schema = splitted[1];
+        }
+        else if (splitted[0] === 'urn_generate_output_dir'
+            && typeof splitted[1] === 'string'
+            && splitted[1] !== '') {
+            urn_generate_output_dir = splitted[1];
+        }
+    }
+    _replace_text(urn_generate_base_schema, urn_generate_output_dir, text);
+}
+function _generate_schema_text() {
     const atom_book = book.get_all_definitions();
-    // urn_log.debug(atom_book);
     const atom_names = [];
     const auth_names = [];
     const log_names = [];
@@ -66,26 +87,8 @@ function generate() {
     txt += _generate_atom_shape_type(atom_names);
     txt += _generate_atom_type(atom_names);
     txt += _generate_last_export();
-    let output_path = '.';
-    let base_schema = './schema/index.d.ts';
-    for (const argv of process.argv) {
-        const splitted = argv.split('=');
-        if (splitted[0] === 'urn_generate_output'
-            && typeof splitted[1] === 'string'
-            && splitted[1] !== '') {
-            output_path = splitted[1];
-        }
-        else if (splitted[0] === 'urn_generate_base_schema'
-            && typeof splitted[1] === 'string'
-            && splitted[1] !== '') {
-            base_schema = splitted[1];
-        }
-    }
-    // const caller_path = caller();
-    _replace_text(base_schema, output_path, txt);
-    urn_lib_1.urn_log.debug(`Schema generated.`);
+    return txt;
 }
-exports.generate = generate;
 /**
  * This syntax is needed in order to make the declaration exports only types
  * with `export` in front.
@@ -95,10 +98,7 @@ exports.generate = generate;
 function _generate_last_export() {
     return '\n\texport {};';
 }
-function _replace_text(base_schema_path, output_path, txt) {
-    if (!fs_1.default.existsSync(output_path)) {
-        fs_1.default.writeFileSync(output_path, '');
-    }
+function _replace_text(base_schema_path, output_dir_path, txt) {
     const data = fs_1.default.readFileSync(base_schema_path, { encoding: 'utf8' });
     const data_start = data.split('/** --uranio-generate-start */');
     const data_end = data_start[1].split('/** --uranio-generate-end */');
@@ -109,7 +109,7 @@ function _replace_text(base_schema_path, output_path, txt) {
     +'\n\n';
     new_data += `/** --uranio-generate-end */`;
     new_data += data_end[1];
-    fs_1.default.writeFileSync(output_path, new_data);
+    fs_1.default.writeFileSync(`${output_dir_path}/schema.d.ts`, new_data);
 }
 function _generate_atom_type(atom_names) {
     let text = '';
