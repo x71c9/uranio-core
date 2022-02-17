@@ -9,8 +9,12 @@
 	},
 	"typesVersions": {
 		"*": {
-			"*": ["dist/index.d.ts"],
-			"client": ["dist/client.d.ts"]
+			"*": [
+				"dist/index.d.ts"
+			],
+			"client": [
+				"dist/client.d.ts"
+			]
 		}
 	},
 	"repository": "git@github.com:nbl7/uranio-core.git",

@@ -83,7 +83,7 @@ class AuthenticationBLL<A extends schema.AuthName> {
 		return {
 			_id: auth_atom._id,
 			auth_atom_name: this._atom_name,
-			groups: auth_atom.groups
+			groups: auth_atom.groups || []
 		};
 	}
 	

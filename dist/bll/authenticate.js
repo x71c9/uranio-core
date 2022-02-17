@@ -81,7 +81,7 @@ let AuthenticationBLL = class AuthenticationBLL {
         return {
             _id: auth_atom._id,
             auth_atom_name: this._atom_name,
-            groups: auth_atom.groups
+            groups: auth_atom.groups || []
         };
     }
     _generate_token(auth_atom) {
