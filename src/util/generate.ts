@@ -39,7 +39,9 @@ export function schema_and_save():void{
 }
 
 export function save_schema(text:string):void{
-	fs.writeFileSync(`${process_params.urn_output_dir}/schema.d.ts`, text);
+	const output = `${process_params.urn_output_dir}/schema.d.ts`;
+	fs.writeFileSync(output, text);
+	urn_log.debug(`Schema saved in [${output}].`);
 }
 
 export function init():void{

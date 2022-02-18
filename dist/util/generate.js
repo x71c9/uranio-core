@@ -54,7 +54,9 @@ function schema_and_save() {
 }
 exports.schema_and_save = schema_and_save;
 function save_schema(text) {
-    fs_1.default.writeFileSync(`${exports.process_params.urn_output_dir}/schema.d.ts`, text);
+    const output = `${exports.process_params.urn_output_dir}/schema.d.ts`;
+    fs_1.default.writeFileSync(output, text);
+    urn_lib_1.urn_log.debug(`Schema saved in [${output}].`);
 }
 exports.save_schema = save_schema;
 function init() {
