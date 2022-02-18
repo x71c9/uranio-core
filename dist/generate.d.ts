@@ -1,5 +1,5 @@
 /**
- * Api generate module
+ * TRX generate module
  *
  * @packageDocumentation
  */

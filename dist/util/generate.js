@@ -36,7 +36,7 @@ const book = __importStar(require("../book/index"));
 const types = __importStar(require("../types"));
 exports.process_params = {
     urn_command: `schema`,
-    urn_base_schema: `./types/schema.d.ts`,
+    urn_base_schema: `./.uranio/generate/base/schema.d.ts`,
     urn_output_dir: `.`
 };
 function schema() {
