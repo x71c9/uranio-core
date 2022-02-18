@@ -22,7 +22,8 @@
 	"scripts": {
 		"build": "npx tsc -b",
 		"dev": "npx tsc-watch --onSuccess \"node -r source-map-support/register -r dotenv/config ./dist/run.js\"",
-		"schema:reset": "yarn upgrade uranio-schema && npx npm-dts generate -L debug -r node_modules/uranio-schema -o ../../schema/index.d.ts",
+		"dev:generate": "yarn schema:reset && npx concurrently \"npx esbuild ./src/generate.ts --outfile=./generate/_generate_bundled.js --bundle --platform=node --watch\" \"npx nodemon --watch ./generate/_generate_bundled.js -e ts ./generate/_generate_bundled.js urn_output_dir=./generate\"",
+		"schema:reset": "yarn upgrade uranio-schema && npx npm-dts generate -L debug -r node_modules/uranio-schema -o ../../types/schema.d.ts",
 		"types": "yarn schema:reset && uranio types:uranio"
 	},
 	"devDependencies": {
@@ -30,6 +31,8 @@
 		"@types/caller": "^1.0.0",
 		"@types/express-fileupload": "^1.2.2",
 		"@types/jsonwebtoken": "^8.5.8",
+		"concurrently": "^7.0.0",
+		"esbuild": "^0.14.22",
 		"npm-dts": "^1.3.11",
 		"uranio-dev": "git+ssh://git@github.com/nbl7/uranio-dev.git"
 	},

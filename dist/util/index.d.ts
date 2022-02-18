@@ -3,4 +3,5 @@
  *
  * @packageDocumentation
  */
-export * from './generate';
+import * as generate from './generate';
+export { generate };
