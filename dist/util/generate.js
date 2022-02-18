@@ -27,37 +27,65 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generate = void 0;
+exports.save_schema = exports.schema_and_save = exports.schema = exports.process_params = void 0;
 const fs_1 = __importDefault(require("fs"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 const index_1 = require("../stc/index");
 const book = __importStar(require("../book/index"));
 const types = __importStar(require("../types"));
-let urn_generate_base_schema = `./types/schema.d.ts`;
-let urn_generate_output_dir = `.`;
-function generate() {
-    urn_lib_1.urn_log.debug('Generating uranio schema...');
-    const text = _generate_schema_text();
-    _save_schema_declaration_file(text);
-    urn_lib_1.urn_log.debug(`Schema generated.`);
+exports.process_params = {
+    urn_command: `schema`,
+    urn_base_schema: `./types/schema.d.ts`,
+    urn_output_dir: `.`
+};
+function schema() {
+    urn_lib_1.urn_log.debug('Started generating uranio core schema...');
+    _init_generate();
+    const text = _generate_uranio_schema_text();
+    urn_lib_1.urn_log.debug(`Core schema generated.`);
+    return text;
 }
-exports.generate = generate;
-function _save_schema_declaration_file(text) {
+exports.schema = schema;
+function schema_and_save() {
+    const text = schema();
+    save_schema(text);
+    urn_lib_1.urn_log.debug(`Schema generated and saved.`);
+}
+exports.schema_and_save = schema_and_save;
+function save_schema(text) {
+    fs_1.default.writeFileSync(`${exports.process_params.urn_output_dir}/schema.d.ts`, text);
+}
+exports.save_schema = save_schema;
+function _init_generate() {
+    exports.process_params.urn_command = process.argv[0];
     for (const argv of process.argv) {
         const splitted = argv.split('=');
-        if (splitted[0] === 'urn_generate_base_schema'
+        if (splitted[0] === 'urn_base_schema'
             && typeof splitted[1] === 'string'
             && splitted[1] !== '') {
-            urn_generate_base_schema = splitted[1];
+            exports.process_params.urn_base_schema = splitted[1];
         }
-        else if (splitted[0] === 'urn_generate_output_dir'
+        else if (splitted[0] === 'urn_output_dir'
             && typeof splitted[1] === 'string'
             && splitted[1] !== '') {
-            urn_generate_output_dir = splitted[1];
+            exports.process_params.urn_output_dir = splitted[1];
         }
     }
-    _replace_text(urn_generate_base_schema, urn_generate_output_dir, text);
+}
+function _generate_uranio_schema_text() {
+    const txt = _generate_schema_text();
+    const data = fs_1.default.readFileSync(exports.process_params.urn_base_schema, { encoding: 'utf8' });
+    const data_start = data.split('/** --uranio-generate-start */');
+    const data_end = data_start[1].split('/** --uranio-generate-end */');
+    let new_data = '';
+    new_data += data_start[0];
+    new_data += `/** --uranio-generate-start */\n\n`;
+    new_data += txt;
+    +'\n\n';
+    new_data += `/** --uranio-generate-end */`;
+    new_data += data_end[1];
+    return new_data;
 }
 function _generate_schema_text() {
     const atom_book = book.get_all_definitions();
@@ -97,19 +125,6 @@ function _generate_schema_text() {
  */
 function _generate_last_export() {
     return '\n\texport {};';
-}
-function _replace_text(base_schema_path, output_dir_path, txt) {
-    const data = fs_1.default.readFileSync(base_schema_path, { encoding: 'utf8' });
-    const data_start = data.split('/** --uranio-generate-start */');
-    const data_end = data_start[1].split('/** --uranio-generate-end */');
-    let new_data = '';
-    new_data += data_start[0];
-    new_data += `/** --uranio-generate-start */\n\n`;
-    new_data += txt;
-    +'\n\n';
-    new_data += `/** --uranio-generate-end */`;
-    new_data += data_end[1];
-    fs_1.default.writeFileSync(`${output_dir_path}/schema.d.ts`, new_data);
 }
 function _generate_atom_type(atom_names) {
     let text = '';

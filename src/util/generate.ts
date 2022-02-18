@@ -10,7 +10,7 @@ import {urn_util, urn_exception, urn_log} from 'urn-lib';
 
 const urn_exc = urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 
-import {schema} from '../sch/index';
+import {schema as schema_types} from '../sch/index';
 
 import {real_book_property_type} from '../stc/index';
 
@@ -18,37 +18,62 @@ import * as book from '../book/index';
 
 import * as types from '../types';
 
-let urn_generate_base_schema = `./types/schema.d.ts`;
-let urn_generate_output_dir = `.`;
+export const process_params = {
+	urn_command: `schema`,
+	urn_base_schema: `./types/schema.d.ts`,
+	urn_output_dir: `.`
+};
 
-export function generate():void{
-	
-	urn_log.debug('Generating uranio schema...');
-	
-	const text = _generate_schema_text();
-	_save_schema_declaration_file(text);
-	
-	urn_log.debug(`Schema generated.`);
+export function schema():string{
+	urn_log.debug('Started generating uranio core schema...');
+	_init_generate();
+	const text = _generate_uranio_schema_text();
+	urn_log.debug(`Core schema generated.`);
+	return text;
 }
 
-function _save_schema_declaration_file(text:string){
+export function schema_and_save():void{
+	const text = schema();
+	save_schema(text);
+	urn_log.debug(`Schema generated and saved.`);
+}
+
+export function save_schema(text:string):void{
+	fs.writeFileSync(`${process_params.urn_output_dir}/schema.d.ts`, text);
+}
+
+function _init_generate(){
+	process_params.urn_command = process.argv[0];
 	for(const argv of process.argv){
 		const splitted = argv.split('=');
 		if(
-			splitted[0] === 'urn_generate_base_schema'
+			splitted[0] === 'urn_base_schema'
 			&& typeof splitted[1] === 'string'
 			&& splitted[1] !== ''
 		){
-			urn_generate_base_schema = splitted[1];
+			process_params.urn_base_schema = splitted[1];
 		}else if(
-			splitted[0] === 'urn_generate_output_dir'
+			splitted[0] === 'urn_output_dir'
 			&& typeof splitted[1] === 'string'
 			&& splitted[1] !== ''
 		){
-			urn_generate_output_dir = splitted[1];
+			process_params.urn_output_dir = splitted[1];
 		}
 	}
-	_replace_text(urn_generate_base_schema, urn_generate_output_dir, text);
+}
+
+function _generate_uranio_schema_text(){
+	const txt = _generate_schema_text();
+	const data = fs.readFileSync(process_params.urn_base_schema, {encoding: 'utf8'});
+	const data_start = data.split('/** --uranio-generate-start */');
+	const data_end = data_start[1].split('/** --uranio-generate-end */');
+	let new_data = '';
+	new_data += data_start[0];
+	new_data += `/** --uranio-generate-start */\n\n`;
+	new_data += txt; + '\n\n';
+	new_data += `/** --uranio-generate-end */`;
+	new_data += data_end[1];
+	return new_data;
 }
 
 function _generate_schema_text(){
@@ -92,23 +117,6 @@ function _generate_last_export(){
 	return '\n\texport {};';
 }
 
-function _replace_text(base_schema_path:string, output_dir_path:string, txt:string){
-	
-	const data = fs.readFileSync(base_schema_path, {encoding: 'utf8'});
-	
-	const data_start = data.split('/** --uranio-generate-start */');
-	const data_end = data_start[1].split('/** --uranio-generate-end */');
-	
-	let new_data = '';
-	new_data += data_start[0];
-	new_data += `/** --uranio-generate-start */\n\n`;
-	new_data += txt; + '\n\n';
-	new_data += `/** --uranio-generate-end */`;
-	new_data += data_end[1];
-	
-	fs.writeFileSync(`${output_dir_path}/schema.d.ts`, new_data);
-}
-
 function _generate_atom_type(atom_names:string[]){
 	let text = '';
 	text += `\texport type Atom<A extends AtomName> =\n`;
@@ -146,7 +154,7 @@ function _generate_atom_types(atom_names:string[]){
 	return text;
 }
 
-function _generate_bond_shape_depth(depth:schema.Depth, atom_book:types.Book){
+function _generate_bond_shape_depth(depth:schema_types.Depth, atom_book:types.Book){
 	let label = '1';
 	let atom_molecule = 'Atom';
 	let molecule_depth = '';
@@ -252,12 +260,9 @@ function _generate_atom_shapes(atom_book:types.Book){
 }
 
 function _generate_union_names(type_name: string, names:string[]){
-	
 	const union = (names.length > 0) ?
 		names.map(n => `'${n}'`).join(' | ') : 'never';
-	
 	return `\texport type ${type_name} = ${union}\n\n`;
-	
 }
 
 
