@@ -27,7 +27,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.save_schema = exports.schema_and_save = exports.schema = exports.process_params = void 0;
+exports.init = exports.save_schema = exports.schema_and_save = exports.schema = exports.process_params = void 0;
 const fs_1 = __importDefault(require("fs"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
@@ -41,7 +41,7 @@ exports.process_params = {
 };
 function schema() {
     urn_lib_1.urn_log.debug('Started generating uranio core schema...');
-    _init_generate();
+    init();
     const text = _generate_uranio_schema_text();
     urn_lib_1.urn_log.debug(`Core schema generated.`);
     return text;
@@ -57,8 +57,7 @@ function save_schema(text) {
     fs_1.default.writeFileSync(`${exports.process_params.urn_output_dir}/schema.d.ts`, text);
 }
 exports.save_schema = save_schema;
-function _init_generate() {
-    exports.process_params.urn_command = process.argv[0];
+function init() {
     for (const argv of process.argv) {
         const splitted = argv.split('=');
         if (splitted[0] === 'urn_base_schema'
@@ -73,6 +72,7 @@ function _init_generate() {
         }
     }
 }
+exports.init = init;
 function _generate_uranio_schema_text() {
     const txt = _generate_schema_text();
     const data = fs_1.default.readFileSync(exports.process_params.urn_base_schema, { encoding: 'utf8' });
