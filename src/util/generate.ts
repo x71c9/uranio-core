@@ -26,7 +26,7 @@ export const process_params = {
 
 export function schema():string{
 	urn_log.debug('Started generating uranio core schema...');
-	_init_generate();
+	init();
 	const text = _generate_uranio_schema_text();
 	urn_log.debug(`Core schema generated.`);
 	return text;
@@ -42,8 +42,7 @@ export function save_schema(text:string):void{
 	fs.writeFileSync(`${process_params.urn_output_dir}/schema.d.ts`, text);
 }
 
-function _init_generate(){
-	process_params.urn_command = process.argv[0];
+export function init():void{
 	for(const argv of process.argv){
 		const splitted = argv.split('=');
 		if(
