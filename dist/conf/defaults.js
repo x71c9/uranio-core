@@ -6,7 +6,9 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.core_config = void 0;
+const urn_lib_1 = require("urn-lib");
 exports.core_config = {
+    log_level: urn_lib_1.urn_log.LogLevel.DEBUG,
     db_type: 'mongo',
     mongo_main_connection: '',
     mongo_trash_connection: '',

@@ -18,5 +18,7 @@ import * as conf from '../conf/index';
 export { conf };
 import * as util from '../util/index';
 export { util };
+import * as log from '../log/index';
+export { log };
 export * from '../init/index';
 export * from '../reg/index';
