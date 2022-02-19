@@ -24,8 +24,12 @@ import * as db from '../db/index';
 
 import * as bll from '../bll/index';
 
+import * as log from '../log/index';
+
 export function init(config?:types.Configuration)
 		:void{
+	
+	log.init(urn_log.defaults);
 	
 	if(typeof config === 'undefined'){
 		conf.set_from_env(core_config);

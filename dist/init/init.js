@@ -33,7 +33,9 @@ const conf = __importStar(require("../conf/index"));
 const book = __importStar(require("../book/index"));
 const db = __importStar(require("../db/index"));
 const bll = __importStar(require("../bll/index"));
+const log = __importStar(require("../log/index"));
 function init(config) {
+    log.init(urn_lib_1.urn_log.defaults);
     if (typeof config === 'undefined') {
         conf.set_from_env(defaults_1.core_config);
     }
