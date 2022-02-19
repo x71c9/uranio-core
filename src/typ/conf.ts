@@ -6,11 +6,15 @@
 
 // import {RequiredConfigParams, OptionalConfigParam} from './intra';
 
+import {urn_log} from 'urn-lib';
+
 export type Database = 'mongo'; // | 'mysql'
 
 export type Storage = 'aws'; // | 'gcloud' | 'localhost'
 
 export type Configuration = {
+	
+	log_level: urn_log.LogLevel
 	
 	db_type: Database
 	

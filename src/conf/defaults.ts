@@ -4,10 +4,13 @@
  * @packageDocumentation
  */
 
-// import {FullConfiguration} from '../typ/intra';
+import {urn_log} from 'urn-lib';
+
 import {Configuration} from '../typ/conf';
 
 export const core_config:Required<Configuration> = {
+	
+	log_level: urn_log.LogLevel.DEBUG,
 	
 	db_type: 'mongo',
 	

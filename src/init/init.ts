@@ -26,6 +26,7 @@ import * as bll from '../bll/index';
 
 export function init(config?:types.Configuration)
 		:void{
+	
 	if(typeof config === 'undefined'){
 		conf.set_from_env(core_config);
 	}else{
@@ -35,6 +36,8 @@ export function init(config?:types.Configuration)
 	_validate_core_book();
 	
 	conf.set_initialize(true);
+	
+	urn_log.defaults.log_level = conf.get(`log_level`);
 	
 	_core_connect();
 	

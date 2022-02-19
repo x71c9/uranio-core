@@ -3,13 +3,10 @@
  *
  * @packageDocumentation
  */
-
 import {urn_log} from 'urn-lib';
-
-urn_log.defaults.log_level = urn_log.LogLevel.FUNCTION_DEBUG;
+urn_log.init(urn_log.LogLevel.FUNCTION_DEBUG);
 
 import urn_core from './index';
-
 urn_core.init();
 
 // console.log(urn_core);

@@ -27,14 +27,14 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.book = exports.atm = exports.types = void 0;
+exports.log = exports.book = exports.atm = exports.types = void 0;
 const types = __importStar(require("./types"));
 exports.types = types;
 const atm = __importStar(require("../atm/index"));
 exports.atm = atm;
 const book = __importStar(require("../book/client"));
 exports.book = book;
+const log = __importStar(require("../log/index"));
+exports.log = log;
 __exportStar(require("../sch/index"), exports);
-// import schema from 'uranio-schema';
-// export {schema};
 //# sourceMappingURL=main.js.map

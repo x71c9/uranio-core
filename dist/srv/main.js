@@ -27,7 +27,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.util = exports.conf = exports.db = exports.book = exports.atom = exports.bll = exports.types = void 0;
+exports.log = exports.util = exports.conf = exports.db = exports.book = exports.atom = exports.bll = exports.types = void 0;
 const types = __importStar(require("./types"));
 exports.types = types;
 __exportStar(require("../sch/index"), exports);
@@ -43,12 +43,8 @@ const conf = __importStar(require("../conf/index"));
 exports.conf = conf;
 const util = __importStar(require("../util/index"));
 exports.util = util;
-/*
- * First level methods.
- * If other methods are added, urn-cli must be updated.
- * Go to urn-cli/src/cmd/transpose.ts and
- * add the new method names.
- */
+const log = __importStar(require("../log/index"));
+exports.log = log;
 __exportStar(require("../init/index"), exports);
 __exportStar(require("../reg/index"), exports);
 //# sourceMappingURL=main.js.map

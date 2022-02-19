@@ -3,9 +3,11 @@
  *
  * @packageDocumentation
  */
+import { urn_log } from 'urn-lib';
 export declare type Database = 'mongo';
 export declare type Storage = 'aws';
 export declare type Configuration = {
+    log_level: urn_log.LogLevel;
     db_type: Database;
     mongo_main_connection: string;
     db_main_name: string;

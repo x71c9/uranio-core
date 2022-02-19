@@ -16,8 +16,8 @@ import * as book from '../book/client';
 
 export {book};
 
+import * as log from '../log/index';
+
+export {log};
+
 export * from '../sch/index';
-
-// import schema from 'uranio-schema';
-
-// export {schema};
