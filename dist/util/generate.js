@@ -210,7 +210,7 @@ function _generate_bond_shape_depth(depth, atom_book) {
                 bonds.push(`${key}${optional}: ${atom_molecule}<'${prop_def.atom}'${molecule_depth}>[]`);
             }
         }
-        const bond_obj = (bonds.length > 0) ? `{${bonds.join(', ')}}` : 'never';
+        const bond_obj = (bonds.length > 0) ? `{${bonds.join(', ')}}` : 'Record<never, unknown>';
         text += `\t\tA extends '${atom_name}' ? ${bond_obj} :\n`;
     }
     text += `\t\tnever\n\n`;

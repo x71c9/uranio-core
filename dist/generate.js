@@ -28,7 +28,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const urn_lib_1 = require("urn-lib");
-urn_lib_1.urn_log.init(urn_lib_1.urn_log.LogLevel.FUNCTION_DEBUG);
+urn_lib_1.urn_log.init({
+    log_level: urn_lib_1.urn_log.LogLevel.FUNCTION_DEBUG,
+    debug_info: false
+});
 __exportStar(require("./register"), exports);
 const util = __importStar(require("./util/index"));
 util.generate.schema_and_save();
