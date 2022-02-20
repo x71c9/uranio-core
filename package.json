@@ -5,7 +5,8 @@
 	"main": "dist/index.js",
 	"exports": {
 		".": "./dist/index.js",
-		"./client": "./dist/client.js"
+		"./client": "./dist/client.js",
+		"./types": "./dist/types.js"
 	},
 	"typesVersions": {
 		"*": {
@@ -14,6 +15,9 @@
 			],
 			"client": [
 				"dist/client.d.ts"
+			],
+			"types": [
+				"dist/types.d.ts"
 			]
 		}
 	},
