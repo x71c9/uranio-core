@@ -180,7 +180,7 @@ function _validate_primitive_properties(atom_name, partial_atom) {
             const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${k}\``;
             throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
         }
-        if (prop_def.type === types_1.BookProperty.ATOM || prop_def.type === types_1.BookProperty.ATOM_ARRAY) {
+        if (prop_def.type === types_1.PropertyType.ATOM || prop_def.type === types_1.PropertyType.ATOM_ARRAY) {
             continue;
         }
         try {
@@ -215,7 +215,7 @@ function _validate_partial_atom_bond_properties(atom_name, partial_atom) {
             const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${k}\``;
             throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
         }
-        if (prop_def.type !== types_1.BookProperty.ATOM && prop_def.type !== types_1.BookProperty.ATOM_ARRAY) {
+        if (prop_def.type !== types_1.PropertyType.ATOM && prop_def.type !== types_1.PropertyType.ATOM_ARRAY) {
             continue;
         }
         try {
@@ -288,106 +288,106 @@ function _validate_primitive_type(prop_key, prop_def, prop_value) {
         return true;
     }
     switch (prop_def.type) {
-        case types_1.BookProperty.ID:
-        case types_1.BookProperty.TEXT:
-        case types_1.BookProperty.LONG_TEXT:
-        case types_1.BookProperty.ENCRYPTED:
-        case types_1.BookProperty.EMAIL: {
+        case types_1.PropertyType.ID:
+        case types_1.PropertyType.TEXT:
+        case types_1.PropertyType.LONG_TEXT:
+        case types_1.PropertyType.ENCRYPTED:
+        case types_1.PropertyType.EMAIL: {
             if (typeof prop_value !== 'string') {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be a string.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a string.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
         }
-        case types_1.BookProperty.INTEGER:
-        case types_1.BookProperty.FLOAT: {
+        case types_1.PropertyType.INTEGER:
+        case types_1.PropertyType.FLOAT: {
             if (typeof prop_value !== 'number') {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be a number.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a number.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
         }
-        case types_1.BookProperty.BINARY: {
+        case types_1.PropertyType.BINARY: {
             if (typeof prop_value !== 'boolean') {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be a boolean.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a boolean.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
         }
-        case types_1.BookProperty.DAY:
-        case types_1.BookProperty.TIME: {
+        case types_1.PropertyType.DAY:
+        case types_1.PropertyType.TIME: {
             // TODO: To be checked if this should be here.
             if (typeof prop_value === 'string') {
                 prop_value = new Date(prop_value);
             }
             if (!urn_lib_1.urn_util.is.date(prop_value)) {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be a Date.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a Date.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
         }
-        case types_1.BookProperty.SET_STRING: {
+        case types_1.PropertyType.SET_STRING: {
             if (!Array.isArray(prop_value)) {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be a string array.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a string array.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
         }
-        case types_1.BookProperty.SET_NUMBER: {
+        case types_1.PropertyType.SET_NUMBER: {
             if (!Array.isArray(prop_value)) {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be a number array.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a number array.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
         }
-        case types_1.BookProperty.ENUM_STRING: {
+        case types_1.PropertyType.ENUM_STRING: {
             if (typeof prop_value !== 'string') {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be a string.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a string.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             if (!prop_def.values.includes(prop_value)) {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be one of following:`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be one of following:`;
                 err_msg += ` ['${prop_def.values.join("','")}']`;
                 throw urn_exc.create_invalid_atom('INVALID_ENUM_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
         }
-        case types_1.BookProperty.ENUM_NUMBER: {
+        case types_1.PropertyType.ENUM_NUMBER: {
             if (typeof prop_value !== 'number') {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be a number.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a number.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             if (!prop_def.values.includes(prop_value)) {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be one of the following:`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be one of the following:`;
                 err_msg += ` [${prop_def.values.join(', ')}]`;
                 throw urn_exc.create_invalid_atom('INVALID_ENUM_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
         }
-        case types_1.BookProperty.ATOM: {
+        case types_1.PropertyType.ATOM: {
             if (typeof prop_value !== 'string') {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be a string.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a string.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
         }
-        case types_1.BookProperty.ATOM_ARRAY: {
+        case types_1.PropertyType.ATOM_ARRAY: {
             if (!Array.isArray(prop_value)) {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be an Array.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be an Array.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             else if (!prop_value.every((id) => typeof id === 'string')) {
-                const err_msg = `Invalid property \`${prop_key}\`. Property should be an Array of string.`;
+                const err_msg = `Invalid property \`${prop_key}\`. PropertyType should be an Array of string.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
@@ -399,26 +399,26 @@ function _validate_primitive_type(prop_key, prop_def, prop_value) {
 function _validate_custom_type(prop_key, prop_def, prop_value, partial_atom) {
     try {
         switch (prop_def.type) {
-            case types_1.BookProperty.TEXT:
-            case types_1.BookProperty.LONG_TEXT: {
+            case types_1.PropertyType.TEXT:
+            case types_1.PropertyType.LONG_TEXT: {
                 _custom_validate_string(prop_key, prop_def, prop_value);
                 break;
             }
-            case types_1.BookProperty.INTEGER:
-            case types_1.BookProperty.FLOAT: {
+            case types_1.PropertyType.INTEGER:
+            case types_1.PropertyType.FLOAT: {
                 _custom_validate_number(prop_key, prop_def, prop_value);
                 break;
             }
-            case types_1.BookProperty.DAY:
-            case types_1.BookProperty.TIME: {
+            case types_1.PropertyType.DAY:
+            case types_1.PropertyType.TIME: {
                 _custom_validate_time(prop_key, prop_def, prop_value);
                 break;
             }
-            case types_1.BookProperty.SET_STRING: {
+            case types_1.PropertyType.SET_STRING: {
                 _custom_validate_set_string(prop_key, prop_def, prop_value);
                 break;
             }
-            case types_1.BookProperty.SET_NUMBER: {
+            case types_1.PropertyType.SET_NUMBER: {
                 _custom_validate_set_number(prop_key, prop_def, prop_value);
                 break;
             }
@@ -439,22 +439,22 @@ function _validate_bond_type(prop_key, prop_def, prop_value) {
         return true;
     }
     switch (prop_def.type) {
-        case types_1.BookProperty.ATOM: {
+        case types_1.PropertyType.ATOM: {
             if (typeof prop_value === null || typeof prop_value !== 'object') {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be an object.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be an object.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
         }
-        case types_1.BookProperty.ATOM_ARRAY: {
+        case types_1.PropertyType.ATOM_ARRAY: {
             if (!Array.isArray(prop_value)) {
-                let err_msg = `Invalid property \`${prop_key}\`. Property should be an Array.`;
+                let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be an Array.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             else if (!prop_value.every((atom) => typeof atom !== null && typeof atom === 'object')) {
-                const err_msg = `Invalid property \`${prop_key}\`. Property should be an Array of object.`;
+                const err_msg = `Invalid property \`${prop_key}\`. PropertyType should be an Array of object.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
             }
             return true;
@@ -466,11 +466,11 @@ function _validate_bond_type(prop_key, prop_def, prop_value) {
 function _validate_custom_bond_type(prop_key, prop_def, prop_value, partial_atom) {
     try {
         switch (prop_def.type) {
-            case types_1.BookProperty.ATOM: {
+            case types_1.PropertyType.ATOM: {
                 _custom_validate_bond_atom(prop_key, prop_def, prop_value);
                 break;
             }
-            case types_1.BookProperty.ATOM_ARRAY: {
+            case types_1.PropertyType.ATOM_ARRAY: {
                 for (const subatom of prop_value) {
                     _custom_validate_bond_atom(prop_key, prop_def, subatom);
                 }

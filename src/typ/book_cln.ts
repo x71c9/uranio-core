@@ -12,11 +12,11 @@ import {schema} from '../sch/index';
 
 // import {schema.AtomName} from './atom';
 
-// import {BookProperty} from './common';
+// import {Property} from './common';
 
 export type ConnectionName = 'main' | 'trash' | 'log';
 
-export enum BookProperty {
+export enum PropertyType {
 	ID = 'ID',
 	TEXT = 'TEXT',
 	LONG_TEXT = 'LONG_TEXT',
@@ -82,7 +82,7 @@ export namespace Book {
 		export namespace Property {
 		
 			export interface SharedFields {
-				type: BookProperty
+				type: PropertyType
 				label: string
 				optional?: boolean
 				hidden?: boolean
@@ -92,17 +92,17 @@ export namespace Book {
 			}
 			
 			export interface ID extends SharedFields {
-				type: BookProperty.ID
+				type: PropertyType.ID
 				validation?: Validation.String
 			}
 			
 			export interface Text extends SharedFields {
-				type: BookProperty.TEXT
+				type: PropertyType.TEXT
 				validation?: Validation.String
 			}
 			
 			export interface LongText extends SharedFields {
-				type: BookProperty.LONG_TEXT
+				type: PropertyType.LONG_TEXT
 				validation?: Validation.String
 			}
 			
@@ -128,74 +128,74 @@ export namespace Book {
 				Time;
 			
 			export interface Email extends SharedFields {
-				type: BookProperty.EMAIL
+				type: PropertyType.EMAIL
 			}
 			
 			export interface Integer extends SharedFields {
-				type: BookProperty.INTEGER
+				type: PropertyType.INTEGER
 				validation?: Validation.Number
 			}
 			
 			export interface Float extends SharedFields {
-				type: BookProperty.FLOAT
+				type: PropertyType.FLOAT
 				validation?: Validation.Number
 				format?: Format.Float
 			}
 			
 			export interface Binary extends SharedFields {
-				type: BookProperty.BINARY
+				type: PropertyType.BINARY
 				default?: false | true
 				values?: [string, string]
 			}
 			
 			export interface Encrypted extends SharedFields {
-				type: BookProperty.ENCRYPTED
+				type: PropertyType.ENCRYPTED
 				validation?: Validation.String
 			}
 			
 			export interface Day extends SharedFields {
-				type: BookProperty.DAY
+				type: PropertyType.DAY
 				default?: Date | 'NOW'
 				validation?: Validation.DayTime
 			}
 			
 			export interface Time extends SharedFields {
-				type: BookProperty.TIME
+				type: PropertyType.TIME
 				default?: Date | 'NOW'
 				validation?: Validation.DayTime
 			}
 			
 			export interface EnumString extends SharedFields {
-				type: BookProperty.ENUM_STRING
+				type: PropertyType.ENUM_STRING
 				values: string[]
 				default?: string
 			}
 			
 			export interface EnumNumber extends SharedFields {
-				type: BookProperty.ENUM_NUMBER
+				type: PropertyType.ENUM_NUMBER
 				values: number[]
 				default?: number
 			}
 			
 			export interface SetString extends SharedFields {
-				type: BookProperty.SET_STRING
+				type: PropertyType.SET_STRING
 				validation?: Validation.SetString
 			}
 			
 			export interface SetNumber extends SharedFields {
-				type: BookProperty.SET_NUMBER
+				type: PropertyType.SET_NUMBER
 				validation?: Validation.SetNumber
 			}
 			
 			export interface Atom extends SharedFields {
-				type: BookProperty.ATOM
+				type: PropertyType.ATOM
 				atom: schema.AtomName
 				delete_cascade?: boolean
 				validation?: Validation.Atom
 			}
 			
 			export interface AtomArray extends SharedFields {
-				type: BookProperty.ATOM_ARRAY
+				type: PropertyType.ATOM_ARRAY
 				atom: schema.AtomName
 				delete_cascade?: boolean
 				validation?: Validation.Atom

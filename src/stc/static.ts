@@ -6,15 +6,15 @@
  * @packageDocumentation
  */
 
-import {BookProperty} from '../typ/book_cln';
+import {PropertyType} from '../typ/book_cln';
 
 export const atom_hard_properties = {
 	_id: {
-		type: BookProperty.ID,
+		type: PropertyType.ID,
 		label: '_id',
 	},
 	_date: {
-		type: BookProperty.TIME,
+		type: PropertyType.TIME,
 		label: '_date',
 		default: 'NOW',
 		on_error: () => {return new Date();}
@@ -23,17 +23,17 @@ export const atom_hard_properties = {
 
 export const atom_common_properties = {
 	_r:{
-		type: BookProperty.ID,
+		type: PropertyType.ID,
 		label: '_r',
 		optional: true
 	},
 	_w:{
-		type: BookProperty.ID,
+		type: PropertyType.ID,
 		label: '_w',
 		optional: true
 	},
 	_deleted_from: {
-		type: BookProperty.ID,
+		type: PropertyType.ID,
 		label: 'Deleted from',
 		optional: true
 	}

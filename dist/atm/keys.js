@@ -71,7 +71,7 @@ function get_encrypted(atom_name) {
     const prop_defs = book.get_custom_property_definitions(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
-        if (prop.type && prop.type === book_cln_1.BookProperty.ENCRYPTED) {
+        if (prop.type && prop.type === book_cln_1.PropertyType.ENCRYPTED) {
             encrypt_keys.add(k);
         }
     }
@@ -80,7 +80,7 @@ function get_encrypted(atom_name) {
         const prop = index_1.atom_common_properties[k];
         // eslint-disable-next-line
         // @ts-ignore
-        if (prop.type && prop.type === book_cln_1.BookProperty.ENCRYPTED) {
+        if (prop.type && prop.type === book_cln_1.PropertyType.ENCRYPTED) {
             encrypt_keys.add(k);
         }
     }
@@ -111,7 +111,7 @@ function get_bond(atom_name) {
     const prop_defs = book.get_custom_property_definitions(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
-        if (prop.type && prop.type === book_cln_1.BookProperty.ATOM || prop.type === book_cln_1.BookProperty.ATOM_ARRAY) {
+        if (prop.type && prop.type === book_cln_1.PropertyType.ATOM || prop.type === book_cln_1.PropertyType.ATOM_ARRAY) {
             subatom_keys.add(k);
         }
     }
@@ -123,7 +123,7 @@ function get_bond_array(atom_name) {
     const prop_defs = book.get_custom_property_definitions(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
-        if (prop.type === book_cln_1.BookProperty.ATOM_ARRAY) {
+        if (prop.type === book_cln_1.PropertyType.ATOM_ARRAY) {
             subatom_keys.add(k);
         }
     }
@@ -135,7 +135,7 @@ function get_bond_non_array(atom_name) {
     const prop_defs = book.get_custom_property_definitions(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
-        if (prop.type === book_cln_1.BookProperty.ATOM) {
+        if (prop.type === book_cln_1.PropertyType.ATOM) {
             subatom_keys.add(k);
         }
     }

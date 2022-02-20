@@ -19,8 +19,8 @@ import {schema} from '../sch/index';
 import * as conf from '../conf/index';
 
 import {
-	BookSecurity,
-	BookPermission,
+	SecurityType,
+	PermissionType,
 } from '../typ/book_srv';
 
 import {abstract_passport} from '../stc/index';
@@ -111,14 +111,14 @@ export function is_public_request<A extends schema.AtomName>(atom_name:A, action
 	
 		if(
 			!atom_def.security ||
-			atom_def.security === BookSecurity.UNIFORM
+			atom_def.security === SecurityType.UNIFORM
 		){
 			return true;
 		}
 		
 		if(
 			typeof atom_def.security === 'object' &&
-			atom_def.security.type === BookSecurity.UNIFORM &&
+			atom_def.security.type === SecurityType.UNIFORM &&
 			atom_def.security._r === undefined
 		){
 			return true;
@@ -130,8 +130,8 @@ export function is_public_request<A extends schema.AtomName>(atom_name:A, action
 		
 		if(
 			typeof atom_def.security === 'object' &&
-			atom_def.security.type === BookSecurity.UNIFORM &&
-			atom_def.security._w === BookPermission.PUBLIC
+			atom_def.security.type === SecurityType.UNIFORM &&
+			atom_def.security._w === PermissionType.PUBLIC
 		){
 			return true;
 		}

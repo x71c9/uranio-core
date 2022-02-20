@@ -19,10 +19,10 @@ import * as validate from './validate';
 //   schema.Atom,
 //   schema.AtomShape,
 //   Book,
-//   BookProperty
+//   PropertyType
 // } from '../cln/types';
 
-import {Book, BookProperty} from '../cln/types';
+import {Book, PropertyType} from '../cln/types';
 
 // import schema from 'uranio-schema';
 
@@ -49,7 +49,7 @@ export async function properties<A extends schema.AtomName>(atom_name:A, atom:sc
 	for(k in atom){
 		if(urn_util.object.has_key(prop_defs, k)){
 			const prop = prop_defs[k];
-			if(prop && prop.type === BookProperty.ENCRYPTED){
+			if(prop && prop.type === PropertyType.ENCRYPTED){
 				atom[k] = await property<A>(atom_name, k, String(atom[k])) as any;
 			}
 		}

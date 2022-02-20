@@ -142,7 +142,7 @@ function _add_schema_middleware(atom_name, conn_name, mongo_schema) {
     const prop_defs = book.get_custom_property_definitions(atom_name);
     const atom_by_cascade_keys = new Map();
     for (const [k, v] of Object.entries(prop_defs)) {
-        if (v.type === book_srv_1.BookProperty.ATOM || v.type === book_srv_1.BookProperty.ATOM_ARRAY) {
+        if (v.type === book_srv_1.PropertyType.ATOM || v.type === book_srv_1.PropertyType.ATOM_ARRAY) {
             if (v.delete_cascade && v.delete_cascade === true) {
                 atom_by_cascade_keys.set(k, v.atom);
             }

@@ -8,7 +8,7 @@
 
 import {schema} from '../sch/index';
 
-import {Book, BookProperty} from '../typ/book_cln';
+import {Book, PropertyType} from '../typ/book_cln';
 
 import * as book from '../book/client';
 
@@ -60,7 +60,7 @@ export function get_encrypted<A extends schema.AtomName>(atom_name:A)
 	const prop_defs = book.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
-		if(prop.type && prop.type === BookProperty.ENCRYPTED){
+		if(prop.type && prop.type === PropertyType.ENCRYPTED){
 			encrypt_keys.add(k as keyof schema.Atom<A>);
 		}
 	}
@@ -69,7 +69,7 @@ export function get_encrypted<A extends schema.AtomName>(atom_name:A)
 		const prop:Book.Definition.Property = atom_common_properties[k];
 		// eslint-disable-next-line
 		// @ts-ignore
-		if(prop.type && prop.type === BookProperty.ENCRYPTED){
+		if(prop.type && prop.type === PropertyType.ENCRYPTED){
 			encrypt_keys.add(k as keyof schema.AtomShape<A>);
 		}
 	}
@@ -102,7 +102,7 @@ export function get_bond<A extends schema.AtomName, D extends schema.Depth = 0>(
 	const prop_defs = book.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
-		if(prop.type && prop.type === BookProperty.ATOM || prop.type === BookProperty.ATOM_ARRAY){
+		if(prop.type && prop.type === PropertyType.ATOM || prop.type === PropertyType.ATOM_ARRAY){
 			subatom_keys.add(k as keyof schema.Molecule<A,D>);
 		}
 	}
@@ -115,7 +115,7 @@ export function get_bond_array<A extends schema.AtomName>(atom_name:A)
 	const prop_defs = book.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
-		if(prop.type === BookProperty.ATOM_ARRAY){
+		if(prop.type === PropertyType.ATOM_ARRAY){
 			subatom_keys.add(k as keyof schema.AtomShape<A>);
 		}
 	}
@@ -128,7 +128,7 @@ export function get_bond_non_array<A extends schema.AtomName>(atom_name:A)
 	const prop_defs = book.get_custom_property_definitions(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
-		if(prop.type === BookProperty.ATOM){
+		if(prop.type === PropertyType.ATOM){
 			subatom_keys.add(k as keyof schema.AtomShape<A>);
 		}
 	}

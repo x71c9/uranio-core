@@ -12,28 +12,24 @@
  * @packageDocumentation
  */
 
-// import schema from 'uranio-schema';
-
 import {schema} from '../sch/index';
 
 import {BLL} from '../bll/bll';
 
-// import {schema.AtomName} from './atom';
-
 import {Passport} from './auth';
 
-import {BookProperty} from './book_cln';
+import {PropertyType} from './book_cln';
 
-export {BookProperty};
+export {PropertyType};
 
 import * as book_cln from './book_cln';
 
-export enum BookSecurity {
+export enum SecurityType {
 	UNIFORM = 'UNIFORM',
 	GRANULAR = 'GRANULAR'
 }
 
-export enum BookPermission {
+export enum PermissionType {
 	NOBODY = 'NOBODY',
 	PUBLIC = 'PUBLIC'
 }
@@ -50,12 +46,12 @@ export namespace Book {
 	
 	// export type BasicDefinition =
 	//   book_cln.Book.BasicDefinition & {
-	//   security?: BookSecurityType | Definition.Security
+	//   security?: BookSecurityType | Definition.SecurityType
 	// }
 	
 	export type Definition<A extends schema.AtomName> =
 		book_cln.Book.Definition & {
-		security?: BookSecurity | Definition.Security
+		security?: SecurityType | Definition.Security
 		// bll?: Definition.Bll
 		bll?: Definition.Bll<A>
 	}
@@ -121,9 +117,9 @@ export namespace Book {
 		}
 		
 		export type Security = {
-			type: BookSecurity,
-			_r?: BookProperty.ID | BookPermission.NOBODY
-			_w?: BookProperty.ID | BookPermission.PUBLIC
+			type: SecurityType,
+			_r?: PropertyType.ID | PermissionType.NOBODY
+			_w?: PropertyType.ID | PermissionType.PUBLIC
 		}
 		
 	}

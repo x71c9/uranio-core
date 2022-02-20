@@ -154,10 +154,10 @@ function _validate_auth_atoms(){
 						`Auth Atom \`${atom_name}.email\` cannot be optional.`
 					);
 				}
-				if(properties.email.type !== types.BookProperty.EMAIL){
+				if(properties.email.type !== types.PropertyType.EMAIL){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_EMAIL`,
-						`Auth Atom \`${atom_name}.email\` must be of type types.BookProperty.EMAIL.`
+						`Auth Atom \`${atom_name}.email\` must be of type types.PropertyType.EMAIL.`
 					);
 				}
 			}
@@ -173,7 +173,7 @@ function _validate_auth_atoms(){
 						`Auth Atom \`${atom_name}.password\` cannot be optional.`
 					);
 				}
-				if(properties.password.type !== types.BookProperty.ENCRYPTED){
+				if(properties.password.type !== types.PropertyType.ENCRYPTED){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_PASSWORD`,
 						`Auth Atom \`${atom_name}.password\` must be of type BookPropertyType.ENCRYPTED.`
@@ -192,7 +192,7 @@ function _validate_auth_atoms(){
 						`Auth Atom \`${atom_name}.group\` cannot be optional.`
 					);
 				}
-				if(properties.groups.type !== types.BookProperty.ATOM_ARRAY){
+				if(properties.groups.type !== types.PropertyType.ATOM_ARRAY){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_GROUP`,
 						`Auth Atom \`${atom_name}.group\` must be of type BookPropertyType.ATOM_ARRAY.`
@@ -228,8 +228,8 @@ function _validate_atoms_reference_on_the_same_connection(){
 		for(const [_prop_key, prop_def] of Object.entries(atom_def.properties)){
 			if(
 				(
-					prop_def.type === types.BookProperty.ATOM
-					|| prop_def.type === types.BookProperty.ATOM_ARRAY
+					prop_def.type === types.PropertyType.ATOM
+					|| prop_def.type === types.PropertyType.ATOM_ARRAY
 				)
 				&& connection_by_atom[prop_def.atom] !== connection_by_atom[atom_name]
 			){
@@ -257,7 +257,7 @@ function _validate_acl_reference_consistency(){
 		if(
 			atom_def
 			&& typeof atom_def.security !== 'string'
-			&& atom_def.security?.type === types.BookSecurity.UNIFORM
+			&& atom_def.security?.type === types.SecurityType.UNIFORM
 			&& typeof atom_def.security?._r !== 'undefined'
 		){
 			not_public_atoms.push(atom_name);
@@ -271,8 +271,8 @@ function _validate_acl_reference_consistency(){
 		for(const [prop_key, prop_def] of Object.entries(prop_defs)){
 			if(
 				(
-					prop_def.type === types.BookProperty.ATOM
-					|| prop_def.type === types.BookProperty.ATOM_ARRAY
+					prop_def.type === types.PropertyType.ATOM
+					|| prop_def.type === types.PropertyType.ATOM_ARRAY
 				)
 				&& not_public_atoms.includes(prop_def.atom)
 				&& prop_def.optional !== true

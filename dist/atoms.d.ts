@@ -3,29 +3,29 @@
  *
  * @packageDocumentation
  */
-import { BookProperty, BookSecurity, BookPermission } from './typ/book_srv';
+import { PropertyType, SecurityType, PermissionType } from './typ/book_srv';
 export declare const atom_book: {
     readonly superuser: {
         readonly authenticate: true;
         readonly plural: "superusers";
         readonly security: {
-            readonly type: BookSecurity.UNIFORM;
-            readonly _r: BookPermission.NOBODY;
+            readonly type: SecurityType.UNIFORM;
+            readonly _r: PermissionType.NOBODY;
         };
         readonly properties: {
             readonly email: {
-                readonly type: BookProperty.EMAIL;
+                readonly type: PropertyType.EMAIL;
                 readonly label: "Email";
                 readonly unique: true;
                 readonly on_error: () => string;
             };
             readonly password: {
-                readonly type: BookProperty.ENCRYPTED;
+                readonly type: PropertyType.ENCRYPTED;
                 readonly label: "Password";
                 readonly hidden: true;
             };
             readonly groups: {
-                readonly type: BookProperty.ATOM_ARRAY;
+                readonly type: PropertyType.ATOM_ARRAY;
                 readonly atom: "group";
                 readonly label: "Groups";
                 readonly optional: true;
@@ -40,21 +40,21 @@ export declare const atom_book: {
         readonly authenticate: true;
         readonly plural: "users";
         readonly security: {
-            readonly type: BookSecurity.GRANULAR;
+            readonly type: SecurityType.GRANULAR;
         };
         readonly properties: {
             readonly email: {
-                readonly type: BookProperty.EMAIL;
+                readonly type: PropertyType.EMAIL;
                 readonly label: "Email";
                 readonly unique: true;
             };
             readonly password: {
-                readonly type: BookProperty.ENCRYPTED;
+                readonly type: PropertyType.ENCRYPTED;
                 readonly label: "Password";
                 readonly hidden: true;
             };
             readonly groups: {
-                readonly type: BookProperty.ATOM_ARRAY;
+                readonly type: PropertyType.ATOM_ARRAY;
                 readonly atom: "group";
                 readonly label: "Groups";
                 readonly optional: true;
@@ -69,7 +69,7 @@ export declare const atom_book: {
         readonly plural: "groups";
         readonly properties: {
             readonly name: {
-                readonly type: BookProperty.TEXT;
+                readonly type: PropertyType.TEXT;
                 readonly unique: true;
                 readonly label: "Name";
             };
@@ -82,20 +82,20 @@ export declare const atom_book: {
         readonly plural: "media";
         readonly properties: {
             readonly src: {
-                readonly type: BookProperty.TEXT;
+                readonly type: PropertyType.TEXT;
                 readonly label: "SRC";
             };
             readonly filename: {
                 readonly primary: true;
-                readonly type: BookProperty.TEXT;
+                readonly type: PropertyType.TEXT;
                 readonly label: "Filename";
             };
             readonly type: {
-                readonly type: BookProperty.TEXT;
+                readonly type: PropertyType.TEXT;
                 readonly label: "Filetype";
             };
             readonly size: {
-                readonly type: BookProperty.INTEGER;
+                readonly type: PropertyType.INTEGER;
                 readonly label: "Size (byte)";
                 readonly validation: {
                     readonly min: 0;
@@ -103,7 +103,7 @@ export declare const atom_book: {
             };
             readonly width: {
                 readonly optional: true;
-                readonly type: BookProperty.INTEGER;
+                readonly type: PropertyType.INTEGER;
                 readonly label: "Width";
                 readonly validation: {
                     readonly min: 0;
@@ -111,7 +111,7 @@ export declare const atom_book: {
             };
             readonly height: {
                 readonly optional: true;
-                readonly type: BookProperty.INTEGER;
+                readonly type: PropertyType.INTEGER;
                 readonly label: "Height";
                 readonly validation: {
                     readonly min: 0;
