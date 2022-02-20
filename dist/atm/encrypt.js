@@ -38,7 +38,7 @@ const validate = __importStar(require("./validate"));
 //   schema.Atom,
 //   schema.AtomShape,
 //   Book,
-//   BookProperty
+//   PropertyType
 // } from '../cln/types';
 const types_1 = require("../cln/types");
 async function property(atom_name, prop_key, prop_value) {
@@ -58,7 +58,7 @@ async function properties(atom_name, atom) {
     for (k in atom) {
         if (urn_lib_1.urn_util.object.has_key(prop_defs, k)) {
             const prop = prop_defs[k];
-            if (prop && prop.type === types_1.BookProperty.ENCRYPTED) {
+            if (prop && prop.type === types_1.PropertyType.ENCRYPTED) {
                 atom[k] = await property(atom_name, k, String(atom[k]));
             }
         }

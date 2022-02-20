@@ -102,11 +102,11 @@ function is_public_request(atom_name, action) {
     const atom_def = book.get_definition(atom_name);
     if (action === auth_1.AuthAction.READ) {
         if (!atom_def.security ||
-            atom_def.security === book_srv_1.BookSecurity.UNIFORM) {
+            atom_def.security === book_srv_1.SecurityType.UNIFORM) {
             return true;
         }
         if (typeof atom_def.security === 'object' &&
-            atom_def.security.type === book_srv_1.BookSecurity.UNIFORM &&
+            atom_def.security.type === book_srv_1.SecurityType.UNIFORM &&
             atom_def.security._r === undefined) {
             return true;
         }
@@ -114,8 +114,8 @@ function is_public_request(atom_name, action) {
     }
     else if (action === auth_1.AuthAction.WRITE) {
         if (typeof atom_def.security === 'object' &&
-            atom_def.security.type === book_srv_1.BookSecurity.UNIFORM &&
-            atom_def.security._w === book_srv_1.BookPermission.PUBLIC) {
+            atom_def.security.type === book_srv_1.SecurityType.UNIFORM &&
+            atom_def.security._w === book_srv_1.PermissionType.PUBLIC) {
             return true;
         }
         return false;

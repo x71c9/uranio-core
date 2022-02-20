@@ -27,14 +27,14 @@
  */
 import { schema } from '../sch/index';
 import * as urn_dal from '../dal/index';
-import { BookSecurity } from '../typ/book_srv';
+import { SecurityType } from '../typ/book_srv';
 import { AuthAction } from '../typ/auth';
 import { AccessLayer } from '../typ/layer';
 export declare class ACL<A extends schema.AtomName> implements AccessLayer<A> {
     atom_name: A;
     protected user_groups: string[];
     protected _dal: urn_dal.DAL<A>;
-    protected _security_type: BookSecurity;
+    protected _security_type: SecurityType;
     protected _read?: string;
     protected _write?: string;
     protected _read_query: schema.Query<A>;

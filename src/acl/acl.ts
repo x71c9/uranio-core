@@ -38,7 +38,7 @@ import * as atm_keys from '../atm/keys';
 
 import * as atm_util from '../atm/util';
 
-import {BookSecurity, BookPermission} from '../typ/book_srv';
+import {SecurityType, PermissionType} from '../typ/book_srv';
 
 import {AuthAction} from '../typ/auth';
 
@@ -52,7 +52,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 	
 	protected _dal:urn_dal.DAL<A>;
 	
-	protected _security_type:BookSecurity;
+	protected _security_type:SecurityType;
 	
 	protected _read?: string;
 	
@@ -64,12 +64,12 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		this._dal = urn_dal.create(atom_name);
 		const atom_def = book.get_definition(atom_name);
 		const security = atom_def['security'];
-		this._security_type = BookSecurity.UNIFORM;
+		this._security_type = SecurityType.UNIFORM;
 		this._read = undefined;
 		this._write = undefined;
 		if(security){
 			if(typeof security === 'string'){
-				if(security === BookSecurity.GRANULAR){
+				if(security === SecurityType.GRANULAR){
 					this._security_type = security;
 				}
 			}else{
@@ -82,8 +82,8 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 	
 	protected _can_uniform_read()
 			:void{
-		if(this._security_type === BookSecurity.UNIFORM){
-			if(this._read === BookPermission.NOBODY || (this._read && !this.user_groups.includes(this._read))){
+		if(this._security_type === SecurityType.UNIFORM){
+			if(this._read === PermissionType.NOBODY || (this._read && !this.user_groups.includes(this._read))){
 				throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Read unauthorized');
 			}
 		}
@@ -91,8 +91,8 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 	
 	protected _can_uniform_write()
 			:void{
-		if(this._security_type === BookSecurity.UNIFORM){
-			if(this._write !==  BookPermission.PUBLIC && (!this._write || !this.user_groups.includes(this._write))){
+		if(this._security_type === SecurityType.UNIFORM){
+			if(this._write !==  PermissionType.PUBLIC && (!this._write || !this.user_groups.includes(this._write))){
 				throw urn_exc.create_unauthorized('UNAUTHORIZED', 'Write unauthorized');
 			}
 		}
@@ -155,7 +155,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		
 		this._can_uniform_read();
 		
-		if(this._security_type === BookSecurity.GRANULAR){
+		if(this._security_type === SecurityType.GRANULAR){
 			query = {$and: [query, this._read_query]};
 			if(!options){
 				options = {};
@@ -176,7 +176,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		this._can_uniform_read();
 		
 		let query = {_id: id} as schema.Query<A>;
-		if(options && this._security_type === BookSecurity.GRANULAR){
+		if(options && this._security_type === SecurityType.GRANULAR){
 			query = {$and: [query, this._read_query]};
 			// options.depth_query = query;
 			options.depth_query = this._read_query;
@@ -189,7 +189,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		
 		this._can_uniform_read();
 		
-		if(this._security_type === BookSecurity.GRANULAR){
+		if(this._security_type === SecurityType.GRANULAR){
 			query = {$and: [query, this._read_query]};
 			if(!options){
 				options = {};
@@ -205,7 +205,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		
 		this._can_uniform_read();
 		
-		if(this._security_type === BookSecurity.GRANULAR){
+		if(this._security_type === SecurityType.GRANULAR){
 			query = {$and: [query, this._read_query]};
 		}
 		return await this._dal.count(query);
@@ -224,7 +224,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		
 		this._can_uniform_write();
 		
-		if(this._security_type === BookSecurity.GRANULAR){
+		if(this._security_type === SecurityType.GRANULAR){
 			this._can_atom_write(id);
 		}
 		
@@ -236,7 +236,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		
 		this._can_uniform_write();
 		
-		if(this._security_type === BookSecurity.GRANULAR){
+		if(this._security_type === SecurityType.GRANULAR){
 			this._can_atom_write(id);
 		}
 		
@@ -250,7 +250,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 			this._can_uniform_read();
 		}else if(action === AuthAction.WRITE){
 			this._can_uniform_write();
-			if(typeof id !== 'undefined' && this._security_type === BookSecurity.GRANULAR){
+			if(typeof id !== 'undefined' && this._security_type === SecurityType.GRANULAR){
 				this._can_atom_write(id);
 			}
 		}
@@ -263,7 +263,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		this._can_uniform_read();
 		
 		let query = {_id: {$in: ids}} as schema.Query<A>;
-		if(this._security_type === BookSecurity.GRANULAR){
+		if(this._security_type === SecurityType.GRANULAR){
 			query = {$and: [query, this._read_query]};
 			if(!options){
 				options = {};
@@ -283,7 +283,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		
 		this._can_uniform_write();
 		
-		if(this._security_type === BookSecurity.GRANULAR){
+		if(this._security_type === SecurityType.GRANULAR){
 			this._can_atom_write_multiple(ids);
 		}
 		
@@ -303,7 +303,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		
 		this._can_uniform_write();
 		
-		if(this._security_type === BookSecurity.GRANULAR){
+		if(this._security_type === SecurityType.GRANULAR){
 			this._can_atom_write_multiple(ids);
 		}
 		

@@ -11,11 +11,11 @@ exports.real_book_property_type = exports.abstract_passport = exports.atom_commo
 const book_cln_1 = require("../typ/book_cln");
 exports.atom_hard_properties = {
     _id: {
-        type: book_cln_1.BookProperty.ID,
+        type: book_cln_1.PropertyType.ID,
         label: '_id',
     },
     _date: {
-        type: book_cln_1.BookProperty.TIME,
+        type: book_cln_1.PropertyType.TIME,
         label: '_date',
         default: 'NOW',
         on_error: () => { return new Date(); }
@@ -23,17 +23,17 @@ exports.atom_hard_properties = {
 };
 exports.atom_common_properties = {
     _r: {
-        type: book_cln_1.BookProperty.ID,
+        type: book_cln_1.PropertyType.ID,
         label: '_r',
         optional: true
     },
     _w: {
-        type: book_cln_1.BookProperty.ID,
+        type: book_cln_1.PropertyType.ID,
         label: '_w',
         optional: true
     },
     _deleted_from: {
-        type: book_cln_1.BookProperty.ID,
+        type: book_cln_1.PropertyType.ID,
         label: 'Deleted from',
         optional: true
     }

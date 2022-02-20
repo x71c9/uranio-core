@@ -196,14 +196,14 @@ function _generate_bond_shape_depth(depth, atom_book) {
         const bonds = [];
         for (const [key, prop_def] of Object.entries(atom_def.properties)) {
             const optional = (prop_def.optional === true) ? '?' : '';
-            if (prop_def.type === types.BookProperty.ATOM) {
+            if (prop_def.type === types.PropertyType.ATOM) {
                 if (typeof prop_def.atom !== 'string' || prop_def.atom === '') {
                     urn_exc.create_invalid_book(`INVALID_PROP_ATOM_NAME`, `Invalid property atom name form property \`key\`.`);
                 }
                 // TODO check if is valid atom_name
                 bonds.push(`${key}${optional}: ${atom_molecule}<'${prop_def.atom}'${molecule_depth}>`);
             }
-            else if (prop_def.type === types.BookProperty.ATOM_ARRAY) {
+            else if (prop_def.type === types.PropertyType.ATOM_ARRAY) {
                 if (typeof prop_def.atom !== 'string' || prop_def.atom === '') {
                     urn_exc.create_invalid_book(`INVALID_PROP_ATOM_ARRAY__NAME`, `Invalid property atom name form property \`key\`.`);
                 }
@@ -222,7 +222,7 @@ function _generate_bond_properties(atom_book) {
     for (const [atom_name, atom_def] of Object.entries(atom_book)) {
         const bond_props = [];
         for (const [key, prop_def] of Object.entries(atom_def.properties)) {
-            if (prop_def.type === types.BookProperty.ATOM || prop_def.type === types.BookProperty.ATOM_ARRAY) {
+            if (prop_def.type === types.PropertyType.ATOM || prop_def.type === types.PropertyType.ATOM_ARRAY) {
                 bond_props.push(key);
             }
         }
@@ -240,11 +240,11 @@ function _generate_atom_shapes(atom_book) {
         for (const [key, prop_def] of Object.entries(atom_def.properties)) {
             const optional = (prop_def.optional === true) ? '?' : '';
             switch (prop_def.type) {
-                case types.BookProperty.ATOM: {
+                case types.PropertyType.ATOM: {
                     text += `\t\t${key}${optional}: string\n`;
                     break;
                 }
-                case types.BookProperty.ATOM_ARRAY: {
+                case types.PropertyType.ATOM_ARRAY: {
                     text += `\t\t${key}${optional}: string[]\n`;
                     break;
                 }

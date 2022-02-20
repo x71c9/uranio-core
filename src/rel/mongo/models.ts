@@ -27,7 +27,7 @@ import * as mongo_connection from './connection';
 
 import * as book from '../../book/index';
 
-import {BookProperty} from '../../typ/book_srv';
+import {PropertyType} from '../../typ/book_srv';
 
 export const mongo_app:MongoApp = {};
 
@@ -157,7 +157,7 @@ function _add_schema_middleware<A extends schema.AtomName>(
 	const prop_defs = book.get_custom_property_definitions(atom_name);
 	const atom_by_cascade_keys = new Map<string, schema.AtomName>();
 	for(const [k,v] of Object.entries(prop_defs)){
-		if(v.type === BookProperty.ATOM || v.type === BookProperty.ATOM_ARRAY){
+		if(v.type === PropertyType.ATOM || v.type === PropertyType.ATOM_ARRAY){
 			if(v.delete_cascade && v.delete_cascade === true){
 				atom_by_cascade_keys.set(k, v.atom);
 			}

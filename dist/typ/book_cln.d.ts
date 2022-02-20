@@ -7,7 +7,7 @@
  */
 import { schema } from '../sch/index';
 export declare type ConnectionName = 'main' | 'trash' | 'log';
-export declare enum BookProperty {
+export declare enum PropertyType {
     ID = "ID",
     TEXT = "TEXT",
     LONG_TEXT = "LONG_TEXT",
@@ -42,7 +42,7 @@ export declare namespace Book {
         type Property = Property.ID | Property.Text | Property.LongText | Property.Email | Property.Integer | Property.Float | Property.Binary | Property.Encrypted | Property.Day | Property.Time | Property.SetString | Property.SetNumber | Property.EnumString | Property.EnumNumber | Property.Atom | Property.AtomArray;
         namespace Property {
             interface SharedFields {
-                type: BookProperty;
+                type: PropertyType;
                 label: string;
                 optional?: boolean;
                 hidden?: boolean;
@@ -51,15 +51,15 @@ export declare namespace Book {
                 on_error?: (old_value: any) => any;
             }
             interface ID extends SharedFields {
-                type: BookProperty.ID;
+                type: PropertyType.ID;
                 validation?: Validation.String;
             }
             interface Text extends SharedFields {
-                type: BookProperty.TEXT;
+                type: PropertyType.TEXT;
                 validation?: Validation.String;
             }
             interface LongText extends SharedFields {
-                type: BookProperty.LONG_TEXT;
+                type: PropertyType.LONG_TEXT;
                 validation?: Validation.String;
             }
             type String = Text | LongText | Encrypted;
@@ -68,62 +68,62 @@ export declare namespace Book {
             type Set = SetString | SetNumber;
             type DayTime = Day | Time;
             interface Email extends SharedFields {
-                type: BookProperty.EMAIL;
+                type: PropertyType.EMAIL;
             }
             interface Integer extends SharedFields {
-                type: BookProperty.INTEGER;
+                type: PropertyType.INTEGER;
                 validation?: Validation.Number;
             }
             interface Float extends SharedFields {
-                type: BookProperty.FLOAT;
+                type: PropertyType.FLOAT;
                 validation?: Validation.Number;
                 format?: Format.Float;
             }
             interface Binary extends SharedFields {
-                type: BookProperty.BINARY;
+                type: PropertyType.BINARY;
                 default?: false | true;
                 values?: [string, string];
             }
             interface Encrypted extends SharedFields {
-                type: BookProperty.ENCRYPTED;
+                type: PropertyType.ENCRYPTED;
                 validation?: Validation.String;
             }
             interface Day extends SharedFields {
-                type: BookProperty.DAY;
+                type: PropertyType.DAY;
                 default?: Date | 'NOW';
                 validation?: Validation.DayTime;
             }
             interface Time extends SharedFields {
-                type: BookProperty.TIME;
+                type: PropertyType.TIME;
                 default?: Date | 'NOW';
                 validation?: Validation.DayTime;
             }
             interface EnumString extends SharedFields {
-                type: BookProperty.ENUM_STRING;
+                type: PropertyType.ENUM_STRING;
                 values: string[];
                 default?: string;
             }
             interface EnumNumber extends SharedFields {
-                type: BookProperty.ENUM_NUMBER;
+                type: PropertyType.ENUM_NUMBER;
                 values: number[];
                 default?: number;
             }
             interface SetString extends SharedFields {
-                type: BookProperty.SET_STRING;
+                type: PropertyType.SET_STRING;
                 validation?: Validation.SetString;
             }
             interface SetNumber extends SharedFields {
-                type: BookProperty.SET_NUMBER;
+                type: PropertyType.SET_NUMBER;
                 validation?: Validation.SetNumber;
             }
             interface Atom extends SharedFields {
-                type: BookProperty.ATOM;
+                type: PropertyType.ATOM;
                 atom: schema.AtomName;
                 delete_cascade?: boolean;
                 validation?: Validation.Atom;
             }
             interface AtomArray extends SharedFields {
-                type: BookProperty.ATOM_ARRAY;
+                type: PropertyType.ATOM_ARRAY;
                 atom: schema.AtomName;
                 delete_cascade?: boolean;
                 validation?: Validation.Atom;

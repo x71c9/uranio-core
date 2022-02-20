@@ -14,14 +14,14 @@
 import { schema } from '../sch/index';
 import { BLL } from '../bll/bll';
 import { Passport } from './auth';
-import { BookProperty } from './book_cln';
-export { BookProperty };
+import { PropertyType } from './book_cln';
+export { PropertyType };
 import * as book_cln from './book_cln';
-export declare enum BookSecurity {
+export declare enum SecurityType {
     UNIFORM = "UNIFORM",
     GRANULAR = "GRANULAR"
 }
-export declare enum BookPermission {
+export declare enum PermissionType {
     NOBODY = "NOBODY",
     PUBLIC = "PUBLIC"
 }
@@ -30,7 +30,7 @@ export declare type Book = {
 };
 export declare namespace Book {
     type Definition<A extends schema.AtomName> = book_cln.Book.Definition & {
-        security?: BookSecurity | Definition.Security;
+        security?: SecurityType | Definition.Security;
         bll?: Definition.Bll<A>;
     };
     namespace Definition {
@@ -75,9 +75,9 @@ export declare namespace Book {
             }
         }
         type Security = {
-            type: BookSecurity;
-            _r?: BookProperty.ID | BookPermission.NOBODY;
-            _w?: BookProperty.ID | BookPermission.PUBLIC;
+            type: SecurityType;
+            _r?: PropertyType.ID | PermissionType.NOBODY;
+            _w?: PropertyType.ID | PermissionType.PUBLIC;
         };
     }
 }

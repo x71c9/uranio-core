@@ -18,7 +18,7 @@ import * as atm_util from '../../atm/util';
 
 import * as book from '../../book/index';
 
-import {Book, BookProperty} from '../../typ/book_srv';
+import {Book, PropertyType} from '../../typ/book_srv';
 
 export function generate_mongo_schema_def<A extends schema.AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{
@@ -55,20 +55,20 @@ function _generate_mongoose_schema_type_options(atom_name: schema.AtomName, prop
 		};
 	}
 	switch(prop_def.type){
-		case BookProperty.ID:{
+		case PropertyType.ID:{
 			schema_type_options = {
 				...schema_type_options,
 				type: mongoose.Schema.Types.ObjectId
 			};
 			return schema_type_options;
 		}
-		case BookProperty.TEXT:{
+		case PropertyType.TEXT:{
 			return _generate_string_schema_options(prop_def, schema_type_options);
 		}
-		case BookProperty.LONG_TEXT:{
+		case PropertyType.LONG_TEXT:{
 			return _generate_string_schema_options(prop_def, schema_type_options);
 		}
-		case BookProperty.ENCRYPTED:{
+		case PropertyType.ENCRYPTED:{
 			schema_type_options = {
 				...schema_type_options,
 				type: String,
@@ -77,7 +77,7 @@ function _generate_mongoose_schema_type_options(atom_name: schema.AtomName, prop
 			};
 			return schema_type_options;
 		}
-		case BookProperty.EMAIL:{
+		case PropertyType.EMAIL:{
 			schema_type_options = {
 				...schema_type_options,
 				match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
@@ -86,44 +86,44 @@ function _generate_mongoose_schema_type_options(atom_name: schema.AtomName, prop
 			};
 			return schema_type_options;
 		}
-		case BookProperty.INTEGER:{
+		case PropertyType.INTEGER:{
 			return _generate_number_schema_options(prop_def, schema_type_options);
 		}
-		case BookProperty.FLOAT:{
+		case PropertyType.FLOAT:{
 			return _generate_number_schema_options(prop_def, schema_type_options);
 		}
-		case BookProperty.BINARY:{
+		case PropertyType.BINARY:{
 			schema_type_options = {
 				...schema_type_options,
 				type: Boolean
 			};
 			return schema_type_options;
 		}
-		case BookProperty.DAY:
-		case BookProperty.TIME:{
+		case PropertyType.DAY:
+		case PropertyType.TIME:{
 			return _generate_date_schema_options(prop_def, schema_type_options);
 		}
-		case BookProperty.ENUM_STRING:{
+		case PropertyType.ENUM_STRING:{
 			return _generate_enum_schema_options(prop_def, schema_type_options, 'string');
 		}
-		case BookProperty.ENUM_NUMBER:{
+		case PropertyType.ENUM_NUMBER:{
 			return _generate_enum_schema_options(prop_def, schema_type_options, 'number');
 		}
-		case BookProperty.SET_STRING:{
+		case PropertyType.SET_STRING:{
 			schema_type_options = {
 				...schema_type_options,
 				type: [String]
 			};
 			return schema_type_options;
 		}
-		case BookProperty.SET_NUMBER:{
+		case PropertyType.SET_NUMBER:{
 			schema_type_options = {
 				...schema_type_options,
 				type: [Number]
 			};
 			return schema_type_options;
 		}
-		case BookProperty.ATOM:{
+		case PropertyType.ATOM:{
 			schema_type_options = {
 				...schema_type_options,
 				type: mongoose.Schema.Types.ObjectId,
@@ -131,7 +131,7 @@ function _generate_mongoose_schema_type_options(atom_name: schema.AtomName, prop
 			};
 			return schema_type_options;
 		}
-		case BookProperty.ATOM_ARRAY:{
+		case PropertyType.ATOM_ARRAY:{
 			schema_type_options = {
 				...schema_type_options,
 				type: [mongoose.Schema.Types.ObjectId],

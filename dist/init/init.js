@@ -142,8 +142,8 @@ function _validate_auth_atoms() {
                 if (properties.email.optional === false) {
                     throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_OPTIONAL_EMAIL`, `Auth Atom \`${atom_name}.email\` cannot be optional.`);
                 }
-                if (properties.email.type !== types.BookProperty.EMAIL) {
-                    throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_TYPE_EMAIL`, `Auth Atom \`${atom_name}.email\` must be of type types.BookProperty.EMAIL.`);
+                if (properties.email.type !== types.PropertyType.EMAIL) {
+                    throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_TYPE_EMAIL`, `Auth Atom \`${atom_name}.email\` must be of type types.PropertyType.EMAIL.`);
                 }
             }
             if (typeof properties.password !== 'object') {
@@ -153,7 +153,7 @@ function _validate_auth_atoms() {
                 if (properties.password.optional === false) {
                     throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_OPTIONAL_PASSWORD`, `Auth Atom \`${atom_name}.password\` cannot be optional.`);
                 }
-                if (properties.password.type !== types.BookProperty.ENCRYPTED) {
+                if (properties.password.type !== types.PropertyType.ENCRYPTED) {
                     throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_TYPE_PASSWORD`, `Auth Atom \`${atom_name}.password\` must be of type BookPropertyType.ENCRYPTED.`);
                 }
             }
@@ -164,7 +164,7 @@ function _validate_auth_atoms() {
                 if (properties.groups.optional === false) {
                     throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_OPTIONAL_GROUP`, `Auth Atom \`${atom_name}.group\` cannot be optional.`);
                 }
-                if (properties.groups.type !== types.BookProperty.ATOM_ARRAY) {
+                if (properties.groups.type !== types.PropertyType.ATOM_ARRAY) {
                     throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_TYPE_GROUP`, `Auth Atom \`${atom_name}.group\` must be of type BookPropertyType.ATOM_ARRAY.`);
                 }
                 else if (properties.groups.atom !== 'group') {
@@ -189,8 +189,8 @@ function _validate_atoms_reference_on_the_same_connection() {
             continue;
         }
         for (const [_prop_key, prop_def] of Object.entries(atom_def.properties)) {
-            if ((prop_def.type === types.BookProperty.ATOM
-                || prop_def.type === types.BookProperty.ATOM_ARRAY)
+            if ((prop_def.type === types.PropertyType.ATOM
+                || prop_def.type === types.PropertyType.ATOM_ARRAY)
                 && connection_by_atom[prop_def.atom] !== connection_by_atom[atom_name]) {
                 throw urn_exc.create_invalid_book(`INCONSISTENT_BOOK_PERMISSIONS`, `Atom references must be on the same connection.` +
                     ` \`${prop_def.atom}\` must be on the same connection of \`${atom_name}\`.`);
@@ -212,7 +212,7 @@ function _validate_acl_reference_consistency() {
     for (const [atom_name, atom_def] of Object.entries(atom_defs)) {
         if (atom_def
             && typeof atom_def.security !== 'string'
-            && ((_a = atom_def.security) === null || _a === void 0 ? void 0 : _a.type) === types.BookSecurity.UNIFORM
+            && ((_a = atom_def.security) === null || _a === void 0 ? void 0 : _a.type) === types.SecurityType.UNIFORM
             && typeof ((_b = atom_def.security) === null || _b === void 0 ? void 0 : _b._r) !== 'undefined') {
             not_public_atoms.push(atom_name);
         }
@@ -223,8 +223,8 @@ function _validate_acl_reference_consistency() {
         }
         const prop_defs = parent_atom_def.properties;
         for (const [prop_key, prop_def] of Object.entries(prop_defs)) {
-            if ((prop_def.type === types.BookProperty.ATOM
-                || prop_def.type === types.BookProperty.ATOM_ARRAY)
+            if ((prop_def.type === types.PropertyType.ATOM
+                || prop_def.type === types.PropertyType.ATOM_ARRAY)
                 && not_public_atoms.includes(prop_def.atom)
                 && prop_def.optional !== true) {
                 throw urn_exc.create_invalid_book(`INCONSISTENT_BOOK_PERMISSIONS`, `Since Atom \`${prop_def.atom}\` is not public,` +

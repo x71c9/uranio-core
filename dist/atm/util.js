@@ -52,7 +52,7 @@ function get_subatom_name(atom_name, atom_key) {
     const key_string = atom_key;
     const prop = atom_def[key_string];
     if (prop) {
-        if (prop.type === book_cln_1.BookProperty.ATOM || prop.type === book_cln_1.BookProperty.ATOM_ARRAY) {
+        if (prop.type === book_cln_1.PropertyType.ATOM || prop.type === book_cln_1.PropertyType.ATOM_ARRAY) {
             if (atom_def[key_string].atom) {
                 return atom_def[key_string].atom;
             }

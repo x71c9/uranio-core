@@ -71,10 +71,10 @@ let EncryptDAL = class EncryptDAL extends validate_1.ValidateDAL {
         let k;
         for (k in atom) {
             const prop_def = all_props[k];
-            if (prop_def && prop_def.type === types.BookProperty.ENCRYPTED) {
+            if (prop_def && prop_def.type === types.PropertyType.ENCRYPTED) {
                 let value = atom[k];
                 if (typeof value !== 'string') {
-                    throw urn_exc.create_invalid_atom(`INVALID_ENCRYPTED_PROP_VALUE_TYPE`, `Property [${k}] of type ENCRYPTED must be of type \`string\`.`);
+                    throw urn_exc.create_invalid_atom(`INVALID_ENCRYPTED_PROP_VALUE_TYPE`, `PropertyType [${k}] of type ENCRYPTED must be of type \`string\`.`);
                 }
                 if (value.length !== 60 || !value.startsWith('$2')) {
                     value = await atm_encrypt.property(this.atom_name, k, value);

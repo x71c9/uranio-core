@@ -5,14 +5,14 @@
  *
  * @packageDocumentation
  */
-import { BookProperty } from '../typ/book_cln';
+import { PropertyType } from '../typ/book_cln';
 export declare const atom_hard_properties: {
     readonly _id: {
-        readonly type: BookProperty.ID;
+        readonly type: PropertyType.ID;
         readonly label: "_id";
     };
     readonly _date: {
-        readonly type: BookProperty.TIME;
+        readonly type: PropertyType.TIME;
         readonly label: "_date";
         readonly default: "NOW";
         readonly on_error: () => Date;
@@ -20,17 +20,17 @@ export declare const atom_hard_properties: {
 };
 export declare const atom_common_properties: {
     readonly _r: {
-        readonly type: BookProperty.ID;
+        readonly type: PropertyType.ID;
         readonly label: "_r";
         readonly optional: true;
     };
     readonly _w: {
-        readonly type: BookProperty.ID;
+        readonly type: PropertyType.ID;
         readonly label: "_w";
         readonly optional: true;
     };
     readonly _deleted_from: {
-        readonly type: BookProperty.ID;
+        readonly type: PropertyType.ID;
         readonly label: "Deleted from";
         readonly optional: true;
     };

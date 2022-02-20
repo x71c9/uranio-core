@@ -17,9 +17,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// export * from '../typ/schema';
 __exportStar(require("../typ/book_srv"), exports);
 __exportStar(require("../typ/conf"), exports);
-// export * from '../typ/layer';
 __exportStar(require("../typ/auth"), exports);
 //# sourceMappingURL=types.js.map

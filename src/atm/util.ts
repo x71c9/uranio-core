@@ -14,7 +14,7 @@ import {schema} from '../sch/index';
 
 import * as keys from './keys';
 
-import {Book, BookProperty} from '../typ/book_cln';
+import {Book, PropertyType} from '../typ/book_cln';
 
 import * as book from '../book/client';
 
@@ -43,7 +43,7 @@ export function get_subatom_name<A extends schema.AtomName>(atom_name:A ,atom_ke
 	const key_string = atom_key as string;
 	const prop = atom_def[key_string];
 	if(prop){
-		if(prop.type === BookProperty.ATOM || prop.type === BookProperty.ATOM_ARRAY){
+		if(prop.type === PropertyType.ATOM || prop.type === PropertyType.ATOM_ARRAY){
 			if((atom_def[key_string] as Book.Definition.Property.Atom).atom){
 				return (atom_def[key_string] as Book.Definition.Property.Atom).atom;
 			}else{

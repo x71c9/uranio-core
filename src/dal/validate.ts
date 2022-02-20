@@ -291,12 +291,12 @@ function _check_ids<A extends schema.AtomName>(
 			const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${k}\``;
 			throw urn_exc.create("CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION", err_msg);
 		}
-		if (prop_def.type === types.BookProperty.ATOM){
+		if (prop_def.type === types.PropertyType.ATOM){
 			const id = partial_atom[k] as string;
 			if(prop_def.optional !== true || !_is_empty_id(id)){
 				_validate_id(id, is_valid_id, k as string);
 			}
-		}else if(prop_def.type === types.BookProperty.ATOM_ARRAY){
+		}else if(prop_def.type === types.PropertyType.ATOM_ARRAY){
 			const ids = partial_atom[k];
 			if(Array.isArray(ids)){
 				for(let i = 0; i < ids.length; i++){

@@ -8,19 +8,19 @@
 
 // import {schema} from './sch/index';
 
-import {BookProperty, BookSecurity, BookPermission} from './typ/book_srv';
+import {PropertyType, SecurityType, PermissionType} from './typ/book_srv';
 
 export const atom_book = {
 	superuser: {
 		authenticate: true,
 		plural: 'superusers',
 		security: {
-			type: BookSecurity.UNIFORM,
-			_r: BookPermission.NOBODY
+			type: SecurityType.UNIFORM,
+			_r: PermissionType.NOBODY
 		},
 		properties: {
 			email: {
-				type: BookProperty.EMAIL,
+				type: PropertyType.EMAIL,
 				label: 'Email',
 				unique: true,
 				on_error: () => {
@@ -28,12 +28,12 @@ export const atom_book = {
 				}
 			},
 			password: {
-				type: BookProperty.ENCRYPTED,
+				type: PropertyType.ENCRYPTED,
 				label: 'Password',
 				hidden: true
 			},
 			groups: {
-				type: BookProperty.ATOM_ARRAY,
+				type: PropertyType.ATOM_ARRAY,
 				atom: 'group',
 				label: 'Groups',
 				optional: true
@@ -48,21 +48,21 @@ export const atom_book = {
 		authenticate: true,
 		plural: 'users',
 		security: {
-			type: BookSecurity.GRANULAR
+			type: SecurityType.GRANULAR
 		},
 		properties: {
 			email: {
-				type: BookProperty.EMAIL,
+				type: PropertyType.EMAIL,
 				label: 'Email',
 				unique: true,
 			},
 			password: {
-				type: BookProperty.ENCRYPTED,
+				type: PropertyType.ENCRYPTED,
 				label: 'Password',
 				hidden: true
 			},
 			groups: {
-				type: BookProperty.ATOM_ARRAY,
+				type: PropertyType.ATOM_ARRAY,
 				atom: 'group',
 				label: 'Groups',
 				optional: true
@@ -77,7 +77,7 @@ export const atom_book = {
 		plural: 'groups',
 		properties: {
 			name: {
-				type: BookProperty.TEXT,
+				type: PropertyType.TEXT,
 				unique: true,
 				label: 'Name'
 			}
@@ -90,20 +90,20 @@ export const atom_book = {
 		plural: 'media',
 		properties: {
 			src: {
-				type: BookProperty.TEXT,
+				type: PropertyType.TEXT,
 				label: 'SRC',
 			},
 			filename: {
 				primary: true,
-				type: BookProperty.TEXT,
+				type: PropertyType.TEXT,
 				label: 'Filename'
 			},
 			type: {
-				type: BookProperty.TEXT,
+				type: PropertyType.TEXT,
 				label: 'Filetype'
 			},
 			size: {
-				type: BookProperty.INTEGER,
+				type: PropertyType.INTEGER,
 				label: 'Size (byte)',
 				validation: {
 					min: 0
@@ -111,7 +111,7 @@ export const atom_book = {
 			},
 			width: {
 				optional: true,
-				type: BookProperty.INTEGER,
+				type: PropertyType.INTEGER,
 				label: 'Width',
 				validation: {
 					min: 0
@@ -119,7 +119,7 @@ export const atom_book = {
 			},
 			height: {
 				optional: true,
-				type: BookProperty.INTEGER,
+				type: PropertyType.INTEGER,
 				label: 'Height',
 				validation: {
 					min: 0
