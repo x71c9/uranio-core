@@ -14,17 +14,9 @@
 import { schema } from '../sch/index';
 import { BLL } from '../bll/bll';
 import { Passport } from './auth';
-import { PropertyType } from './book_cln';
-export { PropertyType };
+import { PropertyType, SecurityType, PermissionType } from './book_cln';
+export { PropertyType, SecurityType, PermissionType };
 import * as book_cln from './book_cln';
-export declare enum SecurityType {
-    UNIFORM = "UNIFORM",
-    GRANULAR = "GRANULAR"
-}
-export declare enum PermissionType {
-    NOBODY = "NOBODY",
-    PUBLIC = "PUBLIC"
-}
 export declare type Book = {
     [A in schema.AtomName]: Book.Definition<A>;
 };

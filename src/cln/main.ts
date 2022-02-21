@@ -8,9 +8,9 @@ import * as types from './types';
 
 export {types};
 
-import * as atm from '../atm/index';
+import * as atom from '../atm/index';
 
-export {atm};
+export {atom};
 
 import * as book from '../book/client';
 
@@ -20,4 +20,10 @@ import * as log from '../log/index';
 
 export {log};
 
+import * as stc from '../stc/index';
+
+export {stc};
+
 export * from '../sch/index';
+
+export * from '../reg/client';

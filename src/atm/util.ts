@@ -8,8 +8,6 @@ import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ATOM_UTIL', `schema.Atom Util module`);
 
-// import schema from 'uranio-schema';
-
 import {schema} from '../sch/index';
 
 import * as keys from './keys';
@@ -172,8 +170,16 @@ export function has_property<A extends schema.AtomName>(atom_name:A, key:keyof s
 
 export function delete_undefined_optional<A extends schema.AtomName>(
 	atom_name: A,
+	partial_atom: schema.AtomShape<A>
+):schema.AtomShape<A>;
+export function delete_undefined_optional<A extends schema.AtomName>(
+	atom_name: A,
 	partial_atom: Partial<schema.AtomShape<A>>
-):Partial<schema.AtomShape<A>>{
+):Partial<schema.AtomShape<A>>;
+export function delete_undefined_optional<A extends schema.AtomName>(
+	atom_name: A,
+	partial_atom: schema.AtomShape<A> | Partial<schema.AtomShape<A>>
+):schema.AtomShape<A> | Partial<schema.AtomShape<A>>{
 	const optional_keys = keys.get_optional(atom_name);
 	let k:keyof Partial<schema.AtomShape<A>>;
 	for(k in partial_atom){

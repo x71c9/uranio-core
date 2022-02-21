@@ -154,7 +154,7 @@ function _validate_auth_atoms() {
                     throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_OPTIONAL_PASSWORD`, `Auth Atom \`${atom_name}.password\` cannot be optional.`);
                 }
                 if (properties.password.type !== types.PropertyType.ENCRYPTED) {
-                    throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_TYPE_PASSWORD`, `Auth Atom \`${atom_name}.password\` must be of type BookPropertyType.ENCRYPTED.`);
+                    throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_TYPE_PASSWORD`, `Auth Atom \`${atom_name}.password\` must be of type PropertyType.ENCRYPTED.`);
                 }
             }
             if (typeof properties.groups !== 'object') {
@@ -165,7 +165,7 @@ function _validate_auth_atoms() {
                     throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_OPTIONAL_GROUP`, `Auth Atom \`${atom_name}.group\` cannot be optional.`);
                 }
                 if (properties.groups.type !== types.PropertyType.ATOM_ARRAY) {
-                    throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_TYPE_GROUP`, `Auth Atom \`${atom_name}.group\` must be of type BookPropertyType.ATOM_ARRAY.`);
+                    throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_TYPE_GROUP`, `Auth Atom \`${atom_name}.group\` must be of type PropertyType.ATOM_ARRAY.`);
                 }
                 else if (properties.groups.atom !== 'group') {
                     throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_GROUP_ATOM`, `Auth Atom \`${atom_name}.group\` must be of referencing atom \`group\`.` +

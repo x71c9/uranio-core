@@ -36,6 +36,7 @@ export function init(config?:types.Configuration)
 	}else{
 		conf.set(core_config, config);
 	}
+	
 	_validate_core_variables();
 	_validate_core_book();
 	
@@ -176,7 +177,7 @@ function _validate_auth_atoms(){
 				if(properties.password.type !== types.PropertyType.ENCRYPTED){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_PASSWORD`,
-						`Auth Atom \`${atom_name}.password\` must be of type BookPropertyType.ENCRYPTED.`
+						`Auth Atom \`${atom_name}.password\` must be of type PropertyType.ENCRYPTED.`
 					);
 				}
 			}
@@ -195,7 +196,7 @@ function _validate_auth_atoms(){
 				if(properties.groups.type !== types.PropertyType.ATOM_ARRAY){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_TYPE_GROUP`,
-						`Auth Atom \`${atom_name}.group\` must be of type BookPropertyType.ATOM_ARRAY.`
+						`Auth Atom \`${atom_name}.group\` must be of type PropertyType.ATOM_ARRAY.`
 					);
 				}else if(properties.groups.atom !== 'group'){
 					throw urn_exc.create_invalid_book(

@@ -7,7 +7,7 @@
  * @packageDocumentation
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PropertyType = void 0;
+exports.PermissionType = exports.SecurityType = exports.PropertyType = void 0;
 var PropertyType;
 (function (PropertyType) {
     PropertyType["ID"] = "ID";
@@ -27,4 +27,14 @@ var PropertyType;
     PropertyType["ATOM"] = "ATOM";
     PropertyType["ATOM_ARRAY"] = "ATOM_ARRAY";
 })(PropertyType = exports.PropertyType || (exports.PropertyType = {}));
+var SecurityType;
+(function (SecurityType) {
+    SecurityType["UNIFORM"] = "UNIFORM";
+    SecurityType["GRANULAR"] = "GRANULAR";
+})(SecurityType = exports.SecurityType || (exports.SecurityType = {}));
+var PermissionType;
+(function (PermissionType) {
+    PermissionType["NOBODY"] = "NOBODY";
+    PermissionType["PUBLIC"] = "PUBLIC";
+})(PermissionType = exports.PermissionType || (exports.PermissionType = {}));
 //# sourceMappingURL=book_cln.js.map

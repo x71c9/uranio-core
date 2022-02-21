@@ -32,7 +32,7 @@ export const atom_common_properties = {
 		label: '_w',
 		optional: true
 	},
-	_deleted_from: {
+	_from: {
 		type: PropertyType.ID,
 		label: 'Deleted from',
 		optional: true

@@ -32,7 +32,7 @@ exports.atom_common_properties = {
         label: '_w',
         optional: true
     },
-    _deleted_from: {
+    _from: {
         type: book_cln_1.PropertyType.ID,
         label: 'Deleted from',
         optional: true

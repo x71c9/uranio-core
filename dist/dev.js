@@ -15,7 +15,7 @@ index_1.default.init();
 // console.log(urn_core);
 // import client from './client';
 // console.log(urn_core);
-// console.log(client.schema.BookPropertyType.EMAIL);
+// console.log(client.schema.PropertyType.EMAIL);
 // const bll_log = urn_core.bll.create_basic('log');
 // const bll_log = urn_core.bll.create_log('debug');
 // const log = {

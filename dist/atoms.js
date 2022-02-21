@@ -8,18 +8,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.atom_book = void 0;
 // import schema from 'uranio-schema';
 // import {schema} from './sch/index';
-const book_srv_1 = require("./typ/book_srv");
+const book_cln_1 = require("./typ/book_cln");
 exports.atom_book = {
     superuser: {
         authenticate: true,
         plural: 'superusers',
         security: {
-            type: book_srv_1.SecurityType.UNIFORM,
-            _r: book_srv_1.PermissionType.NOBODY
+            type: book_cln_1.SecurityType.UNIFORM,
+            _r: book_cln_1.PermissionType.NOBODY
         },
         properties: {
             email: {
-                type: book_srv_1.PropertyType.EMAIL,
+                type: book_cln_1.PropertyType.EMAIL,
                 label: 'Email',
                 unique: true,
                 on_error: () => {
@@ -27,12 +27,12 @@ exports.atom_book = {
                 }
             },
             password: {
-                type: book_srv_1.PropertyType.ENCRYPTED,
+                type: book_cln_1.PropertyType.ENCRYPTED,
                 label: 'Password',
                 hidden: true
             },
             groups: {
-                type: book_srv_1.PropertyType.ATOM_ARRAY,
+                type: book_cln_1.PropertyType.ATOM_ARRAY,
                 atom: 'group',
                 label: 'Groups',
                 optional: true
@@ -47,21 +47,21 @@ exports.atom_book = {
         authenticate: true,
         plural: 'users',
         security: {
-            type: book_srv_1.SecurityType.GRANULAR
+            type: book_cln_1.SecurityType.GRANULAR
         },
         properties: {
             email: {
-                type: book_srv_1.PropertyType.EMAIL,
+                type: book_cln_1.PropertyType.EMAIL,
                 label: 'Email',
                 unique: true,
             },
             password: {
-                type: book_srv_1.PropertyType.ENCRYPTED,
+                type: book_cln_1.PropertyType.ENCRYPTED,
                 label: 'Password',
                 hidden: true
             },
             groups: {
-                type: book_srv_1.PropertyType.ATOM_ARRAY,
+                type: book_cln_1.PropertyType.ATOM_ARRAY,
                 atom: 'group',
                 label: 'Groups',
                 optional: true
@@ -76,7 +76,7 @@ exports.atom_book = {
         plural: 'groups',
         properties: {
             name: {
-                type: book_srv_1.PropertyType.TEXT,
+                type: book_cln_1.PropertyType.TEXT,
                 unique: true,
                 label: 'Name'
             }
@@ -89,20 +89,20 @@ exports.atom_book = {
         plural: 'media',
         properties: {
             src: {
-                type: book_srv_1.PropertyType.TEXT,
+                type: book_cln_1.PropertyType.TEXT,
                 label: 'SRC',
             },
             filename: {
                 primary: true,
-                type: book_srv_1.PropertyType.TEXT,
+                type: book_cln_1.PropertyType.TEXT,
                 label: 'Filename'
             },
             type: {
-                type: book_srv_1.PropertyType.TEXT,
+                type: book_cln_1.PropertyType.TEXT,
                 label: 'Filetype'
             },
             size: {
-                type: book_srv_1.PropertyType.INTEGER,
+                type: book_cln_1.PropertyType.INTEGER,
                 label: 'Size (byte)',
                 validation: {
                     min: 0
@@ -110,7 +110,7 @@ exports.atom_book = {
             },
             width: {
                 optional: true,
-                type: book_srv_1.PropertyType.INTEGER,
+                type: book_cln_1.PropertyType.INTEGER,
                 label: 'Width',
                 validation: {
                     min: 0
@@ -118,7 +118,7 @@ exports.atom_book = {
             },
             height: {
                 optional: true,
-                type: book_srv_1.PropertyType.INTEGER,
+                type: book_cln_1.PropertyType.INTEGER,
                 label: 'Height',
                 validation: {
                     min: 0
