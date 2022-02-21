@@ -18,49 +18,26 @@ import {BLL} from '../bll/bll';
 
 import {Passport} from './auth';
 
-import {PropertyType} from './book_cln';
+import {PropertyType, SecurityType, PermissionType} from './book_cln';
 
-export {PropertyType};
+export {PropertyType, SecurityType, PermissionType};
 
 import * as book_cln from './book_cln';
-
-export enum SecurityType {
-	UNIFORM = 'UNIFORM',
-	GRANULAR = 'GRANULAR'
-}
-
-export enum PermissionType {
-	NOBODY = 'NOBODY',
-	PUBLIC = 'PUBLIC'
-}
 
 export type Book = {
 	[A in schema.AtomName]: Book.Definition<A>;
 }
 
-// export type BllBook = {
-//   [k in schema.AtomName]: Book.Definition.Bll<k>
-// }
-
 export namespace Book {
-	
-	// export type BasicDefinition =
-	//   book_cln.Book.BasicDefinition & {
-	//   security?: BookSecurityType | Definition.SecurityType
-	// }
 	
 	export type Definition<A extends schema.AtomName> =
 		book_cln.Book.Definition & {
 		security?: SecurityType | Definition.Security
-		// bll?: Definition.Bll
 		bll?: Definition.Bll<A>
 	}
 	
 	export namespace Definition {
 		
-		// export type Bll = {
-		//   class: <A extends schema.AtomName>(passport?:Passport) => BLL<A> ;
-		// }
 		export type Bll<A extends schema.AtomName> = {
 			class: (passport?:Passport) => BLL<A> ;
 		}

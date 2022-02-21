@@ -8,7 +8,7 @@
 
 // import {schema} from './sch/index';
 
-import {PropertyType, SecurityType, PermissionType} from './typ/book_srv';
+import {PropertyType, SecurityType, PermissionType} from './typ/book_cln';
 
 export const atom_book = {
 	superuser: {

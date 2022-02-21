@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { PropertyType, SecurityType, PermissionType } from './typ/book_srv';
+import { PropertyType, SecurityType, PermissionType } from './typ/book_cln';
 export declare const atom_book: {
     readonly superuser: {
         readonly authenticate: true;

@@ -27,7 +27,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.log = exports.util = exports.conf = exports.db = exports.book = exports.atom = exports.bll = exports.types = void 0;
+exports.stc = exports.log = exports.util = exports.conf = exports.db = exports.book = exports.atom = exports.bll = exports.types = void 0;
 const types = __importStar(require("./types"));
 exports.types = types;
 __exportStar(require("../sch/index"), exports);
@@ -45,6 +45,8 @@ const util = __importStar(require("../util/index"));
 exports.util = util;
 const log = __importStar(require("../log/index"));
 exports.log = log;
+const stc = __importStar(require("../stc/index"));
+exports.stc = stc;
 __exportStar(require("../init/index"), exports);
 __exportStar(require("../reg/index"), exports);
 //# sourceMappingURL=main.js.map

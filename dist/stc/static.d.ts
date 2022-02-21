@@ -29,7 +29,7 @@ export declare const atom_common_properties: {
         readonly label: "_w";
         readonly optional: true;
     };
-    readonly _deleted_from: {
+    readonly _from: {
         readonly type: PropertyType.ID;
         readonly label: "Deleted from";
         readonly optional: true;

@@ -25,6 +25,14 @@ export declare enum PropertyType {
     ATOM = "ATOM",
     ATOM_ARRAY = "ATOM_ARRAY"
 }
+export declare enum SecurityType {
+    UNIFORM = "UNIFORM",
+    GRANULAR = "GRANULAR"
+}
+export declare enum PermissionType {
+    NOBODY = "NOBODY",
+    PUBLIC = "PUBLIC"
+}
 export declare type Book = {
     [k: string]: Book.Definition;
 };

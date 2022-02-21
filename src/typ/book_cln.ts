@@ -35,6 +35,16 @@ export enum PropertyType {
 	ATOM_ARRAY = 'ATOM_ARRAY'
 }
 
+export enum SecurityType {
+	UNIFORM = 'UNIFORM',
+	GRANULAR = 'GRANULAR'
+}
+
+export enum PermissionType {
+	NOBODY = 'NOBODY',
+	PUBLIC = 'PUBLIC'
+}
+
 export type Book = {
 	[k:string]: Book.Definition;
 }

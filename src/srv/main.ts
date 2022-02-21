@@ -38,6 +38,10 @@ import * as log from '../log/index';
 
 export {log};
 
+import * as stc from '../stc/index';
+
+export {stc};
+
 export * from '../init/index';
 
 export * from '../reg/index';

@@ -15,4 +15,5 @@ export declare function hide_hidden_properties<A extends schema.AtomName, D exte
 export declare function is_optional_property<A extends schema.AtomName>(atom_name: A, key: keyof schema.Atom<A>): boolean;
 export declare function has_property<A extends schema.AtomName>(atom_name: A, key: string): boolean;
 export declare function has_property<A extends schema.AtomName>(atom_name: A, key: keyof schema.Atom<A>): boolean;
+export declare function delete_undefined_optional<A extends schema.AtomName>(atom_name: A, partial_atom: schema.AtomShape<A>): schema.AtomShape<A>;
 export declare function delete_undefined_optional<A extends schema.AtomName>(atom_name: A, partial_atom: Partial<schema.AtomShape<A>>): Partial<schema.AtomShape<A>>;

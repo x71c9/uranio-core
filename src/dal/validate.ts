@@ -292,7 +292,7 @@ function _check_ids<A extends schema.AtomName>(
 			throw urn_exc.create("CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION", err_msg);
 		}
 		if (prop_def.type === types.PropertyType.ATOM){
-			const id = partial_atom[k] as string;
+			const id = String(partial_atom[k] as unknown);
 			if(prop_def.optional !== true || !_is_empty_id(id)){
 				_validate_id(id, is_valid_id, k as string);
 			}
