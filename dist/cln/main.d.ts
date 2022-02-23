@@ -13,5 +13,8 @@ import * as log from '../log/index';
 export { log };
 import * as stc from '../stc/index';
 export { stc };
+import * as conf from '../conf/client';
+export { conf };
 export * from '../sch/index';
 export * from '../reg/client';
+export * from '../init/client';

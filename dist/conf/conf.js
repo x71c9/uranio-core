@@ -53,7 +53,8 @@ function _get_env_vars(repo_config) {
                     || typeof process.env[env_var_name] === 'string'
                         && process.env[env_var_name] !== '') {
                     config[conf_key] =
-                        (process.env[env_var_name] === 'true') || (process.env[env_var_name] === true);
+                        (process.env[env_var_name] === 'true')
+                            || (process.env[env_var_name] === true);
                 }
                 break;
             }

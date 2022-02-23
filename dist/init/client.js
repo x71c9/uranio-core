@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Main module for client
+ * Init module
  *
  * @packageDocumentation
  */
@@ -23,24 +23,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.conf = exports.stc = exports.log = exports.book = exports.atom = exports.types = void 0;
-const types = __importStar(require("./types"));
-exports.types = types;
-const atom = __importStar(require("../atm/index"));
-exports.atom = atom;
-const book = __importStar(require("../book/client"));
-exports.book = book;
-const log = __importStar(require("../log/index"));
-exports.log = log;
-const stc = __importStar(require("../stc/index"));
-exports.stc = stc;
+exports.init = void 0;
+const urn_lib_1 = require("urn-lib");
+const defaults_1 = require("../cln/defaults");
 const conf = __importStar(require("../conf/client"));
-exports.conf = conf;
-__exportStar(require("../sch/index"), exports);
-__exportStar(require("../reg/client"), exports);
-__exportStar(require("../init/client"), exports);
-//# sourceMappingURL=main.js.map
+const log = __importStar(require("../log/client"));
+function init(config) {
+    log.init(urn_lib_1.urn_log.defaults);
+    if (!config) {
+        conf.set_from_env(defaults_1.core_client_config);
+    }
+    else {
+        conf.set(defaults_1.core_client_config, config);
+    }
+    if (config && typeof config.log_level === 'number') {
+        urn_lib_1.urn_log.defaults.log_level = config.log_level;
+    }
+    conf.set_initialize(true);
+}
+exports.init = init;
+//# sourceMappingURL=client.js.map
