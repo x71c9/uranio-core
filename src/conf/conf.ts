@@ -14,7 +14,6 @@ export {core_config as defaults};
 
 import * as types from '../types';
 
-// import {FullConfiguration} from '../typ/intra';
 import {Configuration} from '../typ/conf';
 
 let _is_core_initialized = false;
@@ -67,7 +66,8 @@ function _get_env_vars(repo_config:types.Configuration):types.Configuration{
 					&& process.env[env_var_name] !== ''
 				){
 					(config as any)[conf_key] =
-						(process.env[env_var_name] === 'true') || (process.env[env_var_name] as any === true);
+						(process.env[env_var_name] === 'true')
+						|| (process.env[env_var_name] as any === true);
 				}
 				break;
 			}

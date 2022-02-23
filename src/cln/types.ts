@@ -9,3 +9,5 @@
 export * from '../typ/auth';
 
 export * from '../typ/book_cln';
+
+export * from '../typ/conf_cln';
