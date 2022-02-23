@@ -12,15 +12,13 @@ import {urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('CONN_DAL', 'RelationDAL');
 
-// import schema from 'uranio-schema';
+import {schema} from '../sch/server';
 
-import {schema} from '../sch/index';
+import * as urn_rel from '../rel/server';
 
-import * as urn_rel from '../rel/index';
+import * as book from '../book/server';
 
-import * as book from '../book/index';
-
-import * as conf from '../conf/index';
+import * as conf from '../conf/server';
 
 import {BasicDAL} from './basic';
 

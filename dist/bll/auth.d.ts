@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/server';
 import { SecurityBLL } from './security';
 export declare class AuthBLL<A extends schema.AtomName> extends SecurityBLL<A> {
     insert_new(atom_shape: schema.AtomShape<A>): Promise<schema.Atom<A>>;

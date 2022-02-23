@@ -10,9 +10,7 @@
 
 import {urn_log, urn_exception, urn_util} from 'urn-lib';
 
-// import schema from 'uranio-schema';
-
-import {schema} from '../sch/index';
+import {schema} from '../sch/server';
 
 import * as atm_validate from '../atm/validate';
 

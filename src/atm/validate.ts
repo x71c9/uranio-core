@@ -8,17 +8,13 @@ import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init(`VALIDATION`, `Validate module`);
 
-// import schema from 'uranio-schema';
+import {schema} from '../sch/client';
 
-import {schema} from '../sch/index';
-
-import {
-	PropertyType,
-} from '../cln/types';
+import {PropertyType} from '../cln/types';
 
 import {Book} from '../cln/types';
 
-import {atom_hard_properties, atom_common_properties} from '../stc/index';
+import {atom_hard_properties, atom_common_properties} from '../stc/client';
 
 // This will import server on client
 // import * as conf from '../conf/index';

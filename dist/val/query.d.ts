@@ -4,7 +4,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/server';
 /**
  * Validate `query` and `options` paramaters
  *

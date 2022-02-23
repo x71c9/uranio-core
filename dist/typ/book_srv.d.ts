@@ -11,11 +11,11 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/server';
 import { BLL } from '../bll/bll';
 import { Passport } from './auth';
-import { PropertyType, SecurityType, PermissionType } from './book_cln';
-export { PropertyType, SecurityType, PermissionType };
+import { PropertyType, SecurityType, PermissionType, ConnectionName } from './book_cln';
+export { PropertyType, SecurityType, PermissionType, ConnectionName };
 import * as book_cln from './book_cln';
 export declare type Book = {
     [A in schema.AtomName]: Book.Definition<A>;

@@ -11,9 +11,6 @@ exports.AuthAction = void 0;
 // check if a value is included in the enum.
 // https://thisthat.dev/const-enum-vs-enum/
 // It is possible to preserve the const with "preserveConstEnums" in tsconfig
-//
-// export const enum AuthAction {
-//
 var AuthAction;
 (function (AuthAction) {
     AuthAction["READ"] = "READ";

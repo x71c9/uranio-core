@@ -4,14 +4,11 @@
  * @packageDocumentation
  */
 
-// import {urn_exception, urn_util} from 'urn-lib';
 import {urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ATOM_FIX', `schema.Atom Fix module`);
 
-// import schema from 'uranio-schema';
-
-import {schema} from '../sch/index';
+import {schema} from '../sch/client';
 
 import * as validate from './validate';
 

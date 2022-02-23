@@ -8,24 +8,21 @@ import mongoose from 'mongoose';
 
 import {urn_exception} from 'urn-lib';
 
-// import schema from 'uranio-schema';
-
-import {schema} from '../../sch/index';
+import {schema} from '../../sch/server';
 
 const urn_exc = urn_exception.init('MONGO_APP', 'Mongoose Models App');
 
 import {ConnectionName} from '../../typ/book_cln';
 
-// import {FullConfiguration} from '../../typ/intra';
 import {Configuration} from '../../typ/conf';
 
-import * as conf from '../../conf/index';
+import * as conf from '../../conf/server';
 
 import {generate_mongo_schema_def} from './schema';
 
 import * as mongo_connection from './connection';
 
-import * as book from '../../book/index';
+import * as book from '../../book/server';
 
 import {PropertyType} from '../../typ/book_srv';
 

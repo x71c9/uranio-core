@@ -9,7 +9,7 @@ exports.has_property = exports.get_full_properties_definition = exports.get_cust
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('BOOK_METHODS_MODULE', `Book methods module`);
 const atoms_1 = require("../atoms");
-const index_1 = require("../stc/index");
+const client_1 = require("../stc/client");
 function add_definition(atom_name, atom_definition) {
     const atom_book_def = {};
     atom_book_def[atom_name] = atom_definition;
@@ -65,18 +65,18 @@ exports.get_custom_property_definitions = get_custom_property_definitions;
 function get_full_properties_definition(atom_name) {
     const custom_defs = get_custom_property_definitions(atom_name);
     const prop_defs = {
-        ...index_1.atom_hard_properties,
-        ...index_1.atom_common_properties,
+        ...client_1.atom_hard_properties,
+        ...client_1.atom_common_properties,
         ...custom_defs
     };
     return prop_defs;
 }
 exports.get_full_properties_definition = get_full_properties_definition;
 function has_property(atom_name, key) {
-    if (urn_lib_1.urn_util.object.has_key(index_1.atom_hard_properties, key)) {
+    if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, key)) {
         return true;
     }
-    if (urn_lib_1.urn_util.object.has_key(index_1.atom_common_properties, key)) {
+    if (urn_lib_1.urn_util.object.has_key(client_1.atom_common_properties, key)) {
         return true;
     }
     if (urn_lib_1.urn_util.object.has_key(atoms_1.atom_book[atom_name]['properties'], key)) {

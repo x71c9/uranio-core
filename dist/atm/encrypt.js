@@ -30,8 +30,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.properties = exports.property = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const urn_lib_1 = require("urn-lib");
-const conf = __importStar(require("../conf/index"));
-const book = __importStar(require("../book/client"));
+const conf = __importStar(require("../conf/server"));
+const book = __importStar(require("../book/server"));
 const validate = __importStar(require("./validate"));
 // import {
 //   schema.AtomName,

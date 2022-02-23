@@ -31,9 +31,9 @@ exports.init = exports.save_schema = exports.schema_and_save = exports.schema = 
 const fs_1 = __importDefault(require("fs"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
-const index_1 = require("../stc/index");
-const book = __importStar(require("../book/index"));
-const types = __importStar(require("../types"));
+const server_1 = require("../stc/server");
+const book = __importStar(require("../book/server"));
+const types = __importStar(require("../srv/types"));
 exports.process_params = {
     urn_command: `schema`,
     urn_base_schema: `./.uranio/generate/base/schema.d.ts`,
@@ -249,7 +249,7 @@ function _generate_atom_shapes(atom_book) {
                     break;
                 }
                 default: {
-                    text += `\t\t${key}${optional}: ${index_1.real_book_property_type[prop_def.type]}\n`;
+                    text += `\t\t${key}${optional}: ${server_1.real_book_property_type[prop_def.type]}\n`;
                 }
             }
         }

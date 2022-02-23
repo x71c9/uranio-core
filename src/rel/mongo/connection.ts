@@ -8,11 +8,9 @@ import mongoose from 'mongoose';
 
 import {urn_log,  urn_exception} from 'urn-lib';
 
-// import schema from 'uranio-schema';
+import {schema} from '../../sch/server';
 
-import {schema} from '../../sch/index';
-
-import {ConnectionName} from '../../typ/book_cln';
+import {ConnectionName} from '../../typ/book_srv';
 
 const urn_exc = urn_exception.init('DBC_M', 'Mongoose DB Connection');
 

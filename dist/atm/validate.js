@@ -28,7 +28,7 @@ exports.encrypt_property = exports.property = exports.atom_partial = exports.ato
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`VALIDATION`, `Validate module`);
 const types_1 = require("../cln/types");
-const index_1 = require("../stc/index");
+const client_1 = require("../stc/client");
 // This will import server on client
 // import * as conf from '../conf/index';
 const atm_util = __importStar(require("./util"));
@@ -108,7 +108,7 @@ function _has_all_properties(atom_name, atom_shape) {
             missin_props.push(k);
         }
     }
-    for (const [k] of Object.entries(index_1.atom_common_properties)) {
+    for (const [k] of Object.entries(client_1.atom_common_properties)) {
         if (!atm_util.is_optional_property(atom_name, k) && !urn_lib_1.urn_util.object.has_key(atom_shape, k)) {
             missin_props.push(k);
         }
@@ -124,10 +124,10 @@ function _has_no_other_properties(atom_name, partial_atom) {
     const prop_defs = book.get_custom_property_definitions(atom_name);
     const extra_props = [];
     for (const k in partial_atom) {
-        if (urn_lib_1.urn_util.object.has_key(index_1.atom_hard_properties, k)) {
+        if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
             continue;
         }
-        if (urn_lib_1.urn_util.object.has_key(index_1.atom_common_properties, k)) {
+        if (urn_lib_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
             continue;
         }
         if (!urn_lib_1.urn_util.object.has_key(prop_defs, k)) {
@@ -143,10 +143,10 @@ function _has_no_other_properties(atom_name, partial_atom) {
 }
 function _validate_hard_properties(molecule) {
     let k;
-    for (k in index_1.atom_hard_properties) {
+    for (k in client_1.atom_hard_properties) {
         try {
-            _validate_primitive_type(k, index_1.atom_hard_properties[k], molecule[k]);
-            _validate_custom_type(k, index_1.atom_hard_properties[k], molecule[k]);
+            _validate_primitive_type(k, client_1.atom_hard_properties[k], molecule[k]);
+            _validate_custom_type(k, client_1.atom_hard_properties[k], molecule[k]);
         }
         catch (e) {
             const exc = e;
@@ -167,11 +167,11 @@ function _validate_primitive_properties(atom_name, partial_atom) {
     let k;
     for (k in partial_atom) {
         let prop_def = undefined;
-        if (urn_lib_1.urn_util.object.has_key(index_1.atom_hard_properties, k)) {
-            prop_def = index_1.atom_hard_properties[k];
+        if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
+            prop_def = client_1.atom_hard_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(index_1.atom_common_properties, k)) {
-            prop_def = index_1.atom_common_properties[k];
+        else if (urn_lib_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
+            prop_def = client_1.atom_common_properties[k];
         }
         else if (urn_lib_1.urn_util.object.has_key(props, k)) {
             prop_def = props[k];
@@ -202,11 +202,11 @@ function _validate_partial_atom_bond_properties(atom_name, partial_atom) {
     let k;
     for (k in partial_atom) {
         let prop_def = undefined;
-        if (urn_lib_1.urn_util.object.has_key(index_1.atom_hard_properties, k)) {
-            prop_def = index_1.atom_hard_properties[k];
+        if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
+            prop_def = client_1.atom_hard_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(index_1.atom_common_properties, k)) {
-            prop_def = index_1.atom_common_properties[k];
+        else if (urn_lib_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
+            prop_def = client_1.atom_common_properties[k];
         }
         else if (urn_lib_1.urn_util.object.has_key(props, k)) {
             prop_def = props[k];
@@ -236,11 +236,11 @@ function _validate_molecule_bond_properties(atom_name, molecule, depth) {
     const bond_keys = atm_keys.get_bond(atom_name);
     for (const k of bond_keys) {
         let prop_def = undefined;
-        if (urn_lib_1.urn_util.object.has_key(index_1.atom_hard_properties, k)) {
-            prop_def = index_1.atom_hard_properties[k];
+        if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
+            prop_def = client_1.atom_hard_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(index_1.atom_common_properties, k)) {
-            prop_def = index_1.atom_common_properties[k];
+        else if (urn_lib_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
+            prop_def = client_1.atom_common_properties[k];
         }
         else if (urn_lib_1.urn_util.object.has_key(props, k)) {
             prop_def = props[k];

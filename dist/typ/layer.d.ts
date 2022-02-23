@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/server';
 import { AuthAction } from './auth';
 export interface AccessLayer<A extends schema.AtomName> {
     select<D extends schema.Depth>(query: schema.Query<A>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>[]>;

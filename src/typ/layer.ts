@@ -4,13 +4,7 @@
  * @packageDocumentation
  */
 
-// import {schema.AtomName, schema.Depth, schema.Molecule, schema.Atom, schema.AtomShape} from './atom';
-
-// import {schema.Query} from './query';
-
-// import schema from 'uranio-schema';
-
-import {schema} from '../sch/index';
+import {schema} from '../sch/server';
 
 import {AuthAction} from './auth';
 

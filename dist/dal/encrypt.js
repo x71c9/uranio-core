@@ -39,8 +39,8 @@ exports.create_encrypt = exports.EncryptDAL = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`DAL_ENCRYPT`, `Encryption DAL.`);
 const atm_encrypt = __importStar(require("../atm/encrypt"));
-const book = __importStar(require("../book/index"));
-const types = __importStar(require("../types"));
+const book = __importStar(require("../book/server"));
+const types = __importStar(require("../srv/types"));
 const basic_1 = require("./basic");
 const validate_1 = require("./validate");
 let EncryptDAL = class EncryptDAL extends validate_1.ValidateDAL {

@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = exports.MongooseRelation = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const urn_lib_1 = require("urn-lib");
-const conf = __importStar(require("../../conf/index"));
+const conf = __importStar(require("../../conf/server"));
 const atm_keys = __importStar(require("../../atm/keys"));
 const atm_util = __importStar(require("../../atm/util"));
 const models_1 = require("./models");

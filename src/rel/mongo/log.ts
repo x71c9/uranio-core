@@ -6,15 +6,11 @@
 
 import {urn_log} from 'urn-lib';
 
-// import schema from 'uranio-schema';
-
-import {schema} from '../../sch/index';
+import {schema} from '../../sch/server';
 
 import {ConnectionName} from '../../typ/book_cln';
 
 import {Relation} from '../types';
-
-// import {ConnectionName} from './types';
 
 import {MongooseRelation} from './relation';
 

@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../../sch/index';
+import { schema } from '../../sch/server';
 import { ConnectionName } from '../../typ/book_cln';
 import { Relation } from '../types';
 import { MongooseRelation } from './relation';

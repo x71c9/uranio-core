@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/server';
 import { DAL } from './dal';
 export declare class LogDAL<A extends schema.LogName> extends DAL<A> {
     constructor(log_name: A);

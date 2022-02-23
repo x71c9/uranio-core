@@ -5,7 +5,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/server';
 export declare type ConnectionName = 'main' | 'trash' | 'log';
 export declare enum PropertyType {
     ID = "ID",

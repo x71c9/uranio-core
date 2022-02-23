@@ -39,8 +39,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_security = exports.SecurityBLL = void 0;
 const urn_lib_1 = require("urn-lib");
-const urn_acl = __importStar(require("../acl/index"));
-const urn_dal = __importStar(require("../dal/index"));
+const urn_acl = __importStar(require("../acl/server"));
+const urn_dal = __importStar(require("../dal/server"));
 const basic_1 = require("./basic");
 const authenticate_1 = require("./authenticate");
 let SecurityBLL = class SecurityBLL extends basic_1.BasicBLL {
