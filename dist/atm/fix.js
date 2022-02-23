@@ -25,7 +25,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.property = void 0;
-// import {urn_exception, urn_util} from 'urn-lib';
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('ATOM_FIX', `schema.Atom Fix module`);
 const validate = __importStar(require("./validate"));

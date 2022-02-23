@@ -6,9 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-// import schema from 'uranio-schema';
-
-import {schema} from '../sch/index';
+import {schema} from '../sch/server';
 
 import {atom_book} from '../atoms';
 
@@ -18,7 +16,7 @@ import {create as create_media} from './media';
 
 import {BLL} from './bll';
 
-import * as book from '../book/index';
+import * as book from '../book/server';
 
 export type BLLInstance = InstanceType<typeof BLL>;
 

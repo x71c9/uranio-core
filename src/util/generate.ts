@@ -10,13 +10,13 @@ import {urn_util, urn_exception, urn_log} from 'urn-lib';
 
 const urn_exc = urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 
-import {schema as schema_types} from '../sch/index';
+import {schema as schema_types} from '../sch/server';
 
-import {real_book_property_type} from '../stc/index';
+import {real_book_property_type} from '../stc/server';
 
-import * as book from '../book/index';
+import * as book from '../book/server';
 
-import * as types from '../types';
+import * as types from '../srv/types';
 
 export const process_params = {
 	urn_command: `schema`,

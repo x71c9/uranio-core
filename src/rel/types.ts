@@ -6,7 +6,7 @@
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/index';
+import {schema} from '../sch/server';
 
 export interface Relation<A extends schema.AtomName> {
 	

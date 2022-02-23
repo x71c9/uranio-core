@@ -8,7 +8,7 @@ import {urn_exception, urn_util} from 'urn-lib';
 
 const urn_exc = urn_exception.init('ATOM_UTIL', `schema.Atom Util module`);
 
-import {schema} from '../sch/index';
+import {schema} from '../sch/client';
 
 import * as keys from './keys';
 

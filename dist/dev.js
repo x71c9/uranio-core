@@ -10,8 +10,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 const urn_lib_1 = require("urn-lib");
 urn_lib_1.urn_log.init(urn_lib_1.urn_log.LogLevel.FUNCTION_DEBUG);
-const index_1 = __importDefault(require("./index"));
-index_1.default.init();
+const server_1 = __importDefault(require("./server"));
+server_1.default.init();
 // console.log(urn_core);
 // import client from './client';
 // console.log(urn_core);
@@ -25,7 +25,7 @@ index_1.default.init();
 // };
 // bll_log.insert_new(log).then((d) => console.log(d));
 // bll_log.find({}).then((d) => console.log(d));
-const bll_users = index_1.default.bll.basic.create('user');
+const bll_users = server_1.default.bll.basic.create('user');
 bll_users.find({}).then((data) => {
     console.log(data);
 });

@@ -12,18 +12,16 @@ import {urn_util, urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 
-// import schema from 'uranio-schema';
+import {schema} from '../sch/server';
 
-import {schema} from '../sch/index';
-
-import * as conf from '../conf/index';
+import * as conf from '../conf/server';
 
 import {
 	SecurityType,
 	PermissionType,
 } from '../typ/book_srv';
 
-import {abstract_passport} from '../stc/index';
+import {abstract_passport} from '../stc/server';
 
 import {
 	Passport,
@@ -32,11 +30,9 @@ import {
 
 import {PassportKey} from '../typ/intra';
 
-import * as atm_validate from '../atm/validate';
+import * as atm from '../atm/server';
 
-import * as atm_util from '../atm/util';
-
-import * as book from '../book/index';
+import * as book from '../book/server';
 
 import {create as create_basic, BasicBLL} from './basic';
 
@@ -57,7 +53,7 @@ class AuthenticationBLL<A extends schema.AuthName> {
 	
 	public async authenticate(email: string, password: string)
 			:Promise<string>{
-		atm_validate.atom_partial<A>(this._atom_name, {email: email, password: password} as Partial<schema.AuthAtomShape<A>>);
+		atm.validate.atom_partial<A>(this._atom_name, {email: email, password: password} as Partial<schema.AuthAtomShape<A>>);
 		let auth_atom;
 		try {
 			auth_atom = await this._basic_bll.find_one({email: email} as schema.Query<A>) as schema.AuthAtom<A>;
@@ -68,7 +64,7 @@ class AuthenticationBLL<A extends schema.AuthName> {
 			}
 			throw err;
 		}
-		if(!atm_util.is_auth_atom(auth_atom)){
+		if(!atm.util.is_auth_atom(auth_atom)){
 			throw urn_exc.create_invalid_atom('INVALID_AUTH_ATOM', 'Invalid Auth schema.Atom.', auth_atom, ['email', 'password', 'groups']);
 		}
 		const compare_result = await bcrypt.compare(password, auth_atom.password);

@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/server';
 import { SelfishDAL } from './selfish';
 export declare class DAL<A extends schema.AtomName> extends SelfishDAL<A> {
 }

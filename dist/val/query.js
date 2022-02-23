@@ -27,7 +27,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validate_filter_options_params = void 0;
 const urn_lib_1 = require("urn-lib");
-const conf = __importStar(require("../conf/index"));
+const conf = __importStar(require("../conf/server"));
 const atm_util = __importStar(require("../atm/util"));
 const book = __importStar(require("../book/client"));
 const _query_op_keys = {

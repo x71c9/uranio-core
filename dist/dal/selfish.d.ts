@@ -7,7 +7,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/server';
 import { RecycleDAL } from './recycle';
 export declare class SelfishDAL<A extends schema.AtomName> extends RecycleDAL<A> {
     protected _replace_atom_on_error(id: string, atom: schema.Atom<A>): Promise<schema.Atom<A>>;

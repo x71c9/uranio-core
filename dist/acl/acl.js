@@ -55,12 +55,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = exports.ACL = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('ACL', 'Access Control Module');
-const urn_dal = __importStar(require("../dal/index"));
+const urn_dal = __importStar(require("../dal/server"));
 const atm_keys = __importStar(require("../atm/keys"));
 const atm_util = __importStar(require("../atm/util"));
 const book_srv_1 = require("../typ/book_srv");
 const auth_1 = require("../typ/auth");
-const book = __importStar(require("../book/index"));
+const book = __importStar(require("../book/server"));
 let ACL = class ACL {
     constructor(atom_name, user_groups) {
         this.atom_name = atom_name;

@@ -5,8 +5,8 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
-import * as urn_rel from '../rel/index';
+import { schema } from '../sch/server';
+import * as urn_rel from '../rel/server';
 import { AuthAction } from '../typ/auth';
 import { AccessLayer } from '../typ/layer';
 export declare class BasicDAL<A extends schema.AtomName> implements AccessLayer<A> {

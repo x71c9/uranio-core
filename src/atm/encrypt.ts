@@ -8,9 +8,9 @@ import bcrypt from 'bcryptjs';
 
 import {urn_util} from 'urn-lib';
 
-import * as conf from '../conf/index';
+import * as conf from '../conf/server';
 
-import * as book from '../book/client';
+import * as book from '../book/server';
 
 import * as validate from './validate';
 
@@ -24,9 +24,7 @@ import * as validate from './validate';
 
 import {Book, PropertyType} from '../cln/types';
 
-// import schema from 'uranio-schema';
-
-import {schema} from '../sch/index';
+import {schema} from '../sch/client';
 
 export async function property<A extends schema.AtomName, D extends schema.Depth = 0>
 (atom_name:A, prop_key:keyof schema.Molecule<A,D>, prop_value:string)

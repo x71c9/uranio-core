@@ -38,13 +38,12 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
-const conf = __importStar(require("../conf/index"));
+const conf = __importStar(require("../conf/server"));
 const book_srv_1 = require("../typ/book_srv");
-const index_1 = require("../stc/index");
+const server_1 = require("../stc/server");
 const auth_1 = require("../typ/auth");
-const atm_validate = __importStar(require("../atm/validate"));
-const atm_util = __importStar(require("../atm/util"));
-const book = __importStar(require("../book/index"));
+const atm = __importStar(require("../atm/server"));
+const book = __importStar(require("../book/server"));
 const basic_1 = require("./basic");
 let AuthenticationBLL = class AuthenticationBLL {
     constructor(_atom_name) {
@@ -56,7 +55,7 @@ let AuthenticationBLL = class AuthenticationBLL {
         return decoded_token;
     }
     async authenticate(email, password) {
-        atm_validate.atom_partial(this._atom_name, { email: email, password: password });
+        atm.validate.atom_partial(this._atom_name, { email: email, password: password });
         let auth_atom;
         try {
             auth_atom = await this._basic_bll.find_one({ email: email });
@@ -68,7 +67,7 @@ let AuthenticationBLL = class AuthenticationBLL {
             }
             throw err;
         }
-        if (!atm_util.is_auth_atom(auth_atom)) {
+        if (!atm.util.is_auth_atom(auth_atom)) {
             throw urn_exc.create_invalid_atom('INVALID_AUTH_ATOM', 'Invalid Auth schema.Atom.', auth_atom, ['email', 'password', 'groups']);
         }
         const compare_result = await bcryptjs_1.default.compare(password, auth_atom.password);
@@ -143,7 +142,7 @@ exports.is_valid_passport = is_valid_passport;
 //   return true;
 // }
 function passport_has_all_keys(passport) {
-    for (const k in index_1.abstract_passport) {
+    for (const k in server_1.abstract_passport) {
         if (!urn_lib_1.urn_util.object.has_key(passport, k)) {
             throw urn_exc.create_invalid_request('PASSPORT_MISSING_KEY', `Passport is missing key \`${k}\`.`);
         }
@@ -155,7 +154,7 @@ function passport_has_no_other_keys(passport) {
         if (k === 'iat') {
             continue;
         }
-        if (!urn_lib_1.urn_util.object.has_key(index_1.abstract_passport, k)) {
+        if (!urn_lib_1.urn_util.object.has_key(server_1.abstract_passport, k)) {
             throw urn_exc.create_invalid_request('PASSPORT_INVALID_KEY', `Passport have invalid keys \`${k}\`.`);
         }
     }
@@ -163,13 +162,13 @@ function passport_has_no_other_keys(passport) {
 }
 function passport_has_correct_type_values(passport) {
     let k;
-    for (k in index_1.abstract_passport) {
+    for (k in server_1.abstract_passport) {
         _check_passport_key_type(passport, k);
     }
     return true;
 }
 function _check_passport_key_type(passport, key) {
-    switch (index_1.abstract_passport[key]) {
+    switch (server_1.abstract_passport[key]) {
         case 'string': {
             if (typeof passport[key] !== 'string') {
                 const err_msg = 'Invalid passport.';

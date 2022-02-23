@@ -36,9 +36,9 @@ exports.create = exports.MediaBLL = void 0;
  */
 const path_1 = __importDefault(require("path"));
 const urn_lib_1 = require("urn-lib");
-const conf = __importStar(require("../conf/index"));
+const conf = __importStar(require("../conf/server"));
 const auth_1 = require("../typ/auth");
-const sto = __importStar(require("../sto/index"));
+const sto = __importStar(require("../sto/server"));
 const bll_1 = require("./bll");
 let MediaBLL = class MediaBLL extends bll_1.BLL {
     constructor(passport) {

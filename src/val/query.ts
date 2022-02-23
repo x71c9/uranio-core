@@ -9,9 +9,9 @@ import {urn_exception, urn_util} from 'urn-lib';
 
 // import schema from 'uranio-schema';
 
-import {schema} from '../sch/index';
+import {schema} from '../sch/server';
 
-import * as conf from '../conf/index';
+import * as conf from '../conf/server';
 
 import * as atm_util from '../atm/util';
 

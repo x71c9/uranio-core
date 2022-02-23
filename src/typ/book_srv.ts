@@ -12,15 +12,15 @@
  * @packageDocumentation
  */
 
-import {schema} from '../sch/index';
+import {schema} from '../sch/server';
 
 import {BLL} from '../bll/bll';
 
 import {Passport} from './auth';
 
-import {PropertyType, SecurityType, PermissionType} from './book_cln';
+import {PropertyType, SecurityType, PermissionType, ConnectionName} from './book_cln';
 
-export {PropertyType, SecurityType, PermissionType};
+export {PropertyType, SecurityType, PermissionType, ConnectionName};
 
 import * as book_cln from './book_cln';
 

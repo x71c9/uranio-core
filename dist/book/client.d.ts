@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/client';
 import { Book } from '../typ/book_cln';
 export declare function add_definition<A extends schema.AtomName>(atom_name: A, atom_definition: Book.Definition): Book;
 export declare function get_names(): schema.AtomName[];

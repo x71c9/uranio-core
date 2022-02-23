@@ -13,7 +13,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.log_create = exports.MongooseLogRelation = void 0;
 const urn_lib_1 = require("urn-lib");
-// import {ConnectionName} from './types';
 const relation_1 = require("./relation");
 /**
  * Mongoose Trash Relation class

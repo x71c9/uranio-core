@@ -4,11 +4,7 @@
  * @packageDocumentation
  */
 
-// import schema from 'uranio-schema';
-
-// import {schema} from '../sch/index';
-
-import {abstract_passport} from '../stc/index';
+import {abstract_passport} from '../stc/server';
 
 import {PassportKey} from './intra';
 
@@ -29,9 +25,6 @@ export type Passport = {
 // check if a value is included in the enum.
 // https://thisthat.dev/const-enum-vs-enum/
 // It is possible to preserve the const with "preserveConstEnums" in tsconfig
-//
-// export const enum AuthAction {
-//
 export enum AuthAction {
 	READ = 'READ',
 	WRITE = 'WRITE',

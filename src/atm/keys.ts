@@ -4,15 +4,13 @@
  * @packageDocumentation
  */
 
-// import schema from 'uranio-schema';
-
-import {schema} from '../sch/index';
+import {schema} from '../sch/client';
 
 import {Book, PropertyType} from '../typ/book_cln';
 
 import * as book from '../book/client';
 
-import {atom_common_properties} from '../stc/index';
+import {atom_common_properties} from '../stc/client';
 
 export function get_optional<A extends schema.AtomName>(atom_name:A)
 		:Set<keyof schema.Atom<A>>{

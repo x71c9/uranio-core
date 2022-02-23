@@ -8,41 +8,41 @@ import * as types from './types';
 
 export {types};
 
-export * from '../sch/index';
+export * from '../sch/server';
 
-import * as bll from '../bll/index';
+import * as bll from '../bll/server';
 
 export {bll};
 
-import * as atom from '../atm/index';
+import * as atom from '../atm/server';
 
 export {atom};
 
-import * as book from '../book/index';
+import * as book from '../book/server';
 
 export {book};
 
-import * as db from '../db/index';
+import * as db from '../db/server';
 
 export {db};
 
-import * as conf from '../conf/index';
+import * as conf from '../conf/server';
 
 export {conf};
 
-import * as util from '../util/index';
+import * as util from '../util/server';
 
 export {util};
 
-import * as log from '../log/index';
+import * as log from '../log/server';
 
 export {log};
 
-import * as stc from '../stc/index';
+import * as stc from '../stc/server';
 
 export {stc};
 
-export * from '../init/index';
+export * from '../init/server';
 
-export * from '../reg/index';
+export * from '../reg/server';
 

@@ -30,9 +30,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generate_mongo_schema_def = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const urn_lib_1 = require("urn-lib");
-const index_1 = require("../../stc/index");
+const server_1 = require("../../stc/server");
 const atm_util = __importStar(require("../../atm/util"));
-const book = __importStar(require("../../book/index"));
+const book = __importStar(require("../../book/server"));
 const book_srv_1 = require("../../typ/book_srv");
 function generate_mongo_schema_def(atom_name) {
     const properties = book.get_full_properties_definition(atom_name);
@@ -53,7 +53,7 @@ function _generate_mongoose_schema_type_options(atom_name, prop_def, prop_key) {
     if (prop_def.optional && prop_def.optional === true) {
         is_required = false;
     }
-    if (urn_lib_1.urn_util.object.has_key(index_1.atom_hard_properties, prop_key)) {
+    if (urn_lib_1.urn_util.object.has_key(server_1.atom_hard_properties, prop_key)) {
         is_required = false;
     }
     let schema_type_options = {

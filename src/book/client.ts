@@ -8,13 +8,13 @@ import {urn_util, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('BOOK_METHODS_MODULE', `Book methods module`);
 
-import {schema} from '../sch/index';
+import {schema} from '../sch/client';
 
 import {atom_book} from '../atoms';
 
 import {Book} from '../typ/book_cln';
 
-import {atom_hard_properties, atom_common_properties} from '../stc/index';
+import {atom_hard_properties, atom_common_properties} from '../stc/client';
 
 export function add_definition<A extends schema.AtomName>(
 	atom_name:A, atom_definition:Book.Definition

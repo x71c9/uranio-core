@@ -13,13 +13,11 @@
 
 import {urn_log} from 'urn-lib';
 
-// import schema from 'uranio-schema';
+import {schema} from '../sch/server';
 
-import {schema} from '../sch/index';
+import * as urn_acl from '../acl/server';
 
-import * as urn_acl from '../acl/index';
-
-import * as urn_dal from '../dal/index';
+import * as urn_dal from '../dal/server';
 
 import {Passport} from '../typ/auth';
 

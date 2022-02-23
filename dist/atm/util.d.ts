@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/client';
 export declare function molecule_to_atom<A extends schema.AtomName, D extends schema.Depth>(atom_name: A, molecule: schema.Molecule<A, D>): schema.Atom<A>;
 export declare function get_subatom_name<A extends schema.AtomName>(atom_name: A, atom_key: string): schema.AtomName;
 export declare function is_atom<A extends schema.AtomName>(atom_name: A, atom: schema.Atom<A>): atom is schema.Atom<A>;

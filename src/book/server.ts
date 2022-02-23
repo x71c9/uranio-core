@@ -6,7 +6,7 @@
 
 import {Book} from '../typ/book_srv';
 
-import {schema} from '../sch/index';
+import {schema} from '../sch/server';
 
 import {atom_book} from '../atoms';
 

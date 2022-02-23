@@ -6,9 +6,7 @@
 
 import {urn_log} from 'urn-lib';
 
-// import schema from 'uranio-schema';
-
-import {schema} from '../sch/index';
+import {schema} from '../sch/server';
 
 import {SelfishDAL} from './selfish';
 

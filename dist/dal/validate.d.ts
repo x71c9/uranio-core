@@ -6,7 +6,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/server';
 import { RelationDAL } from './rel';
 export declare class ValidateDAL<A extends schema.AtomName> extends RelationDAL<A> {
     select<D extends schema.Depth = 0>(query: schema.Query<A>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>[]>;

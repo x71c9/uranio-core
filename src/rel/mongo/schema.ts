@@ -8,15 +8,13 @@ import mongoose from 'mongoose';
 
 import {urn_util} from 'urn-lib';
 
-// import schema from 'uranio-schema';
+import {schema} from '../../sch/server';
 
-import {schema} from '../../sch/index';
-
-import {atom_hard_properties} from '../../stc/index';
+import {atom_hard_properties} from '../../stc/server';
 
 import * as atm_util from '../../atm/util';
 
-import * as book from '../../book/index';
+import * as book from '../../book/server';
 
 import {Book, PropertyType} from '../../typ/book_srv';
 

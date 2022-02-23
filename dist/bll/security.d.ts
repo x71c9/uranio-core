@@ -10,7 +10,7 @@
  *
  * @packageDocumentation
  */
-import { schema } from '../sch/index';
+import { schema } from '../sch/server';
 import { Passport } from '../typ/auth';
 import { BasicBLL } from './basic';
 export declare class SecurityBLL<A extends schema.AtomName> extends BasicBLL<A> {

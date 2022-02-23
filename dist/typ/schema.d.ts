@@ -1,5 +1,0 @@
-/**
- * Schema types module
- *
- * @packageDocumentation
- */

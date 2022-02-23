@@ -13,15 +13,13 @@ import {urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init(`DAL_ENCRYPT`, `Encryption DAL.`);
 
-// import schema from 'uranio-schema';
-
-import {schema} from '../sch/index';
+import {schema} from '../sch/server';
 
 import * as atm_encrypt from '../atm/encrypt';
 
-import * as book from '../book/index';
+import * as book from '../book/server';
 
-import * as types from '../types';
+import * as types from '../srv/types';
 
 import {create_basic, BasicDAL} from './basic';
 
