@@ -35,7 +35,7 @@ const conf = __importStar(require("../../conf/server"));
 const schema_1 = require("./schema");
 const mongo_connection = __importStar(require("./connection"));
 const book = __importStar(require("../../book/server"));
-const book_srv_1 = require("../../typ/book_srv");
+const book_1 = require("../../typ/book");
 exports.mongo_app = {};
 function create_all_connection() {
     _create_connection('main');
@@ -142,7 +142,7 @@ function _add_schema_middleware(atom_name, conn_name, mongo_schema) {
     const prop_defs = book.get_custom_property_definitions(atom_name);
     const atom_by_cascade_keys = new Map();
     for (const [k, v] of Object.entries(prop_defs)) {
-        if (v.type === book_srv_1.PropertyType.ATOM || v.type === book_srv_1.PropertyType.ATOM_ARRAY) {
+        if (v.type === book_1.PropertyType.ATOM || v.type === book_1.PropertyType.ATOM_ARRAY) {
             if (v.delete_cascade && v.delete_cascade === true) {
                 atom_by_cascade_keys.set(k, v.atom);
             }

@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { Book } from '../typ/book_srv';
+import { Book } from '../typ/book';
 import { schema } from '../sch/server';
 export declare function add_definition<A extends schema.AtomName>(atom_name: A, atom_definition: Book.Definition<A>): Book;
 export declare function get_plural(atom_name: schema.AtomName): string;

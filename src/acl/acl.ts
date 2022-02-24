@@ -38,7 +38,7 @@ import * as atm_keys from '../atm/keys';
 
 import * as atm_util from '../atm/util';
 
-import {SecurityType, PermissionType} from '../typ/book_srv';
+import {SecurityType, PermissionType} from '../typ/book';
 
 import {AuthAction} from '../typ/auth';
 

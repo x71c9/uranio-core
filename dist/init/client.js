@@ -26,7 +26,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = void 0;
 const urn_lib_1 = require("urn-lib");
-const defaults_1 = require("../cln/defaults");
+const defaults_1 = require("../client/defaults");
 const conf = __importStar(require("../conf/client"));
 const log = __importStar(require("../log/client"));
 function init(config) {

@@ -33,7 +33,7 @@ const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 const server_1 = require("../stc/server");
 const book = __importStar(require("../book/server"));
-const types = __importStar(require("../srv/types"));
+const types = __importStar(require("../server/types"));
 exports.process_params = {
     urn_command: `schema`,
     urn_base_schema: `./.uranio/generate/base/schema.d.ts`,

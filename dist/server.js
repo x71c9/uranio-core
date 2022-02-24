@@ -27,7 +27,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const urn_core = __importStar(require("./srv/main"));
-__exportStar(require("./srv/main"), exports);
+const urn_core = __importStar(require("./server/main"));
+__exportStar(require("./server/main"), exports);
 exports.default = urn_core;
 //# sourceMappingURL=server.js.map

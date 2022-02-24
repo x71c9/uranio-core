@@ -33,7 +33,7 @@ const urn_lib_1 = require("urn-lib");
 const server_1 = require("../../stc/server");
 const atm_util = __importStar(require("../../atm/util"));
 const book = __importStar(require("../../book/server"));
-const book_srv_1 = require("../../typ/book_srv");
+const book_1 = require("../../typ/book");
 function generate_mongo_schema_def(atom_name) {
     const properties = book.get_full_properties_definition(atom_name);
     let mongoose_schema_def = {};
@@ -67,20 +67,20 @@ function _generate_mongoose_schema_type_options(atom_name, prop_def, prop_key) {
         };
     }
     switch (prop_def.type) {
-        case book_srv_1.PropertyType.ID: {
+        case book_1.PropertyType.ID: {
             schema_type_options = {
                 ...schema_type_options,
                 type: mongoose_1.default.Schema.Types.ObjectId
             };
             return schema_type_options;
         }
-        case book_srv_1.PropertyType.TEXT: {
+        case book_1.PropertyType.TEXT: {
             return _generate_string_schema_options(prop_def, schema_type_options);
         }
-        case book_srv_1.PropertyType.LONG_TEXT: {
+        case book_1.PropertyType.LONG_TEXT: {
             return _generate_string_schema_options(prop_def, schema_type_options);
         }
-        case book_srv_1.PropertyType.ENCRYPTED: {
+        case book_1.PropertyType.ENCRYPTED: {
             schema_type_options = {
                 ...schema_type_options,
                 type: String,
@@ -89,7 +89,7 @@ function _generate_mongoose_schema_type_options(atom_name, prop_def, prop_key) {
             };
             return schema_type_options;
         }
-        case book_srv_1.PropertyType.EMAIL: {
+        case book_1.PropertyType.EMAIL: {
             schema_type_options = {
                 ...schema_type_options,
                 match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
@@ -98,44 +98,44 @@ function _generate_mongoose_schema_type_options(atom_name, prop_def, prop_key) {
             };
             return schema_type_options;
         }
-        case book_srv_1.PropertyType.INTEGER: {
+        case book_1.PropertyType.INTEGER: {
             return _generate_number_schema_options(prop_def, schema_type_options);
         }
-        case book_srv_1.PropertyType.FLOAT: {
+        case book_1.PropertyType.FLOAT: {
             return _generate_number_schema_options(prop_def, schema_type_options);
         }
-        case book_srv_1.PropertyType.BINARY: {
+        case book_1.PropertyType.BINARY: {
             schema_type_options = {
                 ...schema_type_options,
                 type: Boolean
             };
             return schema_type_options;
         }
-        case book_srv_1.PropertyType.DAY:
-        case book_srv_1.PropertyType.TIME: {
+        case book_1.PropertyType.DAY:
+        case book_1.PropertyType.TIME: {
             return _generate_date_schema_options(prop_def, schema_type_options);
         }
-        case book_srv_1.PropertyType.ENUM_STRING: {
+        case book_1.PropertyType.ENUM_STRING: {
             return _generate_enum_schema_options(prop_def, schema_type_options, 'string');
         }
-        case book_srv_1.PropertyType.ENUM_NUMBER: {
+        case book_1.PropertyType.ENUM_NUMBER: {
             return _generate_enum_schema_options(prop_def, schema_type_options, 'number');
         }
-        case book_srv_1.PropertyType.SET_STRING: {
+        case book_1.PropertyType.SET_STRING: {
             schema_type_options = {
                 ...schema_type_options,
                 type: [String]
             };
             return schema_type_options;
         }
-        case book_srv_1.PropertyType.SET_NUMBER: {
+        case book_1.PropertyType.SET_NUMBER: {
             schema_type_options = {
                 ...schema_type_options,
                 type: [Number]
             };
             return schema_type_options;
         }
-        case book_srv_1.PropertyType.ATOM: {
+        case book_1.PropertyType.ATOM: {
             schema_type_options = {
                 ...schema_type_options,
                 type: mongoose_1.default.Schema.Types.ObjectId,
@@ -143,7 +143,7 @@ function _generate_mongoose_schema_type_options(atom_name, prop_def, prop_key) {
             };
             return schema_type_options;
         }
-        case book_srv_1.PropertyType.ATOM_ARRAY: {
+        case book_1.PropertyType.ATOM_ARRAY: {
             schema_type_options = {
                 ...schema_type_options,
                 type: [mongoose_1.default.Schema.Types.ObjectId],

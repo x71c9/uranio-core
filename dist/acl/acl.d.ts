@@ -27,7 +27,7 @@
  */
 import { schema } from '../sch/server';
 import * as urn_dal from '../dal/server';
-import { SecurityType } from '../typ/book_srv';
+import { SecurityType } from '../typ/book';
 import { AuthAction } from '../typ/auth';
 import { AccessLayer } from '../typ/layer';
 export declare class ACL<A extends schema.AtomName> implements AccessLayer<A> {

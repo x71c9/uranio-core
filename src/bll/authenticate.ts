@@ -19,7 +19,7 @@ import * as conf from '../conf/server';
 import {
 	SecurityType,
 	PermissionType,
-} from '../typ/book_srv';
+} from '../typ/book';
 
 import {abstract_passport} from '../stc/server';
 

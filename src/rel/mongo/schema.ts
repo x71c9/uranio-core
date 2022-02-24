@@ -16,7 +16,7 @@ import * as atm_util from '../../atm/util';
 
 import * as book from '../../book/server';
 
-import {Book, PropertyType} from '../../typ/book_srv';
+import {Book, PropertyType} from '../../typ/book';
 
 export function generate_mongo_schema_def<A extends schema.AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{
