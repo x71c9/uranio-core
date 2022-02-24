@@ -10,9 +10,9 @@ const urn_exc = urn_exception.init(`VALIDATION`, `Validate module`);
 
 import {schema} from '../sch/client';
 
-import {PropertyType} from '../cln/types';
+import {PropertyType} from '../client/types';
 
-import {Book} from '../cln/types';
+import {Book} from '../client/types';
 
 import {atom_hard_properties, atom_common_properties} from '../stc/client';
 

@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.set = exports.set_from_env = exports.set_initialize = exports.is_initialized = exports.get = exports.defaults = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('CONF_CORE_CLIENT_MODULE', `Core client configuration module`);
-const defaults_1 = require("../cln/defaults");
+const defaults_1 = require("../client/defaults");
 Object.defineProperty(exports, "defaults", { enumerable: true, get: function () { return defaults_1.core_client_config; } });
 let _is_client_core_initialized = false;
 function get(param_name) {

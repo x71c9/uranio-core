@@ -18,4 +18,4 @@ const book_cln_1 = require("./book_cln");
 Object.defineProperty(exports, "PropertyType", { enumerable: true, get: function () { return book_cln_1.PropertyType; } });
 Object.defineProperty(exports, "SecurityType", { enumerable: true, get: function () { return book_cln_1.SecurityType; } });
 Object.defineProperty(exports, "PermissionType", { enumerable: true, get: function () { return book_cln_1.PermissionType; } });
-//# sourceMappingURL=book_srv.js.map
+//# sourceMappingURL=book.js.map

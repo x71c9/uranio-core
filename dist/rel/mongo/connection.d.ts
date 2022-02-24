@@ -5,7 +5,7 @@
  */
 import mongoose from 'mongoose';
 import { schema } from '../../sch/server';
-import { ConnectionName } from '../../typ/book_srv';
+import { ConnectionName } from '../../typ/book';
 /**
  * MongooseDBConnection class
  */

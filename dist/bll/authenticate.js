@@ -39,7 +39,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 const conf = __importStar(require("../conf/server"));
-const book_srv_1 = require("../typ/book_srv");
+const book_1 = require("../typ/book");
 const server_1 = require("../stc/server");
 const auth_1 = require("../typ/auth");
 const atm = __importStar(require("../atm/server"));
@@ -101,11 +101,11 @@ function is_public_request(atom_name, action) {
     const atom_def = book.get_definition(atom_name);
     if (action === auth_1.AuthAction.READ) {
         if (!atom_def.security ||
-            atom_def.security === book_srv_1.SecurityType.UNIFORM) {
+            atom_def.security === book_1.SecurityType.UNIFORM) {
             return true;
         }
         if (typeof atom_def.security === 'object' &&
-            atom_def.security.type === book_srv_1.SecurityType.UNIFORM &&
+            atom_def.security.type === book_1.SecurityType.UNIFORM &&
             atom_def.security._r === undefined) {
             return true;
         }
@@ -113,8 +113,8 @@ function is_public_request(atom_name, action) {
     }
     else if (action === auth_1.AuthAction.WRITE) {
         if (typeof atom_def.security === 'object' &&
-            atom_def.security.type === book_srv_1.SecurityType.UNIFORM &&
-            atom_def.security._w === book_srv_1.PermissionType.PUBLIC) {
+            atom_def.security.type === book_1.SecurityType.UNIFORM &&
+            atom_def.security._w === book_1.PermissionType.PUBLIC) {
             return true;
         }
         return false;

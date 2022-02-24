@@ -20,9 +20,9 @@ import * as validate from './validate';
 //   schema.AtomShape,
 //   Book,
 //   PropertyType
-// } from '../cln/types';
+// } from '../client/types';
 
-import {Book, PropertyType} from '../cln/types';
+import {Book, PropertyType} from '../client/types';
 
 import {schema} from '../sch/client';
 

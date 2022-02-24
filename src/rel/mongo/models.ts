@@ -24,7 +24,7 @@ import * as mongo_connection from './connection';
 
 import * as book from '../../book/server';
 
-import {PropertyType} from '../../typ/book_srv';
+import {PropertyType} from '../../typ/book';
 
 export const mongo_app:MongoApp = {};
 

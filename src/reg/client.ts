@@ -12,7 +12,7 @@ import {urn_log} from 'urn-lib';
 
 import * as book from '../book/client';
 
-import * as types from '../cln/types';
+import * as types from '../client/types';
 
 import {schema} from '../sch/client';
 

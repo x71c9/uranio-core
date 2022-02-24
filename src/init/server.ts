@@ -12,7 +12,7 @@ import {schema} from '../sch/server';
 
 import {core_config} from '../conf/defaults';
 
-import * as types from '../srv/types';
+import * as types from '../server/types';
 
 import * as conf from '../conf/server';
 

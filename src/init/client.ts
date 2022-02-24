@@ -6,9 +6,9 @@
 
 import {urn_log} from 'urn-lib';
 
-import {core_client_config} from '../cln/defaults';
+import {core_client_config} from '../client/defaults';
 
-import * as types from '../cln/types';
+import * as types from '../client/types';
 
 import * as conf from '../conf/client';
 

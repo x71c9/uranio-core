@@ -19,7 +19,7 @@ import * as atm_encrypt from '../atm/encrypt';
 
 import * as book from '../book/server';
 
-import * as types from '../srv/types';
+import * as types from '../server/types';
 
 import {create_basic, BasicDAL} from './basic';
 

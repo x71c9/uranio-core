@@ -12,7 +12,7 @@ import {core_config} from './defaults';
 
 export {core_config as defaults};
 
-import * as types from '../srv/types';
+import * as types from '../server/types';
 
 import {Configuration} from '../typ/conf';
 

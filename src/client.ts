@@ -4,8 +4,8 @@
  * @packageDocumentation
  */
 
-import * as urn_client from './cln/main';
+import * as urn_core_client from './client/main';
 
-export * from './cln/main';
+export * from './client/main';
 
-export default urn_client;
+export default urn_core_client;

@@ -8,11 +8,11 @@ import {urn_util, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('CONF_CORE_CLIENT_MODULE', `Core client configuration module`);
 
-import {core_client_config} from '../cln/defaults';
+import {core_client_config} from '../client/defaults';
 
 export {core_client_config as defaults};
 
-import * as types from '../cln/types';
+import * as types from '../client/types';
 
 let _is_client_core_initialized = false;
 
