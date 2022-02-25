@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Main module for client
+ * Register module for URANIO Api
  *
  * @packageDocumentation
  */
@@ -23,25 +23,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = exports.conf = exports.stc = exports.log = exports.book = exports.atom = exports.types = void 0;
-const types = __importStar(require("./types"));
-exports.types = types;
-const atom = __importStar(require("../atm/client"));
-exports.atom = atom;
-const book = __importStar(require("../book/client"));
-exports.book = book;
-const log = __importStar(require("../log/client"));
-exports.log = log;
-const stc = __importStar(require("../stc/client"));
-exports.stc = stc;
-const conf = __importStar(require("../conf/client"));
-exports.conf = conf;
 const register = __importStar(require("../reg/client"));
-exports.register = register;
-__exportStar(require("../sch/client"), exports);
-__exportStar(require("../init/client"), exports);
-//# sourceMappingURL=main.js.map
+const atoms_1 = require("../atoms");
+for (const [atom_name, atom_def] of Object.entries(atoms_1.atom_book)) {
+    register.atom(atom_def, atom_name);
+}
+//# sourceMappingURL=_register.js.map

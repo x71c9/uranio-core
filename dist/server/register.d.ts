@@ -1,6 +1,5 @@
 /**
- * Register module for URANIO Api
+ * CORE register required atoms module
  *
  * @packageDocumentation
  */
-export {};

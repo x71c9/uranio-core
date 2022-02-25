@@ -6,13 +6,7 @@
  * @packageDocumentation
  */
 
-// import schema from 'uranio-schema';
-
 import {schema} from '../sch/server';
-
-// import {schema.AtomName} from './atom';
-
-// import {Property} from './common';
 
 export type ConnectionName = 'main' | 'trash' | 'log';
 
@@ -50,13 +44,6 @@ export type Book = {
 }
 
 export namespace Book {
-	
-	// type BasicDefinition = {
-	//   properties: Definition.Properties
-	//   authenticate?: boolean
-	//   connection?: ConnectionName
-	//   plural?: string
-	// }
 	
 	export type Definition = {
 		properties: Definition.Properties

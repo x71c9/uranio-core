@@ -24,9 +24,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const register = __importStar(require("../reg/client"));
+const register = __importStar(require("../reg/server"));
 const atoms_1 = require("../atoms");
 for (const [atom_name, atom_def] of Object.entries(atoms_1.atom_book)) {
     register.atom(atom_def, atom_name);
 }
-//# sourceMappingURL=register.js.map
+//# sourceMappingURL=_register.js.map

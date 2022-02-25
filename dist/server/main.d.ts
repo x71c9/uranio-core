@@ -22,5 +22,6 @@ import * as log from '../log/server';
 export { log };
 import * as stc from '../stc/server';
 export { stc };
+import * as register from '../reg/server';
+export { register };
 export * from '../init/server';
-export * from '../reg/server';

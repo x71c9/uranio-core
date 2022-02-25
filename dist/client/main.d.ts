@@ -15,6 +15,7 @@ import * as stc from '../stc/client';
 export { stc };
 import * as conf from '../conf/client';
 export { conf };
+import * as register from '../reg/client';
+export { register };
 export * from '../sch/client';
-export * from '../reg/client';
 export * from '../init/client';

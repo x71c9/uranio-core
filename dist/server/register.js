@@ -1,13 +1,13 @@
 "use strict";
 /**
- * Register module for URANIO Api
+ * CORE register required atoms module
  *
  * @packageDocumentation
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-const server_1 = require("../reg/server");
-const atoms_1 = require("../atoms");
-for (const [atom_name, atom_def] of Object.entries(atoms_1.atom_book)) {
-    (0, server_1.register)(atom_def, atom_name);
-}
+// import * as register from '../reg/server';
+// import {atom_book} from '../atoms';
+// import {schema} from '../sch/server';
+// for(const [atom_name, atom_def] of Object.entries(atom_book)){
+//   register.atom(atom_def as any, atom_name as schema.AtomName);
+// }
 //# sourceMappingURL=register.js.map

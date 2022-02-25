@@ -1,5 +1,5 @@
 /**
- * Core generate module
+ * Register module for URANIO Api
  *
  * @packageDocumentation
  */

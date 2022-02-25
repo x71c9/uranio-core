@@ -1,6 +1,6 @@
 "use strict";
 /**
- * TRX generate module
+ * Core generate module
  *
  * @packageDocumentation
  */
@@ -16,9 +16,6 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -32,7 +29,6 @@ urn_lib_1.urn_log.init({
     log_level: urn_lib_1.urn_log.LogLevel.FUNCTION_DEBUG,
     debug_info: false
 });
-__exportStar(require("./register"), exports);
 const util = __importStar(require("../util/server"));
 util.generate.schema_and_save();
 //# sourceMappingURL=generate.js.map

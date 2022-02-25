@@ -28,8 +28,10 @@ import * as conf from '../conf/client';
 
 export {conf};
 
-export * from '../sch/client';
+import * as register from '../reg/client';
 
-export * from '../reg/client';
+export {register};
+
+export * from '../sch/client';
 
 export * from '../init/client';

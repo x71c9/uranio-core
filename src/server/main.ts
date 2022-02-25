@@ -42,7 +42,9 @@ import * as stc from '../stc/server';
 
 export {stc};
 
-export * from '../init/server';
+import * as register from '../reg/server';
 
-export * from '../reg/server';
+export {register};
+
+export * from '../init/server';
 
