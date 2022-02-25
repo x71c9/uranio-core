@@ -32,13 +32,11 @@
 		"strictPropertyInitialization": true,
 		"target": "ES2018",
 		"typeRoots": [
-			"node_modules/@types",
-			".uranio/generate/types"
+			"node_modules/@types"
 		]
 	},
 	"include": [
-		"src/**/*",
-		".uranio/generate/types/**/*"
+		"src/**/*"
 	],
 	"exclude": [
 		"node_modules"

@@ -18,7 +18,7 @@ export function add_definition<A extends schema.AtomName>(
 	const atom_book_def = {} as Book;
 	atom_book_def[atom_name] = atom_definition;
 	Object.assign(atom_book, {...atom_book_def, ...atom_book});
-	return atom_book;
+	return atom_book as unknown as Book;
 }
 
 export function get_plural(atom_name:schema.AtomName):string{

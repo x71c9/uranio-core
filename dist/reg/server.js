@@ -39,7 +39,6 @@ function register(atom_definition, atom_name) {
     }
     else {
         const caller_path = (0, caller_1.default)();
-        // console.log(caller_path);
         const dirname = path_1.default.dirname(caller_path);
         final_atom_name =
             dirname.split('/').slice(-1)[0].replace('.', '_').replace('-', '_');

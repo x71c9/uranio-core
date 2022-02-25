@@ -68,7 +68,7 @@ let RecycleDAL = class RecycleDAL extends encrypt_1.EncryptDAL {
         const db_res_delete = await super.delete_by_id(id);
         if (!this.trash_dal)
             return db_res_delete;
-        db_res_delete._deleted_from = db_res_delete._id;
+        db_res_delete._from = db_res_delete._id;
         await this.trash_dal.insert_one(db_res_delete);
         // db_res_delete._id = id;
         return db_res_delete;
@@ -78,7 +78,7 @@ let RecycleDAL = class RecycleDAL extends encrypt_1.EncryptDAL {
         if (!this.trash_dal)
             return db_res_delete;
         for (const del of db_res_delete) {
-            del._deleted_from = del._id;
+            del._from = del._id;
         }
         await this.trash_dal.insert_multiple(db_res_delete);
         // db_res_delete._id = id;

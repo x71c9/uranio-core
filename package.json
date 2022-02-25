@@ -30,31 +30,26 @@
 	"scripts": {
 		"build": "npx tsc -b",
 		"dev": "npx tsc-watch --onSuccess \"node -r source-map-support/register -r dotenv/config ./dist/dev.js\"",
-		"dev:generate:compile": "npx esbuild ./src/server/generate.ts --outfile=./generate/_generate_bundled.js --bundle --platform=node --watch",
-		"dev:generate:run": "npx nodemon --watch ./generate/_generate_bundled.js -e ts ./generate/_generate_bundled.js urn_output_dir=./generate",
-		"schema:reset": "yarn upgrade uranio-schema && npx npm-dts generate -L debug -r node_modules/uranio-schema -o ../../.uranio/generate/base/schema.d.ts",
-		"dev:generate": "yarn schema:reset && npx concurrently \"yarn dev:generate:compile\" \"yarn dev:generate:run\""
+		"generate:compile": "npx esbuild ./src/server/generate.ts --outfile=./generate/_generate_bundled.js --bundle --platform=node",
+		"generate:schema": "yarn generate:compile && node ./generate/_generate_bundled.js urn_command=schema"
 	},
 	"devDependencies": {
 		"@types/bcryptjs": "^2.4.2",
 		"@types/caller": "^1.0.0",
 		"@types/express-fileupload": "^1.2.2",
 		"@types/jsonwebtoken": "^8.5.8",
-		"concurrently": "^7.0.0",
 		"esbuild": "^0.14.22",
-		"npm-dts": "^1.3.11",
 		"uranio-dev": "git+ssh://git@github.com/nbl7/uranio-dev.git"
 	},
 	"dependencies": {
 		"aws-sdk": "^2.1066.0",
 		"bcryptjs": "^2.4.3",
 		"caller": "^1.0.1",
+		"dateformat": "^3.0.3",
 		"dotenv": "^15.0.0",
 		"express-fileupload": "^1.2.1",
 		"jsonwebtoken": "^8.5.1",
-		"module-alias": "^2.2.2",
 		"mongoose": "^5.11.15",
-		"saslprep": "^1.0.3",
 		"uranio-schema": "ssh://git@github.com/nbl7/uranio-schema.git",
 		"urn-lib": "git+ssh://git@github.com/nbl7/uranio-lib.git#new"
 	}

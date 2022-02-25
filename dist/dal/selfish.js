@@ -86,7 +86,7 @@ let SelfishDAL = class SelfishDAL extends recycle_1.RecycleDAL {
             }
             if (this.trash_dal) {
                 const clone_molecule = { ...molecule };
-                clone_molecule._deleted_from = molecule._id;
+                clone_molecule._from = molecule._id;
                 await this.trash_dal.insert_one(clone_molecule);
             }
             let k;
@@ -113,7 +113,7 @@ let SelfishDAL = class SelfishDAL extends recycle_1.RecycleDAL {
             }
             if (this.trash_dal) {
                 const clone_atom = { ...atom };
-                clone_atom._deleted_from = clone_atom._id;
+                clone_atom._from = clone_atom._id;
                 await this.trash_dal.insert_one(clone_atom);
             }
             let k;
