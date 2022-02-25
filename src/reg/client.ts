@@ -16,8 +16,10 @@ import * as types from '../client/types';
 
 import {schema} from '../sch/client';
 
-export function register<A extends schema.AtomName>(atom_definition:types.Book.Definition, atom_name?:A)
-		:string{
+export function register<A extends schema.AtomName>(
+	atom_definition:types.Book.Definition,
+	atom_name?:A
+):string{
 	let final_atom_name = `undefined_atom`;
 	if(atom_name){
 		final_atom_name = atom_name;
