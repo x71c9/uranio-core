@@ -1,5 +1,5 @@
 /**
- * TRX generate module
+ * Core generate module
  *
  * @packageDocumentation
  */
@@ -9,8 +9,6 @@ urn_log.init({
 	log_level: urn_log.LogLevel.FUNCTION_DEBUG,
 	debug_info: false
 });
-
-export * from './register';
 
 import * as util from '../util/server';
 

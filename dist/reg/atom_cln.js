@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Main module for client
+ * Register module
  *
  * @packageDocumentation
  */
@@ -23,25 +23,30 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = exports.conf = exports.stc = exports.log = exports.book = exports.atom = exports.types = void 0;
-const types = __importStar(require("./types"));
-exports.types = types;
-const atom = __importStar(require("../atm/client"));
-exports.atom = atom;
+exports.atom = void 0;
+const path_1 = __importDefault(require("path"));
+const caller_1 = __importDefault(require("caller"));
+const urn_lib_1 = require("urn-lib");
 const book = __importStar(require("../book/client"));
-exports.book = book;
-const log = __importStar(require("../log/client"));
-exports.log = log;
-const stc = __importStar(require("../stc/client"));
-exports.stc = stc;
-const conf = __importStar(require("../conf/client"));
-exports.conf = conf;
-const register = __importStar(require("../reg/client"));
-exports.register = register;
-__exportStar(require("../sch/client"), exports);
-__exportStar(require("../init/client"), exports);
-//# sourceMappingURL=main.js.map
+function atom(atom_definition, atom_name) {
+    let final_atom_name = `undefined_atom`;
+    if (atom_name) {
+        final_atom_name = atom_name;
+    }
+    else {
+        const caller_path = (0, caller_1.default)();
+        const dirname = path_1.default.dirname(caller_path);
+        final_atom_name =
+            dirname.split('/').slice(-1)[0].replace('.', '_').replace('-', '_');
+    }
+    // urn_log.debug(`Registering atom [${final_atom_name}]...`);
+    book.add_definition(final_atom_name, atom_definition);
+    urn_lib_1.urn_log.debug(`Atom [${final_atom_name}] registered.`);
+    return final_atom_name;
+}
+exports.atom = atom;
+//# sourceMappingURL=atom_cln.js.map

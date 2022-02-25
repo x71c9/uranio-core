@@ -27,7 +27,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.stc = exports.log = exports.util = exports.conf = exports.db = exports.book = exports.atom = exports.bll = exports.types = void 0;
+exports.register = exports.stc = exports.log = exports.util = exports.conf = exports.db = exports.book = exports.atom = exports.bll = exports.types = void 0;
 const types = __importStar(require("./types"));
 exports.types = types;
 __exportStar(require("../sch/server"), exports);
@@ -47,6 +47,7 @@ const log = __importStar(require("../log/server"));
 exports.log = log;
 const stc = __importStar(require("../stc/server"));
 exports.stc = stc;
+const register = __importStar(require("../reg/server"));
+exports.register = register;
 __exportStar(require("../init/server"), exports);
-__exportStar(require("../reg/server"), exports);
 //# sourceMappingURL=main.js.map
