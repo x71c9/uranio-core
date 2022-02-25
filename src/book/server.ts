@@ -4,6 +4,8 @@
  * @packageDocumentation
  */
 
+import {Book as ClientBook} from '../typ/book_cln';
+
 import {Book} from '../typ/book';
 
 import {schema} from '../sch/server';
@@ -13,12 +15,10 @@ import {atom_book} from '../atoms';
 import * as client_book from './client';
 
 export function add_definition<A extends schema.AtomName>(
-	atom_name:A, atom_definition:Book.Definition<A>
-):Book{
-	const atom_book_def = {} as Book;
-	atom_book_def[atom_name] = atom_definition;
-	Object.assign(atom_book, {...atom_book_def, ...atom_book});
-	return atom_book as unknown as Book;
+	atom_name:A,
+	atom_definition:ClientBook.Definition
+):ClientBook{
+	return client_book.add_definition(atom_name, atom_definition);
 }
 
 export function get_plural(atom_name:schema.AtomName):string{
