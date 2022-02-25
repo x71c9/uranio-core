@@ -55,7 +55,7 @@ export function get_all_definitions():Book{
 
 export function get_definition<A extends schema.AtomName>(atom_name:A)
 		:Book.Definition{
-	return atom_book[atom_name] as unknown as Book.Definition;
+	return (atom_book as Book)[atom_name] as unknown as Book.Definition;
 }
 
 export function get_property_definition<A extends schema.AtomName>(
@@ -75,7 +75,7 @@ export function get_property_definition<A extends schema.AtomName>(
 export function get_custom_property_definitions<A extends schema.AtomName>(
 	atom_name:A
 ):Book.Definition.Properties{
-	const atom_def = atom_book[atom_name] as unknown as Book.Definition;
+	const atom_def = (atom_book as Book)[atom_name] as unknown as Book.Definition;
 	return atom_def.properties as Book.Definition.Properties;
 }
 
@@ -99,7 +99,7 @@ export function has_property<A extends schema.AtomName>(atom_name:A, key:string)
 	if(urn_util.object.has_key(atom_common_properties, key)){
 		return true;
 	}
-	if(urn_util.object.has_key(atom_book[atom_name]['properties'], key)){
+	if(urn_util.object.has_key((atom_book as Book)[atom_name]['properties'], key)){
 		return true;
 	}
 	return false;

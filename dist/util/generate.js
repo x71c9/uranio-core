@@ -29,15 +29,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = exports.save_schema = exports.schema_and_save = exports.schema = exports.process_params = void 0;
 const fs_1 = __importDefault(require("fs"));
+const dateformat_1 = __importDefault(require("dateformat"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 const server_1 = require("../stc/server");
 const book = __importStar(require("../book/server"));
 const types = __importStar(require("../server/types"));
+const atom_schema_file_path = './node_modules/uranio-schema/dist/typ/atom.d.ts';
 exports.process_params = {
     urn_command: `schema`,
-    urn_base_schema: `./.uranio/generate/base/schema.d.ts`,
-    urn_output_dir: `.`
+    // urn_base_schema: `./.uranio/generate/base/schema.d.ts`,
+    // urn_output_dir: `.`
 };
 function schema() {
     urn_lib_1.urn_log.debug('Started generating uranio core schema...');
@@ -54,30 +56,49 @@ function schema_and_save() {
 }
 exports.schema_and_save = schema_and_save;
 function save_schema(text) {
-    const output = `${exports.process_params.urn_output_dir}/schema.d.ts`;
-    fs_1.default.writeFileSync(output, text);
-    urn_lib_1.urn_log.debug(`Schema saved in [${output}].`);
+    // const output = `${process_params.urn_output_dir}/schema.d.ts`;
+    // fs.writeFileSync(output, text);
+    // urn_log.debug(`Schema saved in [${output}].`);
+    const now = (0, dateformat_1.default)(new Date(), `yyyymmddHHMMssl`);
+    const backup_path = `${atom_schema_file_path}.${now}.bkp`;
+    fs_1.default.copyFileSync(atom_schema_file_path, backup_path);
+    urn_lib_1.urn_log.debug(`Copied backup file for atom schema in [${backup_path}].`);
+    fs_1.default.writeFileSync(atom_schema_file_path, text);
+    urn_lib_1.urn_log.debug(`Update schema [${atom_schema_file_path}].`);
 }
 exports.save_schema = save_schema;
 function init() {
     for (const argv of process.argv) {
         const splitted = argv.split('=');
-        if (splitted[0] === 'urn_base_schema'
+        if (splitted[0] === 'urn_command'
             && typeof splitted[1] === 'string'
             && splitted[1] !== '') {
-            exports.process_params.urn_base_schema = splitted[1];
+            exports.process_params.urn_command = splitted[1];
         }
-        else if (splitted[0] === 'urn_output_dir'
-            && typeof splitted[1] === 'string'
-            && splitted[1] !== '') {
-            exports.process_params.urn_output_dir = splitted[1];
-        }
+        // if(
+        //   splitted[0] === 'urn_base_schema'
+        //   && typeof splitted[1] === 'string'
+        //   && splitted[1] !== ''
+        // ){
+        //   process_params.urn_base_schema = splitted[1];
+        // }else if(
+        //   splitted[0] === 'urn_output_dir'
+        //   && typeof splitted[1] === 'string'
+        //   && splitted[1] !== ''
+        // ){
+        //   process_params.urn_output_dir = splitted[1];
+        // }
     }
 }
 exports.init = init;
+function _read_schema() {
+    return fs_1.default.readFileSync(atom_schema_file_path, { encoding: 'utf8' });
+}
 function _generate_uranio_schema_text() {
     const txt = _generate_schema_text();
-    const data = fs_1.default.readFileSync(exports.process_params.urn_base_schema, { encoding: 'utf8' });
+    // const data = fs.readFileSync(process_params.urn_base_schema, {encoding: 'utf8'});
+    // const data = fs.readFileSync(atom_schema_file_path, {encoding: 'utf8'});
+    const data = _read_schema();
     const data_start = data.split('/** --uranio-generate-start */');
     const data_end = data_start[1].split('/** --uranio-generate-end */');
     let new_data = '';
@@ -126,24 +147,24 @@ function _generate_schema_text() {
  * in the module, also the ones without `export`
  */
 function _generate_last_export() {
-    return '\n\texport {};';
+    return '\nexport {};';
 }
 function _generate_atom_type(atom_names) {
     let text = '';
-    text += `\texport type Atom<A extends AtomName> =\n`;
+    text += `export declare type Atom<A extends AtomName> =\n`;
     for (const atom_name of atom_names) {
-        text += `\t\tA extends '${atom_name}' ? ${_atom_type_name(atom_name)} :\n`;
+        text += `\tA extends '${atom_name}' ? ${_atom_type_name(atom_name)} :\n`;
     }
-    text += `\t\tnever\n\n`;
+    text += `\tnever\n\n`;
     return text;
 }
 function _generate_atom_shape_type(atom_names) {
     let text = '';
-    text += `\texport type AtomShape<A extends AtomName> =\n`;
+    text += `export declare type AtomShape<A extends AtomName> =\n`;
     for (const atom_name of atom_names) {
-        text += `\t\tA extends '${atom_name}' ? ${_atom_shape_type_name(atom_name)} :\n`;
+        text += `\tA extends '${atom_name}' ? ${_atom_shape_type_name(atom_name)} :\n`;
     }
-    text += `\t\tnever\n\n`;
+    text += `\tnever\n\n`;
     return text;
 }
 function _atom_type_name(atom_name) {
@@ -155,7 +176,7 @@ function _atom_shape_type_name(atom_name) {
 function _generate_atom_types(atom_names) {
     let text = '';
     for (const atom_name of atom_names) {
-        text += `\ttype ${_atom_type_name(atom_name)} =`;
+        text += `declare type ${_atom_type_name(atom_name)} =`;
         text += ` AtomHardProperties & ${_atom_shape_type_name(atom_name)}\n\n`;
     }
     return text;
@@ -191,7 +212,7 @@ function _generate_bond_shape_depth(depth, atom_book) {
         }
     }
     let text = '';
-    text += `\ttype BondShapeDepth${label}<A extends AtomName> =\n`;
+    text += `declare type BondShapeDepth${label}<A extends AtomName> =\n`;
     for (const [atom_name, atom_def] of Object.entries(atom_book)) {
         const bonds = [];
         for (const [key, prop_def] of Object.entries(atom_def.properties)) {
@@ -211,14 +232,14 @@ function _generate_bond_shape_depth(depth, atom_book) {
             }
         }
         const bond_obj = (bonds.length > 0) ? `{${bonds.join(', ')}}` : 'Record<never, unknown>';
-        text += `\t\tA extends '${atom_name}' ? ${bond_obj} :\n`;
+        text += `\tA extends '${atom_name}' ? ${bond_obj} :\n`;
     }
-    text += `\t\tnever\n\n`;
+    text += `\tnever\n\n`;
     return text;
 }
 function _generate_bond_properties(atom_book) {
     let text = '';
-    text += `\ttype BondProperties<A extends AtomName> =\n`;
+    text += `declare type BondProperties<A extends AtomName> =\n`;
     for (const [atom_name, atom_def] of Object.entries(atom_book)) {
         const bond_props = [];
         for (const [key, prop_def] of Object.entries(atom_def.properties)) {
@@ -228,38 +249,38 @@ function _generate_bond_properties(atom_book) {
         }
         const bond_prop_union = (bond_props.length > 0) ?
             bond_props.map(n => `'${n}'`).join(' | ') : 'never';
-        text += `\t\tA extends '${atom_name}' ? ${bond_prop_union} :\n`;
+        text += `\tA extends '${atom_name}' ? ${bond_prop_union} :\n`;
     }
-    text += `\t\tnever\n\n`;
+    text += `\tnever\n\n`;
     return text;
 }
 function _generate_atom_shapes(atom_book) {
     let text = '';
     for (const [atom_name, atom_def] of Object.entries(atom_book)) {
-        text += `\ttype ${_atom_shape_type_name(atom_name)} = AtomCommonProperties & {\n`;
+        text += `declare type ${_atom_shape_type_name(atom_name)} = AtomCommonProperties & {\n`;
         for (const [key, prop_def] of Object.entries(atom_def.properties)) {
             const optional = (prop_def.optional === true) ? '?' : '';
             switch (prop_def.type) {
                 case types.PropertyType.ATOM: {
-                    text += `\t\t${key}${optional}: string\n`;
+                    text += `\t${key}${optional}: string\n`;
                     break;
                 }
                 case types.PropertyType.ATOM_ARRAY: {
-                    text += `\t\t${key}${optional}: string[]\n`;
+                    text += `\t${key}${optional}: string[]\n`;
                     break;
                 }
                 default: {
-                    text += `\t\t${key}${optional}: ${server_1.real_book_property_type[prop_def.type]}\n`;
+                    text += `\t${key}${optional}: ${server_1.real_book_property_type[prop_def.type]}\n`;
                 }
             }
         }
-        text += `\t}\n\n`;
+        text += `}\n\n`;
     }
     return text;
 }
 function _generate_union_names(type_name, names) {
     const union = (names.length > 0) ?
         names.map(n => `'${n}'`).join(' | ') : 'never';
-    return `\texport type ${type_name} = ${union}\n\n`;
+    return `export declare type ${type_name} = ${union}\n\n`;
 }
 //# sourceMappingURL=generate.js.map

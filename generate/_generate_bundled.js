@@ -29,29 +29,6 @@ var __toCommonJS = /* @__PURE__ */ ((cache) => {
   };
 })(typeof WeakMap !== "undefined" ? /* @__PURE__ */ new WeakMap() : 0);
 
-// node_modules/caller/index.js
-var require_caller = __commonJS({
-  "node_modules/caller/index.js"(exports, module2) {
-    "use strict";
-    module2.exports = function(depth) {
-      var pst, stack, file, frame;
-      pst = Error.prepareStackTrace;
-      Error.prepareStackTrace = function(_, stack2) {
-        Error.prepareStackTrace = pst;
-        return stack2;
-      };
-      stack = new Error().stack;
-      depth = !depth || isNaN(depth) ? 1 : depth > stack.length - 2 ? stack.length - 2 : depth;
-      stack = stack.slice(depth + 1);
-      do {
-        frame = stack.shift();
-        file = frame && frame.getFileName();
-      } while (stack.length && file === "module.js");
-      return file;
-    };
-  }
-});
-
 // node_modules/urn-lib/dist/log/types.js
 var require_types = __commonJS({
   "node_modules/urn-lib/dist/log/types.js"(exports) {
@@ -87,7 +64,9 @@ var require_log_defaults = __commonJS({
       context: types_1.LogContext.TERMINAL,
       prefix: "",
       injectors: [],
-      prefix_type: false
+      prefix_type: false,
+      debug_info: true,
+      color: true
     };
     exports.default = log_defaults;
   }
@@ -387,8 +366,10 @@ var require_console_injectors = __commonJS({
     })(console_injectors = exports.console_injectors || (exports.console_injectors = {}));
     function _cecho(type, style, start, depth, ...params) {
       const styles = Array.isArray(style) ? style.join(" ") : style;
-      const stylelog = styles + "%s" + _terminal_styles.reset;
-      _log_stack(type, stylelog, start, depth, type === "error");
+      const stylelog = log_defaults_1.default.color === true ? styles + "%s" + _terminal_styles.reset : "";
+      if (log_defaults_1.default.debug_info === true) {
+        _log_stack(type, stylelog, start, depth, type === "error");
+      }
       for (const p of params) {
         if (typeof p === "object") {
           _log_param(p, stylelog, type);
@@ -400,7 +381,7 @@ var require_console_injectors = __commonJS({
           _log_param(processed_param, stylelog, type);
         }
       }
-      if (log_defaults_1.default.context !== types_1.LogContext.BROWSER) {
+      if (log_defaults_1.default.context !== types_1.LogContext.BROWSER && log_defaults_1.default.debug_info === true) {
         console.log(stylelog, " ");
       }
     }
@@ -512,9 +493,17 @@ var require_console_injectors = __commonJS({
             pp = `[--${type}--]${pp}`;
           }
           if (type === "error") {
-            console.error(stylelog, pp);
+            if (stylelog !== "") {
+              console.error(stylelog, pp);
+            } else {
+              console.error(pp);
+            }
           } else {
-            console.log(stylelog, pp);
+            if (stylelog !== "") {
+              console.log(stylelog, pp);
+            } else {
+              console.log(pp);
+            }
           }
         }
       }
@@ -623,21 +612,37 @@ var require_log = __commonJS({
     var log_defaults_1 = __importDefault(require_log_defaults());
     exports.defaults = log_defaults_1.default;
     var console_injectors_1 = require_console_injectors();
-    function init(level, context, prefix, prefix_type, injectors) {
-      if (level) {
-        log_defaults_1.default.log_level = level;
+    function init2(log_config) {
+      if (typeof log_config === "number") {
+        log_defaults_1.default.log_level = log_config;
+      } else if (log_config) {
+        if (typeof log_config.log_level === "number" && log_config.log_level >= 0) {
+          log_defaults_1.default.log_level = log_config.log_level;
+        }
+        if (typeof log_config.time_format === "string" && log_config.time_format !== "") {
+          log_defaults_1.default.time_format = log_config.time_format;
+        }
+        if (typeof log_config.max_str_length === "number" && log_config.max_str_length > 0) {
+          log_defaults_1.default.max_str_length = log_config.max_str_length;
+        }
+        if (typeof log_config.context === "string" && log_config.context !== "") {
+          log_defaults_1.default.context = log_config.context;
+        }
+        if (typeof log_config.prefix === "string" && log_config.prefix !== "") {
+          log_defaults_1.default.prefix = log_config.prefix;
+        }
+        if (log_config.prefix_type === true) {
+          log_defaults_1.default.prefix_type = true;
+        }
+        if (log_config.debug_info === false) {
+          log_defaults_1.default.debug_info = false;
+        }
+        if (log_config.color === false) {
+          log_defaults_1.default.color = false;
+        }
       }
-      if (context) {
-        log_defaults_1.default.context = context;
-      }
-      if (prefix) {
-        log_defaults_1.default.prefix = prefix;
-      }
-      if (prefix_type === true) {
-        log_defaults_1.default.prefix_type = true;
-      }
-      if (Array.isArray(injectors) && injectors.length > 0) {
-        log_defaults_1.default.injectors = injectors;
+      if (typeof log_config === "object" && log_config && Array.isArray(log_config.injectors) && log_config.injectors.length > 0) {
+        log_defaults_1.default.injectors = log_config.injectors;
       } else {
         const log_injector = log_defaults_1.default.context === types_1.LogContext.BROWSER ? console_injectors_1.console_injectors.browser : console_injectors_1.console_injectors.terminal;
         log_defaults_1.default.injectors = [log_injector];
@@ -649,7 +654,7 @@ var require_log = __commonJS({
         }
       }
     }
-    exports.init = init;
+    exports.init = init2;
     function _run_injector(type, ...params) {
       if (!Array.isArray(log_defaults_1.default.injectors) || log_defaults_1.default.injectors.length == 0)
         return;
@@ -1023,7 +1028,7 @@ var require_return = __commonJS({
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     var index_1 = require_response2();
-    var urn_log3 = __importStar(require_log2());
+    var urn_log4 = __importStar(require_log2());
     var URNReturn = class {
       constructor(inject_objects) {
         this.inject_objects = [];
@@ -1180,7 +1185,7 @@ var require_return = __commonJS({
       }
     };
     function create_instance(inject) {
-      urn_log3.fn_debug("create for URNReturn");
+      urn_log4.fn_debug("create for URNReturn");
       return new URNReturn(inject);
     }
     exports.default = create_instance;
@@ -1454,7 +1459,7 @@ var require_exception = __commonJS({
         this.type = types_1.ExceptionType.INVALID_BOOK;
       }
     };
-    function init(module_code, module_name) {
+    function init2(module_code, module_name) {
       return {
         create: function(err_code, msg, nested) {
           return new URNException(module_code, module_name, err_code, msg, nested);
@@ -1485,7 +1490,7 @@ var require_exception = __commonJS({
         }
       };
     }
-    exports.init = init;
+    exports.init = init2;
   }
 });
 
@@ -1549,8 +1554,8 @@ var require_main = __commonJS({
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.urn_lib = exports.urn_exception = exports.urn_util = exports.urn_return = exports.urn_response = exports.urn_log = void 0;
-    var urn_log3 = __importStar(require_log2());
-    exports.urn_log = urn_log3;
+    var urn_log4 = __importStar(require_log2());
+    exports.urn_log = urn_log4;
     var urn_response = __importStar(require_response2());
     exports.urn_response = urn_response;
     var urn_return = __importStar(require_return2());
@@ -1561,7 +1566,7 @@ var require_main = __commonJS({
     exports.urn_exception = urn_exception3;
     var urn_lib;
     (function(urn_lib2) {
-      urn_lib2.log = urn_log3;
+      urn_lib2.log = urn_log4;
       urn_lib2.response = urn_response;
       urn_lib2.ureturn = urn_return;
       urn_lib2.util = urn_util3;
@@ -1596,10 +1601,34 @@ var require_dist = __commonJS({
   }
 });
 
-// src/generate.ts
-var generate_exports2 = {};
+// node_modules/caller/index.js
+var require_caller = __commonJS({
+  "node_modules/caller/index.js"(exports, module2) {
+    "use strict";
+    module2.exports = function(depth) {
+      var pst, stack, file, frame;
+      pst = Error.prepareStackTrace;
+      Error.prepareStackTrace = function(_, stack2) {
+        Error.prepareStackTrace = pst;
+        return stack2;
+      };
+      stack = new Error().stack;
+      depth = !depth || isNaN(depth) ? 1 : depth > stack.length - 2 ? stack.length - 2 : depth;
+      stack = stack.slice(depth + 1);
+      do {
+        frame = stack.shift();
+        file = frame && frame.getFileName();
+      } while (stack.length && file === "module.js");
+      return file;
+    };
+  }
+});
 
-// src/reg/register.ts
+// src/server/generate.ts
+var generate_exports2 = {};
+var import_urn_lib4 = __toESM(require_dist());
+
+// src/reg/server.ts
 var import_path = __toESM(require("path"));
 var import_caller = __toESM(require_caller());
 var import_urn_lib2 = __toESM(require_dist());
@@ -1756,7 +1785,7 @@ var atom_common_properties = {
     label: "_w",
     optional: true
   },
-  _deleted_from: {
+  _from: {
     type: "ID" /* ID */,
     label: "Deleted from",
     optional: true
@@ -1795,7 +1824,7 @@ function get_all_definitions() {
   return atom_book;
 }
 
-// src/reg/register.ts
+// src/reg/server.ts
 function register(atom_definition, atom_name) {
   let final_atom_name = `undefined_atom`;
   if (atom_name) {
@@ -1811,7 +1840,7 @@ function register(atom_definition, atom_name) {
   return final_atom_name;
 }
 
-// src/register.ts
+// src/server/register.ts
 for (const [atom_name, atom_def] of Object.entries(atom_book)) {
   register(atom_def, atom_name);
 }
@@ -1819,22 +1848,23 @@ for (const [atom_name, atom_def] of Object.entries(atom_book)) {
 // src/util/generate.ts
 var generate_exports = {};
 __export(generate_exports, {
+  init: () => init,
   process_params: () => process_params,
   save_schema: () => save_schema,
   schema: () => schema,
   schema_and_save: () => schema_and_save
 });
 var import_fs = __toESM(require("fs"));
+var import_dateformat = __toESM(require_dateformat());
 var import_urn_lib3 = __toESM(require_dist());
 var urn_exc2 = import_urn_lib3.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
+var atom_schema_file_path = "./node_modules/uranio-schema/dist/typ/atom.d.ts";
 var process_params = {
-  urn_command: `schema`,
-  urn_base_schema: `./types/schema.d.ts`,
-  urn_output_dir: `.`
+  urn_command: `schema`
 };
 function schema() {
   import_urn_lib3.urn_log.debug("Started generating uranio core schema...");
-  _init_generate();
+  init();
   const text = _generate_uranio_schema_text();
   import_urn_lib3.urn_log.debug(`Core schema generated.`);
   return text;
@@ -1845,22 +1875,27 @@ function schema_and_save() {
   import_urn_lib3.urn_log.debug(`Schema generated and saved.`);
 }
 function save_schema(text) {
-  import_fs.default.writeFileSync(`${process_params.urn_output_dir}/schema.d.ts`, text);
+  const now = (0, import_dateformat.default)(new Date(), `yyyymmddHHMMssl`);
+  const backup_path = `${atom_schema_file_path}.bkp.${now}`;
+  import_fs.default.copyFileSync(atom_schema_file_path, backup_path);
+  import_urn_lib3.urn_log.debug(`Copied backup file for atom schema in [${backup_path}].`);
+  import_fs.default.writeFileSync(atom_schema_file_path, text);
+  import_urn_lib3.urn_log.debug(`Update schema [${atom_schema_file_path}].`);
 }
-function _init_generate() {
-  process_params.urn_command = process.argv[0];
+function init() {
   for (const argv of process.argv) {
     const splitted = argv.split("=");
-    if (splitted[0] === "urn_base_schema" && typeof splitted[1] === "string" && splitted[1] !== "") {
-      process_params.urn_base_schema = splitted[1];
-    } else if (splitted[0] === "urn_output_dir" && typeof splitted[1] === "string" && splitted[1] !== "") {
-      process_params.urn_output_dir = splitted[1];
+    if (splitted[0] === "urn_command" && typeof splitted[1] === "string" && splitted[1] !== "") {
+      process_params.urn_command = splitted[1];
     }
   }
 }
+function _read_schema() {
+  return import_fs.default.readFileSync(atom_schema_file_path, { encoding: "utf8" });
+}
 function _generate_uranio_schema_text() {
   const txt = _generate_schema_text();
-  const data = import_fs.default.readFileSync(process_params.urn_base_schema, { encoding: "utf8" });
+  const data = _read_schema();
   const data_start = data.split("/** --uranio-generate-start */");
   const data_end = data_start[1].split("/** --uranio-generate-end */");
   let new_data = "";
@@ -1905,30 +1940,30 @@ function _generate_schema_text() {
   return txt;
 }
 function _generate_last_export() {
-  return "\n	export {};";
+  return "\nexport {};";
 }
 function _generate_atom_type(atom_names) {
   let text = "";
-  text += `	export type Atom<A extends AtomName> =
+  text += `export declare type Atom<A extends AtomName> =
 `;
   for (const atom_name of atom_names) {
-    text += `		A extends '${atom_name}' ? ${_atom_type_name(atom_name)} :
+    text += `	A extends '${atom_name}' ? ${_atom_type_name(atom_name)} :
 `;
   }
-  text += `		never
+  text += `	never
 
 `;
   return text;
 }
 function _generate_atom_shape_type(atom_names) {
   let text = "";
-  text += `	export type AtomShape<A extends AtomName> =
+  text += `export declare type AtomShape<A extends AtomName> =
 `;
   for (const atom_name of atom_names) {
-    text += `		A extends '${atom_name}' ? ${_atom_shape_type_name(atom_name)} :
+    text += `	A extends '${atom_name}' ? ${_atom_shape_type_name(atom_name)} :
 `;
   }
-  text += `		never
+  text += `	never
 
 `;
   return text;
@@ -1942,7 +1977,7 @@ function _atom_shape_type_name(atom_name) {
 function _generate_atom_types(atom_names) {
   let text = "";
   for (const atom_name of atom_names) {
-    text += `	type ${_atom_type_name(atom_name)} =`;
+    text += `declare type ${_atom_type_name(atom_name)} =`;
     text += ` AtomHardProperties & ${_atom_shape_type_name(atom_name)}
 
 `;
@@ -1980,7 +2015,7 @@ function _generate_bond_shape_depth(depth, atom_book2) {
     }
   }
   let text = "";
-  text += `	type BondShapeDepth${label}<A extends AtomName> =
+  text += `declare type BondShapeDepth${label}<A extends AtomName> =
 `;
   for (const [atom_name, atom_def] of Object.entries(atom_book2)) {
     const bonds = [];
@@ -1998,18 +2033,18 @@ function _generate_bond_shape_depth(depth, atom_book2) {
         bonds.push(`${key}${optional}: ${atom_molecule}<'${prop_def.atom}'${molecule_depth}>[]`);
       }
     }
-    const bond_obj = bonds.length > 0 ? `{${bonds.join(", ")}}` : "never";
-    text += `		A extends '${atom_name}' ? ${bond_obj} :
+    const bond_obj = bonds.length > 0 ? `{${bonds.join(", ")}}` : "Record<never, unknown>";
+    text += `	A extends '${atom_name}' ? ${bond_obj} :
 `;
   }
-  text += `		never
+  text += `	never
 
 `;
   return text;
 }
 function _generate_bond_properties(atom_book2) {
   let text = "";
-  text += `	type BondProperties<A extends AtomName> =
+  text += `declare type BondProperties<A extends AtomName> =
 `;
   for (const [atom_name, atom_def] of Object.entries(atom_book2)) {
     const bond_props = [];
@@ -2019,10 +2054,10 @@ function _generate_bond_properties(atom_book2) {
       }
     }
     const bond_prop_union = bond_props.length > 0 ? bond_props.map((n) => `'${n}'`).join(" | ") : "never";
-    text += `		A extends '${atom_name}' ? ${bond_prop_union} :
+    text += `	A extends '${atom_name}' ? ${bond_prop_union} :
 `;
   }
-  text += `		never
+  text += `	never
 
 `;
   return text;
@@ -2030,28 +2065,28 @@ function _generate_bond_properties(atom_book2) {
 function _generate_atom_shapes(atom_book2) {
   let text = "";
   for (const [atom_name, atom_def] of Object.entries(atom_book2)) {
-    text += `	type ${_atom_shape_type_name(atom_name)} = AtomCommonProperties & {
+    text += `declare type ${_atom_shape_type_name(atom_name)} = AtomCommonProperties & {
 `;
     for (const [key, prop_def] of Object.entries(atom_def.properties)) {
       const optional = prop_def.optional === true ? "?" : "";
       switch (prop_def.type) {
         case "ATOM" /* ATOM */: {
-          text += `		${key}${optional}: string
+          text += `	${key}${optional}: string
 `;
           break;
         }
         case "ATOM_ARRAY" /* ATOM_ARRAY */: {
-          text += `		${key}${optional}: string[]
+          text += `	${key}${optional}: string[]
 `;
           break;
         }
         default: {
-          text += `		${key}${optional}: ${real_book_property_type[prop_def.type]}
+          text += `	${key}${optional}: ${real_book_property_type[prop_def.type]}
 `;
         }
       }
     }
-    text += `	}
+    text += `}
 
 `;
   }
@@ -2059,11 +2094,15 @@ function _generate_atom_shapes(atom_book2) {
 }
 function _generate_union_names(type_name, names) {
   const union = names.length > 0 ? names.map((n) => `'${n}'`).join(" | ") : "never";
-  return `	export type ${type_name} = ${union}
+  return `export declare type ${type_name} = ${union}
 
 `;
 }
 
-// src/generate.ts
+// src/server/generate.ts
+import_urn_lib4.urn_log.init({
+  log_level: import_urn_lib4.urn_log.LogLevel.FUNCTION_DEBUG,
+  debug_info: false
+});
 generate_exports.schema_and_save();
 module.exports = __toCommonJS(generate_exports2);

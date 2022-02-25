@@ -23,7 +23,6 @@ export function register<A extends schema.AtomName>(atom_definition:types.Book.D
 		final_atom_name = atom_name;
 	}else{
 		const caller_path = caller();
-		// console.log(caller_path);
 		const dirname = path.dirname(caller_path);
 		final_atom_name =
 			dirname.split('/').slice(-1)[0].replace('.','_').replace('-','_');
