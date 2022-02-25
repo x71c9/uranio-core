@@ -3,9 +3,10 @@
  *
  * @packageDocumentation
  */
+import { Book as ClientBook } from '../typ/book_cln';
 import { Book } from '../typ/book';
 import { schema } from '../sch/server';
-export declare function add_definition<A extends schema.AtomName>(atom_name: A, atom_definition: Book.Definition<A>): Book;
+export declare function add_definition<A extends schema.AtomName>(atom_name: A, atom_definition: ClientBook.Definition): ClientBook;
 export declare function get_plural(atom_name: schema.AtomName): string;
 export declare function get_names(): schema.AtomName[];
 export declare function validate_name(atom_name: string): boolean;

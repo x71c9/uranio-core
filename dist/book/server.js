@@ -28,10 +28,7 @@ exports.has_property = exports.get_full_properties_definition = exports.get_cust
 const atoms_1 = require("../atoms");
 const client_book = __importStar(require("./client"));
 function add_definition(atom_name, atom_definition) {
-    const atom_book_def = {};
-    atom_book_def[atom_name] = atom_definition;
-    Object.assign(atoms_1.atom_book, { ...atom_book_def, ...atoms_1.atom_book });
-    return atoms_1.atom_book;
+    return client_book.add_definition(atom_name, atom_definition);
 }
 exports.add_definition = add_definition;
 function get_plural(atom_name) {
