@@ -101,7 +101,7 @@ function encrypt_property(prop_key, prop_def, prop_value) {
 }
 exports.encrypt_property = encrypt_property;
 function _has_all_properties(atom_name, atom_shape) {
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     const missin_props = [];
     for (const [k] of Object.entries(prop_defs)) {
         if (!atm_util.is_optional_property(atom_name, k) && !urn_lib_1.urn_util.object.has_key(atom_shape, k)) {
@@ -121,7 +121,7 @@ function _has_all_properties(atom_name, atom_shape) {
     return true;
 }
 function _has_no_other_properties(atom_name, partial_atom) {
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     const extra_props = [];
     for (const k in partial_atom) {
         if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
@@ -163,7 +163,7 @@ function _validate_hard_properties(molecule) {
  * Primitive properties are not of type: ATOM or ATOM_ARRAY
  */
 function _validate_primitive_properties(atom_name, partial_atom) {
-    const props = book.get_custom_property_definitions(atom_name);
+    const props = book.get_custom_properties_definition(atom_name);
     let k;
     for (k in partial_atom) {
         let prop_def = undefined;
@@ -198,7 +198,7 @@ function _validate_primitive_properties(atom_name, partial_atom) {
     return true;
 }
 function _validate_partial_atom_bond_properties(atom_name, partial_atom) {
-    const props = book.get_custom_property_definitions(atom_name);
+    const props = book.get_custom_properties_definition(atom_name);
     let k;
     for (k in partial_atom) {
         let prop_def = undefined;
@@ -232,7 +232,7 @@ function _validate_partial_atom_bond_properties(atom_name, partial_atom) {
     return true;
 }
 function _validate_molecule_bond_properties(atom_name, molecule, depth) {
-    const props = book.get_custom_property_definitions(atom_name);
+    const props = book.get_custom_properties_definition(atom_name);
     const bond_keys = atm_keys.get_bond(atom_name);
     for (const k of bond_keys) {
         let prop_def = undefined;

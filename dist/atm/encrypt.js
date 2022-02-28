@@ -53,7 +53,7 @@ async function property(atom_name, prop_key, prop_value) {
 }
 exports.property = property;
 async function properties(atom_name, atom) {
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     let k;
     for (k in atom) {
         if (urn_lib_1.urn_util.object.has_key(prop_defs, k)) {

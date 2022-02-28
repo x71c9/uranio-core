@@ -32,7 +32,6 @@ export namespace Book {
 	
 	export type Definition<A extends schema.AtomName> =
 		book_cln.Book.Definition & {
-		security?: SecurityType | Definition.Security
 		bll?: Definition.Bll<A>
 	}
 	
@@ -91,12 +90,6 @@ export namespace Book {
 				export type Atom = book_cln.Book.Definition.Property.Validation.Atom;
 			}
 			
-		}
-		
-		export type Security = {
-			type: SecurityType,
-			_r?: PropertyType.ID | PermissionType.NOBODY
-			_w?: PropertyType.ID | PermissionType.PUBLIC
 		}
 		
 	}

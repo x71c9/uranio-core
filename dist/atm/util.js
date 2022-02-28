@@ -48,7 +48,7 @@ function molecule_to_atom(atom_name, molecule) {
 }
 exports.molecule_to_atom = molecule_to_atom;
 function get_subatom_name(atom_name, atom_key) {
-    const atom_def = book.get_custom_property_definitions(atom_name);
+    const atom_def = book.get_custom_properties_definition(atom_name);
     const key_string = atom_key;
     const prop = atom_def[key_string];
     if (prop) {

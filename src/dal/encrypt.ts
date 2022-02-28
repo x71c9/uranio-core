@@ -74,7 +74,7 @@ export class EncryptDAL<A extends schema.AtomName> extends ValidateDAL<A>{
 		id:string,
 		atom:schema.Atom<A> | Partial<schema.AtomShape<A>>
 	):Promise<schema.Atom<A> | Partial<schema.AtomShape<A>>>{
-		const all_props = book.get_full_properties_definition(this.atom_name);
+		const all_props = book.get_properties_definition(this.atom_name);
 		let k:keyof schema.Atom<A>;
 		for(k in atom){
 			const prop_def = all_props[k as string];

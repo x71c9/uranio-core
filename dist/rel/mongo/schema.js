@@ -35,7 +35,7 @@ const atm_util = __importStar(require("../../atm/util"));
 const book = __importStar(require("../../book/server"));
 const book_1 = require("../../typ/book");
 function generate_mongo_schema_def(atom_name) {
-    const properties = book.get_full_properties_definition(atom_name);
+    const properties = book.get_properties_definition(atom_name);
     let mongoose_schema_def = {};
     for (const [k, v] of Object.entries(properties)) {
         if (k === '_id')

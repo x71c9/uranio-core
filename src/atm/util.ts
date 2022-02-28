@@ -37,7 +37,7 @@ export function molecule_to_atom<A extends schema.AtomName, D extends schema.Dep
 
 export function get_subatom_name<A extends schema.AtomName>(atom_name:A ,atom_key:string)
 		:schema.AtomName{
-	const atom_def = book.get_custom_property_definitions(atom_name);
+	const atom_def = book.get_custom_properties_definition(atom_name);
 	const key_string = atom_key as string;
 	const prop = atom_def[key_string];
 	if(prop){

@@ -24,13 +24,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.has_property = exports.get_full_properties_definition = exports.get_custom_property_definitions = exports.get_property_definition = exports.get_definition = exports.get_all_definitions = exports.validate_name = exports.get_names = exports.get_plural = exports.add_definition = void 0;
+exports.has_property = exports.get_properties_definition = exports.get_custom_properties_definition = exports.get_property_definition = exports.get_definition = exports.get_all_definitions = exports.validate_name = exports.get_names = exports.get_plural = exports.add_bll_definition = exports.add_definition = void 0;
 const atoms_1 = require("../atoms");
 const client_book = __importStar(require("./client"));
 function add_definition(atom_name, atom_definition) {
     return client_book.add_definition(atom_name, atom_definition);
 }
 exports.add_definition = add_definition;
+function add_bll_definition(atom_name, bll_definition) {
+    const atom_book = get_all_definitions();
+    const atom_def = get_definition(atom_name);
+    atom_def.bll = bll_definition;
+    return atom_book;
+}
+exports.add_bll_definition = add_bll_definition;
 function get_plural(atom_name) {
     return client_book.get_plural(atom_name);
 }
@@ -55,14 +62,14 @@ function get_property_definition(atom_name, property_name) {
     return client_book.get_property_definition(atom_name, property_name);
 }
 exports.get_property_definition = get_property_definition;
-function get_custom_property_definitions(atom_name) {
-    return client_book.get_custom_property_definitions(atom_name);
+function get_custom_properties_definition(atom_name) {
+    return client_book.get_custom_properties_definition(atom_name);
 }
-exports.get_custom_property_definitions = get_custom_property_definitions;
-function get_full_properties_definition(atom_name) {
-    return client_book.get_full_properties_definition(atom_name);
+exports.get_custom_properties_definition = get_custom_properties_definition;
+function get_properties_definition(atom_name) {
+    return client_book.get_properties_definition(atom_name);
 }
-exports.get_full_properties_definition = get_full_properties_definition;
+exports.get_properties_definition = get_properties_definition;
 function has_property(atom_name, key) {
     return client_book.has_property(atom_name, key);
 }

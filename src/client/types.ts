@@ -6,7 +6,7 @@
  * @packageDocumentation
  */
 
-export * from '../typ/auth';
+export * from '../typ/auth_cln';
 
 export * from '../typ/book_cln';
 

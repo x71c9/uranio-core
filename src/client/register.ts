@@ -5,5 +5,4 @@
  */
 
 // export * from './atoms/[atom_name]/index.ts';
-// export * from './atoms/[atom_name]/bll.ts';
 export {};

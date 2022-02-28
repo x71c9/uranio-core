@@ -23,6 +23,7 @@
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"paths": {
+			"uranio": ["./src/server"]
 		},
 		"skipLibCheck": true,
 		"sourceMap": true,

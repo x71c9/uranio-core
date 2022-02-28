@@ -15,7 +15,7 @@ import {atom_common_properties} from '../stc/client';
 export function get_optional<A extends schema.AtomName>(atom_name:A)
 		:Set<keyof schema.Atom<A>>{
 	const optional_keys = new Set<keyof schema.Atom<A>>();
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.get_custom_properties_definition(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
 		if(prop.optional && prop.optional === true){
@@ -35,7 +35,7 @@ export function get_optional<A extends schema.AtomName>(atom_name:A)
 export function get_hidden<A extends schema.AtomName, D extends schema.Depth = 0>(atom_name:A)
 		:Set<keyof schema.Molecule<A,D>>{
 	const hidden_keys = new Set<keyof schema.Molecule<A,D>>();
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.get_custom_properties_definition(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
 		if(prop.hidden && prop.hidden === true){
@@ -55,7 +55,7 @@ export function get_hidden<A extends schema.AtomName, D extends schema.Depth = 0
 export function get_encrypted<A extends schema.AtomName>(atom_name:A)
 		:Set<keyof schema.Atom<A>>{
 	const encrypt_keys = new Set<keyof schema.Atom<A>>();
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.get_custom_properties_definition(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
 		if(prop.type && prop.type === PropertyType.ENCRYPTED){
@@ -77,7 +77,7 @@ export function get_encrypted<A extends schema.AtomName>(atom_name:A)
 export function get_unique<A extends schema.AtomName>(atom_name:A)
 		:Set<keyof schema.AtomShape<A>>{
 	const unique_keys = new Set<keyof schema.AtomShape<A>>();
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.get_custom_properties_definition(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
 		if(prop.unique && prop.unique === true){
@@ -97,7 +97,7 @@ export function get_unique<A extends schema.AtomName>(atom_name:A)
 export function get_bond<A extends schema.AtomName, D extends schema.Depth = 0>(atom_name:A)
 		:Set<keyof schema.Molecule<A,D>>{
 	const subatom_keys = new Set<keyof schema.Molecule<A,D>>();
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.get_custom_properties_definition(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
 		if(prop.type && prop.type === PropertyType.ATOM || prop.type === PropertyType.ATOM_ARRAY){
@@ -110,7 +110,7 @@ export function get_bond<A extends schema.AtomName, D extends schema.Depth = 0>(
 export function get_bond_array<A extends schema.AtomName>(atom_name:A)
 		:Set<keyof schema.AtomShape<A>>{
 	const subatom_keys = new Set<keyof schema.AtomShape<A>>();
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.get_custom_properties_definition(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
 		if(prop.type === PropertyType.ATOM_ARRAY){
@@ -123,7 +123,7 @@ export function get_bond_array<A extends schema.AtomName>(atom_name:A)
 export function get_bond_non_array<A extends schema.AtomName>(atom_name:A)
 		:Set<keyof schema.AtomShape<A>>{
 	const subatom_keys = new Set<keyof schema.AtomShape<A>>();
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.get_custom_properties_definition(atom_name);
 	for(const k in prop_defs){
 		const prop:Book.Definition.Property = prop_defs[k]!;
 		if(prop.type === PropertyType.ATOM){

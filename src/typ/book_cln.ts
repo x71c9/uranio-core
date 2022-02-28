@@ -48,11 +48,18 @@ export namespace Book {
 	export type Definition = {
 		properties: Definition.Properties
 		authenticate?: boolean
+		security?: SecurityType | Definition.Security
 		connection?: ConnectionName
 		plural?: string
 	}
 	
 	export namespace Definition {
+		
+		export type Security = {
+			type: SecurityType,
+			_r?: PropertyType.ID | PermissionType.NOBODY
+			_w?: PropertyType.ID | PermissionType.PUBLIC
+		}
 		
 		export type Properties = {
 			[k:string]: Property

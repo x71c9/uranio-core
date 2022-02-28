@@ -172,7 +172,7 @@ function validate_options<A extends schema.AtomName, D extends schema.Depth>(opt
 				if(options.sort[0] === '+' || options.sort[0] === '-'){
 					sort_value = sort_value.substring(1, options.sort.length);
 				}
-				const prop_defs = book.get_custom_property_definitions(atom_name);
+				const prop_defs = book.get_custom_properties_definition(atom_name);
 				if(!urn_util.object.has_key(prop_defs, sort_value)){
 					const err_msg = `Sort value not valid \`${options.sort}\`.`;
 					throw urn_exc.create_invalid_request('OPTIONS_INVALID_SORT_VAL', err_msg);
