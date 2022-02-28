@@ -140,7 +140,7 @@ function _validate_auth_atoms(){
 	const atom_defs = book.get_all_definitions();
 	for(const [atom_name, atom_def] of Object.entries(atom_defs)){
 		if(atom_def && atom_def.authenticate === true){
-			const properties = book.get_full_properties_definition(atom_name as schema.AtomName);
+			const properties = book.get_properties_definition(atom_name as schema.AtomName);
 			if(typeof properties.email !== 'object'){
 				throw urn_exc.create_invalid_book(
 					`INVALID_AUTH_ATOM_MISSING_EMAIL`,

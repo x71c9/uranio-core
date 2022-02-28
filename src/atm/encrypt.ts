@@ -42,7 +42,7 @@ export async function property<A extends schema.AtomName, D extends schema.Depth
 export async function properties<A extends schema.AtomName>(atom_name:A, atom:schema.AtomShape<A>):Promise<schema.AtomShape<A>>
 export async function properties<A extends schema.AtomName>(atom_name:A, atom:Partial<schema.AtomShape<A>>):Promise<Partial<schema.AtomShape<A>>>
 export async function properties<A extends schema.AtomName>(atom_name:A, atom:schema.AtomShape<A> | Partial<schema.AtomShape<A>>):Promise<schema.AtomShape<A> | Partial<schema.AtomShape<A>>>{
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.get_custom_properties_definition(atom_name);
 	let k:keyof schema.AtomShape<A>;
 	for(k in atom){
 		if(urn_util.object.has_key(prop_defs, k)){

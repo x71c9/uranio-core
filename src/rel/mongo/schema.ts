@@ -20,7 +20,7 @@ import {Book, PropertyType} from '../../typ/book';
 
 export function generate_mongo_schema_def<A extends schema.AtomName>(atom_name:A)
 		:mongoose.SchemaDefinition{
-	const properties = book.get_full_properties_definition(atom_name);
+	const properties = book.get_properties_definition(atom_name);
 	let mongoose_schema_def = {};
 	for(const [k,v] of Object.entries(properties)){
 		if(k === '_id')

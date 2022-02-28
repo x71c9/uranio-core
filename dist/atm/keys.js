@@ -30,7 +30,7 @@ const book = __importStar(require("../book/client"));
 const client_1 = require("../stc/client");
 function get_optional(atom_name) {
     const optional_keys = new Set();
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
         if (prop.optional && prop.optional === true) {
@@ -49,7 +49,7 @@ function get_optional(atom_name) {
 exports.get_optional = get_optional;
 function get_hidden(atom_name) {
     const hidden_keys = new Set();
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
         if (prop.hidden && prop.hidden === true) {
@@ -68,7 +68,7 @@ function get_hidden(atom_name) {
 exports.get_hidden = get_hidden;
 function get_encrypted(atom_name) {
     const encrypt_keys = new Set();
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
         if (prop.type && prop.type === book_cln_1.PropertyType.ENCRYPTED) {
@@ -89,7 +89,7 @@ function get_encrypted(atom_name) {
 exports.get_encrypted = get_encrypted;
 function get_unique(atom_name) {
     const unique_keys = new Set();
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
         if (prop.unique && prop.unique === true) {
@@ -108,7 +108,7 @@ function get_unique(atom_name) {
 exports.get_unique = get_unique;
 function get_bond(atom_name) {
     const subatom_keys = new Set();
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
         if (prop.type && prop.type === book_cln_1.PropertyType.ATOM || prop.type === book_cln_1.PropertyType.ATOM_ARRAY) {
@@ -120,7 +120,7 @@ function get_bond(atom_name) {
 exports.get_bond = get_bond;
 function get_bond_array(atom_name) {
     const subatom_keys = new Set();
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
         if (prop.type === book_cln_1.PropertyType.ATOM_ARRAY) {
@@ -132,7 +132,7 @@ function get_bond_array(atom_name) {
 exports.get_bond_array = get_bond_array;
 function get_bond_non_array(atom_name) {
     const subatom_keys = new Set();
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     for (const k in prop_defs) {
         const prop = prop_defs[k];
         if (prop.type === book_cln_1.PropertyType.ATOM) {

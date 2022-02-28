@@ -40,10 +40,16 @@ export declare namespace Book {
     type Definition = {
         properties: Definition.Properties;
         authenticate?: boolean;
+        security?: SecurityType | Definition.Security;
         connection?: ConnectionName;
         plural?: string;
     };
     namespace Definition {
+        type Security = {
+            type: SecurityType;
+            _r?: PropertyType.ID | PermissionType.NOBODY;
+            _w?: PropertyType.ID | PermissionType.PUBLIC;
+        };
         type Properties = {
             [k: string]: Property;
         };

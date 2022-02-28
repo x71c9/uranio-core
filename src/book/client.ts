@@ -20,9 +20,8 @@ export function add_definition<A extends schema.AtomName>(
 	atom_name:A,
 	atom_definition:Book.Definition
 ):Book{
-	const atom_book_def = {} as Book;
-	atom_book_def[atom_name] = atom_definition;
-	Object.assign(atom_book, {...atom_book_def, ...atom_book});
+	const atom_book = get_all_definitions() as Book;
+	atom_book[atom_name] = atom_definition;
 	return atom_book;
 }
 
@@ -63,7 +62,7 @@ export function get_property_definition<A extends schema.AtomName>(
 	atom_name:A,
 	property_name:keyof Book.Definition.Properties
 ):Book.Definition.Property{
-	const all_prop_def = get_full_properties_definition(atom_name);
+	const all_prop_def = get_properties_definition(atom_name);
 	if(!urn_util.object.has_key(all_prop_def, property_name)){
 		throw urn_exc.create(
 			'INVALID_PROPERTY_NAME',
@@ -73,17 +72,17 @@ export function get_property_definition<A extends schema.AtomName>(
 	return all_prop_def[property_name];
 }
 
-export function get_custom_property_definitions<A extends schema.AtomName>(
+export function get_custom_properties_definition<A extends schema.AtomName>(
 	atom_name:A
 ):Book.Definition.Properties{
 	const atom_def = (atom_book as Book)[atom_name] as unknown as Book.Definition;
 	return atom_def.properties as Book.Definition.Properties;
 }
 
-export function get_full_properties_definition<A extends schema.AtomName>(
+export function get_properties_definition<A extends schema.AtomName>(
 	atom_name:A
 ):Book.Definition.Properties{
-	const custom_defs = get_custom_property_definitions(atom_name);
+	const custom_defs = get_custom_properties_definition(atom_name);
 	const prop_defs = {
 		...atom_hard_properties,
 		...atom_common_properties,

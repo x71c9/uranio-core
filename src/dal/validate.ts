@@ -274,7 +274,7 @@ function _check_ids<A extends schema.AtomName>(
 	partial_atom:Partial<schema.AtomShape<A>>,
 	is_valid_id: (id:string) => boolean
 ):true{
-	const props = book.get_custom_property_definitions(atom_name);
+	const props = book.get_custom_properties_definition(atom_name);
 	let k:keyof typeof partial_atom;
 	for (k in partial_atom) {
 		let prop_def = undefined;

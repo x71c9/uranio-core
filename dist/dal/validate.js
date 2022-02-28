@@ -252,7 +252,7 @@ ValidateDAL = __decorate([
 ], ValidateDAL);
 exports.ValidateDAL = ValidateDAL;
 function _check_ids(atom_name, partial_atom, is_valid_id) {
-    const props = book.get_custom_property_definitions(atom_name);
+    const props = book.get_custom_properties_definition(atom_name);
     let k;
     for (k in partial_atom) {
         let prop_def = undefined;

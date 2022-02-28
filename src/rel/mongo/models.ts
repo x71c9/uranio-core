@@ -151,7 +151,7 @@ function _add_schema_middleware<A extends schema.AtomName>(
 ):mongoose.Schema{
 	
 	// DELETE ON CASCADE
-	const prop_defs = book.get_custom_property_definitions(atom_name);
+	const prop_defs = book.get_custom_properties_definition(atom_name);
 	const atom_by_cascade_keys = new Map<string, schema.AtomName>();
 	for(const [k,v] of Object.entries(prop_defs)){
 		if(v.type === PropertyType.ATOM || v.type === PropertyType.ATOM_ARRAY){

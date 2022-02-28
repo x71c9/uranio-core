@@ -139,7 +139,7 @@ async function _delete_cascade(conn_name, atom_by_cascade_keys, document) {
 }
 function _add_schema_middleware(atom_name, conn_name, mongo_schema) {
     // DELETE ON CASCADE
-    const prop_defs = book.get_custom_property_definitions(atom_name);
+    const prop_defs = book.get_custom_properties_definition(atom_name);
     const atom_by_cascade_keys = new Map();
     for (const [k, v] of Object.entries(prop_defs)) {
         if (v.type === book_1.PropertyType.ATOM || v.type === book_1.PropertyType.ATOM_ARRAY) {
