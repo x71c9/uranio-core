@@ -4,5 +4,5 @@
  * @packageDocumentation
  */
 
-// export * from './atoms/[atom_name]/index.ts';
+// export * from '../atoms/client/[atom_name]/index';
 export {};

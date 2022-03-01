@@ -4,6 +4,6 @@
  * @packageDocumentation
  */
 
-// export * from './atoms/[atom_name]/index.ts';
-// export * from './atoms/[atom_name]/bll.ts';
+// export * from '../atoms/server/[atom_name]/index';
+// export * from '../atoms/server/[atom_name]/bll';
 export {};
