@@ -4,7 +4,7 @@
 	"description": "Uranio core",
 	"main": "dist/index.js",
 	"bin":{
-		"uranio-core:generate-schema": "dist/server/generate.js"
+		"uranio-core-generate-schema": "dist/server/generate.js"
 	},
 	"exports": {
 		".": "./dist/server.js",
