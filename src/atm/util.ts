@@ -61,11 +61,11 @@ export function get_subatom_name<A extends schema.AtomName>(atom_name:A ,atom_ke
 	}
 }
 
-export function is_atom<A extends schema.AtomName>(atom_name:A, atom:schema.Atom<A>)
+export function is_atom<A extends schema.AtomName>(atom_name:A, atom:unknown)
 		:atom is schema.Atom<A>{
 	const subatom_keys = keys.get_bond(atom_name);
 	for(const subkey of subatom_keys){
-		const value = atom[subkey];
+		const value = (atom as schema.Atom<A>)[subkey];
 		if(Array.isArray(value)){
 			if(typeof value[0] === 'object'){
 				return false;
@@ -77,11 +77,11 @@ export function is_atom<A extends schema.AtomName>(atom_name:A, atom:schema.Atom
 	return true;
 }
 
-export function is_molecule<A extends schema.AtomName, D extends schema.Depth>(atom_name:A, molecule:schema.Molecule<A,D>)
+export function is_molecule<A extends schema.AtomName, D extends schema.Depth>(atom_name:A, molecule:unknown)
 		:molecule is schema.Molecule<A,D>{
 	const subatom_keys = keys.get_bond(atom_name) as Set<keyof schema.Molecule<A,D>>;
 	for(const subkey of subatom_keys){
-		const value = molecule[subkey];
+		const value = (molecule as schema.Molecule<A,D>)[subkey];
 		if(Array.isArray(value)){
 			if(typeof value[0] === 'string'){
 				return false;

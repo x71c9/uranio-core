@@ -6,8 +6,8 @@
 import { schema } from '../sch/client';
 export declare function molecule_to_atom<A extends schema.AtomName, D extends schema.Depth>(atom_name: A, molecule: schema.Molecule<A, D>): schema.Atom<A>;
 export declare function get_subatom_name<A extends schema.AtomName>(atom_name: A, atom_key: string): schema.AtomName;
-export declare function is_atom<A extends schema.AtomName>(atom_name: A, atom: schema.Atom<A>): atom is schema.Atom<A>;
-export declare function is_molecule<A extends schema.AtomName, D extends schema.Depth>(atom_name: A, molecule: schema.Molecule<A, D>): molecule is schema.Molecule<A, D>;
+export declare function is_atom<A extends schema.AtomName>(atom_name: A, atom: unknown): atom is schema.Atom<A>;
+export declare function is_molecule<A extends schema.AtomName, D extends schema.Depth>(atom_name: A, molecule: unknown): molecule is schema.Molecule<A, D>;
 export declare function is_auth_atom_name<A extends schema.AtomName>(atom_name: A): boolean;
 export declare function is_auth_atom<A extends schema.AuthName>(atom: unknown): atom is schema.AuthAtom<A>;
 export declare function hide_hidden_properties<A extends schema.AtomName, D extends schema.Depth>(atom_name: A, molecules: schema.Molecule<A, D>): schema.Molecule<A, D>;
