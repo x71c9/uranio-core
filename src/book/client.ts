@@ -16,9 +16,9 @@ import {Book} from '../typ/book_cln';
 
 import {atom_hard_properties, atom_common_properties} from '../stc/client';
 
-export function add_definition<A extends schema.AtomName>(
-	atom_name:A,
-	atom_definition:Book.Definition
+export function add_definition(
+	atom_name: string,
+	atom_definition: Book.Definition
 ):Book{
 	const atom_book = get_all_definitions() as Book;
 	atom_book[atom_name] = atom_definition;

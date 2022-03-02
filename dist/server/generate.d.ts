@@ -1,6 +1,7 @@
+#!/usr/bin/env node
 /**
  * Core generate module
  *
  * @packageDocumentation
  */
-export {};
+export * from './register';

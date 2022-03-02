@@ -6,7 +6,7 @@
 import { Book as ClientBook } from '../typ/book_cln';
 import { Book } from '../typ/book';
 import { schema } from '../sch/server';
-export declare function add_definition<A extends schema.AtomName>(atom_name: A, atom_definition: ClientBook.Definition): ClientBook;
+export declare function add_definition(atom_name: string, atom_definition: ClientBook.Definition): ClientBook;
 export declare function add_bll_definition<A extends schema.AtomName>(atom_name: A, bll_definition: Book.Definition.Bll<A>): Book;
 export declare function get_plural(atom_name: schema.AtomName): string;
 export declare function get_names(): schema.AtomName[];

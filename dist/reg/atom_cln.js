@@ -33,6 +33,13 @@ const caller_1 = __importDefault(require("caller"));
 const urn_lib_1 = require("urn-lib");
 const book = __importStar(require("../book/client"));
 function atom(atom_definition, atom_name) {
+    const final_atom_name = _get_atom_name(atom_name);
+    book.add_definition(final_atom_name, atom_definition);
+    urn_lib_1.urn_log.debug(`Client atom [${final_atom_name}] registered.`);
+    return final_atom_name;
+}
+exports.atom = atom;
+function _get_atom_name(atom_name) {
     let final_atom_name = `undefined_atom`;
     if (atom_name) {
         final_atom_name = atom_name;
@@ -43,10 +50,6 @@ function atom(atom_definition, atom_name) {
         final_atom_name =
             dirname.split('/').slice(-1)[0].replace('.', '_').replace('-', '_');
     }
-    // urn_log.debug(`Registering atom [${final_atom_name}]...`);
-    book.add_definition(final_atom_name, atom_definition);
-    urn_lib_1.urn_log.debug(`Atom [${final_atom_name}] registered.`);
     return final_atom_name;
 }
-exports.atom = atom;
 //# sourceMappingURL=atom_cln.js.map

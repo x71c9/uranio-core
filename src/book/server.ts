@@ -14,9 +14,9 @@ import {atom_book} from '../atoms';
 
 import * as client_book from './client';
 
-export function add_definition<A extends schema.AtomName>(
-	atom_name:A,
-	atom_definition:ClientBook.Definition
+export function add_definition(
+	atom_name: string,
+	atom_definition: ClientBook.Definition
 ):ClientBook{
 	return client_book.add_definition(atom_name, atom_definition);
 }
