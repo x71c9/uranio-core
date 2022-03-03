@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-export * from './client/register';
+// export * from './client/register';
 
 import * as urn_core_client from './client/main';
 
