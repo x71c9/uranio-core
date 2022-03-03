@@ -4,10 +4,6 @@
  * @packageDocumentation
  */
 
-// import schema from 'uranio-schema';
-
-// import {schema} from './sch/index';
-
 import {PropertyType, SecurityType, PermissionType} from './typ/book_cln';
 
 export const atom_book = {

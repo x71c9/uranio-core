@@ -12,7 +12,7 @@ import {schema} from '../sch/server';
 
 import {core_config} from '../conf/defaults';
 
-import {atom_book} from '../atoms';
+import * as required from '../req/server';
 
 import * as register from '../reg/server';
 
@@ -28,17 +28,19 @@ import * as bll from '../bll/server';
 
 import * as log from '../log/server';
 
-export function init(config?:types.Configuration)
+export function init(config?:types.Configuration, register_required=true)
 		:void{
 	
 	log.init(urn_log.defaults);
-	
-	_register_required_atoms();
 	
 	if(typeof config === 'undefined'){
 		conf.set_from_env(core_config);
 	}else{
 		conf.set(core_config, config);
+	}
+	
+	if(register_required){
+		_register_required_atoms();
 	}
 	
 	_validate_core_variables();
@@ -57,7 +59,8 @@ export function init(config?:types.Configuration)
 }
 
 function _register_required_atoms(){
-	for(const [atom_name, atom_def] of Object.entries(atom_book)){
+	const required_atoms = required.get();
+	for(const [atom_name, atom_def] of Object.entries(required_atoms)){
 		register.atom(atom_def, atom_name);
 	}
 }

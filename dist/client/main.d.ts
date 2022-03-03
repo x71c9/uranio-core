@@ -17,5 +17,7 @@ import * as conf from '../conf/client';
 export { conf };
 import * as register from '../reg/client';
 export { register };
+import * as required from '../req/server';
+export { required };
 export * from '../sch/client';
 export * from '../init/client';
