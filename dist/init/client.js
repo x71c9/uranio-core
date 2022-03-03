@@ -27,10 +27,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = void 0;
 const urn_lib_1 = require("urn-lib");
 const defaults_1 = require("../client/defaults");
+const atoms_1 = require("../atoms");
+const register = __importStar(require("../reg/server"));
 const conf = __importStar(require("../conf/client"));
 const log = __importStar(require("../log/client"));
 function init(config) {
     log.init(urn_lib_1.urn_log.defaults);
+    _register_required_atoms();
     if (!config) {
         conf.set_from_env(defaults_1.core_client_config);
     }
@@ -43,4 +46,9 @@ function init(config) {
     conf.set_initialize(true);
 }
 exports.init = init;
+function _register_required_atoms() {
+    for (const [atom_name, atom_def] of Object.entries(atoms_1.atom_book)) {
+        register.atom(atom_def, atom_name);
+    }
+}
 //# sourceMappingURL=client.js.map
