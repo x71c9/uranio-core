@@ -28,7 +28,7 @@ exports.init = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('INIT_CORE_MODULE', `Core init module`);
 const defaults_1 = require("../conf/defaults");
-const atoms_1 = require("../atoms");
+const required = __importStar(require("../req/server"));
 const register = __importStar(require("../reg/server"));
 const types = __importStar(require("../server/types"));
 const conf = __importStar(require("../conf/server"));
@@ -36,14 +36,16 @@ const book = __importStar(require("../book/server"));
 const db = __importStar(require("../db/server"));
 const bll = __importStar(require("../bll/server"));
 const log = __importStar(require("../log/server"));
-function init(config) {
+function init(config, register_required = true) {
     log.init(urn_lib_1.urn_log.defaults);
-    _register_required_atoms();
     if (typeof config === 'undefined') {
         conf.set_from_env(defaults_1.core_config);
     }
     else {
         conf.set(defaults_1.core_config, config);
+    }
+    if (register_required) {
+        _register_required_atoms();
     }
     _validate_core_variables();
     _validate_core_book();
@@ -56,7 +58,8 @@ function init(config) {
 }
 exports.init = init;
 function _register_required_atoms() {
-    for (const [atom_name, atom_def] of Object.entries(atoms_1.atom_book)) {
+    const required_atoms = required.get();
+    for (const [atom_name, atom_def] of Object.entries(required_atoms)) {
         register.atom(atom_def, atom_name);
     }
 }

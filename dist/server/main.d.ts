@@ -5,7 +5,6 @@
  */
 import * as types from './types';
 export { types };
-export * from '../sch/server';
 import * as bll from '../bll/server';
 export { bll };
 import * as atom from '../atm/server';
@@ -24,4 +23,7 @@ import * as stc from '../stc/server';
 export { stc };
 import * as register from '../reg/server';
 export { register };
+import * as required from '../req/server';
+export { required };
+export * from '../sch/server';
 export * from '../init/server';

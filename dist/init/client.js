@@ -27,27 +27,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = void 0;
 const urn_lib_1 = require("urn-lib");
 const defaults_1 = require("../client/defaults");
-const atoms_1 = require("../atoms");
+const required = __importStar(require("../req/server"));
 const register = __importStar(require("../reg/server"));
 const conf = __importStar(require("../conf/client"));
 const log = __importStar(require("../log/client"));
-function init(config) {
+function init(config, register_required = true) {
     log.init(urn_lib_1.urn_log.defaults);
-    _register_required_atoms();
     if (!config) {
         conf.set_from_env(defaults_1.core_client_config);
     }
     else {
         conf.set(defaults_1.core_client_config, config);
     }
-    if (config && typeof config.log_level === 'number') {
-        urn_lib_1.urn_log.defaults.log_level = config.log_level;
+    if (register_required) {
+        _register_required_atoms();
     }
     conf.set_initialize(true);
+    urn_lib_1.urn_log.defaults.log_level = conf.get(`log_level`);
 }
 exports.init = init;
 function _register_required_atoms() {
-    for (const [atom_name, atom_def] of Object.entries(atoms_1.atom_book)) {
+    const required_atoms = required.get();
+    for (const [atom_name, atom_def] of Object.entries(required_atoms)) {
         register.atom(atom_def, atom_name);
     }
 }
