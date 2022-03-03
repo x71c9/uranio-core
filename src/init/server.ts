@@ -12,6 +12,10 @@ import {schema} from '../sch/server';
 
 import {core_config} from '../conf/defaults';
 
+import {atom_book} from '../atoms';
+
+import * as register from '../reg/server';
+
 import * as types from '../server/types';
 
 import * as conf from '../conf/server';
@@ -28,6 +32,8 @@ export function init(config?:types.Configuration)
 		:void{
 	
 	log.init(urn_log.defaults);
+	
+	_register_required_atoms();
 	
 	if(typeof config === 'undefined'){
 		conf.set_from_env(core_config);
@@ -48,6 +54,12 @@ export function init(config?:types.Configuration)
 		_create_superuser();
 	}
 	
+}
+
+function _register_required_atoms(){
+	for(const [atom_name, atom_def] of Object.entries(atom_book)){
+		register.atom(atom_def, atom_name);
+	}
 }
 
 async function _create_superuser(){
