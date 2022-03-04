@@ -42,7 +42,7 @@
 		"@types/express-fileupload": "^1.2.2",
 		"@types/jsonwebtoken": "^8.5.8",
 		"esbuild": "^0.14.22",
-		"uranio-dev": "git+ssh://git@github.com/nbl7/uranio-dev.git"
+		"uranio-dev": "git+ssh://git@github.com/nbl7/uranio-dev.git#master"
 	},
 	"dependencies": {
 		"aws-sdk": "^2.1066.0",
@@ -53,7 +53,7 @@
 		"express-fileupload": "^1.2.1",
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^5.11.15",
-		"uranio-schema": "ssh://git@github.com/nbl7/uranio-schema.git",
-		"urn-lib": "git+ssh://git@github.com/nbl7/uranio-lib.git"
+		"uranio-schema": "ssh://git@github.com/nbl7/uranio-schema.git#master",
+		"urn-lib": "git+ssh://git@github.com/nbl7/uranio-lib.git#master"
 	}
 }
