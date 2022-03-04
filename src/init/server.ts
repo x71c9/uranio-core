@@ -28,14 +28,13 @@ import * as bll from '../bll/server';
 
 import * as log from '../log/server';
 
-export function init(config?:types.Configuration, register_required=true)
+export function init(config?:Partial<types.Configuration>, register_required=true)
 		:void{
 	
 	log.init(urn_log.defaults);
 	
-	if(typeof config === 'undefined'){
-		conf.set_from_env(core_config);
-	}else{
+	conf.set_from_env(core_config);
+	if(config){
 		conf.set(core_config, config);
 	}
 	
