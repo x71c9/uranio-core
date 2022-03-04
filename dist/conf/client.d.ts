@@ -10,4 +10,4 @@ export declare function get<k extends keyof Required<types.ClientConfiguration>>
 export declare function is_initialized(): boolean;
 export declare function set_initialize(is_initialized: boolean): void;
 export declare function set_from_env(repo_config: Required<types.ClientConfiguration>): void;
-export declare function set(repo_config: Required<types.ClientConfiguration>, config: types.ClientConfiguration): void;
+export declare function set(repo_config: Required<types.ClientConfiguration>, config: Partial<types.ClientConfiguration>): void;
