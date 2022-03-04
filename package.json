@@ -54,6 +54,6 @@
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^5.11.15",
 		"uranio-schema": "ssh://git@github.com/nbl7/uranio-schema.git",
-		"urn-lib": "git+ssh://git@github.com/nbl7/uranio-lib.git#update-modules"
+		"urn-lib": "git+ssh://git@github.com/nbl7/uranio-lib.git"
 	}
 }
