@@ -71,7 +71,7 @@ export class SelfishDAL<A extends schema.AtomName> extends RecycleDAL<A>{
 				throw exc;
 			}
 			if(this.trash_dal){
-				const clone_molecule = {...molecule};
+				const clone_molecule = urn_util.object.deep_clone(molecule);
 				clone_molecule._from = molecule._id;
 				await this.trash_dal.insert_one(clone_molecule as schema.AtomShape<A>);
 			}
@@ -98,7 +98,7 @@ export class SelfishDAL<A extends schema.AtomName> extends RecycleDAL<A>{
 				throw exc;
 			}
 			if(this.trash_dal){
-				const clone_atom = {...atom};
+				const clone_atom = urn_util.object.deep_clone(atom);
 				clone_atom._from = clone_atom._id;
 				await this.trash_dal.insert_one(clone_atom);
 			}

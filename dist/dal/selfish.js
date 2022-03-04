@@ -10,7 +10,11 @@
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -85,7 +89,7 @@ let SelfishDAL = class SelfishDAL extends recycle_1.RecycleDAL {
                 throw exc;
             }
             if (this.trash_dal) {
-                const clone_molecule = { ...molecule };
+                const clone_molecule = urn_lib_1.urn_util.object.deep_clone(molecule);
                 clone_molecule._from = molecule._id;
                 await this.trash_dal.insert_one(clone_molecule);
             }
@@ -112,7 +116,7 @@ let SelfishDAL = class SelfishDAL extends recycle_1.RecycleDAL {
                 throw exc;
             }
             if (this.trash_dal) {
-                const clone_atom = { ...atom };
+                const clone_atom = urn_lib_1.urn_util.object.deep_clone(atom);
                 clone_atom._from = clone_atom._id;
                 await this.trash_dal.insert_one(clone_atom);
             }

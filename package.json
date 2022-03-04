@@ -31,9 +31,9 @@
 	"repository": "git@github.com:nbl7/uranio-core.git",
 	"author": "Andrea Reni <mail@nbl7.net>",
 	"scripts": {
-		"build": "npx tsc -b",
-		"dev": "npx tsc-watch --onSuccess \"node -r source-map-support/register -r dotenv/config ./dist/dev.js\"",
-		"generate:compile": "npx esbuild ./src/server/generate.ts --outfile=./generate/_generate_bundled.js --bundle --platform=node",
+		"build": "yarn tsc -b",
+		"dev": "yarn tsc-watch --onSuccess \"node -r source-map-support/register -r dotenv/config ./dist/dev.js\"",
+		"generate:compile": "yarn esbuild ./src/server/generate.ts --outfile=./generate/_generate_bundled.js --bundle --platform=node",
 		"generate:schema": "yarn generate:compile && node ./generate/_generate_bundled.js urn_command=schema"
 	},
 	"devDependencies": {
@@ -54,6 +54,6 @@
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^5.11.15",
 		"uranio-schema": "ssh://git@github.com/nbl7/uranio-schema.git",
-		"urn-lib": "git+ssh://git@github.com/nbl7/uranio-lib.git#new"
+		"urn-lib": "git+ssh://git@github.com/nbl7/uranio-lib.git#update-modules"
 	}
 }
