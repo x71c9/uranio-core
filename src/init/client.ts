@@ -18,8 +18,10 @@ import * as conf from '../conf/client';
 
 import * as log from '../log/client';
 
-export function init(config?:types.ClientConfiguration, register_required=true)
-		:void{
+export function init(
+	config?: Partial<types.ClientConfiguration>,
+	register_required=true
+):void{
 	
 	log.init(urn_log.defaults);
 	

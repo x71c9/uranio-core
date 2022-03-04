@@ -28,8 +28,10 @@ import * as bll from '../bll/server';
 
 import * as log from '../log/server';
 
-export function init(config?:Partial<types.Configuration>, register_required=true)
-		:void{
+export function init(
+	config?: Partial<types.Configuration>,
+	register_required=true
+):void{
 	
 	log.init(urn_log.defaults);
 	
