@@ -23,9 +23,8 @@ export function init(config?:types.ClientConfiguration, register_required=true)
 	
 	log.init(urn_log.defaults);
 	
-	if(!config){
-		conf.set_from_env(core_client_config);
-	}else{
+	conf.set_from_env(core_client_config);
+	if(config){
 		conf.set(core_client_config, config);
 	}
 	

@@ -38,10 +38,13 @@ export function set_from_env(repo_config:Required<types.ClientConfiguration>):vo
 
 export function set(
 	repo_config:Required<types.ClientConfiguration>,
-	config:types.ClientConfiguration
+	config:Partial<types.ClientConfiguration>
 ):void{
 	_validate_config_types(repo_config, config);
-	Object.assign(repo_config, config);
+	for(const [conf_key, conf_value] of Object.entries(config)){
+		(repo_config as any)[conf_key] = conf_value;
+	}
+	// Object.assign(repo_config, config);
 }
 
 function _check_if_param_exists(param_name:string){
@@ -59,7 +62,7 @@ function _check_if_uranio_was_initialized(){
 
 function _validate_config_types(
 	repo_config:Required<types.ClientConfiguration>,
-	config:types.ClientConfiguration
+	config:Partial<types.ClientConfiguration>
 ){
 	for(const [config_key, config_value] of Object.entries(config)){
 		const key = config_key as keyof typeof repo_config;

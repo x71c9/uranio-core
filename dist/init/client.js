@@ -37,10 +37,8 @@ const conf = __importStar(require("../conf/client"));
 const log = __importStar(require("../log/client"));
 function init(config, register_required = true) {
     log.init(urn_lib_1.urn_log.defaults);
-    if (!config) {
-        conf.set_from_env(defaults_1.core_client_config);
-    }
-    else {
+    conf.set_from_env(defaults_1.core_client_config);
+    if (config) {
         conf.set(defaults_1.core_client_config, config);
     }
     if (register_required) {

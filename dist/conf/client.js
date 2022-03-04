@@ -32,7 +32,10 @@ function set_from_env(repo_config) {
 exports.set_from_env = set_from_env;
 function set(repo_config, config) {
     _validate_config_types(repo_config, config);
-    Object.assign(repo_config, config);
+    for (const [conf_key, conf_value] of Object.entries(config)) {
+        repo_config[conf_key] = conf_value;
+    }
+    // Object.assign(repo_config, config);
 }
 exports.set = set;
 function _check_if_param_exists(param_name) {
