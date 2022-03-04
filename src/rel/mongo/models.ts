@@ -6,7 +6,7 @@
 
 import mongoose from 'mongoose';
 
-import {urn_exception} from 'urn-lib';
+import {urn_util, urn_exception} from 'urn-lib';
 
 import {schema} from '../../sch/server';
 
@@ -105,7 +105,8 @@ function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstan
 
 function _convert_for_trash(schema_definition:mongoose.SchemaDefinition)
 		:mongoose.SchemaDefinition{
-	const schema_without_unique:mongoose.SchemaDefinition = {...schema_definition};
+	const schema_without_unique:mongoose.SchemaDefinition =
+		urn_util.object.deep_clone(schema_definition);
 	for(const [k] of Object.entries(schema_without_unique)){
 		schema_without_unique[k] = {type:'Mixed'};
 	}

@@ -6,7 +6,11 @@
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -102,7 +106,7 @@ function _create_models(mongoose_db_connection, connection) {
     return model_by_atom_name;
 }
 function _convert_for_trash(schema_definition) {
-    const schema_without_unique = { ...schema_definition };
+    const schema_without_unique = urn_lib_1.urn_util.object.deep_clone(schema_definition);
     for (const [k] of Object.entries(schema_without_unique)) {
         schema_without_unique[k] = { type: 'Mixed' };
     }
