@@ -42,10 +42,8 @@ const bll = __importStar(require("../bll/server"));
 const log = __importStar(require("../log/server"));
 function init(config, register_required = true) {
     log.init(urn_lib_1.urn_log.defaults);
-    if (typeof config === 'undefined') {
-        conf.set_from_env(defaults_1.core_config);
-    }
-    else {
+    conf.set_from_env(defaults_1.core_config);
+    if (config) {
         conf.set(defaults_1.core_config, config);
     }
     if (register_required) {

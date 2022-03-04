@@ -12,8 +12,6 @@ import {core_config} from './defaults';
 
 export {core_config as defaults};
 
-import * as types from '../server/types';
-
 import {Configuration} from '../typ/conf';
 
 let _is_core_initialized = false;
@@ -38,14 +36,17 @@ export function set_from_env(repo_config:Required<Configuration>):void{
 	set(repo_config, config);
 }
 
-export function set(repo_config:Required<Configuration>, config:types.Configuration)
+export function set(repo_config:Required<Configuration>, config:Partial<Configuration>)
 		:void{
 	_validate_config_types(repo_config, config);
-	Object.assign(repo_config, config);
+	for(const [conf_key, conf_value] of Object.entries(config)){
+		(repo_config as any)[conf_key] = conf_value;
+	}
+	// Object.assign(repo_config, config);
 }
 
-function _get_env_vars(repo_config:types.Configuration):types.Configuration{
-	const config:types.Configuration = {} as types.Configuration;
+function _get_env_vars(repo_config:Configuration):Configuration{
+	const config:Configuration = {} as Configuration;
 	for(const [conf_key, conf_value] of Object.entries(repo_config)){
 		const env_var_name = `URN_${conf_key.toUpperCase()}`;
 		switch(typeof conf_value){
@@ -85,7 +86,10 @@ function _get_env_vars(repo_config:types.Configuration):types.Configuration{
 	return config;
 }
 
-function _validate_config_types(repo_config:Required<Configuration>, config:types.Configuration){
+function _validate_config_types(
+	repo_config:Required<Configuration>,
+	config:Partial<Configuration>
+){
 	for(const [config_key, config_value] of Object.entries(config)){
 		const key = config_key as keyof typeof repo_config;
 		if(typeof config_value !== typeof repo_config[key]){
