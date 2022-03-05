@@ -3,7 +3,7 @@
 	"version": "0.0.3",
 	"description": "Uranio core",
 	"main": "dist/index.js",
-	"bin":{
+	"bin": {
 		"uranio-core-generate-schema": "dist/server/generate.js"
 	},
 	"exports": {
@@ -41,7 +41,6 @@
 		"@types/caller": "^1.0.0",
 		"@types/express-fileupload": "^1.2.2",
 		"@types/jsonwebtoken": "^8.5.8",
-		"esbuild": "^0.14.22",
 		"uranio-dev": "git+ssh://git@github.com/nbl7/uranio-dev.git#master"
 	},
 	"dependencies": {
@@ -50,6 +49,7 @@
 		"caller": "^1.0.1",
 		"dateformat": "^3.0.3",
 		"dotenv": "^15.0.0",
+		"esbuild": "^0.14.25",
 		"express-fileupload": "^1.2.1",
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^5.11.15",
