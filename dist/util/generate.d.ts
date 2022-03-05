@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 export declare const process_params: {
-    urn_command: string;
+    urn_schema_repo_path: string;
 };
 export declare function schema(): string;
 export declare function schema_and_save(): void;

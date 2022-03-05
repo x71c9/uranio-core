@@ -39,11 +39,10 @@ const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module
 const server_1 = require("../stc/server");
 const book = __importStar(require("../book/server"));
 const types = __importStar(require("../server/types"));
-const atom_schema_file_path = './node_modules/uranio-schema/dist/typ/atom.d.ts';
+// const _get_atom_schema_path() = './node_modules/uranio-schema/dist/typ/atom.d.ts';
 exports.process_params = {
-    urn_command: `schema`,
-    // urn_base_schema: `./.uranio/generate/base/schema.d.ts`,
-    // urn_output_dir: `.`
+    // urn_command: `schema`,
+    urn_schema_repo_path: 'node_modules/uranio-schema'
 };
 function schema() {
     urn_lib_1.urn_log.debug('Started generating uranio core schema...');
@@ -60,24 +59,21 @@ function schema_and_save() {
 }
 exports.schema_and_save = schema_and_save;
 function save_schema(text) {
-    // const output = `${process_params.urn_output_dir}/schema.d.ts`;
-    // fs.writeFileSync(output, text);
-    // urn_log.debug(`Schema saved in [${output}].`);
     const now = (0, dateformat_1.default)(new Date(), `yyyymmddHHMMssl`);
-    const backup_path = `${atom_schema_file_path}.${now}.bkp`;
-    fs_1.default.copyFileSync(atom_schema_file_path, backup_path);
+    const backup_path = `${_get_atom_schema_path()}.${now}.bkp`;
+    fs_1.default.copyFileSync(_get_atom_schema_path(), backup_path);
     urn_lib_1.urn_log.debug(`Copied backup file for atom schema in [${backup_path}].`);
-    fs_1.default.writeFileSync(atom_schema_file_path, text);
-    urn_lib_1.urn_log.debug(`Update schema [${atom_schema_file_path}].`);
+    fs_1.default.writeFileSync(_get_atom_schema_path(), text);
+    urn_lib_1.urn_log.debug(`Update schema [${_get_atom_schema_path()}].`);
 }
 exports.save_schema = save_schema;
 function init() {
     for (const argv of process.argv) {
         const splitted = argv.split('=');
-        if (splitted[0] === 'urn_command'
+        if (splitted[0] === 'urn_schema_repo_path'
             && typeof splitted[1] === 'string'
             && splitted[1] !== '') {
-            exports.process_params.urn_command = splitted[1];
+            exports.process_params.urn_schema_repo_path = splitted[1];
         }
         // if(
         //   splitted[0] === 'urn_base_schema'
@@ -95,13 +91,16 @@ function init() {
     }
 }
 exports.init = init;
+function _get_atom_schema_path() {
+    return `${exports.process_params.urn_schema_repo_path}/dist/typ/atom.d.ts`;
+}
 function _read_schema() {
-    return fs_1.default.readFileSync(atom_schema_file_path, { encoding: 'utf8' });
+    return fs_1.default.readFileSync(_get_atom_schema_path(), { encoding: 'utf8' });
 }
 function _generate_uranio_schema_text() {
     const txt = _generate_schema_text();
     // const data = fs.readFileSync(process_params.urn_base_schema, {encoding: 'utf8'});
-    // const data = fs.readFileSync(atom_schema_file_path, {encoding: 'utf8'});
+    // const data = fs.readFileSync(_get_atom_schema_path(), {encoding: 'utf8'});
     const data = _read_schema();
     const data_start = data.split('/** --uranio-generate-start */');
     const data_end = data_start[1].split('/** --uranio-generate-end */');
