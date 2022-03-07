@@ -8,7 +8,7 @@ connect_on_init = true
 [log]
 	debug_info = true
 	color = true
-	time_format = 'yyyy-mm-dd\'T\'HH:MM:ss:l'
+	time_format = "yyyy-mm-dd'T'HH:MM:ss:l"
 	max_str_length = 174
 	prefix = ''
 	prefix_type = false
