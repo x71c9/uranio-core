@@ -6,7 +6,9 @@
 
 import {urn_log} from 'urn-lib';
 
-import {core_client_config} from '../client/defaults';
+import uranio_config from '../config';
+
+import {core_client_config} from '../client/default_conf';
 
 import * as required from '../req/server';
 
@@ -15,6 +17,8 @@ import * as register from '../reg/server';
 import * as types from '../client/types';
 
 import * as conf from '../conf/client';
+
+import * as env from '../env/client';
 
 import * as log from '../log/client';
 
@@ -25,7 +29,10 @@ export function init(
 	
 	log.init(urn_log.defaults);
 	
-	conf.set_from_env(core_client_config);
+	env.set_from_env(core_client_config);
+	
+	conf.set(core_client_config, uranio_config as types.ClientConfiguration);
+	
 	if(config){
 		conf.set(core_client_config, config);
 	}
@@ -35,8 +42,9 @@ export function init(
 	}
 	
 	conf.set_initialize(true);
+	env.set_initialize(true);
 	
-	urn_log.defaults.log_level = conf.get(`log_level`);
+	urn_log.defaults.log_level = env.get(`log_level`);
 	
 }
 

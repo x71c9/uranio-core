@@ -40,25 +40,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = void 0;
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const urn_lib_1 = require("urn-lib");
-const conf = __importStar(require("../../conf/server"));
+const env = __importStar(require("../../env/server"));
 // const urn_exc = urn_exception.init('UPLOADER_AWS', 'AWS Uploader');
 /**
  * AWS Storage class
  */
 let AWSStorage = class AWSStorage {
     constructor() {
-        const bucket_name = conf.get('aws_bucket_name');
-        const bucket_region = conf.get('aws_bucket_region');
+        const bucket_name = env.get('aws_bucket_name');
+        const bucket_region = env.get('aws_bucket_region');
         this.s3 = new aws_sdk_1.default.S3({
-            accessKeyId: conf.get(`aws_user_access_key_id`),
-            secretAccessKey: conf.get(`aws_user_secret_access_key`),
+            accessKeyId: env.get(`aws_user_access_key_id`),
+            secretAccessKey: env.get(`aws_user_secret_access_key`),
             region: bucket_region
         });
         this.base_url = `https://${bucket_name}.s3.${bucket_region}.amazonaws.com`;
     }
     async upload(filepath, buffer, params) {
         const aws_params = {
-            Bucket: conf.get(`aws_bucket_name`),
+            Bucket: env.get(`aws_bucket_name`),
             Key: filepath,
             Body: buffer
         };
@@ -75,7 +75,7 @@ let AWSStorage = class AWSStorage {
     }
     async presigned(filepath, params) {
         const aws_params = {
-            Bucket: conf.get(`aws_bucket_name`),
+            Bucket: env.get(`aws_bucket_name`),
             Key: filepath,
             Expires: 60 // 1 minute
         };
@@ -93,7 +93,7 @@ let AWSStorage = class AWSStorage {
     }
     async exists(filepath) {
         const params = {
-            Bucket: conf.get(`aws_bucket_name`),
+            Bucket: env.get(`aws_bucket_name`),
             Key: filepath
         };
         try {

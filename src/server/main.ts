@@ -28,6 +28,10 @@ import * as conf from '../conf/server';
 
 export {conf};
 
+import * as env from '../env/server';
+
+export {env};
+
 import * as util from '../util/server';
 
 export {util};

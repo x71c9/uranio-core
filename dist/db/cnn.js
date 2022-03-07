@@ -32,7 +32,7 @@ exports.disconnect = exports.connect = void 0;
 const conf = __importStar(require("../conf/server"));
 const models_1 = require("../rel/mongo/models");
 function connect() {
-    switch (conf.get(`db_type`)) {
+    switch (conf.get(`db`)) {
         case 'mongo': {
             (0, models_1.create_all_connection)();
             break;
@@ -41,7 +41,7 @@ function connect() {
 }
 exports.connect = connect;
 async function disconnect(connection_name) {
-    switch (conf.get(`db_type`)) {
+    switch (conf.get(`db`)) {
         case 'mongo': {
             if (models_1.mongo_app.connections) {
                 for (const [conn_name, conn_inst] of Object.entries(models_1.mongo_app.connections)) {

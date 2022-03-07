@@ -27,25 +27,32 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = void 0;
 const urn_lib_1 = require("urn-lib");
-const defaults_1 = require("../client/defaults");
+const config_1 = __importDefault(require("../config"));
+const default_conf_1 = require("../client/default_conf");
 const required = __importStar(require("../req/server"));
 const register = __importStar(require("../reg/server"));
 const conf = __importStar(require("../conf/client"));
+const env = __importStar(require("../env/client"));
 const log = __importStar(require("../log/client"));
 function init(config, register_required = true) {
     log.init(urn_lib_1.urn_log.defaults);
-    conf.set_from_env(defaults_1.core_client_config);
+    env.set_from_env(default_conf_1.core_client_config);
+    conf.set(default_conf_1.core_client_config, config_1.default);
     if (config) {
-        conf.set(defaults_1.core_client_config, config);
+        conf.set(default_conf_1.core_client_config, config);
     }
     if (register_required) {
         _register_required_atoms();
     }
     conf.set_initialize(true);
-    urn_lib_1.urn_log.defaults.log_level = conf.get(`log_level`);
+    env.set_initialize(true);
+    urn_lib_1.urn_log.defaults.log_level = env.get(`log_level`);
 }
 exports.init = init;
 function _register_required_atoms() {

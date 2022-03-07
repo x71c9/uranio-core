@@ -12,7 +12,7 @@ import {ConnectionName} from "../typ/book_cln";
 
 export function connect()
 		:void{
-	switch(conf.get(`db_type`)){
+	switch(conf.get(`db`)){
 		case 'mongo':{
 			create_all_connection();
 			break;
@@ -22,7 +22,7 @@ export function connect()
 
 export async function disconnect(connection_name?:ConnectionName)
 		:Promise<void>{
-	switch(conf.get(`db_type`)){
+	switch(conf.get(`db`)){
 		case 'mongo':{
 			if(mongo_app.connections){
 				for(const [conn_name, conn_inst] of Object.entries(mongo_app.connections)){
