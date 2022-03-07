@@ -28,7 +28,7 @@ export class RelationDAL<A extends schema.AtomName> extends BasicDAL<A>{
 	
 	constructor(atom_name:A) {
 		let db_relation: urn_rel.Relation<A>;
-		switch(conf.get(`db_type`)){
+		switch(conf.get(`db`)){
 			case 'mongo':{
 				const atom_def = book.get_definition(atom_name);
 				switch(atom_def.connection){

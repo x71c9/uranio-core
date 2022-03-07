@@ -31,7 +31,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.required = exports.register = exports.conf = exports.stc = exports.log = exports.book = exports.atom = exports.types = void 0;
+exports.required = exports.register = exports.env = exports.conf = exports.stc = exports.log = exports.book = exports.atom = exports.types = void 0;
 const types = __importStar(require("./types"));
 exports.types = types;
 const atom = __importStar(require("../atm/client"));
@@ -44,6 +44,8 @@ const stc = __importStar(require("../stc/client"));
 exports.stc = stc;
 const conf = __importStar(require("../conf/client"));
 exports.conf = conf;
+const env = __importStar(require("../env/client"));
+exports.env = env;
 const register = __importStar(require("../reg/client"));
 exports.register = register;
 const required = __importStar(require("../req/server"));

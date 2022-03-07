@@ -42,7 +42,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
-const conf = __importStar(require("../conf/server"));
+const env = __importStar(require("../env/server"));
 const book_1 = require("../typ/book");
 const server_1 = require("../stc/server");
 const auth_1 = require("../typ/auth");
@@ -55,7 +55,7 @@ let AuthenticationBLL = class AuthenticationBLL {
         this._basic_bll = (0, basic_1.create)(this._atom_name);
     }
     async get_passport(token) {
-        const decoded_token = jsonwebtoken_1.default.verify(token, conf.get(`jwt_private_key`));
+        const decoded_token = jsonwebtoken_1.default.verify(token, env.get(`jwt_private_key`));
         return decoded_token;
     }
     async authenticate(email, password) {
@@ -89,7 +89,7 @@ let AuthenticationBLL = class AuthenticationBLL {
     }
     _generate_token(auth_atom) {
         const passport = this._generate_passport(auth_atom);
-        return jsonwebtoken_1.default.sign(passport, conf.get(`jwt_private_key`));
+        return jsonwebtoken_1.default.sign(passport, env.get(`jwt_private_key`));
     }
 };
 AuthenticationBLL = __decorate([

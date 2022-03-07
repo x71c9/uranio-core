@@ -53,7 +53,7 @@ let RecycleDAL = class RecycleDAL extends encrypt_1.EncryptDAL {
             let db_trash_relation;
             const atom_def = book.get_definition(this.atom_name);
             if (!atom_def.connection || atom_def.connection === 'main') {
-                switch (conf.get(`db_type`)) {
+                switch (conf.get(`db`)) {
                     case 'mongo': {
                         db_trash_relation = urn_rel.mongo.trash_create(this.atom_name);
                         this._trash_dal = (0, basic_1.create_basic)(this.atom_name, db_trash_relation);

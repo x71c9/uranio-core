@@ -15,6 +15,8 @@ import * as db from '../db/server';
 export { db };
 import * as conf from '../conf/server';
 export { conf };
+import * as env from '../env/server';
+export { env };
 import * as util from '../util/server';
 export { util };
 import * as log from '../log/server';

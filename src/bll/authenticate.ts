@@ -14,7 +14,7 @@ const urn_exc = urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 
 import {schema} from '../sch/server';
 
-import * as conf from '../conf/server';
+import * as env from '../env/server';
 
 import {
 	SecurityType,
@@ -47,7 +47,7 @@ class AuthenticationBLL<A extends schema.AuthName> {
 	}
 	
 	public async get_passport(token: string):Promise<Passport>{
-		const decoded_token = jwt.verify(token, conf.get(`jwt_private_key`));
+		const decoded_token = jwt.verify(token, env.get(`jwt_private_key`));
 		return decoded_token as Passport;
 	}
 	
@@ -86,7 +86,7 @@ class AuthenticationBLL<A extends schema.AuthName> {
 	private _generate_token(auth_atom:schema.AuthAtom<A>)
 			:string{
 		const passport = this._generate_passport(auth_atom);
-		return jwt.sign(passport, conf.get(`jwt_private_key`));
+		return jwt.sign(passport, env.get(`jwt_private_key`));
 	}
 	
 }

@@ -8,7 +8,7 @@ import {urn_util, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('CONF_CORE_CLIENT_MODULE', `Core client configuration module`);
 
-import {core_client_config} from '../client/defaults';
+import {core_client_config} from '../client/default_conf';
 
 export {core_client_config as defaults};
 
@@ -31,10 +31,10 @@ export function set_initialize(is_initialized:boolean):void{
 	_is_client_core_initialized = is_initialized;
 }
 
-export function set_from_env(repo_config:Required<types.ClientConfiguration>):void{
-	const config = _get_env_vars(repo_config);
-	set(repo_config, config);
-}
+// export function set_from_env(repo_config:Required<types.ClientConfiguration>):void{
+//   const config = _get_env_vars(repo_config);
+//   set(repo_config, config);
+// }
 
 export function set(
 	repo_config:Required<types.ClientConfiguration>,
@@ -77,14 +77,14 @@ function _validate_config_types(
 	}
 }
 
-function _get_env_vars(repo_config:types.ClientConfiguration):types.ClientConfiguration{
-	if(
-		typeof process.env.URN_LOG_LEVEL === 'number'
-		|| typeof process.env.URN_LOG_LEVEL === 'string'
-		&& process.env.URN_LOG_LEVEL !== ''
-	){
-		repo_config.log_level = Number(process.env.URN_LOG_LEVEL);
-	}
-	return repo_config;
-}
+// function _get_env_vars(repo_config:types.ClientConfiguration):types.ClientConfiguration{
+//   if(
+//     typeof process.env.URN_LOG_LEVEL === 'number'
+//     || typeof process.env.URN_LOG_LEVEL === 'string'
+//     && process.env.URN_LOG_LEVEL !== ''
+//   ){
+//     repo_config.log_level = Number(process.env.URN_LOG_LEVEL);
+//   }
+//   return repo_config;
+// }
 

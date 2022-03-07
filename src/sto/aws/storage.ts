@@ -8,7 +8,7 @@ import AWS from 'aws-sdk';
 
 import {urn_log} from 'urn-lib';
 
-import * as conf from '../../conf/server';
+import * as env from '../../env/server';
 
 import {Storage, UploadParams} from '../types';
 
@@ -27,12 +27,12 @@ class AWSStorage implements Storage {
 	
 	constructor(){
 		
-		const bucket_name = conf.get('aws_bucket_name');
-		const bucket_region = conf.get('aws_bucket_region');
+		const bucket_name = env.get('aws_bucket_name');
+		const bucket_region = env.get('aws_bucket_region');
 		
 		this.s3 = new AWS.S3({
-			accessKeyId: conf.get(`aws_user_access_key_id`),
-			secretAccessKey: conf.get(`aws_user_secret_access_key`),
+			accessKeyId: env.get(`aws_user_access_key_id`),
+			secretAccessKey: env.get(`aws_user_secret_access_key`),
 			region: bucket_region
 		});
 		this.base_url = `https://${bucket_name}.s3.${bucket_region}.amazonaws.com`;
@@ -45,7 +45,7 @@ class AWSStorage implements Storage {
 	):Promise<string>{
 		
 		const aws_params:AWS.S3.PutObjectRequest = {
-			Bucket: conf.get(`aws_bucket_name`),
+			Bucket: env.get(`aws_bucket_name`),
 			Key: filepath,
 			Body: buffer
 		};
@@ -70,7 +70,7 @@ class AWSStorage implements Storage {
 	):Promise<string>{
 		
 		const aws_params = {
-			Bucket: conf.get(`aws_bucket_name`),
+			Bucket: env.get(`aws_bucket_name`),
 			Key: filepath,
 			Expires: 60 // 1 minute
 		};
@@ -92,7 +92,7 @@ class AWSStorage implements Storage {
 	
 	public async exists(filepath:string):Promise<boolean>{
 		const params:AWS.S3.GetObjectRequest = {
-			Bucket: conf.get(`aws_bucket_name`),
+			Bucket: env.get(`aws_bucket_name`),
 			Key: filepath
 		};
 		try{

@@ -48,7 +48,7 @@ const basic_1 = require("./basic");
 let RelationDAL = class RelationDAL extends basic_1.BasicDAL {
     constructor(atom_name) {
         let db_relation;
-        switch (conf.get(`db_type`)) {
+        switch (conf.get(`db`)) {
             case 'mongo': {
                 const atom_def = book.get_definition(atom_name);
                 switch (atom_def.connection) {

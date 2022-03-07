@@ -27,22 +27,29 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('INIT_CORE_MODULE', `Core init module`);
+const config_1 = __importDefault(require("../config"));
 const defaults_1 = require("../conf/defaults");
+const defaults_2 = require("../env/defaults");
 const required = __importStar(require("../req/server"));
 const register = __importStar(require("../reg/server"));
 const types = __importStar(require("../server/types"));
 const conf = __importStar(require("../conf/server"));
+const env = __importStar(require("../env/server"));
 const book = __importStar(require("../book/server"));
 const db = __importStar(require("../db/server"));
 const bll = __importStar(require("../bll/server"));
 const log = __importStar(require("../log/server"));
 function init(config, register_required = true) {
     log.init(urn_lib_1.urn_log.defaults);
-    conf.set_from_env(defaults_1.core_config);
+    env.set_from_env(defaults_2.core_env);
+    conf.set(defaults_1.core_config, config_1.default);
     if (config) {
         conf.set(defaults_1.core_config, config);
     }
@@ -52,7 +59,8 @@ function init(config, register_required = true) {
     _validate_core_variables();
     _validate_core_book();
     conf.set_initialize(true);
-    urn_lib_1.urn_log.defaults.log_level = conf.get(`log_level`);
+    env.set_initialize(true);
+    urn_lib_1.urn_log.defaults.log_level = env.get(`log_level`);
     _core_connect();
     if (conf.get(`superuser_create_on_init`) === true) {
         _create_superuser();
@@ -68,22 +76,22 @@ function _register_required_atoms() {
 async function _create_superuser() {
     const auth_bll = bll.auth.create('superuser');
     try {
-        await auth_bll.authenticate(defaults_1.core_config.superuser_email, defaults_1.core_config.superuser_password);
-        urn_lib_1.urn_log.debug(`Main superuser [${defaults_1.core_config.superuser_email}] already in database.`);
+        await auth_bll.authenticate(defaults_2.core_env.superuser_email, defaults_2.core_env.superuser_password);
+        urn_lib_1.urn_log.debug(`Main superuser [${defaults_2.core_env.superuser_email}] already in database.`);
     }
     catch (err) { // cannot auth with config email and password
         const bll_superuser = bll.basic.create('superuser');
         try {
-            const one_su = await bll_superuser.find_one({ email: defaults_1.core_config.superuser_email });
-            urn_lib_1.urn_log.warn(`Main superuser [${defaults_1.core_config.superuser_email}] already in database but with wrong password.`);
+            const one_su = await bll_superuser.find_one({ email: defaults_2.core_env.superuser_email });
+            urn_lib_1.urn_log.warn(`Main superuser [${defaults_2.core_env.superuser_email}] already in database but with wrong password.`);
             await bll_superuser.remove_by_id(one_su._id);
-            urn_lib_1.urn_log.debug(`Main superuser [${defaults_1.core_config.superuser_email}] deleted.`);
+            urn_lib_1.urn_log.debug(`Main superuser [${defaults_2.core_env.superuser_email}] deleted.`);
             // eslint-disable-next-line
         }
         catch (err) { } // If there is no user it throws an error, but nothing should be done.
         const superuser_shape = {
-            email: defaults_1.core_config.superuser_email,
-            password: defaults_1.core_config.superuser_password,
+            email: defaults_2.core_env.superuser_email,
+            password: defaults_2.core_env.superuser_password,
             groups: []
         };
         const superuser = await bll_superuser.insert_new(superuser_shape);
@@ -91,7 +99,7 @@ async function _create_superuser() {
         const group = await bll_group.insert_new({ name: superuser.email });
         superuser.groups = [group._id];
         await bll_superuser.update_one(superuser);
-        urn_lib_1.urn_log.debug(`Main superuser [${defaults_1.core_config.superuser_email}] [${superuser._id}] created.`);
+        urn_lib_1.urn_log.debug(`Main superuser [${defaults_2.core_env.superuser_email}] [${superuser._id}] created.`);
     }
 }
 function _core_connect() {
@@ -270,35 +278,35 @@ function _check_number_values() {
 function _check_if_storage_params_were_set() {
     switch (defaults_1.core_config.storage) {
         case 'aws': {
-            if (typeof defaults_1.core_config.aws_bucket_name !== 'string'
-                || defaults_1.core_config.aws_bucket_name === '') {
+            if (typeof defaults_2.core_env.aws_bucket_name !== 'string'
+                || defaults_2.core_env.aws_bucket_name === '') {
                 throw urn_exc.create_not_initialized(`INVALID_AWS_BUCKET_NAME`, `Invalid config aws_bucket_name.`);
             }
-            if (typeof defaults_1.core_config.aws_bucket_region !== 'string'
-                || defaults_1.core_config.aws_bucket_region === '') {
+            if (typeof defaults_2.core_env.aws_bucket_region !== 'string'
+                || defaults_2.core_env.aws_bucket_region === '') {
                 throw urn_exc.create_not_initialized(`INVALID_AWS_BUCKET_REGION`, `Invalid config aws_bucket_region.`);
             }
-            if (typeof defaults_1.core_config.aws_user_access_key_id !== 'string'
-                || defaults_1.core_config.aws_user_access_key_id === '') {
+            if (typeof defaults_2.core_env.aws_user_access_key_id !== 'string'
+                || defaults_2.core_env.aws_user_access_key_id === '') {
                 throw urn_exc.create_not_initialized(`INVALID_AWS_USER_ACCESS_KEY`, `Invalid config aws_user_access_key.`);
             }
-            if (typeof defaults_1.core_config.aws_user_secret_access_key !== 'string'
-                || defaults_1.core_config.aws_user_secret_access_key === '') {
+            if (typeof defaults_2.core_env.aws_user_secret_access_key !== 'string'
+                || defaults_2.core_env.aws_user_secret_access_key === '') {
                 throw urn_exc.create_not_initialized(`INVALID_AWS_USER_SECRET_ACCESS_KEY`, `Invalid config aws_user_secret_access_key.`);
             }
         }
     }
 }
 function _check_if_db_connections_were_set() {
-    switch (defaults_1.core_config.db_type) {
+    switch (defaults_1.core_config.db) {
         case 'mongo': {
-            if (defaults_1.core_config.mongo_main_connection === '') {
-                throw urn_exc.create_not_initialized(`MISSING_MONGO_MAIN_CONNECTION`, `Missing mongo_main_connection in core_config.`);
+            if (defaults_2.core_env.mongo_main_connection === '') {
+                throw urn_exc.create_not_initialized(`MISSING_MONGO_MAIN_CONNECTION`, `Missing mongo_main_connection in core_env.`);
             }
-            if (defaults_1.core_config.mongo_trash_connection === '') {
+            if (defaults_2.core_env.mongo_trash_connection === '') {
                 urn_lib_1.urn_log.warn(`You didn't set mongo_trash_connection.`);
             }
-            if (defaults_1.core_config.mongo_log_connection === '') {
+            if (defaults_2.core_env.mongo_log_connection === '') {
                 urn_lib_1.urn_log.warn(`You didn't set mongo_log_connection.`);
             }
             break;
@@ -306,26 +314,26 @@ function _check_if_db_connections_were_set() {
     }
 }
 function _check_if_db_names_have_changed() {
-    if (defaults_1.core_config.db_main_name === 'uranio_dev') {
+    if (defaults_2.core_env.db_main_name === 'uranio_dev') {
         urn_lib_1.urn_log.warn(`You are using default value for db_main_name [uranio_dev].`);
     }
-    if (defaults_1.core_config.db_trash_name === 'uranio_trash_dev') {
+    if (defaults_2.core_env.db_trash_name === 'uranio_trash_dev') {
         urn_lib_1.urn_log.warn(`You are using default value for db_trash_name [uranio_trash_dev].`);
     }
-    if (defaults_1.core_config.db_log_name === 'uranio_log_dev') {
+    if (defaults_2.core_env.db_log_name === 'uranio_log_dev') {
         urn_lib_1.urn_log.warn(`You are using default value for db_log_name [uranio_log_dev].`);
     }
 }
 function _check_if_jwt_key_has_changed() {
-    if (defaults_1.core_config.jwt_private_key === 'A_KEY_THAT_NEED_TO_BE_CHANGED') {
+    if (defaults_2.core_env.jwt_private_key === 'A_KEY_THAT_NEED_TO_BE_CHANGED') {
         throw urn_exc.create_not_initialized(`JWT_KEY_NOT_CHANGED`, `You must changed the value of jwt key for encryption.`);
     }
 }
 function _check_if_superuser_was_set() {
-    if (defaults_1.core_config.superuser_email === '') {
+    if (defaults_2.core_env.superuser_email === '') {
         urn_lib_1.urn_log.warn(`Invalid superuser email.`);
     }
-    if (defaults_1.core_config.superuser_password === '') {
+    if (defaults_2.core_env.superuser_password === '') {
         urn_lib_1.urn_log.warn(`Invalid superuser password.`);
     }
 }

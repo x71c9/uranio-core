@@ -18,6 +18,8 @@ import {Configuration} from '../../typ/conf';
 
 import * as conf from '../../conf/server';
 
+import * as env from '../../env/server';
+
 import {generate_mongo_schema_def} from './schema';
 
 import * as mongo_connection from './connection';
@@ -218,9 +220,9 @@ function _create_connection(conn_name:ConnectionName){
 		const mongo_db_string = conf.get(`db_${conn_name}_name` as keyof Configuration);
 		
 		const conf_connection_name = (conn_name !== 'main' && typeof mongo_conn_string === 'string') ?
-			mongo_conn_string : conf.get(`mongo_main_connection`);
+			mongo_conn_string : env.get(`mongo_main_connection`);
 		const conf_db_name = (conn_name !== 'main' && typeof mongo_conn_string === 'string') ?
-			mongo_db_string : conf.get(`db_main_name`) as string;
+			mongo_db_string : env.get(`db_main_name`) as string;
 		
 		mongo_app.connections[conn_name] = mongo_connection.create(
 			conn_name,

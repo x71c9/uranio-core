@@ -10,7 +10,11 @@ const urn_exc = urn_exception.init('INIT_CORE_MODULE', `Core init module`);
 
 import {schema} from '../sch/server';
 
+import uranio_config from '../config';
+
 import {core_config} from '../conf/defaults';
+
+import {core_env} from '../env/defaults';
 
 import * as required from '../req/server';
 
@@ -19,6 +23,8 @@ import * as register from '../reg/server';
 import * as types from '../server/types';
 
 import * as conf from '../conf/server';
+
+import * as env from '../env/server';
 
 import * as book from '../book/server';
 
@@ -35,7 +41,10 @@ export function init(
 	
 	log.init(urn_log.defaults);
 	
-	conf.set_from_env(core_config);
+	env.set_from_env(core_env);
+	
+	conf.set(core_config, uranio_config as types.Configuration);
+	
 	if(config){
 		conf.set(core_config, config);
 	}
@@ -48,8 +57,9 @@ export function init(
 	_validate_core_book();
 	
 	conf.set_initialize(true);
+	env.set_initialize(true);
 	
-	urn_log.defaults.log_level = conf.get(`log_level`);
+	urn_log.defaults.log_level = env.get(`log_level`);
 	
 	_core_connect();
 	
@@ -70,21 +80,21 @@ async function _create_superuser(){
 	const auth_bll = bll.auth.create('superuser');
 	try{
 		
-		await auth_bll.authenticate(core_config.superuser_email, core_config.superuser_password);
-		urn_log.debug(`Main superuser [${core_config.superuser_email}] already in database.`);
+		await auth_bll.authenticate(core_env.superuser_email, core_env.superuser_password);
+		urn_log.debug(`Main superuser [${core_env.superuser_email}] already in database.`);
 		
 	}catch(err){ // cannot auth with config email and password
 		const bll_superuser = bll.basic.create('superuser');
 		try{
-			const one_su = await bll_superuser.find_one({email: core_config.superuser_email});
-			urn_log.warn(`Main superuser [${core_config.superuser_email}] already in database but with wrong password.`);
+			const one_su = await bll_superuser.find_one({email: core_env.superuser_email});
+			urn_log.warn(`Main superuser [${core_env.superuser_email}] already in database but with wrong password.`);
 			await bll_superuser.remove_by_id(one_su._id);
-			urn_log.debug(`Main superuser [${core_config.superuser_email}] deleted.`);
+			urn_log.debug(`Main superuser [${core_env.superuser_email}] deleted.`);
 			// eslint-disable-next-line
 		}catch(err){} // If there is no user it throws an error, but nothing should be done.
 		const superuser_shape = {
-			email: core_config.superuser_email,
-			password: core_config.superuser_password,
+			email: core_env.superuser_email,
+			password: core_env.superuser_password,
 			groups: []
 		};
 		const superuser = await bll_superuser.insert_new(superuser_shape);
@@ -95,7 +105,7 @@ async function _create_superuser(){
 		superuser.groups = [group._id];
 		await bll_superuser.update_one(superuser);
 		
-		urn_log.debug(`Main superuser [${core_config.superuser_email}] [${superuser._id}] created.`);
+		urn_log.debug(`Main superuser [${core_env.superuser_email}] [${superuser._id}] created.`);
 	}
 }
 
@@ -338,8 +348,8 @@ function _check_if_storage_params_were_set(){
 	switch(core_config.storage){
 		case 'aws':{
 			if(
-				typeof core_config.aws_bucket_name !== 'string'
-				|| core_config.aws_bucket_name === ''
+				typeof core_env.aws_bucket_name !== 'string'
+				|| core_env.aws_bucket_name === ''
 			){
 				throw urn_exc.create_not_initialized(
 					`INVALID_AWS_BUCKET_NAME`,
@@ -347,8 +357,8 @@ function _check_if_storage_params_were_set(){
 				);
 			}
 			if(
-				typeof core_config.aws_bucket_region !== 'string'
-				|| core_config.aws_bucket_region === ''
+				typeof core_env.aws_bucket_region !== 'string'
+				|| core_env.aws_bucket_region === ''
 			){
 				throw urn_exc.create_not_initialized(
 					`INVALID_AWS_BUCKET_REGION`,
@@ -356,8 +366,8 @@ function _check_if_storage_params_were_set(){
 				);
 			}
 			if(
-				typeof core_config.aws_user_access_key_id !== 'string'
-				|| core_config.aws_user_access_key_id === ''
+				typeof core_env.aws_user_access_key_id !== 'string'
+				|| core_env.aws_user_access_key_id === ''
 			){
 				throw urn_exc.create_not_initialized(
 					`INVALID_AWS_USER_ACCESS_KEY`,
@@ -365,8 +375,8 @@ function _check_if_storage_params_were_set(){
 				);
 			}
 			if(
-				typeof core_config.aws_user_secret_access_key !== 'string'
-				|| core_config.aws_user_secret_access_key === ''
+				typeof core_env.aws_user_secret_access_key !== 'string'
+				|| core_env.aws_user_secret_access_key === ''
 			){
 				throw urn_exc.create_not_initialized(
 					`INVALID_AWS_USER_SECRET_ACCESS_KEY`,
@@ -378,18 +388,18 @@ function _check_if_storage_params_were_set(){
 }
 
 function _check_if_db_connections_were_set(){
-	switch(core_config.db_type){
+	switch(core_config.db){
 		case 'mongo':{
-			if(core_config.mongo_main_connection === ''){
+			if(core_env.mongo_main_connection === ''){
 				throw urn_exc.create_not_initialized(
 					`MISSING_MONGO_MAIN_CONNECTION`,
-					`Missing mongo_main_connection in core_config.`
+					`Missing mongo_main_connection in core_env.`
 				);
 			}
-			if(core_config.mongo_trash_connection === ''){
+			if(core_env.mongo_trash_connection === ''){
 				urn_log.warn(`You didn't set mongo_trash_connection.`);
 			}
-			if(core_config.mongo_log_connection === ''){
+			if(core_env.mongo_log_connection === ''){
 				urn_log.warn(`You didn't set mongo_log_connection.`);
 			}
 			break;
@@ -398,19 +408,19 @@ function _check_if_db_connections_were_set(){
 }
 
 function _check_if_db_names_have_changed(){
-	if(core_config.db_main_name === 'uranio_dev'){
+	if(core_env.db_main_name === 'uranio_dev'){
 		urn_log.warn(`You are using default value for db_main_name [uranio_dev].`);
 	}
-	if(core_config.db_trash_name === 'uranio_trash_dev'){
+	if(core_env.db_trash_name === 'uranio_trash_dev'){
 		urn_log.warn(`You are using default value for db_trash_name [uranio_trash_dev].`);
 	}
-	if(core_config.db_log_name === 'uranio_log_dev'){
+	if(core_env.db_log_name === 'uranio_log_dev'){
 		urn_log.warn(`You are using default value for db_log_name [uranio_log_dev].`);
 	}
 }
 
 function _check_if_jwt_key_has_changed(){
-	if(core_config.jwt_private_key === 'A_KEY_THAT_NEED_TO_BE_CHANGED'){
+	if(core_env.jwt_private_key === 'A_KEY_THAT_NEED_TO_BE_CHANGED'){
 		throw urn_exc.create_not_initialized(
 			`JWT_KEY_NOT_CHANGED`,
 			`You must changed the value of jwt key for encryption.`
@@ -419,10 +429,10 @@ function _check_if_jwt_key_has_changed(){
 }
 
 function _check_if_superuser_was_set(){
-	if(core_config.superuser_email === ''){
+	if(core_env.superuser_email === ''){
 		urn_log.warn(`Invalid superuser email.`);
 	}
-	if(core_config.superuser_password === ''){
+	if(core_env.superuser_password === ''){
 		urn_log.warn(`Invalid superuser password.`);
 	}
 }

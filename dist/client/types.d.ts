@@ -8,3 +8,4 @@
 export * from '../typ/auth_cln';
 export * from '../typ/book_cln';
 export * from '../typ/conf_cln';
+export * from '../typ/env_cln';
