@@ -10,4 +10,4 @@ export declare function get<k extends keyof Configuration>(param_name: k): typeo
 export declare function is_initialized(): boolean;
 export declare function set_initialize(is_initialized: boolean): void;
 export declare function set(repo_config: Required<Configuration>, config: Partial<Configuration>): void;
-export declare function set_from_file(file_path: string): void;
+export declare function set_from_file(): void;

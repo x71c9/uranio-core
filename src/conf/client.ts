@@ -4,7 +4,13 @@
  * @packageDocumentation
  */
 
-import {urn_util, urn_exception} from 'urn-lib';
+import fs from 'fs';
+
+import minimist from 'minimist';
+
+import toml from 'toml';
+
+import {urn_log, urn_util, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('CONF_CORE_CLIENT_MODULE', `Core client configuration module`);
 
@@ -35,6 +41,34 @@ export function set_initialize(is_initialized:boolean):void{
 //   const config = _get_env_vars(repo_config);
 //   set(repo_config, config);
 // }
+
+export function set_from_file():void{
+	
+	let toml_config_path = './uranio.toml';
+	const args = minimist(process.argv.slice(2));
+	if(args.c){
+		toml_config_path = args.c;
+	}
+	
+	if(!fs.existsSync(toml_config_path)){
+		urn_log.warn(`Missing TOML configuration file.`);
+		return;
+	}
+	
+	try{
+		
+		const toml_data = fs.readFileSync(toml_config_path);
+		const parsed_toml = toml.parse(toml_data.toString('utf8'));
+		set(core_client_config, parsed_toml as types.ClientConfiguration);
+		
+	}catch(err){
+		throw urn_exc.create(
+			`IVALID_TOML_CONF_FILE`,
+			`Invalid toml config file.`,
+			err as Error
+		);
+	}
+}
 
 export function set(
 	repo_config:Required<types.ClientConfiguration>,

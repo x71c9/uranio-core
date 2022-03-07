@@ -4,8 +4,14 @@
  *
  * @packageDocumentation
  */
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.set = exports.set_initialize = exports.is_initialized = exports.get = exports.defaults = void 0;
+exports.set = exports.set_from_file = exports.set_initialize = exports.is_initialized = exports.get = exports.defaults = void 0;
+const fs_1 = __importDefault(require("fs"));
+const minimist_1 = __importDefault(require("minimist"));
+const toml_1 = __importDefault(require("toml"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('CONF_CORE_CLIENT_MODULE', `Core client configuration module`);
 const default_conf_1 = require("../client/default_conf");
@@ -29,6 +35,26 @@ exports.set_initialize = set_initialize;
 //   const config = _get_env_vars(repo_config);
 //   set(repo_config, config);
 // }
+function set_from_file() {
+    let toml_config_path = './uranio.toml';
+    const args = (0, minimist_1.default)(process.argv.slice(2));
+    if (args.c) {
+        toml_config_path = args.c;
+    }
+    if (!fs_1.default.existsSync(toml_config_path)) {
+        urn_lib_1.urn_log.warn(`Missing TOML configuration file.`);
+        return;
+    }
+    try {
+        const toml_data = fs_1.default.readFileSync(toml_config_path);
+        const parsed_toml = toml_1.default.parse(toml_data.toString('utf8'));
+        set(default_conf_1.core_client_config, parsed_toml);
+    }
+    catch (err) {
+        throw urn_exc.create(`IVALID_TOML_CONF_FILE`, `Invalid toml config file.`, err);
+    }
+}
+exports.set_from_file = set_from_file;
 function set(repo_config, config) {
     _validate_config_types(repo_config, config);
     for (const [conf_key, conf_value] of Object.entries(config)) {
