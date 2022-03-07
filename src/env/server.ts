@@ -33,10 +33,10 @@ export function set_initialize(is_initialized:boolean):void{
 
 export function set_from_env(repo_env:Required<Environment>):void{
 	const env = _get_env_vars(repo_env);
-	_set(repo_env, env);
+	set(repo_env, env);
 }
 
-function _set(repo_env:Required<Environment>, env:Partial<Environment>)
+export function set(repo_env:Required<Environment>, env:Partial<Environment>)
 		:void{
 	_validate_env_types(repo_env, env);
 	for(const [conf_key, conf_value] of Object.entries(env)){

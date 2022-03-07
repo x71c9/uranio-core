@@ -5,7 +5,7 @@
  * @packageDocumentation
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.set_from_env = exports.set_initialize = exports.is_initialized = exports.get = exports.defaults = void 0;
+exports.set = exports.set_from_env = exports.set_initialize = exports.is_initialized = exports.get = exports.defaults = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('CORE_ENV_CLIENT_MODULE', `Core client environment module`);
 const default_env_1 = require("../client/default_env");
@@ -27,15 +27,16 @@ function set_initialize(is_initialized) {
 exports.set_initialize = set_initialize;
 function set_from_env(repo_env) {
     const env = _get_env_vars(repo_env);
-    _set(repo_env, env);
+    set(repo_env, env);
 }
 exports.set_from_env = set_from_env;
-function _set(repo_env, env) {
+function set(repo_env, env) {
     _validate_config_types(repo_env, env);
     for (const [conf_key, conf_value] of Object.entries(env)) {
         repo_env[conf_key] = conf_value;
     }
 }
+exports.set = set;
 function _check_if_param_exists(param_name) {
     return urn_lib_1.urn_util.object.has_key(default_env_1.core_client_env, param_name);
 }
