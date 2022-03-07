@@ -33,10 +33,10 @@ export function set_initialize(is_initialized:boolean):void{
 
 export function set_from_env(repo_env:Required<types.ClientEnvironment>):void{
 	const env = _get_env_vars(repo_env);
-	_set(repo_env, env);
+	set(repo_env, env);
 }
 
-function _set(
+export function set(
 	repo_env:Required<types.ClientEnvironment>,
 	env:Partial<types.ClientEnvironment>
 ):void{

@@ -5,7 +5,7 @@
  * @packageDocumentation
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.set_from_env = exports.set_initialize = exports.is_initialized = exports.get = exports.defaults = void 0;
+exports.set = exports.set_from_env = exports.set_initialize = exports.is_initialized = exports.get = exports.defaults = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('CORE_ENV_MODULE', `Core environment module`);
 const defaults_1 = require("./defaults");
@@ -27,15 +27,16 @@ function set_initialize(is_initialized) {
 exports.set_initialize = set_initialize;
 function set_from_env(repo_env) {
     const env = _get_env_vars(repo_env);
-    _set(repo_env, env);
+    set(repo_env, env);
 }
 exports.set_from_env = set_from_env;
-function _set(repo_env, env) {
+function set(repo_env, env) {
     _validate_env_types(repo_env, env);
     for (const [conf_key, conf_value] of Object.entries(env)) {
         repo_env[conf_key] = conf_value;
     }
 }
+exports.set = set;
 function _get_env_vars(repo_env) {
     const env = {};
     for (const [conf_key, conf_value] of Object.entries(repo_env)) {
