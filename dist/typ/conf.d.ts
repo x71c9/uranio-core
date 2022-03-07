@@ -13,4 +13,12 @@ export declare type Configuration = {
     storage?: Storage;
     connect_on_init?: boolean;
     superuser_create_on_init?: boolean;
+    log: {
+        debug_info: boolean;
+        color: boolean;
+        time_format: string;
+        max_str_length: number;
+        prefix: string;
+        prefix_type: boolean;
+    };
 };

@@ -104,12 +104,30 @@ exports.set_from_file = set_from_file;
 //   return config;
 // }
 function _validate_config_types(repo_config, config) {
-    for (const [config_key, config_value] of Object.entries(repo_config)) {
-        const key = config_key;
-        if (typeof config[key] !== 'undefined' && typeof config_value !== typeof config[key]) {
-            throw urn_exc.create_not_initialized(`INVALID_CONFIG_VALUE`, `Invalid config value for \`${config_key}\`. \`${config_key}\` value ` +
-                ` must be of type \`${typeof repo_config[key]}\`, ` +
-                `\`${typeof config[key]}\` given.`);
+    for (const [repo_config_key, repo_config_value] of Object.entries(repo_config)) {
+        const key = repo_config_key;
+        const subconf = config[key];
+        if (!subconf || typeof subconf === 'undefined') {
+            continue;
+        }
+        if (typeof repo_config_value === 'object') {
+            for (const [repo_subkey, repo_subvalue] of Object.entries(repo_config_value)) {
+                const subkey = repo_subkey;
+                const subvalue = subconf[subkey];
+                if (subvalue === null || typeof subvalue === 'undefined') {
+                    continue;
+                }
+                if (typeof repo_subvalue !== typeof subvalue) {
+                    throw urn_exc.create_not_initialized(`INVALID_CONFIG_VALUE`, `Invalid config value for \`${repo_config_key}[${repo_subkey}]\`. \`${repo_subkey}\` value ` +
+                        ` must be of type \`${typeof repo_config[key][subkey]}\`, ` +
+                        `\`${typeof subvalue}\` given.`);
+                }
+            }
+        }
+        else if (typeof repo_config_value !== typeof subconf) {
+            throw urn_exc.create_not_initialized(`INVALID_CONFIG_VALUE`, `Invalid config value for \`${repo_config_key}\`. \`${repo_config_key}\` value ` +
+                ` must be of type \`${typeof repo_config_value}\`, ` +
+                `\`${typeof subconf}\` given.`);
         }
     }
 }

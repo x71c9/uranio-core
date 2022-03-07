@@ -15,5 +15,13 @@ exports.core_config = {
     storage: 'aws',
     connect_on_init: false,
     superuser_create_on_init: false,
+    log: {
+        debug_info: true,
+        color: true,
+        time_format: 'yyyy-mm-dd\'T\'HH:MM:ss:l',
+        max_str_length: 174,
+        prefix: '',
+        prefix_type: false,
+    }
 };
 //# sourceMappingURL=defaults.js.map
