@@ -10,4 +10,6 @@ export * from '../typ/book';
 
 export * from '../typ/conf';
 
+export * from '../typ/env';
+
 export * from '../typ/auth';
