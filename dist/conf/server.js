@@ -104,12 +104,12 @@ exports.set_from_file = set_from_file;
 //   return config;
 // }
 function _validate_config_types(repo_config, config) {
-    for (const [config_key, config_value] of Object.entries(config)) {
+    for (const [config_key, config_value] of Object.entries(repo_config)) {
         const key = config_key;
-        if (typeof config_value !== typeof repo_config[key]) {
+        if (typeof config[key] !== 'undefined' && typeof config_value !== typeof config[key]) {
             throw urn_exc.create_not_initialized(`INVALID_CONFIG_VALUE`, `Invalid config value for \`${config_key}\`. \`${config_key}\` value ` +
-                ` must be of type \`${typeof repo_config[key]}\`,` +
-                `\`${typeof config_value}\` given.`);
+                ` must be of type \`${typeof repo_config[key]}\`, ` +
+                `\`${typeof config[key]}\` given.`);
         }
     }
 }
