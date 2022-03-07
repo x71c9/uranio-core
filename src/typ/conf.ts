@@ -26,4 +26,20 @@ export type Configuration = {
 	
 	superuser_create_on_init?: boolean
 	
+	log: {
+		
+		debug_info: boolean
+		
+		color: boolean
+		
+		time_format: string
+		
+		max_str_length: number
+		
+		prefix: string
+		
+		prefix_type: boolean
+		
+	}
+	
 }
