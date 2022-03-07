@@ -56,13 +56,43 @@ function set_from_file() {
     try {
         const toml_data = fs_1.default.readFileSync(toml_config_path);
         const parsed_toml = toml_1.default.parse(toml_data.toString('utf8'));
-        set(defaults_1.core_config, parsed_toml);
+        const converted_toml = _conver_toml(parsed_toml);
+        set(defaults_1.core_config, converted_toml);
     }
     catch (err) {
         throw urn_exc.create(`IVALID_TOML_CONF_FILE`, `Invalid toml config file.`, err);
     }
 }
 exports.set_from_file = set_from_file;
+function _conver_toml(parsed_toml) {
+    const converted_config = {};
+    for (const [key, value] of Object.entries(parsed_toml)) {
+        if (value === null || value === undefined) {
+            continue;
+        }
+        if (typeof value === 'object') {
+            _convert_subobject(converted_config, key, value);
+        }
+        else {
+            converted_config[key] = value;
+        }
+    }
+    return converted_config;
+}
+function _convert_subobject(config, key, obj) {
+    for (const [subkey, subvalue] of Object.entries(obj)) {
+        if (subvalue === null || subvalue === undefined) {
+            continue;
+        }
+        if (typeof subvalue === 'object') {
+            _convert_subobject(config, subkey, subvalue);
+        }
+        else {
+            config[`${key}_${subkey}`] = subvalue;
+        }
+    }
+    return config;
+}
 // function _get_env_vars(repo_config:Configuration):Configuration{
 //   const config:Configuration = {} as Configuration;
 //   for(const [conf_key, conf_value] of Object.entries(repo_config)){
@@ -104,29 +134,21 @@ exports.set_from_file = set_from_file;
 //   return config;
 // }
 function _validate_config_types(repo_config, config) {
-    for (const [repo_config_key, repo_config_value] of Object.entries(repo_config)) {
-        const key = repo_config_key;
-        const subconf = config[key];
+    _validate_object_types(config, repo_config);
+}
+function _validate_object_types(obj, repo_obj) {
+    for (const [repo_key, repo_value] of Object.entries(repo_obj)) {
+        const key = repo_key;
+        const subconf = obj[key];
         if (!subconf || typeof subconf === 'undefined') {
             continue;
         }
-        if (typeof repo_config_value === 'object') {
-            for (const [repo_subkey, repo_subvalue] of Object.entries(repo_config_value)) {
-                const subkey = repo_subkey;
-                const subvalue = subconf[subkey];
-                if (subvalue === null || typeof subvalue === 'undefined') {
-                    continue;
-                }
-                if (typeof repo_subvalue !== typeof subvalue) {
-                    throw urn_exc.create_not_initialized(`INVALID_CONFIG_VALUE`, `Invalid config value for \`${repo_config_key}[${repo_subkey}]\`. \`${repo_subkey}\` value ` +
-                        ` must be of type \`${typeof repo_config[key][subkey]}\`, ` +
-                        `\`${typeof subvalue}\` given.`);
-                }
-            }
+        if (typeof subconf === 'object') {
+            _validate_object_types(subconf, repo_value);
         }
-        else if (typeof repo_config_value !== typeof subconf) {
-            throw urn_exc.create_not_initialized(`INVALID_CONFIG_VALUE`, `Invalid config value for \`${repo_config_key}\`. \`${repo_config_key}\` value ` +
-                ` must be of type \`${typeof repo_config_value}\`, ` +
+        else if (typeof repo_value !== typeof subconf) {
+            throw urn_exc.create_not_initialized(`INVALID_CONFIG_VALUE`, `Invalid config value for \`${repo_key}\`. \`${repo_key}\` value ` +
+                ` must be of type \`${typeof repo_value}\`, ` +
                 `\`${typeof subconf}\` given.`);
         }
     }

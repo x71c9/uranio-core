@@ -48,13 +48,43 @@ function set_from_file() {
     try {
         const toml_data = fs_1.default.readFileSync(toml_config_path);
         const parsed_toml = toml_1.default.parse(toml_data.toString('utf8'));
-        set(default_conf_1.core_client_config, parsed_toml);
+        const converted_toml = _conver_toml(parsed_toml);
+        set(default_conf_1.core_client_config, converted_toml);
     }
     catch (err) {
         throw urn_exc.create(`IVALID_TOML_CONF_FILE`, `Invalid toml config file.`, err);
     }
 }
 exports.set_from_file = set_from_file;
+function _conver_toml(parsed_toml) {
+    const converted_config = {};
+    for (const [key, value] of Object.entries(parsed_toml)) {
+        if (value === null || value === undefined) {
+            continue;
+        }
+        if (typeof value === 'object') {
+            _convert_subobject(converted_config, key, value);
+        }
+        else {
+            converted_config[key] = value;
+        }
+    }
+    return converted_config;
+}
+function _convert_subobject(config, key, obj) {
+    for (const [subkey, subvalue] of Object.entries(obj)) {
+        if (subvalue === null || subvalue === undefined) {
+            continue;
+        }
+        if (typeof subvalue === 'object') {
+            _convert_subobject(config, subkey, subvalue);
+        }
+        else {
+            config[`${key}_${subkey}`] = subvalue;
+        }
+    }
+    return config;
+}
 function set(repo_config, config) {
     _validate_config_types(repo_config, config);
     for (const [conf_key, conf_value] of Object.entries(config)) {
