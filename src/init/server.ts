@@ -10,8 +10,6 @@ const urn_exc = urn_exception.init('INIT_CORE_MODULE', `Core init module`);
 
 import {schema} from '../sch/server';
 
-import uranio_config from '../config';
-
 import {core_config} from '../conf/defaults';
 
 import {core_env} from '../env/defaults';
@@ -43,7 +41,7 @@ export function init(
 	
 	env.set_from_env(core_env);
 	
-	conf.set(core_config, uranio_config as types.Configuration);
+	conf.set_from_file();
 	
 	if(config){
 		conf.set(core_config, config);
