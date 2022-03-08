@@ -55,6 +55,13 @@ export function get_all_definitions():Book{
 
 export function get_definition<A extends schema.AtomName>(atom_name:A)
 		:Book.Definition{
+	const atom_def = (atom_book as Book)[atom_name];
+	if(!atom_def){
+		throw urn_exc.create(
+			'INVALID_ATOM_NAME',
+			`Definition for Atom \`${atom_name}\` not found.`
+		);
+	}
 	return (atom_book as Book)[atom_name] as unknown as Book.Definition;
 }
 

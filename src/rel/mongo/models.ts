@@ -14,9 +14,9 @@ const urn_exc = urn_exception.init('MONGO_APP', 'Mongoose Models App');
 
 import {ConnectionName} from '../../typ/book_cln';
 
-import {Configuration} from '../../typ/conf';
+import {Environment} from '../../typ/env';
 
-import * as conf from '../../conf/server';
+// import * as conf from '../../conf/server';
 
 import * as env from '../../env/server';
 
@@ -91,8 +91,9 @@ function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstan
 	let atom_name:schema.AtomName;
 	for(atom_name of book.get_names()){
 		const atom_def = book.get_definition(atom_name);
-		if(atom_def.connection !== connection)
+		if(atom_def.connection !== connection){
 			continue;
+		}
 		const atom_schema_def = generate_mongo_schema_def(atom_name);
 		let atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
 		
@@ -216,8 +217,8 @@ function _create_connection(conn_name:ConnectionName){
 		mongo_app.connections = {} as MongoConnections;
 	}
 	if(!mongo_app.connections[conn_name]){
-		const mongo_conn_string = conf.get(`mongo_${conn_name}_connection` as keyof Configuration);
-		const mongo_db_string = conf.get(`db_${conn_name}_name` as keyof Configuration);
+		const mongo_conn_string = env.get(`mongo_${conn_name}_connection` as keyof Environment);
+		const mongo_db_string = env.get(`db_${conn_name}_name` as keyof Environment);
 		
 		const conf_connection_name = (conn_name !== 'main' && typeof mongo_conn_string === 'string') ?
 			mongo_conn_string : env.get(`mongo_main_connection`);
