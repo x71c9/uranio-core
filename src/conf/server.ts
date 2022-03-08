@@ -20,6 +20,8 @@ export {core_config as defaults};
 
 import {Configuration} from '../typ/conf';
 
+import * as env from '../env/server';
+
 let _is_core_initialized = false;
 
 export function get<k extends keyof Configuration>(param_name:k)
@@ -27,6 +29,22 @@ export function get<k extends keyof Configuration>(param_name:k)
 	_check_if_uranio_was_initialized();
 	_check_if_param_exists(param_name);
 	return core_config[param_name];
+}
+
+export function get_current<k extends keyof Configuration>(param_name:k)
+		:typeof core_config[k]{
+	const pro_value = get(param_name);
+	if(env.is_production()){
+		return pro_value;
+	}
+	if(param_name.indexOf('log_') !== -1){
+		const dev_param = param_name.replace('log_', 'log_dev_');
+		const dev_value = get(dev_param as keyof Configuration);
+		if(typeof dev_value !== 'undefined'){
+			return dev_value as typeof core_config[k];
+		}
+	}
+	return pro_value;
 }
 
 export function is_initialized():boolean{

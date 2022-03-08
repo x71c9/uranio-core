@@ -15,6 +15,7 @@ const urn_lib_1 = require("urn-lib");
  * variable, like process.env[var_name] where `var_name` is a variable.
  */
 exports.core_client_env = {
-    log_level: urn_lib_1.urn_log.defaults.log_level,
+    log_level: urn_lib_1.urn_log.LogLevel.ERROR,
+    log_dev_level: urn_lib_1.urn_log.LogLevel.DEBUG,
 };
 //# sourceMappingURL=default_env.js.map

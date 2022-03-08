@@ -4,11 +4,34 @@
  *
  * @packageDocumentation
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.set = exports.set_from_file = exports.set_initialize = exports.is_initialized = exports.get = exports.defaults = void 0;
+exports.set = exports.set_from_file = exports.set_initialize = exports.is_initialized = exports.get_current = exports.get = exports.defaults = void 0;
 const fs_1 = __importDefault(require("fs"));
 const minimist_1 = __importDefault(require("minimist"));
 const toml_1 = __importDefault(require("toml"));
@@ -16,6 +39,7 @@ const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('CONF_CORE_CLIENT_MODULE', `Core client configuration module`);
 const default_conf_1 = require("../client/default_conf");
 Object.defineProperty(exports, "defaults", { enumerable: true, get: function () { return default_conf_1.core_client_config; } });
+const env = __importStar(require("../env/client"));
 let _is_client_core_initialized = false;
 function get(param_name) {
     _check_if_uranio_was_initialized();
@@ -23,6 +47,21 @@ function get(param_name) {
     return default_conf_1.core_client_config[param_name];
 }
 exports.get = get;
+function get_current(param_name) {
+    const pro_value = get(param_name);
+    if (env.is_production()) {
+        return pro_value;
+    }
+    if (param_name.indexOf('log_') !== -1) {
+        const dev_param = param_name.replace('log_', 'log_dev_');
+        const dev_value = get(dev_param);
+        if (typeof dev_value !== 'undefined') {
+            return dev_value;
+        }
+    }
+    return pro_value;
+}
+exports.get_current = get_current;
 function is_initialized() {
     return _is_client_core_initialized;
 }

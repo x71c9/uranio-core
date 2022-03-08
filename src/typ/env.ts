@@ -12,6 +12,8 @@ export type Environment = {
 	
 	log_level: urn_log.LogLevel
 	
+	log_dev_level: urn_log.LogLevel
+	
 	mongo_main_connection: string
 	
 	db_main_name: string

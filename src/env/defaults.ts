@@ -12,7 +12,9 @@ export const core_env:Required<Environment> = {
 	
 	// production: process.env.NODE_ENV === 'production',
 	
-	log_level: urn_log.LogLevel.DEBUG,
+	log_level: urn_log.LogLevel.ERROR,
+	
+	log_dev_level: urn_log.LogLevel.DEBUG,
 	
 	mongo_main_connection: '',
 	
