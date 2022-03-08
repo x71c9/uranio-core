@@ -5,7 +5,7 @@
  * @packageDocumentation
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.set = exports.set_from_env = exports.set_initialize = exports.is_initialized = exports.get = exports.defaults = void 0;
+exports.set = exports.set_from_env = exports.set_initialize = exports.is_initialized = exports.is_production = exports.get_current = exports.get = exports.defaults = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('CORE_ENV_CLIENT_MODULE', `Core client environment module`);
 const default_env_1 = require("../client/default_env");
@@ -17,6 +17,25 @@ function get(param_name) {
     return default_env_1.core_client_env[param_name];
 }
 exports.get = get;
+function get_current(param_name) {
+    const pro_value = get(param_name);
+    if (is_production()) {
+        return pro_value;
+    }
+    if (param_name.indexOf('log_') !== -1) {
+        const dev_param = param_name.replace('log_', 'log_dev_');
+        const dev_value = get(dev_param);
+        if (typeof dev_value !== 'undefined') {
+            return dev_value;
+        }
+    }
+    return pro_value;
+}
+exports.get_current = get_current;
+function is_production() {
+    return process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'PRODUCTION';
+}
+exports.is_production = is_production;
 function is_initialized() {
     return _is_client_core_initialized;
 }

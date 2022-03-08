@@ -43,7 +43,7 @@ const db = __importStar(require("../db/server"));
 const bll = __importStar(require("../bll/server"));
 const log = __importStar(require("../log/server"));
 function init(config, register_required = true) {
-    log.init(urn_lib_1.urn_log.defaults);
+    // log.init(urn_log, urn_log.defaults);
     env.set_from_env(defaults_2.core_env);
     conf.set_from_file();
     if (config) {
@@ -56,11 +56,12 @@ function init(config, register_required = true) {
     _validate_core_book();
     conf.set_initialize(true);
     env.set_initialize(true);
-    urn_lib_1.urn_log.defaults.log_level = env.get(`log_level`);
+    log.init(urn_lib_1.urn_log);
     _core_connect();
     if (conf.get(`superuser_create_on_init`) === true) {
         _create_superuser();
     }
+    urn_lib_1.urn_log.debug(`Uranio core initialization completed.`);
 }
 exports.init = init;
 function _register_required_atoms() {

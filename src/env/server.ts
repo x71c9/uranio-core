@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {urn_util, urn_exception} from 'urn-lib';
+import {urn_log, urn_util, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('CORE_ENV_MODULE', `Core environment module`);
 
@@ -21,6 +21,22 @@ export function get<k extends keyof Environment>(param_name:k)
 	_check_if_uranio_was_initialized();
 	_check_if_param_exists(param_name);
 	return core_env[param_name];
+}
+
+export function get_current<k extends keyof Environment>(param_name:k)
+		:typeof core_env[k]{
+	const pro_value = get(param_name);
+	if(is_production()){
+		return pro_value;
+	}
+	if(param_name.indexOf('log_') !== -1){
+		const dev_param = param_name.replace('log_', 'log_dev_');
+		const dev_value = get(dev_param as keyof Environment);
+		if(typeof dev_value !== 'undefined'){
+			return dev_value as typeof core_env[k];
+		}
+	}
+	return pro_value;
 }
 
 export function is_initialized():boolean{
@@ -52,6 +68,12 @@ function _get_env_vars(repo_env:Environment):Environment{
 	const env:Environment = {} as Environment;
 	for(const [conf_key, conf_value] of Object.entries(repo_env)){
 		const env_var_name = `URN_${conf_key.toUpperCase()}`;
+		if(env_var_name === `URN_LOG_LEVEL` || env_var_name === `URN_LOG_DEV_LEVEL`){
+			if(typeof process.env[env_var_name] === 'string'){
+				const string_log_level = process.env[env_var_name] as unknown as urn_log.LogLevel;
+				process.env[env_var_name] = urn_log.LogLevel[string_log_level];
+			}
+		}
 		switch(typeof conf_value){
 			case 'number':{
 				if(

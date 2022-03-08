@@ -17,6 +17,8 @@ import {ClientEnvironment} from './types';
  */
 export const core_client_env:Required<ClientEnvironment> = {
 	
-	log_level: urn_log.defaults.log_level,
+	log_level: urn_log.LogLevel.ERROR,
+	
+	log_dev_level: urn_log.LogLevel.DEBUG,
 	
 };

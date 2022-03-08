@@ -37,7 +37,7 @@ export function init(
 	register_required=true
 ):void{
 	
-	log.init(urn_log.defaults);
+	// log.init(urn_log, urn_log.defaults);
 	
 	env.set_from_env(core_env);
 	
@@ -57,13 +57,15 @@ export function init(
 	conf.set_initialize(true);
 	env.set_initialize(true);
 	
-	urn_log.defaults.log_level = env.get(`log_level`);
+	log.init(urn_log);
 	
 	_core_connect();
 	
 	if(conf.get(`superuser_create_on_init`) === true){
 		_create_superuser();
 	}
+	
+	urn_log.debug(`Uranio core initialization completed.`);
 	
 }
 

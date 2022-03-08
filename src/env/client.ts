@@ -23,6 +23,26 @@ export function get<k extends keyof Required<types.ClientEnvironment>>(param_nam
 	return core_client_env[param_name];
 }
 
+export function get_current<k extends keyof types.ClientEnvironment>(param_name:k)
+		:typeof core_client_env[k]{
+	const pro_value = get(param_name);
+	if(is_production()){
+		return pro_value;
+	}
+	if(param_name.indexOf('log_') !== -1){
+		const dev_param = param_name.replace('log_', 'log_dev_');
+		const dev_value = get(dev_param as keyof types.ClientEnvironment);
+		if(typeof dev_value !== 'undefined'){
+			return dev_value as typeof core_client_env[k];
+		}
+	}
+	return pro_value;
+}
+
+export function is_production():boolean{
+	return process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'PRODUCTION';
+}
+
 export function is_initialized():boolean{
 	return _is_client_core_initialized;
 }
