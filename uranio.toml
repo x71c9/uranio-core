@@ -13,7 +13,7 @@ connect_on_init = true
 	prefix = ''
 	prefix_type = false
 [log.dev]
-	debug_info = true
+	debug_info = false
 	color = true
 	time_format = "yyyy-mm-dd'T'HH:MM:ss:l"
 	max_str_length = 174

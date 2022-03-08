@@ -1,5 +1,5 @@
 /**
- * Web run module
+ * Core dev module
  *
  * @packageDocumentation
  */

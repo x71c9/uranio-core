@@ -123,11 +123,12 @@ function _convert_subobject(config, key, obj) {
         if (subvalue === null || subvalue === undefined) {
             continue;
         }
+        const full_key = `${key}_${subkey}`;
         if (typeof subvalue === 'object') {
-            _convert_subobject(config, subkey, subvalue);
+            _convert_subobject(config, full_key, subvalue);
         }
         else {
-            config[`${key}_${subkey}`] = subvalue;
+            config[full_key] = subvalue;
         }
     }
     return config;
