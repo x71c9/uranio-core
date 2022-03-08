@@ -11,3 +11,4 @@ export declare function is_initialized(): boolean;
 export declare function set_initialize(is_initialized: boolean): void;
 export declare function set_from_env(repo_env: Required<Environment>): void;
 export declare function set(repo_env: Required<Environment>, env: Partial<Environment>): void;
+export declare function is_production(): boolean;

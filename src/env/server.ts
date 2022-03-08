@@ -44,6 +44,10 @@ export function set(repo_env:Required<Environment>, env:Partial<Environment>)
 	}
 }
 
+export function is_production():boolean{
+	return process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'PRODUCTION';
+}
+
 function _get_env_vars(repo_env:Environment):Environment{
 	const env:Environment = {} as Environment;
 	for(const [conf_key, conf_value] of Object.entries(repo_env)){
