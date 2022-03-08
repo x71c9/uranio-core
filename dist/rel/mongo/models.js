@@ -35,7 +35,7 @@ exports.get_model = exports.create_all_connection = exports.mongo_app = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('MONGO_APP', 'Mongoose Models App');
-const conf = __importStar(require("../../conf/server"));
+// import * as conf from '../../conf/server';
 const env = __importStar(require("../../env/server"));
 const schema_1 = require("./schema");
 const mongo_connection = __importStar(require("./connection"));
@@ -95,8 +95,9 @@ function _create_models(mongoose_db_connection, connection) {
     let atom_name;
     for (atom_name of book.get_names()) {
         const atom_def = book.get_definition(atom_name);
-        if (atom_def.connection !== connection)
+        if (atom_def.connection !== connection) {
             continue;
+        }
         const atom_schema_def = (0, schema_1.generate_mongo_schema_def)(atom_name);
         let atom_mongo_schema = new mongoose_1.default.Schema(atom_schema_def, { versionKey: false, strict: false });
         const conn_name = (!connection) ? 'main' : connection;
@@ -169,8 +170,8 @@ function _create_connection(conn_name) {
         exports.mongo_app.connections = {};
     }
     if (!exports.mongo_app.connections[conn_name]) {
-        const mongo_conn_string = conf.get(`mongo_${conn_name}_connection`);
-        const mongo_db_string = conf.get(`db_${conn_name}_name`);
+        const mongo_conn_string = env.get(`mongo_${conn_name}_connection`);
+        const mongo_db_string = env.get(`db_${conn_name}_name`);
         const conf_connection_name = (conn_name !== 'main' && typeof mongo_conn_string === 'string') ?
             mongo_conn_string : env.get(`mongo_main_connection`);
         const conf_db_name = (conn_name !== 'main' && typeof mongo_conn_string === 'string') ?

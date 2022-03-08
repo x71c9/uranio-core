@@ -45,6 +45,10 @@ function get_all_definitions() {
 }
 exports.get_all_definitions = get_all_definitions;
 function get_definition(atom_name) {
+    const atom_def = atoms_1.atom_book[atom_name];
+    if (!atom_def) {
+        throw urn_exc.create('INVALID_ATOM_NAME', `Definition for Atom \`${atom_name}\` not found.`);
+    }
     return atoms_1.atom_book[atom_name];
 }
 exports.get_definition = get_definition;
