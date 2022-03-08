@@ -8,6 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.core_env = void 0;
 const urn_lib_1 = require("urn-lib");
 exports.core_env = {
+    // production: process.env.NODE_ENV === 'production',
     log_level: urn_lib_1.urn_log.LogLevel.DEBUG,
     mongo_main_connection: '',
     mongo_trash_connection: '',

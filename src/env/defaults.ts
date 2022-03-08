@@ -10,6 +10,8 @@ import {Environment} from '../typ/env';
 
 export const core_env:Required<Environment> = {
 	
+	// production: process.env.NODE_ENV === 'production',
+	
 	log_level: urn_log.LogLevel.DEBUG,
 	
 	mongo_main_connection: '',

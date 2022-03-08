@@ -8,6 +8,8 @@ import {urn_log} from 'urn-lib';
 
 export type Environment = {
 	
+	// production: boolean
+	
 	log_level: urn_log.LogLevel
 	
 	mongo_main_connection: string
