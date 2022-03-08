@@ -118,10 +118,11 @@ function _convert_subobject(config:Partial<Configuration>, key:string, obj:any){
 		if(subvalue === null || subvalue === undefined){
 			continue;
 		}
+		const full_key = `${key}_${subkey}`;
 		if(typeof subvalue === 'object'){
-			_convert_subobject(config, subkey, subvalue);
+			_convert_subobject(config, full_key, subvalue);
 		}else{
-			(config as any)[`${key}_${subkey}`] = subvalue;
+			(config as any)[full_key] = subvalue;
 		}
 	}
 	return config;
