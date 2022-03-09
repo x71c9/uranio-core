@@ -11,4 +11,4 @@ export declare function get_current<k extends keyof Configuration>(param_name: k
 export declare function is_initialized(): boolean;
 export declare function set_initialize(is_initialized: boolean): void;
 export declare function set(repo_config: Required<Configuration>, config: Partial<Configuration>): void;
-export declare function set_from_file(): void;
+export declare function set_from_file(repo_config: Required<Configuration>): void;

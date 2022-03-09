@@ -40,7 +40,7 @@ export function get_current<k extends keyof Configuration>(param_name:k)
 	if(param_name.indexOf('log_') !== -1){
 		const dev_param = param_name.replace('log_', 'log_dev_');
 		const dev_value = get(dev_param as keyof Configuration);
-		if(typeof dev_value !== 'undefined'){
+		if(typeof dev_value === typeof core_config[dev_param as keyof Configuration]){
 			return dev_value as typeof core_config[k];
 		}
 	}
@@ -69,7 +69,7 @@ export function set(repo_config:Required<Configuration>, config:Partial<Configur
 	// Object.assign(repo_config, config);
 }
 
-export function set_from_file():void{
+export function set_from_file(repo_config:Required<Configuration>):void{
 	
 	let toml_config_path = './uranio.toml';
 	const args = minimist(process.argv.slice(2));
@@ -87,7 +87,7 @@ export function set_from_file():void{
 		const toml_data = fs.readFileSync(toml_config_path);
 		const parsed_toml = toml.parse(toml_data.toString('utf8'));
 		const converted_toml = _conver_toml(parsed_toml);
-		set(core_config, converted_toml);
+		set(repo_config, converted_toml);
 		
 	}catch(err){
 		throw urn_exc.create(

@@ -25,7 +25,7 @@ function get_current(param_name) {
     if (param_name.indexOf('log_') !== -1) {
         const dev_param = param_name.replace('log_', 'log_dev_');
         const dev_value = get(dev_param);
-        if (typeof dev_value !== 'undefined') {
+        if (typeof dev_value === typeof defaults_1.core_env[dev_param]) {
             return dev_value;
         }
     }

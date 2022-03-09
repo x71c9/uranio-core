@@ -41,7 +41,7 @@ export function init(
 	
 	env.set_from_env(core_env);
 	
-	conf.set_from_file();
+	conf.set_from_file(core_config);
 	
 	if(config){
 		conf.set(core_config, config);

@@ -55,7 +55,7 @@ function get_current(param_name) {
     if (param_name.indexOf('log_') !== -1) {
         const dev_param = param_name.replace('log_', 'log_dev_');
         const dev_value = get(dev_param);
-        if (typeof dev_value !== 'undefined') {
+        if (typeof dev_value === typeof defaults_1.core_config[dev_param]) {
             return dev_value;
         }
     }
@@ -82,7 +82,7 @@ function set(repo_config, config) {
     // Object.assign(repo_config, config);
 }
 exports.set = set;
-function set_from_file() {
+function set_from_file(repo_config) {
     let toml_config_path = './uranio.toml';
     const args = (0, minimist_1.default)(process.argv.slice(2));
     if (args.c) {
@@ -96,7 +96,7 @@ function set_from_file() {
         const toml_data = fs_1.default.readFileSync(toml_config_path);
         const parsed_toml = toml_1.default.parse(toml_data.toString('utf8'));
         const converted_toml = _conver_toml(parsed_toml);
-        set(defaults_1.core_config, converted_toml);
+        set(repo_config, converted_toml);
     }
     catch (err) {
         throw urn_exc.create(`IVALID_TOML_CONF_FILE`, `Invalid toml config file.`, err);
