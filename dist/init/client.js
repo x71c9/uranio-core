@@ -40,7 +40,7 @@ const log = __importStar(require("../log/client"));
 function init(config, register_required = true) {
     env.set_from_env(default_env_1.core_client_env);
     // _set_from_config_file();
-    conf.set_from_file();
+    conf.set_from_file(default_conf_1.core_client_config);
     if (config) {
         conf.set(default_conf_1.core_client_config, config);
     }

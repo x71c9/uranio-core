@@ -32,7 +32,7 @@ export function get_current<k extends keyof Environment>(param_name:k)
 	if(param_name.indexOf('log_') !== -1){
 		const dev_param = param_name.replace('log_', 'log_dev_');
 		const dev_value = get(dev_param as keyof Environment);
-		if(typeof dev_value !== 'undefined'){
+		if(typeof dev_value === typeof core_env[dev_param as keyof Environment]){
 			return dev_value as typeof core_env[k];
 		}
 	}

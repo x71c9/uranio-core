@@ -45,7 +45,7 @@ const log = __importStar(require("../log/server"));
 function init(config, register_required = true) {
     // log.init(urn_log, urn_log.defaults);
     env.set_from_env(defaults_2.core_env);
-    conf.set_from_file();
+    conf.set_from_file(defaults_1.core_config);
     if (config) {
         conf.set(defaults_1.core_config, config);
     }
