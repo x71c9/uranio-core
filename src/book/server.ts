@@ -43,6 +43,10 @@ export function validate_name(atom_name:string):boolean{
 	return client_book.validate_name(atom_name);
 }
 
+export function validate_auth_name(atom_name:string):boolean{
+	return client_book.validate_auth_name(atom_name);
+}
+
 export function get_all_definitions():Book{
 	return atom_book as unknown as Book;
 }
