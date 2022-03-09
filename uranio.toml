@@ -19,3 +19,17 @@ connect_on_init = true
 	max_str_length = 174
 	prefix = ''
 	prefix_type = false
+[client.log]
+	debug_info = false
+	color = false
+	time_format = "yyyy-mm-dd'T'HH:MM:ss:l"
+	max_str_length = 174
+	prefix = ''
+	prefix_type = false
+[client.log.dev]
+	debug_info = false
+	color = false
+	time_format = "yyyy-mm-dd'T'HH:MM:ss:l"
+	max_str_length = 174
+	prefix = ''
+	prefix_type = false
