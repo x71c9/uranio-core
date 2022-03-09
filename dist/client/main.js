@@ -48,7 +48,7 @@ const env = __importStar(require("../env/client"));
 exports.env = env;
 const register = __importStar(require("../reg/client"));
 exports.register = register;
-const required = __importStar(require("../req/server"));
+const required = __importStar(require("../req/client"));
 exports.required = required;
 __exportStar(require("../sch/client"), exports);
 __exportStar(require("../init/client"), exports);

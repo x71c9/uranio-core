@@ -4,11 +4,11 @@
  * @packageDocumentation
  */
 
-import fs from 'fs';
+// import fs from 'fs';
 
-import minimist from 'minimist';
+// import minimist from 'minimist';
 
-import toml from 'toml';
+// import toml from 'toml';
 
 import {urn_log, urn_util, urn_exception} from 'urn-lib';
 
@@ -55,69 +55,6 @@ export function set_initialize(is_initialized:boolean):void{
 	_is_client_core_initialized = is_initialized;
 }
 
-// export function set_from_env(repo_config:Required<types.ClientConfiguration>):void{
-//   const config = _get_env_vars(repo_config);
-//   set(repo_config, config);
-// }
-
-export function set_from_file(repo_config:Required<types.ClientConfiguration>):void{
-	
-	let toml_config_path = './uranio.toml';
-	const args = minimist(process.argv.slice(2));
-	if(args.c){
-		toml_config_path = args.c;
-	}
-	
-	if(!fs.existsSync(toml_config_path)){
-		urn_log.warn(`Missing TOML configuration file.`);
-		return;
-	}
-	
-	try{
-		
-		const toml_data = fs.readFileSync(toml_config_path);
-		const parsed_toml = toml.parse(toml_data.toString('utf8'));
-		const converted_toml = _conver_toml(parsed_toml);
-		set(repo_config, converted_toml);
-		
-	}catch(err){
-		throw urn_exc.create(
-			`IVALID_TOML_CONF_FILE`,
-			`Invalid toml config file.`,
-			err as Error
-		);
-	}
-}
-
-function _conver_toml(parsed_toml:any):Partial<types.ClientConfiguration>{
-	const converted_config:Partial<types.ClientConfiguration> = {};
-	for(const [key, value] of Object.entries(parsed_toml)){
-		if(value === null || value === undefined){
-			continue;
-		}
-		if(typeof value === 'object'){
-			_convert_subobject(converted_config, key, value);
-		}else{
-			(converted_config as any)[key] = value;
-		}
-	}
-	return converted_config;
-}
-
-function _convert_subobject(config:Partial<types.ClientConfiguration>, key:string, obj:any){
-	for(const [subkey, subvalue] of Object.entries(obj)){
-		if(subvalue === null || subvalue === undefined){
-			continue;
-		}
-		if(typeof subvalue === 'object'){
-			_convert_subobject(config, subkey, subvalue);
-		}else{
-			(config as any)[`${key}_${subkey}`] = subvalue;
-		}
-	}
-	return config;
-}
-
 export function set(
 	repo_config:Required<types.ClientConfiguration>,
 	config:Partial<types.ClientConfiguration>
@@ -128,6 +65,69 @@ export function set(
 	}
 	// Object.assign(repo_config, config);
 }
+
+// export function set_from_env(repo_config:Required<types.ClientConfiguration>):void{
+//   const config = _get_env_vars(repo_config);
+//   set(repo_config, config);
+// }
+
+// export function set_from_file(repo_config:Required<types.ClientConfiguration>):void{
+	
+//   let toml_config_path = './uranio.toml';
+//   const args = minimist(process.argv.slice(2));
+//   if(args.c){
+//     toml_config_path = args.c;
+//   }
+	
+//   if(!fs.existsSync(toml_config_path)){
+//     urn_log.warn(`Missing TOML configuration file.`);
+//     return;
+//   }
+	
+//   try{
+		
+//     const toml_data = fs.readFileSync(toml_config_path);
+//     const parsed_toml = toml.parse(toml_data.toString('utf8'));
+//     const converted_toml = _conver_toml(parsed_toml);
+//     set(repo_config, converted_toml);
+		
+//   }catch(err){
+//     throw urn_exc.create(
+//       `IVALID_TOML_CONF_FILE`,
+//       `Invalid toml config file.`,
+//       err as Error
+//     );
+//   }
+// }
+
+// function _conver_toml(parsed_toml:any):Partial<types.ClientConfiguration>{
+//   const converted_config:Partial<types.ClientConfiguration> = {};
+//   for(const [key, value] of Object.entries(parsed_toml)){
+//     if(value === null || value === undefined){
+//       continue;
+//     }
+//     if(typeof value === 'object'){
+//       _convert_subobject(converted_config, key, value);
+//     }else{
+//       (converted_config as any)[key] = value;
+//     }
+//   }
+//   return converted_config;
+// }
+
+// function _convert_subobject(config:Partial<types.ClientConfiguration>, key:string, obj:any){
+//   for(const [subkey, subvalue] of Object.entries(obj)){
+//     if(subvalue === null || subvalue === undefined){
+//       continue;
+//     }
+//     if(typeof subvalue === 'object'){
+//       _convert_subobject(config, subkey, subvalue);
+//     }else{
+//       (config as any)[`${key}_${subkey}`] = subvalue;
+//     }
+//   }
+//   return config;
+// }
 
 function _check_if_param_exists(param_name:string){
 	return urn_util.object.has_key(core_client_config, param_name);

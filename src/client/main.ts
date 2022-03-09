@@ -36,7 +36,7 @@ import * as register from '../reg/client';
 
 export {register};
 
-import * as required from '../req/server';
+import * as required from '../req/client';
 
 export {required};
 
