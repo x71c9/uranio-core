@@ -32,6 +32,7 @@ exports.set = exports.set_initialize = exports.is_initialized = exports.get_curr
 // import fs from 'fs';
 // import minimist from 'minimist';
 // import toml from 'toml';
+// import {urn_log, urn_util, urn_exception} from 'urn-lib';
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('CONF_CORE_CLIENT_MODULE', `Core client configuration module`);
 const default_conf_1 = require("../client/default_conf");
