@@ -27,14 +27,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.set = exports.set_from_file = exports.set_initialize = exports.is_initialized = exports.get_current = exports.get = exports.defaults = void 0;
-const fs_1 = __importDefault(require("fs"));
-const minimist_1 = __importDefault(require("minimist"));
-const toml_1 = __importDefault(require("toml"));
+exports.set = exports.set_initialize = exports.is_initialized = exports.get_current = exports.get = exports.defaults = void 0;
+// import fs from 'fs';
+// import minimist from 'minimist';
+// import toml from 'toml';
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('CONF_CORE_CLIENT_MODULE', `Core client configuration module`);
 const default_conf_1 = require("../client/default_conf");
@@ -70,60 +67,6 @@ function set_initialize(is_initialized) {
     _is_client_core_initialized = is_initialized;
 }
 exports.set_initialize = set_initialize;
-// export function set_from_env(repo_config:Required<types.ClientConfiguration>):void{
-//   const config = _get_env_vars(repo_config);
-//   set(repo_config, config);
-// }
-function set_from_file(repo_config) {
-    let toml_config_path = './uranio.toml';
-    const args = (0, minimist_1.default)(process.argv.slice(2));
-    if (args.c) {
-        toml_config_path = args.c;
-    }
-    if (!fs_1.default.existsSync(toml_config_path)) {
-        urn_lib_1.urn_log.warn(`Missing TOML configuration file.`);
-        return;
-    }
-    try {
-        const toml_data = fs_1.default.readFileSync(toml_config_path);
-        const parsed_toml = toml_1.default.parse(toml_data.toString('utf8'));
-        const converted_toml = _conver_toml(parsed_toml);
-        set(repo_config, converted_toml);
-    }
-    catch (err) {
-        throw urn_exc.create(`IVALID_TOML_CONF_FILE`, `Invalid toml config file.`, err);
-    }
-}
-exports.set_from_file = set_from_file;
-function _conver_toml(parsed_toml) {
-    const converted_config = {};
-    for (const [key, value] of Object.entries(parsed_toml)) {
-        if (value === null || value === undefined) {
-            continue;
-        }
-        if (typeof value === 'object') {
-            _convert_subobject(converted_config, key, value);
-        }
-        else {
-            converted_config[key] = value;
-        }
-    }
-    return converted_config;
-}
-function _convert_subobject(config, key, obj) {
-    for (const [subkey, subvalue] of Object.entries(obj)) {
-        if (subvalue === null || subvalue === undefined) {
-            continue;
-        }
-        if (typeof subvalue === 'object') {
-            _convert_subobject(config, subkey, subvalue);
-        }
-        else {
-            config[`${key}_${subkey}`] = subvalue;
-        }
-    }
-    return config;
-}
 function set(repo_config, config) {
     _validate_config_types(repo_config, config);
     for (const [conf_key, conf_value] of Object.entries(config)) {
@@ -132,6 +75,60 @@ function set(repo_config, config) {
     // Object.assign(repo_config, config);
 }
 exports.set = set;
+// export function set_from_env(repo_config:Required<types.ClientConfiguration>):void{
+//   const config = _get_env_vars(repo_config);
+//   set(repo_config, config);
+// }
+// export function set_from_file(repo_config:Required<types.ClientConfiguration>):void{
+//   let toml_config_path = './uranio.toml';
+//   const args = minimist(process.argv.slice(2));
+//   if(args.c){
+//     toml_config_path = args.c;
+//   }
+//   if(!fs.existsSync(toml_config_path)){
+//     urn_log.warn(`Missing TOML configuration file.`);
+//     return;
+//   }
+//   try{
+//     const toml_data = fs.readFileSync(toml_config_path);
+//     const parsed_toml = toml.parse(toml_data.toString('utf8'));
+//     const converted_toml = _conver_toml(parsed_toml);
+//     set(repo_config, converted_toml);
+//   }catch(err){
+//     throw urn_exc.create(
+//       `IVALID_TOML_CONF_FILE`,
+//       `Invalid toml config file.`,
+//       err as Error
+//     );
+//   }
+// }
+// function _conver_toml(parsed_toml:any):Partial<types.ClientConfiguration>{
+//   const converted_config:Partial<types.ClientConfiguration> = {};
+//   for(const [key, value] of Object.entries(parsed_toml)){
+//     if(value === null || value === undefined){
+//       continue;
+//     }
+//     if(typeof value === 'object'){
+//       _convert_subobject(converted_config, key, value);
+//     }else{
+//       (converted_config as any)[key] = value;
+//     }
+//   }
+//   return converted_config;
+// }
+// function _convert_subobject(config:Partial<types.ClientConfiguration>, key:string, obj:any){
+//   for(const [subkey, subvalue] of Object.entries(obj)){
+//     if(subvalue === null || subvalue === undefined){
+//       continue;
+//     }
+//     if(typeof subvalue === 'object'){
+//       _convert_subobject(config, subkey, subvalue);
+//     }else{
+//       (config as any)[`${key}_${subkey}`] = subvalue;
+//     }
+//   }
+//   return config;
+// }
 function _check_if_param_exists(param_name) {
     return urn_lib_1.urn_util.object.has_key(default_conf_1.core_client_config, param_name);
 }

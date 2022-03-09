@@ -19,7 +19,7 @@ import * as env from '../env/client';
 export { env };
 import * as register from '../reg/client';
 export { register };
-import * as required from '../req/server';
+import * as required from '../req/client';
 export { required };
 export * from '../sch/client';
 export * from '../init/client';
