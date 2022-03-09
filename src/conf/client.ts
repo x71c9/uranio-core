@@ -10,7 +10,8 @@
 
 // import toml from 'toml';
 
-import {urn_log, urn_util, urn_exception} from 'urn-lib';
+// import {urn_log, urn_util, urn_exception} from 'urn-lib';
+import {urn_util, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('CONF_CORE_CLIENT_MODULE', `Core client configuration module`);
 

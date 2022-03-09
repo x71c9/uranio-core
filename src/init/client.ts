@@ -30,7 +30,7 @@ export function init(
 	env.set_from_env(core_client_env);
 	
 	// _set_from_config_file();
-	conf.set_from_file(core_client_config);
+	// conf.set_from_file(core_client_config);
 	
 	if(config){
 		conf.set(core_client_config, config);
