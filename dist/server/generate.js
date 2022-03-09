@@ -52,5 +52,28 @@ uranio.init({
     superuser_create_on_init: false
 });
 const util = __importStar(require("../util/server"));
-util.generate.schema_and_save();
+let urn_command = 'all';
+for (const argv of process.argv) {
+    const splitted = argv.split('=');
+    if (splitted[0] === 'urn_command'
+        && typeof splitted[1] === 'string'
+        && splitted[1] !== '') {
+        urn_command = splitted[1];
+    }
+}
+switch (urn_command) {
+    case 'schema': {
+        util.generate.schema_and_save();
+        break;
+    }
+    case 'client-config': {
+        util.generate.client_config_and_save(uranio.conf.object());
+        break;
+    }
+    default: {
+        util.generate.schema_and_save();
+        util.generate.client_config_and_save(uranio.conf.object());
+        break;
+    }
+}
 //# sourceMappingURL=generate.js.map

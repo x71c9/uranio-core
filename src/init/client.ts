@@ -22,6 +22,8 @@ import * as env from '../env/client';
 
 import * as log from '../log/client';
 
+import {client_toml} from '../client/toml';
+
 export function init(
 	config?: Partial<types.ClientConfiguration>,
 	register_required=true
@@ -31,6 +33,8 @@ export function init(
 	
 	// _set_from_config_file();
 	// conf.set_from_file(core_client_config);
+	
+	conf.set(core_client_config, client_toml);
 	
 	if(config){
 		conf.set(core_client_config, config);

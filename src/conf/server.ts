@@ -47,6 +47,11 @@ export function get_current<k extends keyof Configuration>(param_name:k)
 	return pro_value;
 }
 
+export function object():Configuration{
+	_check_if_uranio_was_initialized();
+	return core_config;
+}
+
 export function is_initialized():boolean{
 	return _is_core_initialized;
 }

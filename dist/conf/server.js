@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.set_from_file = exports.set = exports.set_initialize = exports.is_initialized = exports.get_current = exports.get = exports.defaults = void 0;
+exports.set_from_file = exports.set = exports.set_initialize = exports.is_initialized = exports.object = exports.get_current = exports.get = exports.defaults = void 0;
 const fs_1 = __importDefault(require("fs"));
 const minimist_1 = __importDefault(require("minimist"));
 const toml_1 = __importDefault(require("toml"));
@@ -62,6 +62,11 @@ function get_current(param_name) {
     return pro_value;
 }
 exports.get_current = get_current;
+function object() {
+    _check_if_uranio_was_initialized();
+    return defaults_1.core_config;
+}
+exports.object = object;
 function is_initialized() {
     return _is_core_initialized;
 }

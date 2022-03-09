@@ -31,9 +31,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.init = exports.save_schema = exports.schema_and_save = exports.schema = exports.process_params = void 0;
+exports.init = exports.save_client_config = exports.client_config_and_save = exports.client_config = exports.save_schema = exports.schema_and_save = exports.schema = exports.process_params = void 0;
 const fs_1 = __importDefault(require("fs"));
 const dateformat_1 = __importDefault(require("dateformat"));
+const esbuild = __importStar(require("esbuild"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 const server_1 = require("../stc/server");
@@ -41,7 +42,8 @@ const book = __importStar(require("../book/server"));
 const types = __importStar(require("../server/types"));
 // const _get_atom_schema_path() = './node_modules/uranio-schema/dist/typ/atom.d.ts';
 exports.process_params = {
-    // urn_command: `schema`,
+    urn_command: `schema`,
+    urn_repo_path: 'node_modules/uranio',
     urn_schema_repo_path: 'node_modules/uranio-schema'
 };
 function schema() {
@@ -67,13 +69,44 @@ function save_schema(text) {
     urn_lib_1.urn_log.debug(`Update schema [${_get_atom_schema_path()}].`);
 }
 exports.save_schema = save_schema;
+function client_config(server_config) {
+    urn_lib_1.urn_log.debug('Started generating uranio core client config...');
+    init();
+    const text = _generate_client_config_text(server_config);
+    urn_lib_1.urn_log.debug(`Core client config generated.`);
+    return text;
+}
+exports.client_config = client_config;
+function client_config_and_save(server_config) {
+    const text = client_config(server_config);
+    save_client_config(text);
+    urn_lib_1.urn_log.debug(`Client config generated and saved.`);
+}
+exports.client_config_and_save = client_config_and_save;
+function save_client_config(text) {
+    fs_1.default.writeFileSync(_get_core_client_config_path_src(), text);
+    urn_lib_1.urn_log.debug(`Update core client config [${_get_core_client_config_path_src()}].`);
+    _compile_client_config();
+    urn_lib_1.urn_log.debug(`Core Client config core generated and saved.`);
+}
+exports.save_client_config = save_client_config;
 function init() {
     for (const argv of process.argv) {
         const splitted = argv.split('=');
-        if (splitted[0] === 'urn_schema_repo_path'
+        if (splitted[0] === 'urn_command'
+            && typeof splitted[1] === 'string'
+            && splitted[1] !== '') {
+            exports.process_params.urn_command = splitted[1];
+        }
+        else if (splitted[0] === 'urn_schema_repo_path'
             && typeof splitted[1] === 'string'
             && splitted[1] !== '') {
             exports.process_params.urn_schema_repo_path = splitted[1];
+        }
+        else if (splitted[0] === 'urn_repo_path'
+            && typeof splitted[1] === 'string'
+            && splitted[1] !== '') {
+            exports.process_params.urn_repo_path = splitted[1];
         }
         // if(
         //   splitted[0] === 'urn_base_schema'
@@ -91,11 +124,61 @@ function init() {
     }
 }
 exports.init = init;
+function _compile_client_config() {
+    _compile(_get_core_client_config_path_src(), _get_core_client_config_path_dist());
+}
+function _compile(src, dest) {
+    esbuild.buildSync({
+        entryPoints: [src],
+        outfile: dest,
+        platform: 'node',
+        format: 'cjs'
+    });
+    urn_lib_1.urn_log.debug(`Core Compiled [${src}] to [${dest}].`);
+}
+function _get_core_client_config_path_src() {
+    return `${exports.process_params.urn_repo_path}/src/client/toml.ts`;
+}
+function _get_core_client_config_path_dist() {
+    return `${exports.process_params.urn_repo_path}/dist/client/toml.js`;
+}
 function _get_atom_schema_path() {
     return `${exports.process_params.urn_schema_repo_path}/dist/typ/atom.d.ts`;
 }
 function _read_schema() {
     return fs_1.default.readFileSync(_get_atom_schema_path(), { encoding: 'utf8' });
+}
+function _generate_client_config_text(server_config) {
+    let text = '';
+    text += `/**\n`;
+    text += ` * Module for default client configuration object\n`;
+    text += `* Uranio generate script will replace this file with the client part\n`;
+    text += `* of the uranio.toml configration file.\n`;
+    text += `*\n`;
+    text += `* All properties starting with \`client_\` will populate this object.\n`;
+    text += ` *\n`;
+    text += ` * @packageDocumentation\n`;
+    text += ` */\n`;
+    text += `\n`;
+    text += `import {ClientConfiguration} from './types';\n`;
+    text += `\n`;
+    text += `export const client_toml:Partial<ClientConfiguration> = {\n`;
+    text += _client_config(server_config);
+    text += `};\n`;
+    return text;
+}
+function _client_config(server_config) {
+    let text = '';
+    for (const [conf_key, conf_value] of Object.entries(server_config)) {
+        if (conf_key.indexOf('client_') === 0) {
+            const real_key = conf_key.replace('client_', '');
+            text += `\t${real_key}: ${_real_value(conf_value)},\n`;
+        }
+    }
+    return text;
+}
+function _real_value(value) {
+    return urn_lib_1.urn_util.json.safe_stringify(value);
 }
 function _generate_uranio_schema_text() {
     const txt = _generate_schema_text();
