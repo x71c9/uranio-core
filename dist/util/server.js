@@ -28,7 +28,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generate = void 0;
+exports.toml = exports.generate = void 0;
 const generate = __importStar(require("./generate"));
 exports.generate = generate;
+const toml = __importStar(require("./toml"));
+exports.toml = toml;
 //# sourceMappingURL=server.js.map

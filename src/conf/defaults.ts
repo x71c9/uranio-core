@@ -35,16 +35,16 @@ export const core_config:Required<Configuration> = {
 	
 	log_prefix_type: false,
 	
-	log_dev_debug_info: true,
+	dev_log_debug_info: true,
 	
-	log_dev_color: true,
+	dev_log_color: true,
 	
-	log_dev_time_format: 'yyyy-mm-dd\'T\'HH:MM:ss:l',
+	dev_log_time_format: 'yyyy-mm-dd\'T\'HH:MM:ss:l',
 	
-	log_dev_max_str_length: 174,
+	dev_log_max_str_length: 174,
 	
-	log_dev_prefix: '',
+	dev_log_prefix: '',
 	
-	log_dev_prefix_type: false,
+	dev_log_prefix_type: false,
 	
 };

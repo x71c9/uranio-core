@@ -40,7 +40,6 @@ const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module
 const server_1 = require("../stc/server");
 const book = __importStar(require("../book/server"));
 const types = __importStar(require("../server/types"));
-// const _get_atom_schema_path() = './node_modules/uranio-schema/dist/typ/atom.d.ts';
 exports.process_params = {
     urn_command: `schema`,
     urn_repo_path: 'node_modules/uranio',

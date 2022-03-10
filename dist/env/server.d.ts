@@ -3,13 +3,8 @@
  *
  * @packageDocumentation
  */
-import { core_env } from './defaults';
-export { core_env as defaults };
 import { Environment } from '../typ/env';
-export declare function get<k extends keyof Environment>(param_name: k): typeof core_env[k];
-export declare function get_current<k extends keyof Environment>(param_name: k): typeof core_env[k];
-export declare function is_initialized(): boolean;
-export declare function set_initialize(is_initialized: boolean): void;
-export declare function set_from_env(repo_env: Required<Environment>): void;
-export declare function set(repo_env: Required<Environment>, env: Partial<Environment>): void;
 export declare function is_production(): boolean;
+export declare function get<k extends keyof Environment>(param_name: k): Required<Environment>[k];
+export declare function get_all(): Required<Environment>;
+export declare function set(env: Partial<Environment>): void;
