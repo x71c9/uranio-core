@@ -6,7 +6,7 @@
 
 import {urn_log, urn_exception} from 'urn-lib';
 
-const urn_exc = urn_exception.init('INIT_CORE_MODULE', `Core init module`);
+const urn_exc = urn_exception.init('CORE_INIT_MODULE', `Core init module`);
 
 import {schema} from '../sch/server';
 
@@ -22,8 +22,6 @@ import * as types from '../server/types';
 
 import * as conf from '../conf/server';
 
-import * as env from '../env/server';
-
 import * as book from '../book/server';
 
 import * as db from '../db/server';
@@ -37,12 +35,6 @@ export function init(
 	register_required=true
 ):void{
 	
-	// log.init(urn_log, urn_log.defaults);
-	
-	env.set_from_env(core_env);
-	
-	// conf.set_from_file(core_config);
-	
 	if(config){
 		conf.set(config);
 	}
@@ -54,16 +46,10 @@ export function init(
 	_validate_core_variables();
 	_validate_core_book();
 	
-	// conf.set_initialize(true);
-	// env.set_initialize(true);
-	
 	log.init(urn_log);
 	
 	_core_connect();
-	
-	if(conf.get(`superuser_create_on_init`) === true){
-		_create_superuser();
-	}
+	_create_superuser();
 	
 	urn_log.debug(`Uranio core initialization completed.`);
 	
@@ -77,6 +63,11 @@ function _register_required_atoms(){
 }
 
 async function _create_superuser(){
+	
+	if(!conf.get(`superuser_create_on_init`) === true){
+		return;
+	}
+	
 	const auth_bll = bll.auth.create('superuser');
 	try{
 		

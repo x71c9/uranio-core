@@ -5,81 +5,26 @@
  * @packageDocumentation
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.set = exports.set_from_env = exports.set_initialize = exports.is_initialized = exports.is_production = exports.get_current = exports.get = exports.defaults = void 0;
+exports.set = exports.get_all = exports.get = exports.is_production = void 0;
 const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('CORE_ENV_CLIENT_MODULE', `Core client environment module`);
 const default_env_1 = require("../client/default_env");
-Object.defineProperty(exports, "defaults", { enumerable: true, get: function () { return default_env_1.core_client_env; } });
-let _is_client_core_initialized = false;
-function get(param_name) {
-    _check_if_uranio_was_initialized();
-    _check_if_param_exists(param_name);
-    return default_env_1.core_client_env[param_name];
-}
-exports.get = get;
-function get_current(param_name) {
-    const pro_value = get(param_name);
-    if (is_production()) {
-        return pro_value;
-    }
-    if (param_name.indexOf('log_') !== -1) {
-        const dev_param = param_name.replace('log_', 'log_dev_');
-        const dev_value = get(dev_param);
-        if (typeof dev_value === typeof default_env_1.core_client_env[dev_param]) {
-            return dev_value;
-        }
-    }
-    return pro_value;
-}
-exports.get_current = get_current;
+const urn_ctx = urn_lib_1.urn_context.create(default_env_1.core_client_env, is_production());
+urn_ctx.set_env();
 function is_production() {
-    return process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'PRODUCTION';
+    return process.env.NODE_ENV === 'production'
+        || process.env.NODE_ENV === 'PRODUCTION';
 }
 exports.is_production = is_production;
-function is_initialized() {
-    return _is_client_core_initialized;
+function get(param_name) {
+    return urn_ctx.get(param_name);
 }
-exports.is_initialized = is_initialized;
-function set_initialize(is_initialized) {
-    _is_client_core_initialized = is_initialized;
+exports.get = get;
+function get_all() {
+    return urn_ctx.get_all();
 }
-exports.set_initialize = set_initialize;
-function set_from_env(repo_env) {
-    const env = _get_env_vars(repo_env);
-    set(repo_env, env);
-}
-exports.set_from_env = set_from_env;
-function set(repo_env, env) {
-    _validate_config_types(repo_env, env);
-    for (const [conf_key, conf_value] of Object.entries(env)) {
-        repo_env[conf_key] = conf_value;
-    }
+exports.get_all = get_all;
+function set(env) {
+    urn_ctx.set(env);
 }
 exports.set = set;
-function _check_if_param_exists(param_name) {
-    return urn_lib_1.urn_util.object.has_key(default_env_1.core_client_env, param_name);
-}
-function _check_if_uranio_was_initialized() {
-    if (is_initialized() === false) {
-        throw urn_exc.create_not_initialized(`NOT_INITIALIZED`, `Uranio was not initialized. Please run \`uranio.init()\` in your main file.`);
-    }
-}
-function _validate_config_types(repo_env, env) {
-    for (const [env_key, env_value] of Object.entries(env)) {
-        const key = env_key;
-        if (typeof env_value !== typeof repo_env[key]) {
-            throw urn_exc.create_not_initialized(`INVALID_CLIENT_ENV_VALUE`, `Invalid client env value for \`${env_key}\`. \`${env_key}\` value ` +
-                ` must be of type \`${typeof repo_env[key]}\`,` +
-                `\`${typeof env_value}\` given.`);
-        }
-    }
-}
-function _get_env_vars(repo_env) {
-    if (typeof process.env.URN_LOG_LEVEL === 'number'
-        || typeof process.env.URN_LOG_LEVEL === 'string'
-            && process.env.URN_LOG_LEVEL !== '') {
-        repo_env.log_level = Number(process.env.URN_LOG_LEVEL);
-    }
-    return repo_env;
-}
 //# sourceMappingURL=client.js.map

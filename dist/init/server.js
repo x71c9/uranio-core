@@ -30,22 +30,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = void 0;
 const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('INIT_CORE_MODULE', `Core init module`);
+const urn_exc = urn_lib_1.urn_exception.init('CORE_INIT_MODULE', `Core init module`);
 const defaults_1 = require("../conf/defaults");
 const defaults_2 = require("../env/defaults");
 const required = __importStar(require("../req/server"));
 const register = __importStar(require("../reg/server"));
 const types = __importStar(require("../server/types"));
 const conf = __importStar(require("../conf/server"));
-const env = __importStar(require("../env/server"));
 const book = __importStar(require("../book/server"));
 const db = __importStar(require("../db/server"));
 const bll = __importStar(require("../bll/server"));
 const log = __importStar(require("../log/server"));
 function init(config, register_required = true) {
-    // log.init(urn_log, urn_log.defaults);
-    env.set_from_env(defaults_2.core_env);
-    // conf.set_from_file(core_config);
     if (config) {
         conf.set(config);
     }
@@ -54,13 +50,9 @@ function init(config, register_required = true) {
     }
     _validate_core_variables();
     _validate_core_book();
-    // conf.set_initialize(true);
-    // env.set_initialize(true);
     log.init(urn_lib_1.urn_log);
     _core_connect();
-    if (conf.get(`superuser_create_on_init`) === true) {
-        _create_superuser();
-    }
+    _create_superuser();
     urn_lib_1.urn_log.debug(`Uranio core initialization completed.`);
 }
 exports.init = init;
@@ -71,6 +63,9 @@ function _register_required_atoms() {
     }
 }
 async function _create_superuser() {
+    if (!conf.get(`superuser_create_on_init`) === true) {
+        return;
+    }
     const auth_bll = bll.auth.create('superuser');
     try {
         await auth_bll.authenticate(defaults_2.core_env.superuser_email, defaults_2.core_env.superuser_password);

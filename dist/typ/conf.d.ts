@@ -19,10 +19,10 @@ export declare type Configuration = {
     log_max_str_length: number;
     log_prefix: string;
     log_prefix_type: boolean;
-    log_dev_debug_info: boolean;
-    log_dev_color: boolean;
-    log_dev_time_format: string;
-    log_dev_max_str_length: number;
-    log_dev_prefix: string;
-    log_dev_prefix_type: boolean;
+    dev_log_debug_info: boolean;
+    dev_log_color: boolean;
+    dev_log_time_format: string;
+    dev_log_max_str_length: number;
+    dev_log_prefix: string;
+    dev_log_prefix_type: boolean;
 };

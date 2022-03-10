@@ -22,8 +22,6 @@ import * as book from '../book/server';
 
 import * as types from '../server/types';
 
-// const _get_atom_schema_path() = './node_modules/uranio-schema/dist/typ/atom.d.ts';
-
 export const process_params = {
 	urn_command: `schema`,
 	urn_repo_path: 'node_modules/uranio',
