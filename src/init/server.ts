@@ -41,10 +41,10 @@ export function init(
 	
 	env.set_from_env(core_env);
 	
-	conf.set_from_file(core_config);
+	// conf.set_from_file(core_config);
 	
 	if(config){
-		conf.set(core_config, config);
+		conf.set(config);
 	}
 	
 	if(register_required){
@@ -54,8 +54,8 @@ export function init(
 	_validate_core_variables();
 	_validate_core_book();
 	
-	conf.set_initialize(true);
-	env.set_initialize(true);
+	// conf.set_initialize(true);
+	// env.set_initialize(true);
 	
 	log.init(urn_log);
 	

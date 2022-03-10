@@ -45,17 +45,17 @@ const log = __importStar(require("../log/server"));
 function init(config, register_required = true) {
     // log.init(urn_log, urn_log.defaults);
     env.set_from_env(defaults_2.core_env);
-    conf.set_from_file(defaults_1.core_config);
+    // conf.set_from_file(core_config);
     if (config) {
-        conf.set(defaults_1.core_config, config);
+        conf.set(config);
     }
     if (register_required) {
         _register_required_atoms();
     }
     _validate_core_variables();
     _validate_core_book();
-    conf.set_initialize(true);
-    env.set_initialize(true);
+    // conf.set_initialize(true);
+    // env.set_initialize(true);
     log.init(urn_lib_1.urn_log);
     _core_connect();
     if (conf.get(`superuser_create_on_init`) === true) {
