@@ -12,9 +12,9 @@ import {Environment} from '../typ/env';
 
 const urn_ctx = urn_context.create<Required<Environment>>(
 	core_env,
-	is_production()
+	is_production(),
+	'CORE:ENV'
 );
-urn_ctx.set_env();
 
 export function is_production():boolean{
 	return process.env.NODE_ENV === 'production'
@@ -27,10 +27,15 @@ export function get<k extends keyof Environment>(
 	return urn_ctx.get(param_name);
 }
 
+export function set(env:Partial<Environment>):void{
+	urn_ctx.set(env);
+}
+
 export function get_all():Required<Environment>{
 	return urn_ctx.get_all();
 }
 
-export function set(env:Partial<Environment>):void{
-	urn_ctx.set(env);
+export function set_env():void{
+	urn_ctx.set_env();
 }
+

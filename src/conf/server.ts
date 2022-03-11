@@ -12,13 +12,11 @@ import {Configuration} from '../typ/conf';
 
 import * as env from '../env/server';
 
-import * as util from '../util/server';
-
 const urn_ctx = urn_context.create<Required<Configuration>>(
 	core_config,
-	env.is_production()
+	env.is_production(),
+	'CORE:CONF'
 );
-urn_ctx.set(util.toml.read());
 
 export function get<k extends keyof Configuration>(
 	param_name:k

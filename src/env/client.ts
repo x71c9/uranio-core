@@ -12,9 +12,9 @@ import {ClientEnvironment} from '../typ/env_cln';
 
 const urn_ctx = urn_context.create<Required<ClientEnvironment>>(
 	core_client_env,
-	is_production()
+	is_production(),
+	'CORE:ENV:CLIENT'
 );
-urn_ctx.set_env();
 
 export function is_production():boolean{
 	return process.env.NODE_ENV === 'production'
@@ -33,4 +33,8 @@ export function get_all():Required<ClientEnvironment>{
 
 export function set(env:Partial<ClientEnvironment>):void{
 	urn_ctx.set(env);
+}
+
+export function set_env():void{
+	urn_ctx.set_env();
 }

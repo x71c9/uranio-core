@@ -32,9 +32,7 @@ exports.get_all = exports.set = exports.get = void 0;
 const urn_lib_1 = require("urn-lib");
 const default_conf_1 = require("../client/default_conf");
 const env = __importStar(require("../env/client"));
-const toml_1 = require("../client/toml");
-const urn_ctx = urn_lib_1.urn_context.create(default_conf_1.core_client_config, env.is_production());
-urn_ctx.set(toml_1.client_toml);
+const urn_ctx = urn_lib_1.urn_context.create(default_conf_1.core_client_config, env.is_production(), 'CORE:CONF:CLIENT');
 function get(param_name) {
     return urn_ctx.get(param_name);
 }
