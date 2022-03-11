@@ -37,11 +37,16 @@ const required = __importStar(require("../req/server"));
 const register = __importStar(require("../reg/server"));
 const types = __importStar(require("../server/types"));
 const conf = __importStar(require("../conf/server"));
+const env = __importStar(require("../env/server"));
 const book = __importStar(require("../book/server"));
 const db = __importStar(require("../db/server"));
 const bll = __importStar(require("../bll/server"));
 const log = __importStar(require("../log/server"));
+const util = __importStar(require("../util/server"));
 function init(config, register_required = true) {
+    conf.set(util.toml.read());
+    env.set_env();
+    log.init(urn_lib_1.urn_log);
     if (config) {
         conf.set(config);
     }
@@ -50,7 +55,6 @@ function init(config, register_required = true) {
     }
     _validate_core_variables();
     _validate_core_book();
-    log.init(urn_lib_1.urn_log);
     _core_connect();
     _create_superuser();
     urn_lib_1.urn_log.debug(`Uranio core initialization completed.`);

@@ -22,6 +22,8 @@ import * as types from '../server/types';
 
 import * as conf from '../conf/server';
 
+import * as env from '../env/server';
+
 import * as book from '../book/server';
 
 import * as db from '../db/server';
@@ -30,10 +32,18 @@ import * as bll from '../bll/server';
 
 import * as log from '../log/server';
 
+import * as util from '../util/server';
+
 export function init(
 	config?: Partial<types.Configuration>,
 	register_required=true
 ):void{
+	
+	conf.set(util.toml.read());
+	
+	env.set_env();
+	
+	log.init(urn_log);
 	
 	if(config){
 		conf.set(config);
@@ -45,8 +55,6 @@ export function init(
 	
 	_validate_core_variables();
 	_validate_core_book();
-	
-	log.init(urn_log);
 	
 	_core_connect();
 	_create_superuser();

@@ -6,7 +6,7 @@
 import { urn_log } from 'urn-lib';
 export declare type Environment = {
     log_level: urn_log.LogLevel;
-    log_dev_level: urn_log.LogLevel;
+    dev_log_level: urn_log.LogLevel;
     mongo_main_connection: string;
     db_main_name: string;
     db_trash_name: string;
