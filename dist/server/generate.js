@@ -57,6 +57,7 @@ for (const argv of process.argv) {
     }
 }
 switch (urn_command) {
+    case 'atoms':
     case 'schema': {
         util.generate.schema_and_save();
         break;

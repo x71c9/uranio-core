@@ -18,7 +18,9 @@ export * from './register';
 import * as uranio from './main';
 uranio.init({
 	connect_on_init: false,
-	superuser_create_on_init: false
+	superuser_create_on_init: false,
+	log_debug_info: false,
+	dev_log_debug_info: false
 });
 
 import * as util from '../util/server';
@@ -37,6 +39,7 @@ for(const argv of process.argv){
 }
 
 switch(urn_command){
+	case 'atoms':
 	case 'schema':{
 		util.generate.schema_and_save();
 		break;
