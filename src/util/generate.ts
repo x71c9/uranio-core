@@ -169,14 +169,19 @@ function _generate_client_config_text(client_default:Required<ClientConfiguratio
 
 function _client_config(client_default:Required<ClientConfiguration>){
 	let text = '';
-	for(const [conf_key, conf_value] of Object.entries(client_default)){
-		text += `\t${conf_key}: ${_real_value(conf_value)},\n`;
-	}
+	const toml_keys:string[] = [];
 	for(const [conf_key, conf_value] of Object.entries(toml.read())){
 		if(conf_key.indexOf('client_') === 0){
 			const real_key = conf_key.replace('client_', '');
+			toml_keys.push(real_key);
 			text += `\t${real_key}: ${_real_value(conf_value)},\n`;
 		}
+	}
+	for(const [conf_key, conf_value] of Object.entries(client_default)){
+		if(toml_keys.includes(conf_key)){
+			continue;
+		}
+		text += `\t${conf_key}: ${_real_value(conf_value)},\n`;
 	}
 	return text;
 }
