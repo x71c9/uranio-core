@@ -69,16 +69,16 @@ function save_schema(text) {
     urn_lib_1.urn_log.debug(`Update schema [${_get_atom_schema_path()}].`);
 }
 exports.save_schema = save_schema;
-function client_config() {
+function client_config(client_default) {
     urn_lib_1.urn_log.debug('Started generating uranio core client config...');
     init();
-    const text = _generate_client_config_text();
+    const text = _generate_client_config_text(client_default);
     urn_lib_1.urn_log.debug(`Core client config generated.`);
     return text;
 }
 exports.client_config = client_config;
-function client_config_and_save() {
-    const text = client_config();
+function client_config_and_save(client_default) {
+    const text = client_config(client_default);
     save_client_config(text);
     urn_lib_1.urn_log.debug(`Client config generated and saved.`);
 }
@@ -148,7 +148,7 @@ function _get_atom_schema_path() {
 function _read_schema() {
     return fs_1.default.readFileSync(_get_atom_schema_path(), { encoding: 'utf8' });
 }
-function _generate_client_config_text() {
+function _generate_client_config_text(client_default) {
     let text = '';
     text += `/**\n`;
     text += ` * Module for default client configuration object\n`;
@@ -163,12 +163,15 @@ function _generate_client_config_text() {
     text += `import {ClientConfiguration} from './types';\n`;
     text += `\n`;
     text += `export const client_toml:Partial<ClientConfiguration> = {\n`;
-    text += _client_config();
+    text += _client_config(client_default);
     text += `};\n`;
     return text;
 }
-function _client_config() {
+function _client_config(client_default) {
     let text = '';
+    for (const [conf_key, conf_value] of Object.entries(client_default)) {
+        text += `\t${conf_key}: ${_real_value(conf_value)},\n`;
+    }
     for (const [conf_key, conf_value] of Object.entries(toml.read())) {
         if (conf_key.indexOf('client_') === 0) {
             const real_key = conf_key.replace('client_', '');
