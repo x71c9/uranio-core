@@ -24,6 +24,8 @@ import * as types from '../server/types';
 
 import * as toml from './toml';
 
+import {ClientConfiguration} from '../typ/conf_cln';
+
 export const process_params = {
 	urn_command: `schema`,
 	urn_repo_path: 'node_modules/uranio',
@@ -53,16 +55,16 @@ export function save_schema(text:string):void{
 	urn_log.debug(`Update schema [${_get_atom_schema_path()}].`);
 }
 
-export function client_config():string{
+export function client_config(client_default:Required<ClientConfiguration>):string{
 	urn_log.debug('Started generating uranio core client config...');
 	init();
-	const text = _generate_client_config_text();
+	const text = _generate_client_config_text(client_default);
 	urn_log.debug(`Core client config generated.`);
 	return text;
 }
 
-export function client_config_and_save():void{
-	const text = client_config();
+export function client_config_and_save(client_default:Required<ClientConfiguration>):void{
+	const text = client_config(client_default);
 	save_client_config(text);
 	urn_log.debug(`Client config generated and saved.`);
 }
@@ -145,7 +147,7 @@ function _read_schema():string{
 	return fs.readFileSync(_get_atom_schema_path(), {encoding: 'utf8'});
 }
 
-function _generate_client_config_text(){
+function _generate_client_config_text(client_default:Required<ClientConfiguration>){
 	let text = '';
 	text += `/**\n`;
 	text += ` * Module for default client configuration object\n`;
@@ -160,13 +162,16 @@ function _generate_client_config_text(){
 	text += `import {ClientConfiguration} from './types';\n`;
 	text += `\n`;
 	text += `export const client_toml:Partial<ClientConfiguration> = {\n`;
-	text += _client_config();
+	text += _client_config(client_default);
 	text += `};\n`;
 	return text;
 }
 
-function _client_config(){
+function _client_config(client_default:Required<ClientConfiguration>){
 	let text = '';
+	for(const [conf_key, conf_value] of Object.entries(client_default)){
+		text += `\t${conf_key}: ${_real_value(conf_value)},\n`;
+	}
 	for(const [conf_key, conf_value] of Object.entries(toml.read())){
 		if(conf_key.indexOf('client_') === 0){
 			const real_key = conf_key.replace('client_', '');
