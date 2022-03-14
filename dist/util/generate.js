@@ -170,11 +170,17 @@ function _generate_client_config_text(client_default) {
 function _client_config(client_default) {
     let text = '';
     const toml_keys = [];
-    for (const [conf_key, conf_value] of Object.entries(toml.read())) {
+    const toml_read = toml.read();
+    for (const [conf_key, conf_value] of Object.entries(toml_read)) {
         if (conf_key.indexOf('client_') === 0) {
             const real_key = conf_key.replace('client_', '');
             toml_keys.push(real_key);
             text += `\t${real_key}: ${_real_value(conf_value)},\n`;
+        }
+        if (typeof client_default[conf_key] ===
+            typeof toml_read[conf_key]) {
+            toml_keys.push(conf_key);
+            text += `\t${conf_key}: ${_real_value(conf_value)},\n`;
         }
     }
     for (const [conf_key, conf_value] of Object.entries(client_default)) {
