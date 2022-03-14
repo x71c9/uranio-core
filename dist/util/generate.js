@@ -177,8 +177,11 @@ function _client_config(client_default) {
             toml_keys.push(real_key);
             text += `\t${real_key}: ${_real_value(conf_value)},\n`;
         }
-        else if (typeof client_default[conf_key] ===
-            typeof toml_read[conf_key]) {
+    }
+    for (const [conf_key, conf_value] of Object.entries(toml_read)) {
+        if (!toml_keys.includes(conf_key) &&
+            typeof client_default[conf_key] ===
+                typeof toml_read[conf_key]) {
             toml_keys.push(conf_key);
             text += `\t${conf_key}: ${_real_value(conf_value)},\n`;
         }

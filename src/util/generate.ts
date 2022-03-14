@@ -176,7 +176,11 @@ function _client_config(client_default:Required<ClientConfiguration>){
 			const real_key = conf_key.replace('client_', '');
 			toml_keys.push(real_key);
 			text += `\t${real_key}: ${_real_value(conf_value)},\n`;
-		}else if(
+		}
+	}
+	for(const [conf_key, conf_value] of Object.entries(toml_read)){
+		if(
+			!toml_keys.includes(conf_key) &&
 			typeof client_default[conf_key as keyof ClientConfiguration] ===
 			typeof toml_read[conf_key as keyof typeof toml_read]
 		){
