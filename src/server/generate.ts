@@ -45,12 +45,12 @@ switch(urn_command){
 		break;
 	}
 	case 'client-config':{
-		util.generate.client_config_and_save(uranio.conf.get_all());
+		util.generate.client_config_and_save();
 		break;
 	}
 	default:{
 		util.generate.schema_and_save();
-		util.generate.client_config_and_save(uranio.conf.get_all());
+		util.generate.client_config_and_save();
 		break;
 	}
 }
