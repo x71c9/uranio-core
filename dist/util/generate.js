@@ -177,7 +177,7 @@ function _client_config(client_default) {
             toml_keys.push(real_key);
             text += `\t${real_key}: ${_real_value(conf_value)},\n`;
         }
-        if (typeof client_default[conf_key] ===
+        else if (typeof client_default[conf_key] ===
             typeof toml_read[conf_key]) {
             toml_keys.push(conf_key);
             text += `\t${conf_key}: ${_real_value(conf_value)},\n`;
