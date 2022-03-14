@@ -40,6 +40,7 @@ const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module
 const server_1 = require("../stc/server");
 const book = __importStar(require("../book/server"));
 const types = __importStar(require("../server/types"));
+const toml = __importStar(require("./toml"));
 exports.process_params = {
     urn_command: `schema`,
     urn_repo_path: 'node_modules/uranio',
@@ -68,16 +69,16 @@ function save_schema(text) {
     urn_lib_1.urn_log.debug(`Update schema [${_get_atom_schema_path()}].`);
 }
 exports.save_schema = save_schema;
-function client_config(server_config) {
+function client_config() {
     urn_lib_1.urn_log.debug('Started generating uranio core client config...');
     init();
-    const text = _generate_client_config_text(server_config);
+    const text = _generate_client_config_text();
     urn_lib_1.urn_log.debug(`Core client config generated.`);
     return text;
 }
 exports.client_config = client_config;
-function client_config_and_save(server_config) {
-    const text = client_config(server_config);
+function client_config_and_save() {
+    const text = client_config();
     save_client_config(text);
     urn_lib_1.urn_log.debug(`Client config generated and saved.`);
 }
@@ -147,7 +148,7 @@ function _get_atom_schema_path() {
 function _read_schema() {
     return fs_1.default.readFileSync(_get_atom_schema_path(), { encoding: 'utf8' });
 }
-function _generate_client_config_text(server_config) {
+function _generate_client_config_text() {
     let text = '';
     text += `/**\n`;
     text += ` * Module for default client configuration object\n`;
@@ -162,13 +163,13 @@ function _generate_client_config_text(server_config) {
     text += `import {ClientConfiguration} from './types';\n`;
     text += `\n`;
     text += `export const client_toml:Partial<ClientConfiguration> = {\n`;
-    text += _client_config(server_config);
+    text += _client_config();
     text += `};\n`;
     return text;
 }
-function _client_config(server_config) {
+function _client_config() {
     let text = '';
-    for (const [conf_key, conf_value] of Object.entries(server_config)) {
+    for (const [conf_key, conf_value] of Object.entries(toml.read())) {
         if (conf_key.indexOf('client_') === 0) {
             const real_key = conf_key.replace('client_', '');
             text += `\t${real_key}: ${_real_value(conf_value)},\n`;
