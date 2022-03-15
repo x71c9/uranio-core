@@ -35,7 +35,7 @@ export function read():Partial<Configuration>{
 		
 		const toml_data = fs.readFileSync(toml_config_path);
 		const parsed_toml = toml.parse(toml_data.toString('utf8'));
-		const converted_toml = _conver_toml(parsed_toml);
+		const converted_toml = _convert_toml(parsed_toml);
 		
 		return converted_toml;
 		
@@ -48,7 +48,7 @@ export function read():Partial<Configuration>{
 	}
 }
 
-function _conver_toml(parsed_toml:any):Partial<Configuration>{
+function _convert_toml(parsed_toml:any):Partial<Configuration>{
 	const converted_config:Partial<Configuration> = {};
 	for(const [key, value] of Object.entries(parsed_toml)){
 		if(value === null || value === undefined){
