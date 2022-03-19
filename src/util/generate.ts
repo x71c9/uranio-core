@@ -6,7 +6,7 @@
 
 import fs from 'fs';
 
-import dateformat from 'dateformat';
+// import dateformat from 'dateformat';
 
 import * as esbuild from 'esbuild';
 
@@ -47,10 +47,10 @@ export function schema_and_save():void{
 }
 
 export function save_schema(text:string):void{
-	const now = dateformat(new Date(), `yyyymmddHHMMssl`);
-	const backup_path = `${_get_atom_schema_path()}.${now}.bkp`;
-	fs.copyFileSync(_get_atom_schema_path(), backup_path);
-	urn_log.debug(`Copied backup file for atom schema in [${backup_path}].`);
+	// const now = dateformat(new Date(), `yyyymmddHHMMssl`);
+	// const backup_path = `${_get_atom_schema_path()}.${now}.bkp`;
+	// fs.copyFileSync(_get_atom_schema_path(), backup_path);
+	// urn_log.debug(`Copied backup file for atom schema in [${backup_path}].`);
 	fs.writeFileSync(_get_atom_schema_path(), text);
 	urn_log.debug(`Update schema [${_get_atom_schema_path()}].`);
 }
