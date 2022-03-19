@@ -30,7 +30,7 @@ function read() {
     try {
         const toml_data = fs_1.default.readFileSync(toml_config_path);
         const parsed_toml = toml_1.default.parse(toml_data.toString('utf8'));
-        const converted_toml = _conver_toml(parsed_toml);
+        const converted_toml = _convert_toml(parsed_toml);
         return converted_toml;
     }
     catch (err) {
@@ -38,7 +38,7 @@ function read() {
     }
 }
 exports.read = read;
-function _conver_toml(parsed_toml) {
+function _convert_toml(parsed_toml) {
     const converted_config = {};
     for (const [key, value] of Object.entries(parsed_toml)) {
         if (value === null || value === undefined) {

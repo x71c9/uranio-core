@@ -33,7 +33,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = exports.save_client_config = exports.client_config_and_save = exports.client_config = exports.save_schema = exports.schema_and_save = exports.schema = exports.process_params = void 0;
 const fs_1 = __importDefault(require("fs"));
-const dateformat_1 = __importDefault(require("dateformat"));
+// import dateformat from 'dateformat';
 const esbuild = __importStar(require("esbuild"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
@@ -61,10 +61,10 @@ function schema_and_save() {
 }
 exports.schema_and_save = schema_and_save;
 function save_schema(text) {
-    const now = (0, dateformat_1.default)(new Date(), `yyyymmddHHMMssl`);
-    const backup_path = `${_get_atom_schema_path()}.${now}.bkp`;
-    fs_1.default.copyFileSync(_get_atom_schema_path(), backup_path);
-    urn_lib_1.urn_log.debug(`Copied backup file for atom schema in [${backup_path}].`);
+    // const now = dateformat(new Date(), `yyyymmddHHMMssl`);
+    // const backup_path = `${_get_atom_schema_path()}.${now}.bkp`;
+    // fs.copyFileSync(_get_atom_schema_path(), backup_path);
+    // urn_log.debug(`Copied backup file for atom schema in [${backup_path}].`);
     fs_1.default.writeFileSync(_get_atom_schema_path(), text);
     urn_lib_1.urn_log.debug(`Update schema [${_get_atom_schema_path()}].`);
 }
