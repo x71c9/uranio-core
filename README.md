@@ -16,7 +16,7 @@ will be available in the future.
 
 ### Atoms
 
-In URANIO, a database record is called **`Atom`**.
+In URANIO, a database record is called an **`Atom`**.
 
 For example there can be a _Product Atom_ type.
 
