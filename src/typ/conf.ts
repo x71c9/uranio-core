@@ -14,6 +14,8 @@ export type Configuration = {
 	
 	db: Database
 	
+	token_expire_seconds: number
+	
 	encryption_rounds?: number
 	
 	max_password_length?: number

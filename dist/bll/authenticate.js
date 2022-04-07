@@ -37,12 +37,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.is_superuser = exports.is_valid_passport = exports.is_public_request = exports.create = void 0;
+exports.is_superuser = exports.is_valid_passport = exports.is_public_request = exports.is_valid_token = exports.decode_token = exports.create = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 const env = __importStar(require("../env/server"));
+const conf = __importStar(require("../conf/server"));
 const book_1 = require("../typ/book");
 const server_1 = require("../stc/server");
 const auth_1 = require("../typ/auth");
@@ -53,10 +54,6 @@ let AuthenticationBLL = class AuthenticationBLL {
     constructor(_atom_name) {
         this._atom_name = _atom_name;
         this._basic_bll = (0, basic_1.create)(this._atom_name);
-    }
-    async get_passport(token) {
-        const decoded_token = jsonwebtoken_1.default.verify(token, env.get(`jwt_private_key`));
-        return decoded_token;
     }
     async authenticate(email, password) {
         atm.validate.atom_partial(this._atom_name, { email: email, password: password });
@@ -108,6 +105,28 @@ function create(atom_name) {
     return new AuthenticationBLL(atom_name);
 }
 exports.create = create;
+async function decode_token(token) {
+    const decoded_token = jsonwebtoken_1.default.verify(token, env.get(`jwt_private_key`));
+    return decoded_token;
+}
+exports.decode_token = decode_token;
+async function is_valid_token(token) {
+    const passport = await decode_token(token);
+    if (!is_valid_passport(passport)) {
+        return false;
+    }
+    if (!_passport_has_iat_key(passport)) {
+        return false;
+    }
+    const token_issued_timestamp = passport.iat;
+    const issued_time = new Date(token_issued_timestamp);
+    const now = new Date(Date.now());
+    if (_difference_in_seconds(now, issued_time) > conf.get('token_expire_seconds')) {
+        return false;
+    }
+    return true;
+}
+exports.is_valid_token = is_valid_token;
 function is_public_request(atom_name, action) {
     const atom_def = book.get_definition(atom_name);
     if (action === auth_1.AuthAction.READ) {
@@ -142,6 +161,9 @@ function is_valid_passport(passport) {
     return true;
 }
 exports.is_valid_passport = is_valid_passport;
+function _passport_has_iat_key(passport) {
+    return (urn_lib_1.urn_util.object.has_key(passport, 'iat'));
+}
 // function _token_is_object(passport:Passport)
 //   :true{
 //   if(!passport){
@@ -220,4 +242,16 @@ exports.is_superuser = is_superuser;
 //   //   throw urn_exc.create_invalid_request('INVALID_TOKEN_SU_ID', err_msg);
 //   // }
 // }
+function _difference_in_seconds(date1, date2) {
+    let difference = date1.getTime() - date2.getTime();
+    const seconds_difference = Math.floor(difference / 1000);
+    // const days_difference = Math.floor(difference/1000/60/60/24);
+    // difference -= days_difference*1000*60*60*24
+    // const hours_difference = Math.floor(difference/1000/60/60);
+    // difference -= hours_difference*1000*60*60
+    // const minutes_difference = Math.floor(difference/1000/60);
+    // difference -= minutes_difference*1000*60
+    // const seconds_difference = Math.floor(difference/1000);
+    return seconds_difference;
+}
 //# sourceMappingURL=authenticate.js.map

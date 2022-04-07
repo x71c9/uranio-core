@@ -8,6 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.core_config = void 0;
 exports.core_config = {
     db: 'mongo',
+    token_expire_seconds: 60 * 60 * 24 * 7,
     encryption_rounds: 12,
     // It should be less than 60. 60 are the hashed string.
     max_password_length: 58,

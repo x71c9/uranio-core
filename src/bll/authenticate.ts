@@ -16,6 +16,8 @@ import {schema} from '../sch/server';
 
 import * as env from '../env/server';
 
+import * as conf from '../conf/server';
+
 import {
 	SecurityType,
 	PermissionType,
@@ -44,11 +46,6 @@ class AuthenticationBLL<A extends schema.AuthName> {
 	
 	constructor(private _atom_name:A){
 		this._basic_bll = create_basic<A>(this._atom_name);
-	}
-	
-	public async get_passport(token: string):Promise<Passport>{
-		const decoded_token = jwt.verify(token, env.get(`jwt_private_key`));
-		return decoded_token as Passport;
 	}
 	
 	public async authenticate(email: string, password: string)
@@ -107,6 +104,28 @@ export function create<A extends schema.AuthName>(atom_name:A)
 	return new AuthenticationBLL<A>(atom_name);
 }
 
+export async function decode_token(token: string):Promise<Passport>{
+	const decoded_token = jwt.verify(token, env.get(`jwt_private_key`));
+	return decoded_token as Passport;
+}
+
+export async function is_valid_token(token: string):Promise<boolean>{
+	const passport = await decode_token(token);
+	if(!is_valid_passport(passport)){
+		return false;
+	}
+	if(!_passport_has_iat_key(passport)){
+		return false;
+	}
+	const token_issued_timestamp = (passport as any).iat;
+	const issued_time = new Date(token_issued_timestamp);
+	const now = new Date(Date.now());
+	if(_difference_in_seconds(now, issued_time) > conf.get('token_expire_seconds')){
+		return false;
+	}
+	return true;
+}
+
 export function is_public_request<A extends schema.AtomName>(atom_name:A, action: AuthAction)
 		:boolean{
 	const atom_def = book.get_definition(atom_name);
@@ -156,6 +175,11 @@ export function is_valid_passport(passport:Passport)
 	passport_has_correct_type_values(passport);
 	// await _if_superuser_validate_id(passport);
 	return true;
+}
+
+function _passport_has_iat_key(passport:Passport)
+		:boolean{
+	return (urn_util.object.has_key(passport, 'iat'));
 }
 
 // function _token_is_object(passport:Passport)
@@ -251,4 +275,22 @@ export function is_superuser(passport?:Passport)
 //   // }
 // }
 
-
+function _difference_in_seconds(date1:Date, date2:Date):number{
+	
+	let difference = date1.getTime() - date2.getTime();
+	
+	const seconds_difference = Math.floor(difference/1000);
+	
+	// const days_difference = Math.floor(difference/1000/60/60/24);
+	// difference -= days_difference*1000*60*60*24
+	
+	// const hours_difference = Math.floor(difference/1000/60/60);
+	// difference -= hours_difference*1000*60*60
+	
+	// const minutes_difference = Math.floor(difference/1000/60);
+	// difference -= minutes_difference*1000*60
+	
+	// const seconds_difference = Math.floor(difference/1000);
+	
+	return seconds_difference;
+}
