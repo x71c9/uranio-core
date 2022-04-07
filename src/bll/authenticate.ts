@@ -74,6 +74,14 @@ class AuthenticationBLL<A extends schema.AuthName> {
 		return this._generate_token(auth_atom);
 	}
 	
+	public regenerate_token(passport:Passport){
+		const pport = passport as any;
+		if(pport.iat){
+			delete pport.iat;
+		}
+		return jwt.sign(pport, env.get(`jwt_private_key`));
+	}
+	
 	private _generate_passport(auth_atom:schema.AuthAtom<A>)
 			:Passport{
 		return {

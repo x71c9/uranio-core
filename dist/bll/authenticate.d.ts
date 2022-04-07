@@ -11,6 +11,7 @@ declare class AuthenticationBLL<A extends schema.AuthName> {
     constructor(_atom_name: A);
     get_passport(token: string): Promise<Passport>;
     authenticate(email: string, password: string): Promise<string>;
+    regenerate_token(passport: Passport): string;
     private _generate_passport;
     private _generate_token;
 }

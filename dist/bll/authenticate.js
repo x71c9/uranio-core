@@ -80,6 +80,13 @@ let AuthenticationBLL = class AuthenticationBLL {
         }
         return this._generate_token(auth_atom);
     }
+    regenerate_token(passport) {
+        const pport = passport;
+        if (pport.iat) {
+            delete pport.iat;
+        }
+        return jsonwebtoken_1.default.sign(pport, env.get(`jwt_private_key`));
+    }
     _generate_passport(auth_atom) {
         return {
             _id: auth_atom._id,
