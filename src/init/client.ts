@@ -27,7 +27,7 @@ export function init(
 	
 	conf.set(client_toml);
 	
-	env.set_env();
+	env.set_client_env();
 	
 	log.init(urn_log);
 	

@@ -38,7 +38,7 @@ const log = __importStar(require("../log/client"));
 const toml_1 = require("../client/toml");
 function init(config, register_required = true) {
     conf.set(toml_1.client_toml);
-    env.set_env();
+    env.set_client_env();
     log.init(urn_lib_1.urn_log);
     if (config) {
         conf.set(config);
