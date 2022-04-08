@@ -35,7 +35,7 @@ export function set(env:Partial<ClientEnvironment>):void{
 	urn_ctx.set(env);
 }
 
-export function set_client_env():void{
+export function set_client_env():ClientEnvironment{
 	
 	// Cannot set env as normal because on the browser it is not possible to
 	// iterate on the object process.env. Also it is not possible to dynamically
@@ -44,7 +44,7 @@ export function set_client_env():void{
 	// process.env['URN_LOG_LEVEL']
 	// urn_ctx.set_env();
 	
-	const env:typeof core_client_env = {} as typeof core_client_env;
+	const env:ClientEnvironment = {} as ClientEnvironment;
 	
 	const process_log_level = process.env['URN_LOG_LEVEL'];
 	const process_log_level_dev = process.env['URN_DEV_LOG_LEVEL'];
@@ -73,4 +73,5 @@ export function set_client_env():void{
 	
 	set(env);
 	
+	return env;
 }

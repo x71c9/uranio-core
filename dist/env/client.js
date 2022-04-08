@@ -59,6 +59,7 @@ function set_client_env() {
         env['log_dev_level'] = process_log_level_dev;
     }
     set(env);
+    return env;
 }
 exports.set_client_env = set_client_env;
 //# sourceMappingURL=client.js.map
