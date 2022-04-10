@@ -174,10 +174,16 @@ let MongooseRelation = class MongooseRelation {
         return _clean_atom(this.atom_name, mon_delete_res.toObject());
     }
     async alter_multiple(ids, partial_atom) {
-        for (const id of ids) {
-            if (typeof id !== 'string' || id === '' || !this.is_valid_id(id)) {
-                const err_msg = `Cannot alter_multiple. Invalid id.`;
-                throw urn_exc.create_invalid_request('ALTER_MULTIPLE_INVALID_ID', err_msg);
+        let delete_all = false;
+        if (ids.length === 1 && ids[0] === '*') {
+            delete_all = true;
+        }
+        if (delete_all === false) {
+            for (const id of ids) {
+                if (typeof id !== 'string' || id === '' || !this.is_valid_id(id)) {
+                    const err_msg = `Cannot alter_multiple. Invalid id.`;
+                    throw urn_exc.create_invalid_request('ALTER_MULTIPLE_INVALID_ID', err_msg);
+                }
             }
         }
         const $unset = _find_unsets(this.atom_name, partial_atom);
@@ -186,11 +192,12 @@ let MongooseRelation = class MongooseRelation {
             $set: partial_atom,
             $unset: $unset
         };
-        const mon_update_res = await this._raw.updateMany({ _id: { $in: ids } }, update, { new: true, lean: true }); // Return a schema.Query with how many records were updated.
+        const mongo_query_ids = (delete_all === true) ? {} : { _id: { $in: ids } };
+        const mon_update_res = await this._raw.updateMany(mongo_query_ids, update, { new: true, lean: true }); // Return a schema.Query with how many records were updated.
         if (mon_update_res === null) {
             throw urn_exc.create_not_found('ALTER_MULTIPLE_ID_NOT_FOUND', `Cannot alter_multiple. Records not found.`);
         }
-        return await this.select({ _id: { $in: ids } });
+        return await this.select(mongo_query_ids);
     }
     async insert_multiple(atom_shapes) {
         const shapes_no_id = [];
@@ -215,15 +222,22 @@ let MongooseRelation = class MongooseRelation {
         return _clean_atoms(this.atom_name, string_id_atoms);
     }
     async delete_multiple(ids) {
-        for (const id of ids) {
-            if (typeof id !== 'string' || id === '' || !this.is_valid_id(id)) {
-                const err_msg = `Cannot delete_by_id. Invalid id param.`;
-                throw urn_exc.create_invalid_request('DEL_BY_ID_INVALID_ID', err_msg);
+        let delete_all = false;
+        if (ids.length === 1 && ids[0] === '*') {
+            delete_all = true;
+        }
+        if (delete_all === false) {
+            for (const id of ids) {
+                if (typeof id !== 'string' || id === '' || !this.is_valid_id(id)) {
+                    const err_msg = `Cannot delete_by_id. Invalid id param.`;
+                    throw urn_exc.create_invalid_request('DEL_BY_ID_INVALID_ID', err_msg);
+                }
             }
         }
-        const almost_deleted_docs = await this.select({ _id: { $in: ids } });
+        const mongo_query = (delete_all === true) ? {} : { _id: { $in: ids } };
+        const almost_deleted_docs = await this.select(mongo_query);
         // Return a schema.Query with how many records were deleted.
-        const mon_delete_res = await this._raw.deleteMany({ _id: { $in: ids } });
+        const mon_delete_res = await this._raw.deleteMany(mongo_query);
         if (mon_delete_res === null) {
             throw urn_exc.create_not_found('DEL_MULTIPLE_NOT_FOUND', `Cannot delete_multiple.`);
         }
