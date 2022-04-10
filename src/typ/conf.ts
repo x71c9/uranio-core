@@ -16,6 +16,8 @@ export type Configuration = {
 	
 	token_expire_seconds: number
 	
+	auth_cookie_expire_seconds: number
+	
 	encryption_rounds?: number
 	
 	max_password_length?: number

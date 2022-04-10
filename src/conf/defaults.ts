@@ -12,6 +12,8 @@ export const core_config:Required<Configuration> = {
 	
 	token_expire_seconds: 60*60*24*7, // 1 week
 	
+	auth_cookie_expire_seconds: 60*60*24*7, // 1 week
+	
 	encryption_rounds: 12,
 	
 	// It should be less than 60. 60 are the hashed string.
