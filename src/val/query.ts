@@ -129,6 +129,13 @@ function validate_filter<A extends schema.AtomName>(query:schema.Query<A>, atom_
 		const err_msg = `Invalid query format.`;
 		throw urn_exc.create_invalid_request('FILTER_INVALID_TYPE', err_msg);
 	}
+	if(urn_util.object.has_key(query, '$text') && urn_util.object.has_key((query as any)['$text'], '$search')){
+		if(typeof (query as any)['$text']['$search'] !== 'string'){
+			const err_msg = `Invalid search text query format.`;
+			throw urn_exc.create_invalid_request('FILTER_INVALID_SEARCH_TEXT_TYPE', err_msg);
+		}
+		return true;
+	}
 	for(const [key, value] of Object.entries(query)){
 		if(_query_op_keys.array_op.includes(key)){
 			if(!Array.isArray(value)){

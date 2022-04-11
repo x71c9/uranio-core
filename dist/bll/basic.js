@@ -96,6 +96,9 @@ let BasicBLL = class BasicBLL {
     async remove_multiple(ids) {
         return await this._al.delete_multiple(ids);
     }
+    async search(string, options) {
+        return await this._al.search(string, options);
+    }
 };
 BasicBLL = __decorate([
     urn_lib_1.urn_log.util.decorators.debug_constructor,

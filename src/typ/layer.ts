@@ -34,4 +34,6 @@ export interface AccessLayer<A extends schema.AtomName> {
 	
 	delete_multiple(ids:string[]):Promise<schema.Atom<A>[]>
 	
+	search<D extends schema.Depth>(string:string, options?:schema.Query.Options<A,D>):Promise<schema.Molecule<A,D>[]>
+	
 }

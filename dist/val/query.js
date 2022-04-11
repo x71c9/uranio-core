@@ -135,6 +135,13 @@ function validate_filter(query, atom_name) {
         const err_msg = `Invalid query format.`;
         throw urn_exc.create_invalid_request('FILTER_INVALID_TYPE', err_msg);
     }
+    if (urn_lib_1.urn_util.object.has_key(query, '$text') && urn_lib_1.urn_util.object.has_key(query['$text'], '$search')) {
+        if (typeof query['$text']['$search'] !== 'string') {
+            const err_msg = `Invalid search text query format.`;
+            throw urn_exc.create_invalid_request('FILTER_INVALID_SEARCH_TEXT_TYPE', err_msg);
+        }
+        return true;
+    }
     for (const [key, value] of Object.entries(query)) {
         if (_query_op_keys.array_op.includes(key)) {
             if (!Array.isArray(value)) {

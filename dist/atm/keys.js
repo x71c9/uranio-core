@@ -28,7 +28,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.get_bond_non_array = exports.get_bond_array = exports.get_bond = exports.get_unique = exports.get_encrypted = exports.get_hidden = exports.get_optional = void 0;
+exports.get_bond_non_array = exports.get_bond_array = exports.get_bond = exports.get_unique = exports.get_encrypted = exports.get_hidden = exports.get_search_indexes = exports.get_optional = void 0;
 const book_cln_1 = require("../typ/book_cln");
 const book = __importStar(require("../book/client"));
 const client_1 = require("../stc/client");
@@ -51,6 +51,25 @@ function get_optional(atom_name) {
     return optional_keys;
 }
 exports.get_optional = get_optional;
+function get_search_indexes(atom_name) {
+    const searchable_keys = new Set();
+    const prop_defs = book.get_custom_properties_definition(atom_name);
+    for (const k in prop_defs) {
+        const prop = prop_defs[k];
+        if (prop.search && prop.search === true) {
+            searchable_keys.add(k);
+        }
+    }
+    let k;
+    for (k in client_1.atom_common_properties) {
+        const prop = client_1.atom_common_properties[k];
+        if (prop.search && prop.search === true) {
+            searchable_keys.add(k);
+        }
+    }
+    return searchable_keys;
+}
+exports.get_search_indexes = get_search_indexes;
 function get_hidden(atom_name) {
     const hidden_keys = new Set();
     const prop_defs = book.get_custom_properties_definition(atom_name);

@@ -94,6 +94,11 @@ export class BasicDAL<A extends schema.AtomName> implements AccessLayer<A>{
 		return await this._db_relation.delete_multiple(ids);
 	}
 	
+	public async search<D extends schema.Depth = 0>(string:string, options?:schema.Query.Options<A,D>)
+			:Promise<schema.Molecule<A,D>[]>{
+		const query = {$text: {$search: string}} as schema.Query<A>;
+		return await this.select(query, options);
+	}
 	
 }
 

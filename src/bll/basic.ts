@@ -106,6 +106,11 @@ export class BasicBLL<A extends schema.AtomName> {
 		return await this._al.delete_multiple(ids);
 	}
 	
+	public async search<D extends schema.Depth>(string:string, options?:schema.Query.Options<A,D>)
+			:Promise<schema.Molecule<A,D>[]>{
+		return await this._al.search(string, options);
+	}
+	
 }
 
 export function create<A extends schema.AtomName>(atom_name:A)

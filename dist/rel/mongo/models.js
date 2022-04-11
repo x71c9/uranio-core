@@ -35,7 +35,7 @@ exports.get_model = exports.create_all_connection = exports.mongo_app = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('MONGO_APP', 'Mongoose Models App');
-// import * as conf from '../../conf/server';
+const atm = __importStar(require("../../atm/server"));
 const env = __importStar(require("../../env/server"));
 const schema_1 = require("./schema");
 const mongo_connection = __importStar(require("./connection"));
@@ -74,7 +74,8 @@ function get_model(conn_name, atom_name) {
                         continue;
                     }
                     const atom_schema_def = _convert_for_trash((0, schema_1.generate_mongo_schema_def)(atom_name));
-                    const atom_mongo_schema = new mongoose_1.default.Schema(atom_schema_def, { versionKey: false, strict: false });
+                    let atom_mongo_schema = new mongoose_1.default.Schema(atom_schema_def, { versionKey: false, strict: false });
+                    atom_mongo_schema = _add_text_indexes(atom_mongo_schema, atom_name);
                     const atom_model = exports.mongo_app.connections.trash.create_model(atom_name, atom_mongo_schema);
                     model_by_atom_name.set(atom_name, atom_model);
                 }
@@ -100,12 +101,22 @@ function _create_models(mongoose_db_connection, connection) {
         }
         const atom_schema_def = (0, schema_1.generate_mongo_schema_def)(atom_name);
         let atom_mongo_schema = new mongoose_1.default.Schema(atom_schema_def, { versionKey: false, strict: false });
+        atom_mongo_schema = _add_text_indexes(atom_mongo_schema, atom_name);
         const conn_name = (!connection) ? 'main' : connection;
         atom_mongo_schema = _add_schema_middleware(atom_name, conn_name, atom_mongo_schema);
         const atom_model = mongoose_db_connection.create_model(atom_name, atom_mongo_schema);
         model_by_atom_name.set(atom_name, atom_model);
     }
     return model_by_atom_name;
+}
+function _add_text_indexes(atom_mongo_schema, atom_name) {
+    const searchable_indexed = atm.keys.get_search_indexes(atom_name);
+    const mongo_indexes = {};
+    for (const k of searchable_indexed) {
+        mongo_indexes[k] = 'text';
+    }
+    atom_mongo_schema.index(mongo_indexes);
+    return atom_mongo_schema;
 }
 function _convert_for_trash(schema_definition) {
     const schema_without_unique = urn_lib_1.urn_util.object.deep_clone(schema_definition);

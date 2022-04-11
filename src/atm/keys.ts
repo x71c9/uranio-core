@@ -32,6 +32,26 @@ export function get_optional<A extends schema.AtomName>(atom_name:A)
 	return optional_keys;
 }
 
+export function get_search_indexes<A extends schema.AtomName>(atom_name:A)
+		:Set<keyof schema.Atom<A>>{
+	const searchable_keys = new Set<keyof schema.Atom<A>>();
+	const prop_defs = book.get_custom_properties_definition(atom_name);
+	for(const k in prop_defs){
+		const prop:Book.Definition.Property = prop_defs[k]!;
+		if(prop.search && prop.search === true){
+			searchable_keys.add(k as keyof schema.Atom<A>);
+		}
+	}
+	let k:keyof typeof atom_common_properties;
+	for(k in atom_common_properties){
+		const prop:Book.Definition.Property = atom_common_properties[k];
+		if(prop.search && prop.search === true){
+			searchable_keys.add(k as keyof schema.AtomShape<A>);
+		}
+	}
+	return searchable_keys;
+}
+
 export function get_hidden<A extends schema.AtomName, D extends schema.Depth = 0>(atom_name:A)
 		:Set<keyof schema.Molecule<A,D>>{
 	const hidden_keys = new Set<keyof schema.Molecule<A,D>>();

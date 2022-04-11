@@ -263,6 +263,19 @@ let ACL = class ACL {
         const acl_res = await this._dal.delete_multiple(ids);
         return acl_res;
     }
+    async search(string, options) {
+        this._can_uniform_read();
+        let query = { $text: { $search: string } };
+        if (this._security_type === book_1.SecurityType.GRANULAR) {
+            query = { $and: [query, this._read_query] };
+            if (!options) {
+                options = {};
+            }
+            // options.depth_query = query;
+            options.depth_query = this._read_query;
+        }
+        return await this.select(query, options);
+    }
 };
 ACL = __decorate([
     urn_lib_1.urn_log.util.decorators.debug_constructor,

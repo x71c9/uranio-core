@@ -27,5 +27,6 @@ export declare class BasicBLL<A extends schema.AtomName> {
     update_multiple(ids: string[], partial_atom: Partial<schema.AtomShape<A>>): Promise<schema.Atom<A>[]>;
     insert_multiple(atom_shapes: schema.AtomShape<A>[]): Promise<schema.Atom<A>[]>;
     remove_multiple(ids: string[]): Promise<schema.Atom<A>[]>;
+    search<D extends schema.Depth>(string: string, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>[]>;
 }
 export declare function create<A extends schema.AtomName>(atom_name: A): BasicBLL<A>;

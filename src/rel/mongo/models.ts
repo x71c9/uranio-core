@@ -16,7 +16,7 @@ import {ConnectionName} from '../../typ/book_cln';
 
 import {Environment} from '../../typ/env';
 
-// import * as conf from '../../conf/server';
+import * as atm from '../../atm/server';
 
 import * as env from '../../env/server';
 
@@ -67,7 +67,10 @@ export function get_model(conn_name:ConnectionName, atom_name:schema.AtomName)
 						continue;
 					}
 					const atom_schema_def = _convert_for_trash(generate_mongo_schema_def(atom_name));
-					const atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
+					let atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
+					
+					atom_mongo_schema = _add_text_indexes(atom_mongo_schema, atom_name);
+					
 					const atom_model = mongo_app.connections!.trash.create_model(atom_name, atom_mongo_schema);
 					model_by_atom_name.set(atom_name, atom_model);
 				}
@@ -97,6 +100,8 @@ function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstan
 		const atom_schema_def = generate_mongo_schema_def(atom_name);
 		let atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
 		
+		atom_mongo_schema = _add_text_indexes(atom_mongo_schema, atom_name);
+		
 		const conn_name = (!connection) ? 'main' : connection;
 		atom_mongo_schema = _add_schema_middleware(atom_name, conn_name, atom_mongo_schema);
 		
@@ -104,6 +109,16 @@ function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstan
 		model_by_atom_name.set(atom_name, atom_model);
 	}
 	return model_by_atom_name;
+}
+
+function _add_text_indexes(atom_mongo_schema:mongoose.Schema, atom_name:schema.AtomName){
+	const searchable_indexed = atm.keys.get_search_indexes(atom_name);
+	const mongo_indexes:{[k:string]: 'text'} = {};
+	for(const k of searchable_indexed){
+		mongo_indexes[k] = 'text';
+	}
+	atom_mongo_schema.index(mongo_indexes);
+	return atom_mongo_schema;
 }
 
 function _convert_for_trash(schema_definition:mongoose.SchemaDefinition)

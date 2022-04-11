@@ -62,6 +62,7 @@ export declare namespace Book {
                 hidden?: boolean;
                 unique?: boolean;
                 default?: any;
+                search?: boolean;
                 on_error?: (old_value: any) => any;
             }
             interface ID extends SharedFields {

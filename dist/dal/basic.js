@@ -91,6 +91,10 @@ let BasicDAL = class BasicDAL {
     async delete_multiple(ids) {
         return await this._db_relation.delete_multiple(ids);
     }
+    async search(string, options) {
+        const query = { $text: { $search: string } };
+        return await this.select(query, options);
+    }
 };
 BasicDAL = __decorate([
     urn_lib_1.urn_log.util.decorators.debug_constructor,

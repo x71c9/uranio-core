@@ -311,6 +311,23 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		return acl_res;
 	}
 	
+	public async search<D extends schema.Depth>(string:string, options?:schema.Query.Options<A,D>)
+			:Promise<schema.Molecule<A,D>[]>{
+		
+		this._can_uniform_read();
+		
+		let query = {$text: {$search: string}} as schema.Query<A>;
+		if(this._security_type === SecurityType.GRANULAR){
+			query = {$and: [query, this._read_query]};
+			if(!options){
+				options = {};
+			}
+			// options.depth_query = query;
+			options.depth_query = this._read_query;
+		}
+		return await this.select(query, options);
+	}
+	
 }
 
 export function create<A extends schema.AtomName>(
