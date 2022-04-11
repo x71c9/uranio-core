@@ -328,6 +328,11 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		return await this.select(query, options);
 	}
 	
+	public async search_count(string:string)
+			:Promise<number>{
+		return await this.count({$text: {$query: string}} as schema.Query<A>);
+	}
+	
 }
 
 export function create<A extends schema.AtomName>(

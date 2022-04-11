@@ -36,5 +36,7 @@ export interface AccessLayer<A extends schema.AtomName> {
 	
 	search<D extends schema.Depth>(string:string, options?:schema.Query.Options<A,D>):Promise<schema.Molecule<A,D>[]>
 	
+	search_count(string:string):Promise<number>
+	
 }
 

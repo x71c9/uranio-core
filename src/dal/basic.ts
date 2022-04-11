@@ -100,6 +100,11 @@ export class BasicDAL<A extends schema.AtomName> implements AccessLayer<A>{
 		return await this.select(query, options);
 	}
 	
+	public async search_count(string:string)
+			:Promise<number>{
+		return await this.count({$text: {$query: string}} as schema.Query<A>);
+	}
+	
 }
 
 export function create_basic<A extends schema.AtomName>(atom_name:A, db_relation:urn_rel.Relation<A>)

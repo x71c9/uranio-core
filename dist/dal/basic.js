@@ -95,6 +95,9 @@ let BasicDAL = class BasicDAL {
         const query = { $text: { $search: string } };
         return await this.select(query, options);
     }
+    async search_count(string) {
+        return await this.count({ $text: { $query: string } });
+    }
 };
 BasicDAL = __decorate([
     urn_lib_1.urn_log.util.decorators.debug_constructor,

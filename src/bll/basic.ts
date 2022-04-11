@@ -111,6 +111,11 @@ export class BasicBLL<A extends schema.AtomName> {
 		return await this._al.search(string, options);
 	}
 	
+	public async search_count(string:string)
+			:Promise<number>{
+		return await this._al.search_count(string);
+	}
+	
 }
 
 export function create<A extends schema.AtomName>(atom_name:A)
