@@ -277,7 +277,7 @@ let ACL = class ACL {
         return await this.select(query, options);
     }
     async search_count(string) {
-        return await this.count({ $text: { $query: string } });
+        return await this.count({ $text: { $search: string } });
     }
 };
 ACL = __decorate([

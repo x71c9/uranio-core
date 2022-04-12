@@ -67,6 +67,13 @@ function _validate_expression(field, atom_name) {
         const err_msg = `Cannot _validate_expression. Invalid expression type.`;
         throw urn_exc.create_invalid_request('INVALID_EXPRESSION_TYPE', err_msg);
     }
+    if (urn_lib_1.urn_util.object.has_key(field, '$text') && urn_lib_1.urn_util.object.has_key(field['$text'], '$search')) {
+        if (typeof field['$text']['$search'] !== 'string') {
+            const err_msg = `Invalid search text query format.`;
+            throw urn_exc.create_invalid_request('FILTER_INVALID_EXPRESSION_SEARCH_TEXT_TYPE', err_msg);
+        }
+        return true;
+    }
     if (Object.keys(field).length > 1) {
         const err_msg = `Invalid expression. Expression must have only one key set.`;
         throw urn_exc.create_invalid_request('INVALID_EXPRESSION_MULTIPLE_KEYS', err_msg);

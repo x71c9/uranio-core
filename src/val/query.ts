@@ -56,6 +56,13 @@ function _validate_expression<A extends schema.AtomName>(field:schema.Query.Expr
 		const err_msg = `Cannot _validate_expression. Invalid expression type.`;
 		throw urn_exc.create_invalid_request('INVALID_EXPRESSION_TYPE', err_msg);
 	}
+	if(urn_util.object.has_key(field, '$text') && urn_util.object.has_key((field as any)['$text'], '$search')){
+		if(typeof (field as any)['$text']['$search'] !== 'string'){
+			const err_msg = `Invalid search text query format.`;
+			throw urn_exc.create_invalid_request('FILTER_INVALID_EXPRESSION_SEARCH_TEXT_TYPE', err_msg);
+		}
+		return true;
+	}
 	if(Object.keys(field).length > 1){
 		const err_msg = `Invalid expression. Expression must have only one key set.`;
 		throw urn_exc.create_invalid_request('INVALID_EXPRESSION_MULTIPLE_KEYS', err_msg);
