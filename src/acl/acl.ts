@@ -46,6 +46,8 @@ import {AccessLayer} from '../typ/layer';
 
 import * as book from '../book/server';
 
+import {search_query_object} from '../layer/index';
+
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods
 export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
@@ -316,21 +318,22 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		
 		this._can_uniform_read();
 		
-		let query = {$text: {$search: string}} as schema.Query<A>;
+		let search_object = search_query_object(string, this.atom_name);
 		if(this._security_type === SecurityType.GRANULAR){
-			query = {$and: [query, this._read_query]};
+			search_object = {$and: [this._read_query, search_object]};
 			if(!options){
 				options = {};
 			}
 			// options.depth_query = query;
 			options.depth_query = this._read_query;
 		}
-		return await this.select(query, options);
+		return await this.select(search_object, options);
 	}
 	
 	public async search_count(string:string)
 			:Promise<number>{
-		return await this.count({$text: {$search: string}} as schema.Query<A>);
+		const search_object = search_query_object(string, this.atom_name);
+		return await this.count(search_object);
 	}
 	
 }

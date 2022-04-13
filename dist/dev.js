@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const server_1 = __importDefault(require("./server"));
 server_1.default.init();
 const bll = server_1.default.bll.basic.create('superuser');
-bll.search('uranio').then((a) => {
+bll.search('andr').then((a) => {
     console.log(a);
 });
 //# sourceMappingURL=dev.js.map

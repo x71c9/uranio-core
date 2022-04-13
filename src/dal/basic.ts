@@ -20,6 +20,8 @@ import {AuthAction} from '../typ/auth';
 
 import {AccessLayer} from '../typ/layer';
 
+import {search_query_object} from '../layer/index';
+
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods
 export class BasicDAL<A extends schema.AtomName> implements AccessLayer<A>{
@@ -96,13 +98,14 @@ export class BasicDAL<A extends schema.AtomName> implements AccessLayer<A>{
 	
 	public async search<D extends schema.Depth = 0>(string:string, options?:schema.Query.Options<A,D>)
 			:Promise<schema.Molecule<A,D>[]>{
-		const query = {$text: {$search: string}} as schema.Query<A>;
-		return await this.select(query, options);
+		const search_object = search_query_object(string, this.atom_name);
+		return await this.select(search_object, options);
 	}
 	
 	public async search_count(string:string)
 			:Promise<number>{
-		return await this.count({$text: {$search: string}} as schema.Query<A>);
+		const search_object = search_query_object(string, this.atom_name);
+		return await this.count(search_object);
 	}
 	
 }

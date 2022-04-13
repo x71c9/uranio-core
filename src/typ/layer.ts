@@ -39,3 +39,4 @@ export interface AccessLayer<A extends schema.AtomName> {
 	search_count(string:string):Promise<number>
 	
 }
+

@@ -65,6 +65,7 @@ const atm_util = __importStar(require("../atm/util"));
 const book_1 = require("../typ/book");
 const auth_1 = require("../typ/auth");
 const book = __importStar(require("../book/server"));
+const index_1 = require("../layer/index");
 let ACL = class ACL {
     constructor(atom_name, user_groups) {
         this.atom_name = atom_name;
@@ -265,19 +266,20 @@ let ACL = class ACL {
     }
     async search(string, options) {
         this._can_uniform_read();
-        let query = { $text: { $search: string } };
+        let search_object = (0, index_1.search_query_object)(string, this.atom_name);
         if (this._security_type === book_1.SecurityType.GRANULAR) {
-            query = { $and: [query, this._read_query] };
+            search_object = { $and: [this._read_query, search_object] };
             if (!options) {
                 options = {};
             }
             // options.depth_query = query;
             options.depth_query = this._read_query;
         }
-        return await this.select(query, options);
+        return await this.select(search_object, options);
     }
     async search_count(string) {
-        return await this.count({ $text: { $search: string } });
+        const search_object = (0, index_1.search_query_object)(string, this.atom_name);
+        return await this.count(search_object);
     }
 };
 ACL = __decorate([

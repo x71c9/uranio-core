@@ -20,7 +20,7 @@ import * as book from '../book/client';
 const _query_op_keys = {
 	array_op: ['$and', '$nor', '$or'],
 	equal_op: ['$not'],
-	compa_op: ['$eq', '$gt', '$gte', '$in', '$lt', '$lte', '$ne', '$nin']
+	compa_op: ['$eq', '$gt', '$gte', '$in', '$lt', '$lte', '$ne', '$nin', '$regex', '$options']
 };
 
 const _options_keys = ['depth', 'sort', 'limit', 'skip', 'depth_query'];

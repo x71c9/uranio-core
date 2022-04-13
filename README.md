@@ -349,3 +349,25 @@ The `log` db is made for storing logs.
 
 The `trash` db stores a copy of all deleted records.
 
+### Search
+
+#### MongoDB
+
+When using MongoDB each Atom's property can have a key named `search`.
+If the key `search `is set to `true` MongoDB will make a `text index` on that key.
+
+> See [Mongo docs](https://www.mongodb.com/docs/manual/core/index-text/)
+
+When the method `search` is called on a BLL class, URANIO will create a query
+in this fashion:
+
+```
+{$or: [{atom_key1: {$regex: query, $options: 'i'}}, {atom_key2: {$regex: query, $options: 'i'}}, ...]}
+```
+
+This will make a regex search on all the Atom's properties with `search` equal
+to `true`.
+
+
+
+

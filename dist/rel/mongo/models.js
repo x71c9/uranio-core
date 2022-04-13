@@ -115,7 +115,7 @@ function _add_text_indexes(atom_mongo_schema, atom_name) {
     for (const k of searchable_indexed) {
         mongo_indexes[k] = 'text';
     }
-    atom_mongo_schema.index(mongo_indexes);
+    atom_mongo_schema.index(mongo_indexes, { default_language: "english" });
     return atom_mongo_schema;
 }
 function _convert_for_trash(schema_definition) {

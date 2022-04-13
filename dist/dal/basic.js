@@ -40,6 +40,7 @@ exports.create_basic = exports.BasicDAL = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('BASIC_DAL', 'BasicDAL');
 const urn_validators = __importStar(require("../val/server"));
+const index_1 = require("../layer/index");
 let BasicDAL = class BasicDAL {
     constructor(atom_name, _db_relation) {
         this.atom_name = atom_name;
@@ -92,11 +93,12 @@ let BasicDAL = class BasicDAL {
         return await this._db_relation.delete_multiple(ids);
     }
     async search(string, options) {
-        const query = { $text: { $search: string } };
-        return await this.select(query, options);
+        const search_object = (0, index_1.search_query_object)(string, this.atom_name);
+        return await this.select(search_object, options);
     }
     async search_count(string) {
-        return await this.count({ $text: { $search: string } });
+        const search_object = (0, index_1.search_query_object)(string, this.atom_name);
+        return await this.count(search_object);
     }
 };
 BasicDAL = __decorate([
