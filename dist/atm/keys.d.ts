@@ -4,6 +4,7 @@
  * @packageDocumentation
  */
 import { schema } from '../sch/client';
+export declare function get_all<A extends schema.AtomName>(atom_name: A): Set<keyof schema.Atom<A>>;
 export declare function get_optional<A extends schema.AtomName>(atom_name: A): Set<keyof schema.Atom<A>>;
 export declare function get_search_indexes<A extends schema.AtomName>(atom_name: A): Set<keyof schema.Atom<A>>;
 export declare function get_hidden<A extends schema.AtomName, D extends schema.Depth = 0>(atom_name: A): Set<keyof schema.Molecule<A, D>>;

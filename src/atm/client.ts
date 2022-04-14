@@ -23,6 +23,7 @@ export const validate = {
 };
 
 import {
+	get_all,
 	get_hidden,
 	get_encrypted,
 	get_unique,
@@ -32,6 +33,7 @@ import {
 } from './keys';
 
 export const keys = {
+	get_all,
 	get_hidden,
 	get_encrypted,
 	get_unique,

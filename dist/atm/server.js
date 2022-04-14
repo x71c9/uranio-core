@@ -31,6 +31,7 @@ exports.validate = {
 };
 const keys_1 = require("./keys");
 exports.keys = {
+    get_all: keys_1.get_all,
     get_search_indexes: keys_1.get_search_indexes,
     get_hidden: keys_1.get_hidden,
     get_encrypted: keys_1.get_encrypted,

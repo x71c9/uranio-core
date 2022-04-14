@@ -12,6 +12,16 @@ import * as book from '../book/client';
 
 import {atom_common_properties} from '../stc/client';
 
+export function get_all<A extends schema.AtomName>(atom_name:A)
+		:Set<keyof schema.Atom<A>>{
+	const keys = new Set<keyof schema.Atom<A>>();
+	const prop_defs = book.get_properties_definition(atom_name);
+	for(const k in prop_defs){
+		keys.add(k as keyof schema.Atom<A>);
+	}
+	return keys;
+}
+
 export function get_optional<A extends schema.AtomName>(atom_name:A)
 		:Set<keyof schema.Atom<A>>{
 	const optional_keys = new Set<keyof schema.Atom<A>>();

@@ -12,8 +12,9 @@ export declare const validate: {
     atom_partial: typeof atom_partial;
     property: typeof validate_property;
 };
-import { get_search_indexes, get_hidden, get_encrypted, get_unique, get_bond, get_bond_array, get_bond_non_array } from './keys';
+import { get_all, get_search_indexes, get_hidden, get_encrypted, get_unique, get_bond, get_bond_array, get_bond_non_array } from './keys';
 export declare const keys: {
+    get_all: typeof get_all;
     get_search_indexes: typeof get_search_indexes;
     get_hidden: typeof get_hidden;
     get_encrypted: typeof get_encrypted;
