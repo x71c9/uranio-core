@@ -45,9 +45,6 @@ const basic_1 = require("./basic");
 const encrypt_1 = require("./encrypt");
 const book = __importStar(require("../book/server"));
 let RecycleDAL = class RecycleDAL extends encrypt_1.EncryptDAL {
-    // constructor(atom_name:A) {
-    //   super(atom_name);
-    // }
     get trash_dal() {
         if (this._trash_dal === undefined) {
             let db_trash_relation;

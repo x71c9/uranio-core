@@ -72,8 +72,8 @@ let MongooseRelation = class MongooseRelation {
     async select(query, options) {
         let mon_find_res = [];
         if (options) {
-            if (options.depth && typeof options.depth === 'number' && options.depth > 0) {
-                const populate_object = _generate_populate_obj(this.atom_name, options.depth, options.depth_query);
+            if (options.depth && Number(options.depth) > 0) {
+                const populate_object = _generate_populate_obj(this.atom_name, Number(options.depth), options.depth_query);
                 mon_find_res = await this._raw.find(query, null, options)
                     .populate(populate_object).lean();
             }
@@ -90,8 +90,8 @@ let MongooseRelation = class MongooseRelation {
     }
     async select_by_id(id, options) {
         let mon_find_by_id_res;
-        if (options && options.depth && typeof options.depth === 'number' && options.depth > 0) {
-            const populate_object = _generate_populate_obj(this.atom_name, options.depth, options.depth_query);
+        if (options && options.depth && Number(options.depth) > 0) {
+            const populate_object = _generate_populate_obj(this.atom_name, Number(options.depth), options.depth_query);
             mon_find_by_id_res = await this._raw.findById(id)
                 .populate(populate_object).lean();
         }
@@ -105,8 +105,8 @@ let MongooseRelation = class MongooseRelation {
     }
     async select_one(query, options) {
         let mon_find_one_res;
-        if (options && options.depth && typeof options.depth === 'number' && options.depth > 0) {
-            const populate_object = _generate_populate_obj(this.atom_name, options.depth, options.depth_query);
+        if (options && options.depth && Number(options.depth) > 0) {
+            const populate_object = _generate_populate_obj(this.atom_name, Number(options.depth), options.depth_query);
             mon_find_one_res = await this._raw.findOne(query).sort(options.sort)
                 .populate(populate_object).lean();
         }

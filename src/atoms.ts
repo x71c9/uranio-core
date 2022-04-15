@@ -20,6 +20,7 @@ export const atom_book = {
 				label: 'Email',
 				unique: true,
 				search: true,
+				primary: true,
 				on_error: () => {
 					return 'email@email.com';
 				}
@@ -52,6 +53,7 @@ export const atom_book = {
 				type: PropertyType.EMAIL,
 				label: 'Email',
 				search: true,
+				primary: true,
 				unique: true,
 			},
 			password: {
@@ -77,6 +79,7 @@ export const atom_book = {
 			name: {
 				type: PropertyType.TEXT,
 				unique: true,
+				primary: true,
 				search: true,
 				label: 'Name'
 			}
@@ -102,11 +105,13 @@ export const atom_book = {
 			type: {
 				type: PropertyType.TEXT,
 				search: true,
+				primary: true,
 				label: 'Filetype'
 			},
 			size: {
 				type: PropertyType.INTEGER,
 				label: 'Size (byte)',
+				primary: true,
 				validation: {
 					min: 0
 				}

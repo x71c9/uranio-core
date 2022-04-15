@@ -18,6 +18,7 @@ export declare const atom_book: {
                 readonly label: "Email";
                 readonly unique: true;
                 readonly search: true;
+                readonly primary: true;
                 readonly on_error: () => string;
             };
             readonly password: {
@@ -48,6 +49,7 @@ export declare const atom_book: {
                 readonly type: PropertyType.EMAIL;
                 readonly label: "Email";
                 readonly search: true;
+                readonly primary: true;
                 readonly unique: true;
             };
             readonly password: {
@@ -73,6 +75,7 @@ export declare const atom_book: {
             readonly name: {
                 readonly type: PropertyType.TEXT;
                 readonly unique: true;
+                readonly primary: true;
                 readonly search: true;
                 readonly label: "Name";
             };
@@ -98,11 +101,13 @@ export declare const atom_book: {
             readonly type: {
                 readonly type: PropertyType.TEXT;
                 readonly search: true;
+                readonly primary: true;
                 readonly label: "Filetype";
             };
             readonly size: {
                 readonly type: PropertyType.INTEGER;
                 readonly label: "Size (byte)";
+                readonly primary: true;
                 readonly validation: {
                     readonly min: 0;
                 };

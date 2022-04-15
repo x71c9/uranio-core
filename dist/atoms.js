@@ -21,6 +21,7 @@ exports.atom_book = {
                 label: 'Email',
                 unique: true,
                 search: true,
+                primary: true,
                 on_error: () => {
                     return 'email@email.com';
                 }
@@ -53,6 +54,7 @@ exports.atom_book = {
                 type: book_cln_1.PropertyType.EMAIL,
                 label: 'Email',
                 search: true,
+                primary: true,
                 unique: true,
             },
             password: {
@@ -78,6 +80,7 @@ exports.atom_book = {
             name: {
                 type: book_cln_1.PropertyType.TEXT,
                 unique: true,
+                primary: true,
                 search: true,
                 label: 'Name'
             }
@@ -103,11 +106,13 @@ exports.atom_book = {
             type: {
                 type: book_cln_1.PropertyType.TEXT,
                 search: true,
+                primary: true,
                 label: 'Filetype'
             },
             size: {
                 type: book_cln_1.PropertyType.INTEGER,
                 label: 'Size (byte)',
+                primary: true,
                 validation: {
                     min: 0
                 }

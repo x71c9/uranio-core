@@ -66,10 +66,10 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 			:Promise<schema.Molecule<A,D>[]>{
 		let mon_find_res:schema.Molecule<A,D>[] = [];
 		if(options){
-			if(options.depth && typeof options.depth === 'number' && options.depth > 0){
+			if(options.depth && Number(options.depth) > 0){
 				const populate_object = _generate_populate_obj(
 					this.atom_name,
-					options.depth,
+					Number(options.depth),
 					options.depth_query
 				);
 				mon_find_res = await this._raw.find(query, null, options)
@@ -88,10 +88,10 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 	public async select_by_id<D extends schema.Depth>(id:string, options?:schema.Query.Options<A,D>)
 			:Promise<schema.Molecule<A,D>>{
 		let mon_find_by_id_res:schema.Molecule<A,D>;
-		if(options && options.depth && typeof options.depth === 'number' && options.depth > 0){
+		if(options && options.depth && Number(options.depth) > 0){
 			const populate_object = _generate_populate_obj(
 				this.atom_name,
-				options.depth,
+				Number(options.depth),
 				options.depth_query
 			);
 			mon_find_by_id_res = await this._raw.findById(id)
@@ -108,10 +108,10 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 	public async select_one<D extends schema.Depth>(query:schema.Query<A>, options?:schema.Query.Options<A,D>)
 			:Promise<schema.Molecule<A,D>>{
 		let mon_find_one_res:schema.Molecule<A,D>;
-		if(options && options.depth && typeof options.depth === 'number' && options.depth > 0){
+		if(options && options.depth && Number(options.depth) > 0){
 			const populate_object = _generate_populate_obj(
 				this.atom_name,
-				options.depth,
+				Number(options.depth),
 				options.depth_query
 			);
 			mon_find_one_res = await this._raw.findOne(query).sort(options.sort)

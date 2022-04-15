@@ -27,10 +27,6 @@ export class RecycleDAL<A extends schema.AtomName> extends EncryptDAL<A>{
 	
 	private _trash_dal?:BasicDAL<A>;
 	
-	// constructor(atom_name:A) {
-	//   super(atom_name);
-	// }
-	
 	public get trash_dal():BasicDAL<A>{
 		if(this._trash_dal === undefined){
 			let db_trash_relation:urn_rel.Relation<A>;
