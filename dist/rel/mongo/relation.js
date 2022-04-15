@@ -133,7 +133,7 @@ let MongooseRelation = class MongooseRelation {
         mon_obj._id = str_id;
         return _clean_atom(this.atom_name, mon_obj);
     }
-    async alter_by_id(id, partial_atom) {
+    async alter_by_id(id, partial_atom, options) {
         if (typeof id !== 'string' || id === '' || !this.is_valid_id(id)) {
             const err_msg = `Cannot alter_by_id. Invalid id param.`;
             throw urn_exc.create_invalid_request('ALTER_BY_ID_INVALID_ID', err_msg);
@@ -144,11 +144,33 @@ let MongooseRelation = class MongooseRelation {
             $set: partial_atom,
             $unset: $unset
         };
-        const mon_update_res = await this._raw.findByIdAndUpdate({ _id: id }, update, { new: true, lean: true });
+        const default_options = { new: true, lean: true };
+        let current_options = default_options;
+        let mon_update_res;
+        if (options) {
+            if (options.limit) {
+                delete options.limit;
+            }
+            current_options = { ...default_options, ...options };
+            if (options.depth && Number(options.depth) > 0) {
+                const populate_object = _generate_populate_obj(this.atom_name, Number(options.depth), options.depth_query);
+                mon_update_res =
+                    await this._raw.findByIdAndUpdate({ _id: id }, update, current_options)
+                        .populate(populate_object);
+            }
+            else {
+                mon_update_res =
+                    await this._raw.findByIdAndUpdate({ _id: id }, update, current_options);
+            }
+        }
+        else {
+            mon_update_res =
+                await this._raw.findByIdAndUpdate({ _id: id }, update, default_options);
+        }
         if (mon_update_res === null) {
             throw urn_exc.create_not_found('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
         }
-        return _clean_atom(this.atom_name, mon_update_res);
+        return _clean_molecule(this.atom_name, mon_update_res);
     }
     async replace_by_id(id, atom) {
         if (typeof id !== 'string' || id === '' || !this.is_valid_id(id)) {

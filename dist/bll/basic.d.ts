@@ -18,8 +18,8 @@ export declare class BasicBLL<A extends schema.AtomName> {
     find_one<D extends schema.Depth>(query: schema.Query<A>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;
     count(query: schema.Query<A>): Promise<number>;
     insert_new(atom_shape: schema.AtomShape<A>): Promise<schema.Atom<A>>;
-    update_by_id(id: string, partial_atom: Partial<schema.AtomShape<A>>): Promise<schema.Atom<A>>;
-    update_one(atom: schema.Atom<A>): Promise<schema.Atom<A>>;
+    update_by_id<D extends schema.Depth>(id: string, partial_atom: Partial<schema.AtomShape<A>>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;
+    update_one<D extends schema.Depth>(atom: schema.Atom<A>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;
     remove_by_id(id: string): Promise<schema.Atom<A>>;
     remove_one<D extends schema.Depth>(molecule: schema.Molecule<A, D>): Promise<schema.Atom<A>>;
     authorize(action: AuthAction, id?: string): Promise<true>;

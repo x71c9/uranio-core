@@ -23,7 +23,7 @@ type GroupsByEmail = {
 export class AuthBLL<A extends schema.AtomName> extends SecurityBLL<A>{
 	
 	public async insert_new(atom_shape:schema.AtomShape<A>)
-			:Promise<schema.Atom<A>>{
+			:Promise<schema.Molecule<A,0>>{
 		const atom = await super.insert_new(atom_shape);
 		if(
 			!atm.util.is_auth_atom_name(this.atom_name) ||
@@ -34,7 +34,7 @@ export class AuthBLL<A extends schema.AtomName> extends SecurityBLL<A>{
 		const group_bll = insta.get_bll_group();
 		const group = await group_bll.insert_new({name: atom.email});
 		atom.groups = [group._id];
-		return await super.update_one(atom);
+		return await super.update_one<0>(atom);
 	}
 	
 	public async insert_multiple(atom_shapes:schema.AtomShape<A>[])
@@ -60,7 +60,7 @@ export class AuthBLL<A extends schema.AtomName> extends SecurityBLL<A>{
 		for(const atom of atoms){
 			const auth_atom = atom as unknown as schema.AuthAtom<'user'>;
 			auth_atom.groups = [groups_by_email[auth_atom.email]._id];
-			const atom_with_group = await super.update_one(auth_atom as unknown as schema.Atom<A>);
+			const atom_with_group = await super.update_one<0>(auth_atom as unknown as schema.Atom<A>);
 			atoms_with_group.push(atom_with_group);
 		}
 		return atoms_with_group;

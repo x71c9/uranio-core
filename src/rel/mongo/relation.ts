@@ -144,8 +144,11 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 		return _clean_atom<A>(this.atom_name, mon_obj as schema.Atom<A>);
 	}
 	
-	public async alter_by_id(id:string, partial_atom:Partial<schema.AtomShape<A>>)
-			:Promise<schema.Atom<A>>{
+	public async alter_by_id<D extends schema.Depth>(
+		id:string,
+		partial_atom:Partial<schema.AtomShape<A>>,
+		options?:schema.Query.Options<A,D>
+	):Promise<schema.Molecule<A,D>>{
 		if(typeof id !== 'string' || id === '' || !this.is_valid_id(id)){
 			const err_msg = `Cannot alter_by_id. Invalid id param.`;
 			throw urn_exc.create_invalid_request('ALTER_BY_ID_INVALID_ID', err_msg);
@@ -156,12 +159,35 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 			$set: partial_atom,
 			$unset: $unset
 		};
-		const mon_update_res =
-			await this._raw.findByIdAndUpdate({_id:id}, update, {new: true, lean: true}) as unknown;
+		const default_options:mongoose.QueryOptions = {new: true, lean: true};
+		let current_options = default_options;
+		let mon_update_res:schema.Molecule<A,D>;
+		if(options){
+			if(options.limit){
+				delete options.limit;
+			}
+			current_options = {...default_options, ...options};
+			if(options.depth && Number(options.depth) > 0){
+				const populate_object = _generate_populate_obj(
+					this.atom_name,
+					Number(options.depth),
+					options.depth_query
+				);
+				mon_update_res =
+					await this._raw.findByIdAndUpdate({_id:id}, update, current_options)
+						.populate(populate_object) as unknown as schema.Molecule<A,D>;
+			}else{
+				mon_update_res =
+					await this._raw.findByIdAndUpdate({_id:id}, update, current_options) as unknown as schema.Molecule<A,D>;
+			}
+		}else{
+			mon_update_res =
+				await this._raw.findByIdAndUpdate({_id:id}, update, default_options) as unknown as schema.Molecule<A,D>;
+		}
 		if(mon_update_res === null){
 			throw urn_exc.create_not_found('ALTER_BY_ID_NOT_FOUND', `Cannot alter_by_id. Record not found.`);
 		}
-		return _clean_atom<A>(this.atom_name, mon_update_res as schema.Atom<A>);
+		return _clean_molecule(this.atom_name, mon_update_res as schema.Molecule<A,D>);
 	}
 	
 	public async replace_by_id(id:string, atom:schema.AtomShape<A>)

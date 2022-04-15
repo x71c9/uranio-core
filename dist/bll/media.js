@@ -118,14 +118,14 @@ let MediaBLL = class MediaBLL extends bll_1.BLL {
         const resp = await this._al.insert_one(media_shape);
         return this._with_full_src(resp);
     }
-    async update_by_id(id, partial_atom) {
+    async update_by_id(id, partial_atom, options) {
         const partial_media = this._remove_full_src(partial_atom);
-        const resp = await this._al.alter_by_id(id, partial_media);
+        const resp = await this._al.alter_by_id(id, partial_media, options);
         return this._with_full_src(resp);
     }
-    async update_one(atom) {
+    async update_one(atom, options) {
         const media = this._remove_full_src(atom);
-        const resp = await this.update_by_id(media._id, media);
+        const resp = await this.update_by_id(media._id, media, options);
         return this._with_full_src(resp);
     }
     async update_multiple(ids, partial_atom) {

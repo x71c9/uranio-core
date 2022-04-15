@@ -56,9 +56,9 @@ let EncryptDAL = class EncryptDAL extends validate_1.ValidateDAL {
         atom_shape = await atm_encrypt.properties(this.atom_name, atom_shape);
         return await super.insert_one(atom_shape);
     }
-    async alter_by_id(id, partial_atom) {
+    async alter_by_id(id, partial_atom, options) {
         partial_atom = await this._encrypt_changed_properties(id, partial_atom);
-        return super.alter_by_id(id, partial_atom);
+        return super.alter_by_id(id, partial_atom, options);
     }
     async insert_multiple(atom_shapes) {
         for (let atom_shape of atom_shapes) {

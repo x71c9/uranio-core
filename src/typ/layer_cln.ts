@@ -20,7 +20,7 @@ export interface AccessLayer<A extends schema.AtomName> {
 	
 	insert_one(atom_shape:schema.AtomShape<A>):Promise<schema.Atom<A>>
 	
-	alter_by_id(id:string, partial_atom:Partial<schema.AtomShape<A>>):Promise<schema.Atom<A>>
+	alter_by_id<D extends schema.Depth>(id:string, partial_atom:Partial<schema.AtomShape<A>>, options?:schema.Query.Options<A,D>):Promise<schema.Molecule<A,D>>
 	
 	delete_by_id(id:string):Promise<schema.Atom<A>>
 	

@@ -81,12 +81,13 @@ let ValidateDAL = class ValidateDAL extends rel_1.RelationDAL {
         db_record = await this.validate(db_record);
         return db_record;
     }
-    async alter_by_id(id, partial_atom) {
+    async alter_by_id(id, partial_atom, options) {
         atm_validate.atom_partial(this.atom_name, partial_atom);
         _check_ids(this.atom_name, partial_atom, this._db_relation.is_valid_id);
         await this._check_unique(partial_atom, id);
-        let db_record = await super.alter_by_id(id, partial_atom);
-        db_record = await this.validate(db_record);
+        let db_record = await super.alter_by_id(id, partial_atom, options);
+        const depth = (options && options.depth) ? options.depth : undefined;
+        db_record = await this.validate(db_record, depth);
         return db_record;
     }
     async delete_by_id(id) {

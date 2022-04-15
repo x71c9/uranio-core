@@ -120,17 +120,17 @@ export class MediaBLL extends BLL<'media'>{
 		return this._with_full_src(resp);
 	}
 	
-	public async update_by_id(id:string, partial_atom:Partial<schema.AtomShape<'media'>>)
-			:Promise<schema.Atom<'media'>>{
+	public async update_by_id<D extends schema.Depth>(id:string, partial_atom:Partial<schema.AtomShape<'media'>>, options?:schema.Query.Options<'media',D>)
+			:Promise<schema.Molecule<'media',D>>{
 		const partial_media = this._remove_full_src(partial_atom);
-		const resp = await this._al.alter_by_id(id, partial_media);
+		const resp = await this._al.alter_by_id(id, partial_media, options);
 		return this._with_full_src(resp);
 	}
 	
-	public async update_one(atom:schema.Atom<'media'>)
-			:Promise<schema.Atom<'media'>>{
+	public async update_one<D extends schema.Depth>(atom:schema.Atom<'media'>, options?:schema.Query.Options<'media',D>)
+			:Promise<schema.Molecule<'media',D>>{
 		const media = this._remove_full_src(atom);
-		const resp = await this.update_by_id(media._id, media as Partial<schema.AtomShape<'media'>>);
+		const resp = await this.update_by_id(media._id, media as Partial<schema.AtomShape<'media'>>, options);
 		return this._with_full_src(resp);
 	}
 	

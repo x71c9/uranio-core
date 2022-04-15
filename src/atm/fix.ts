@@ -47,7 +47,7 @@ export function property<A extends schema.AtomName, D extends schema.Depth>(
 		(atom as any)[key] = fixed_value;
 		
 	}catch(err){
-		let err_msg = `Cannot fix property of schema.Atom [${atom._id}].`;
+		let err_msg = `Cannot fix property [${key}] of Atom [${atom._id}].`;
 		if(fix_defined){
 			err_msg += ` Default value or on_error result is invalid.`;
 		}else{

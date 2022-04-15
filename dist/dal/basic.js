@@ -70,8 +70,8 @@ let BasicDAL = class BasicDAL {
     async insert_one(atom_shape) {
         return await this._db_relation.insert_one(atom_shape);
     }
-    async alter_by_id(id, partial_atom) {
-        return await this._db_relation.alter_by_id(id, partial_atom);
+    async alter_by_id(id, partial_atom, options) {
+        return await this._db_relation.alter_by_id(id, partial_atom, options);
     }
     async delete_by_id(id) {
         return await this._db_relation.delete_by_id(id);

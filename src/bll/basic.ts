@@ -56,14 +56,14 @@ export class BasicBLL<A extends schema.AtomName> {
 		return await this._al.insert_one(atom_shape);
 	}
 	
-	public async update_by_id(id:string, partial_atom:Partial<schema.AtomShape<A>>)
-			:Promise<schema.Atom<A>>{
-		return await this._al.alter_by_id(id, partial_atom);
+	public async update_by_id<D extends schema.Depth>(id:string, partial_atom:Partial<schema.AtomShape<A>>, options?:schema.Query.Options<A,D>)
+			:Promise<schema.Molecule<A,D>>{
+		return await this._al.alter_by_id(id, partial_atom, options);
 	}
 	
-	public async update_one(atom:schema.Atom<A>)
-			:Promise<schema.Atom<A>>{
-		return await this.update_by_id(atom._id, atom as Partial<schema.AtomShape<A>>);
+	public async update_one<D extends schema.Depth>(atom:schema.Atom<A>, options?:schema.Query.Options<A,D>)
+			:Promise<schema.Molecule<A,D>>{
+		return await this.update_by_id(atom._id, atom as Partial<schema.AtomShape<A>>, options);
 	}
 	
 	public async remove_by_id(id:string)

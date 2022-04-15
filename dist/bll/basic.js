@@ -65,11 +65,11 @@ let BasicBLL = class BasicBLL {
     async insert_new(atom_shape) {
         return await this._al.insert_one(atom_shape);
     }
-    async update_by_id(id, partial_atom) {
-        return await this._al.alter_by_id(id, partial_atom);
+    async update_by_id(id, partial_atom, options) {
+        return await this._al.alter_by_id(id, partial_atom, options);
     }
-    async update_one(atom) {
-        return await this.update_by_id(atom._id, atom);
+    async update_one(atom, options) {
+        return await this.update_by_id(atom._id, atom, options);
     }
     async remove_by_id(id) {
         return await this._al.delete_by_id(id);

@@ -60,7 +60,7 @@ function property(atom_name, atom, key) {
         atom[key] = fixed_value;
     }
     catch (err) {
-        let err_msg = `Cannot fix property of schema.Atom [${atom._id}].`;
+        let err_msg = `Cannot fix property [${key}] of Atom [${atom._id}].`;
         if (fix_defined) {
             err_msg += ` Default value or on_error result is invalid.`;
         }

@@ -221,8 +221,11 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		return await this._dal.insert_one(atom_shape);
 	}
 	
-	public async alter_by_id(id:string, partial_atom:Partial<schema.AtomShape<A>>)
-			:Promise<schema.Atom<A>>{
+	public async alter_by_id<D extends schema.Depth>(
+		id:string,
+		partial_atom:Partial<schema.AtomShape<A>>,
+		options?:schema.Query.Options<A,D>
+	):Promise<schema.Molecule<A,D>>{
 		
 		this._can_uniform_write();
 		
@@ -230,7 +233,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 			this._can_atom_write(id);
 		}
 		
-		return await this._dal.alter_by_id(id, partial_atom);
+		return await this._dal.alter_by_id(id, partial_atom, options);
 	}
 	
 	public async delete_by_id(id:string)

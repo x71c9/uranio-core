@@ -201,12 +201,12 @@ let ACL = class ACL {
         this._can_uniform_write();
         return await this._dal.insert_one(atom_shape);
     }
-    async alter_by_id(id, partial_atom) {
+    async alter_by_id(id, partial_atom, options) {
         this._can_uniform_write();
         if (this._security_type === book_1.SecurityType.GRANULAR) {
             this._can_atom_write(id);
         }
-        return await this._dal.alter_by_id(id, partial_atom);
+        return await this._dal.alter_by_id(id, partial_atom, options);
     }
     async delete_by_id(id) {
         this._can_uniform_write();

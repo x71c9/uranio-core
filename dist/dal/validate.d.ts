@@ -13,7 +13,7 @@ export declare class ValidateDAL<A extends schema.AtomName> extends RelationDAL<
     select_by_id<D extends schema.Depth = 0>(id: string, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;
     select_one<D extends schema.Depth = 0>(query: schema.Query<A>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;
     insert_one(atom_shape: schema.AtomShape<A>): Promise<schema.Atom<A>>;
-    alter_by_id(id: string, partial_atom: Partial<schema.AtomShape<A>>): Promise<schema.Atom<A>>;
+    alter_by_id<D extends schema.Depth>(id: string, partial_atom: Partial<schema.AtomShape<A>>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;
     delete_by_id(id: string): Promise<schema.Atom<A>>;
     alter_multiple(ids: string[], partial_atom: Partial<schema.AtomShape<A>>): Promise<schema.Atom<A>[]>;
     insert_multiple(atom_shapes: schema.AtomShape<A>[]): Promise<schema.Atom<A>[]>;
