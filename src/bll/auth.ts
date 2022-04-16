@@ -33,7 +33,7 @@ export class AuthBLL<A extends schema.AtomName> extends SecurityBLL<A>{
 		}
 		const group_bll = insta.get_bll_group();
 		const group = await group_bll.insert_new({name: atom.email});
-		atom.groups = [group._id];
+		atom.groups = [...(atom.groups || []), group._id];
 		return await super.update_one<0>(atom);
 	}
 	

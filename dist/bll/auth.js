@@ -48,7 +48,7 @@ let AuthBLL = class AuthBLL extends security_1.SecurityBLL {
         }
         const group_bll = insta.get_bll_group();
         const group = await group_bll.insert_new({ name: atom.email });
-        atom.groups = [group._id];
+        atom.groups = [...(atom.groups || []), group._id];
         return await super.update_one(atom);
     }
     async insert_multiple(atom_shapes) {
