@@ -40,11 +40,19 @@ function search_query_object(query, atom_name) {
     const search_keys = atm.keys.get_search_indexes(atom_name);
     for (const key of search_keys) {
         const regex_query = {};
-        const esacaped_query = query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'); // will escape all regex special chars
-        regex_query[key] = { $regex: esacaped_query, $options: 'i' }; // $options i = case insensitive
+        const words = query.trim().split(' ');
+        let regex_string = '';
+        for (const word of words) {
+            regex_string += `(?=.*${_escape_regex(word)})|`;
+        }
+        regex_string = regex_string.slice(0, -1);
+        regex_query[key] = { $regex: regex_string, $options: 'i' }; // $options i = case insensitive
         search_object.$or.push(regex_query);
     }
     return search_object;
 }
 exports.search_query_object = search_query_object;
+function _escape_regex(str) {
+    return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'); // will escape all regex special chars
+}
 //# sourceMappingURL=index.js.map
