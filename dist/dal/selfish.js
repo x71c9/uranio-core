@@ -60,11 +60,15 @@ let SelfishDAL = class SelfishDAL extends recycle_1.RecycleDAL {
     }
     async _fix_molecule_on_validation_error(molecule, depth) {
         const bond_keys = atm_keys.get_bond(this.atom_name);
+        const optional_keys = atm_keys.get_optional(this.atom_name);
         if (!depth || (atm_util.is_atom(this.atom_name, molecule) && bond_keys.size === 0)) {
             return (await this._fix_atom_on_validation_error(molecule));
         }
         else {
             for (const k of bond_keys) {
+                if (optional_keys.has(k) && typeof molecule[k] === 'undefined') {
+                    continue;
+                }
                 const bond_name = atm_util.get_subatom_name(this.atom_name, k);
                 const prop_value = molecule[k];
                 const SUB_DAL = create_selfish(bond_name);

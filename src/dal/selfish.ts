@@ -45,10 +45,14 @@ export class SelfishDAL<A extends schema.AtomName> extends RecycleDAL<A>{
 	private async _fix_molecule_on_validation_error<D extends schema.Depth>(molecule:schema.Molecule<A,D>, depth?:D)
 			:Promise<schema.Molecule<A,D>>{
 		const bond_keys = atm_keys.get_bond<A,D>(this.atom_name);
+		const optional_keys = atm_keys.get_optional(this.atom_name);
 		if(!depth || (atm_util.is_atom(this.atom_name, molecule as schema.Atom<A>) && bond_keys.size === 0)){
 			return (await this._fix_atom_on_validation_error(molecule as schema.Atom<A>)) as schema.Molecule<A,D>;
 		}else{
 			for(const k of bond_keys){
+				if(optional_keys.has(k as any) && typeof molecule[k] === 'undefined'){
+					continue;
+				}
 				const bond_name = atm_util.get_subatom_name(this.atom_name, k as string);
 				const prop_value = molecule[k] as any;
 				const SUB_DAL = create_selfish(bond_name);
