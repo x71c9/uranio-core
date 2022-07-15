@@ -88,7 +88,7 @@ export class EncryptDAL<A extends schema.AtomName> extends ValidateDAL<A>{
 				if(typeof value !== 'string'){
 					throw urn_exc.create_invalid_atom(
 						`INVALID_ENCRYPTED_PROP_VALUE_TYPE`,
-						`PropertyType [${k}] of type ENCRYPTED must be of type \`string\`.`
+						`PropertyType [${String(k)}] of type ENCRYPTED must be of type \`string\`.`
 					);
 				}
 				

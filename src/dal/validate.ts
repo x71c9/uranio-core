@@ -290,7 +290,7 @@ function _check_ids<A extends schema.AtomName>(
 			prop_def = props[k];
 		}
 		if (!prop_def) {
-			const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${k}\``;
+			const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${String(k)}\``;
 			throw urn_exc.create("CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION", err_msg);
 		}
 		if (prop_def.type === types.PropertyType.ATOM){

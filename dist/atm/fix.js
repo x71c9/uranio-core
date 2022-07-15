@@ -60,7 +60,7 @@ function property(atom_name, atom, key) {
         atom[key] = fixed_value;
     }
     catch (err) {
-        let err_msg = `Cannot fix property [${key}] of Atom [${atom._id}].`;
+        let err_msg = `Cannot fix property [${String(key)}] of Atom [${atom._id}].`;
         if (fix_defined) {
             err_msg += ` Default value or on_error result is invalid.`;
         }
@@ -69,7 +69,7 @@ function property(atom_name, atom, key) {
             err_msg += ` Please define a \`default\` value or a \`on_error\` function`;
             err_msg += ` in atom definition.`;
         }
-        err_msg += ` For schema.Atom \`${atom_name}\` property \`${key}\``;
+        err_msg += ` For schema.Atom \`${atom_name}\` property \`${String(key)}\``;
         throw urn_exc.create('CANNOT_FIX', err_msg);
     }
     return atom;

@@ -47,7 +47,7 @@ export function property<A extends schema.AtomName, D extends schema.Depth>(
 		(atom as any)[key] = fixed_value;
 		
 	}catch(err){
-		let err_msg = `Cannot fix property [${key}] of Atom [${atom._id}].`;
+		let err_msg = `Cannot fix property [${String(key)}] of Atom [${atom._id}].`;
 		if(fix_defined){
 			err_msg += ` Default value or on_error result is invalid.`;
 		}else{
@@ -55,7 +55,7 @@ export function property<A extends schema.AtomName, D extends schema.Depth>(
 			err_msg += ` Please define a \`default\` value or a \`on_error\` function`;
 			err_msg += ` in atom definition.`;
 		}
-		err_msg += ` For schema.Atom \`${atom_name}\` property \`${key}\``;
+		err_msg += ` For schema.Atom \`${atom_name}\` property \`${String(key)}\``;
 		throw urn_exc.create('CANNOT_FIX', err_msg);
 	}
 	return atom;

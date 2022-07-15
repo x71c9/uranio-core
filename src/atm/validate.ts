@@ -207,7 +207,7 @@ function _validate_primitive_properties<A extends schema.AtomName>(
 			prop_def = props[k];
 		}
 		if(!prop_def){
-			const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${k}\``;
+			const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${String(k)}\``;
 			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
 		}
 		if(prop_def.type === PropertyType.ATOM || prop_def.type === PropertyType.ATOM_ARRAY){
@@ -243,7 +243,7 @@ function _validate_partial_atom_bond_properties<A extends schema.AtomName>(
 			prop_def = props[k];
 		}
 		if(!prop_def){
-			const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${k}\``;
+			const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${String(k)}\``;
 			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
 		}
 		
@@ -281,7 +281,7 @@ function _validate_molecule_bond_properties<A extends schema.AtomName, D extends
 			prop_def = props[k];
 		}
 		if(!prop_def){
-			const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${k}\``;
+			const err_msg = `schema.Atom property definition missing for atom \`${atom_name}\` property \`${String(k)}\``;
 			throw urn_exc.create('CORRECT_TYPE_MISSING_ATM_PROP_DEFINITION', err_msg);
 		}
 		
@@ -338,7 +338,7 @@ function _validate_primitive_type<A extends schema.AtomName, D extends schema.De
 		case PropertyType.ENCRYPTED:
 		case PropertyType.EMAIL:{
 			if(typeof prop_value !== 'string'){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a string.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be a string.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
@@ -347,7 +347,7 @@ function _validate_primitive_type<A extends schema.AtomName, D extends schema.De
 		case PropertyType.INTEGER:
 		case PropertyType.FLOAT:{
 			if(typeof prop_value !== 'number'){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a number.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be a number.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
@@ -355,7 +355,7 @@ function _validate_primitive_type<A extends schema.AtomName, D extends schema.De
 		}
 		case PropertyType.BINARY:{
 			if(typeof prop_value !== 'boolean'){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a boolean.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be a boolean.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
@@ -368,7 +368,7 @@ function _validate_primitive_type<A extends schema.AtomName, D extends schema.De
 				prop_value = new Date(prop_value);
 			}
 			if(!urn_util.is.date(prop_value)){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a Date.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be a Date.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
@@ -376,7 +376,7 @@ function _validate_primitive_type<A extends schema.AtomName, D extends schema.De
 		}
 		case PropertyType.SET_STRING:{
 			if(!Array.isArray(prop_value)){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a string array.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be a string array.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
@@ -384,7 +384,7 @@ function _validate_primitive_type<A extends schema.AtomName, D extends schema.De
 		}
 		case PropertyType.SET_NUMBER:{
 			if(!Array.isArray(prop_value)){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a number array.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be a number array.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
@@ -392,12 +392,12 @@ function _validate_primitive_type<A extends schema.AtomName, D extends schema.De
 		}
 		case PropertyType.ENUM_STRING:{
 			if(typeof prop_value !== 'string'){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a string.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be a string.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
 			if(!prop_def.values.includes(prop_value)){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be one of following:`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be one of following:`;
 				err_msg += ` ['${prop_def.values.join("','")}']`;
 				throw urn_exc.create_invalid_atom('INVALID_ENUM_PROP', err_msg, undefined, [prop_key]);
 			}
@@ -405,12 +405,12 @@ function _validate_primitive_type<A extends schema.AtomName, D extends schema.De
 		}
 		case PropertyType.ENUM_NUMBER:{
 			if(typeof prop_value !== 'number'){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a number.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be a number.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
 			if(!prop_def.values.includes(prop_value)){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be one of the following:`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be one of the following:`;
 				err_msg += ` [${prop_def.values.join(', ')}]`;
 				throw urn_exc.create_invalid_atom('INVALID_ENUM_PROP', err_msg, undefined, [prop_key]);
 			}
@@ -418,7 +418,7 @@ function _validate_primitive_type<A extends schema.AtomName, D extends schema.De
 		}
 		case PropertyType.ATOM:{
 			if(typeof prop_value !== 'string'){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be a string.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be a string.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
@@ -426,11 +426,11 @@ function _validate_primitive_type<A extends schema.AtomName, D extends schema.De
 		}
 		case PropertyType.ATOM_ARRAY:{
 			if(!Array.isArray(prop_value)){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be an Array.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be an Array.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}else if(!prop_value.every((id) => typeof id === 'string')){
-				const err_msg = `Invalid property \`${prop_key}\`. PropertyType should be an Array of string.`;
+				const err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be an Array of string.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
 			return true;
@@ -496,7 +496,7 @@ function _validate_bond_type<A extends schema.AtomName>(
 	switch(prop_def.type){
 		case PropertyType.ATOM:{
 			if(typeof prop_value === null || typeof prop_value !== 'object'){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be an object.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be an object.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
@@ -504,11 +504,11 @@ function _validate_bond_type<A extends schema.AtomName>(
 		}
 		case PropertyType.ATOM_ARRAY:{
 			if(!Array.isArray(prop_value)){
-				let err_msg = `Invalid property \`${prop_key}\`. PropertyType should be an Array.`;
+				let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be an Array.`;
 				err_msg += ` Type ${typeof prop_value} given.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}else if(!prop_value.every((atom) => typeof atom !== null && typeof atom === 'object')){
-				const err_msg = `Invalid property \`${prop_key}\`. PropertyType should be an Array of object.`;
+				const err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be an Array of object.`;
 				throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
 			}
 			return true;
@@ -556,13 +556,13 @@ function _custom_validate_bond_atom<A extends schema.AtomName, D extends schema.
 		const vali = prop_def.validation;
 		if(vali.date_from){
 			if(prop_value._date < vali.date_from){
-				const err_msg = `Invalid \`${prop_key}\`. Creation _date must be after \`${vali.date_from}\`.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Creation _date must be after \`${vali.date_from}\`.`;
 				throw urn_exc.create_invalid_atom('DATE_LOWER_THAN_MIN', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.date_until){
 			if(prop_value._date > vali.date_until){
-				const err_msg = `Invalid \`${prop_key}\`. Creation _date must be before \`${vali.date_until}\`.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Creation _date must be before \`${vali.date_until}\`.`;
 				throw urn_exc.create_invalid_atom('DATE_LOWER_THAN_MIN', err_msg, undefined, [prop_key]);
 			}
 		}
@@ -579,79 +579,79 @@ function _custom_validate_string<A extends schema.AtomName, D extends schema.Dep
 		const vali = prop_def.validation;
 		if(vali.alphanum && vali.alphanum === true){
 			if(!/[0-9a-zA-Z]/.test(prop_value)){
-				const err_msg = `Invalid \`${prop_key}\`. Must be alphanumeric /[0-9a-zA-Z]/.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must be alphanumeric /[0-9a-zA-Z]/.`;
 				throw urn_exc.create_invalid_atom('STRING_INVALID_ALPHANUM', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.contain_digit && vali.contain_digit === true){
 			if(!/\d/.test(prop_value)){
-				const err_msg = `Invalid \`${prop_key}\`. Must contain a digit.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must contain a digit.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_CONTAIN_DIGIT', err_msg, undefined, [prop_key]);
 			}
 		}else if(vali.contain_digit === false){
 			if(/\d/.test(prop_value)){
-				const err_msg = `Invalid \`${prop_key}\`. Must not contain any digit.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must not contain any digit.`;
 				throw urn_exc.create_invalid_atom('STRING_CONTAIN_DIGIT', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.contain_lowercase && vali.contain_lowercase === true){
 			if(prop_value.toUpperCase() === prop_value){
-				const err_msg = `Invalid \`${prop_key}\`. Must contain a lowercase character.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must contain a lowercase character.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_CONTAIN_LOWERCASE', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.contain_uppercase && vali.contain_uppercase === true){
 			if(prop_value.toLowerCase() === prop_value){
-				const err_msg = `Invalid \`${prop_key}\`. Must contain an uppercase character.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must contain an uppercase character.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_CONTAIN_UPPERCASE', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.length){
 			if(vali.length !== prop_value.length){
-				let err_msg = `Invalid \`${prop_key}\`. String length must be equal to ${vali.length}.`;
+				let err_msg = `Invalid \`${String(prop_key)}\`. String length must be equal to ${vali.length}.`;
 				err_msg += ` Length given ${prop_value.length}`;
 				throw urn_exc.create_invalid_atom('STRING_INVALI_LENGTH', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.lowercase && vali.lowercase === true){
 			if(prop_value.toLowerCase() !== prop_value){
-				const err_msg = `Invalid \`${prop_key}\`. Must be lowercase.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must be lowercase.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_LOWERCASE', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.max){
 			if(prop_value.length > vali.max!){
-				const err_msg = `Invalid \`${prop_key}\`. Length must be maximum ${vali.max} characters long.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Length must be maximum ${vali.max} characters long.`;
 				throw urn_exc.create_invalid_atom('STRING_MAX_LENGTH', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.min){
 			if(prop_value.length < vali.min!){
-				const err_msg = `Invalid \`${prop_key}\`. Length must be minimum ${vali.min} characters long.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Length must be minimum ${vali.min} characters long.`;
 				throw urn_exc.create_invalid_atom('STRING_MIN_LENGTH', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.only_letters && vali.only_letters === true){
 			if(!/^[A-Za-z]+$/.test(prop_value)){
-				const err_msg = `Invalid \`${prop_key}\`. Must contain only letters.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must contain only letters.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_ONLY_LETTERS', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.only_numbers){
 			if(!/^[0-9]+$/.test(prop_value)){
-				const err_msg = `Invalid \`${prop_key}\`. Must contain only numbers.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must contain only numbers.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_ONLY_NUMBERS', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.reg_ex){
 			if(!vali.reg_ex!.test(prop_value)){
-				const err_msg = `Invalid \`${prop_key}\`. Does not satisfy regular expression ${vali.reg_ex}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Does not satisfy regular expression ${vali.reg_ex}.`;
 				throw urn_exc.create_invalid_atom('STRING_INVALID_REG_EX', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.uppercase && vali.uppercase === true){
 			if(prop_value.toUpperCase() !== prop_value){
-				const err_msg = `Invalid \`${prop_key}\`. Must be uppercase.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must be uppercase.`;
 				throw urn_exc.create_invalid_atom('STRING_NOT_UPPERCASE', err_msg, undefined, [prop_key]);
 			}
 		}
@@ -668,19 +668,19 @@ function _custom_validate_number<A extends schema.AtomName, D extends schema.Dep
 		const vali = prop_def.validation;
 		if(vali.eq){
 			if(prop_value != vali.eq){
-				const err_msg = `Invalid \`${prop_key}\`. Must be equal to ${vali.eq}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must be equal to ${vali.eq}.`;
 				throw urn_exc.create_invalid_atom('NUMBER_NOTEQ_TO', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.min){
 			if(prop_value < vali.min){
-				const err_msg = `Invalid \`${prop_key}\`. Must be grater or equal to ${vali.min}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must be grater or equal to ${vali.min}.`;
 				throw urn_exc.create_invalid_atom('NUMBER_LOWER_THAN_MIN', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.max){
 			if(prop_value > vali.max){
-				const err_msg = `Invalid \`${prop_key}\`. Must be lower or equal to ${vali.max}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must be lower or equal to ${vali.max}.`;
 				throw urn_exc.create_invalid_atom('NUMBER_GRATER_THAN_MAX', err_msg, undefined, [prop_key]);
 			}
 		}
@@ -697,19 +697,19 @@ function _custom_validate_time<A extends schema.AtomName, D extends schema.Depth
 		const vali = prop_def.validation;
 		if(vali.eq){
 			if(prop_value != vali.eq){
-				const err_msg = `Invalid \`${prop_key}\`. Must be equal to ${vali.eq}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must be equal to ${vali.eq}.`;
 				throw urn_exc.create_invalid_atom('DATE_NOT_EQ_TO', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.min){
 			if(prop_value < vali.min){
-				const err_msg = `Invalid \`${prop_key}\`. Must be grater than ${vali.min}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must be grater than ${vali.min}.`;
 				throw urn_exc.create_invalid_atom('DATE_LOWER_THAN_MIN', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.max){
 			if(prop_value > vali.max){
-				const err_msg = `Invalid \`${prop_key}\`. Must be lower than ${vali.max}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Must be lower than ${vali.max}.`;
 				throw urn_exc.create_invalid_atom('DATE_GRATER_THAN_MAX', err_msg, undefined, [prop_key]);
 			}
 		}
@@ -726,26 +726,26 @@ function _custom_validate_set_string<A extends schema.AtomName, D extends schema
 		const vali = prop_def.validation;
 		if(vali.length){
 			if(prop_value.length != vali.length){
-				const err_msg = `Invalid \`${prop_key}\`. Array length must be equal to ${vali.length}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Array length must be equal to ${vali.length}.`;
 				throw urn_exc.create_invalid_atom('SET_LENGTH_NOT_EQ_TO', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.min){
 			if(prop_value.length < vali.min){
-				const err_msg = `Invalid \`${prop_key}\`. Array length must be greater than ${vali.min}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Array length must be greater than ${vali.min}.`;
 				throw urn_exc.create_invalid_atom('SET_LENGTH_LOWER_THAN', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.max){
 			if(prop_value.length > vali.max){
-				const err_msg = `Invalid \`${prop_key}\`. Array length must be lower than ${vali.max}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Array length must be lower than ${vali.max}.`;
 				throw urn_exc.create_invalid_atom('SET_LENGTH_GRATER_THAN', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.values){
 			for(const v of prop_value){
 				if(!vali.values.includes(v)){
-					let err_msg = `Invalid \`${prop_key}\`. Invalid element. Element must be one of the following:`;
+					let err_msg = `Invalid \`${String(prop_key)}\`. Invalid element. Element must be one of the following:`;
 					err_msg += ` ['${vali.values.join("', '")}']`;
 					throw urn_exc.create_invalid_atom('SET_LENGTH_GRATER_THAN', err_msg, undefined, [prop_key]);
 				}
@@ -764,26 +764,26 @@ function _custom_validate_set_number<A extends schema.AtomName, D extends schema
 		const vali = prop_def.validation;
 		if(vali.length){
 			if(prop_value.length != vali.length){
-				const err_msg = `Invalid \`${prop_key}\`. Array length must be equal to ${vali.length}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Array length must be equal to ${vali.length}.`;
 				throw urn_exc.create_invalid_atom('SET_LENGTH_NOT_EQ_TO', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.min){
 			if(prop_value.length < vali.min){
-				const err_msg = `Invalid \`${prop_key}\`. Array length must be greater than ${vali.min}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Array length must be greater than ${vali.min}.`;
 				throw urn_exc.create_invalid_atom('SET_LENGTH_LOWER_THAN', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.max){
 			if(prop_value.length > vali.max){
-				const err_msg = `Invalid \`${prop_key}\`. Array length must be lower than ${vali.max}.`;
+				const err_msg = `Invalid \`${String(prop_key)}\`. Array length must be lower than ${vali.max}.`;
 				throw urn_exc.create_invalid_atom('SET_LENGTH_GRATER_THAN', err_msg, undefined, [prop_key]);
 			}
 		}
 		if(vali.values){
 			for(const v of prop_value){
 				if(!vali.values.includes(v)){
-					let err_msg = `Invalid \`${prop_key}\`. Invalid element. Element must be one of the following:`;
+					let err_msg = `Invalid \`${String(prop_key)}\`. Invalid element. Element must be one of the following:`;
 					err_msg += ` [${vali.values.join(', ')}]`;
 					throw urn_exc.create_invalid_atom('SET_LENGTH_GRATER_THAN', err_msg, undefined, [prop_key]);
 				}
