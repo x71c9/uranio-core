@@ -28,8 +28,8 @@
 			]
 		}
 	},
-	"repository": "git@github.com:nbl7/uranio-core.git",
-	"author": "Andrea Reni <mail@nbl7.net>",
+	"repository": "git@github.com:x71c9/uranio-core.git",
+	"author": "Andrea Reni <108585118+x71c9@users.noreply.github.com>",
 	"scripts": {
 		"build": "yarn tsc -b",
 		"dev": "yarn tsc-watch --onSuccess \"node -r source-map-support/register -r dotenv/config ./dist/dev.js\"",
@@ -44,7 +44,7 @@
 		"@types/express-fileupload": "^1.2.2",
 		"@types/jsonwebtoken": "^8.5.8",
 		"@types/minimist": "^1.2.2",
-		"uranio-dev": "git+ssh://git@github.com/nbl7/uranio-dev.git#master"
+		"uranio-dev": "git+ssh://git@github.com/x71c9/uranio-dev.git#master"
 	},
 	"dependencies": {
 		"aws-sdk": "^2.1066.0",
@@ -58,7 +58,7 @@
 		"minimist": "^1.2.5",
 		"mongoose": "^5.11.15",
 		"toml": "^3.0.0",
-		"uranio-schema": "ssh://git@github.com/nbl7/uranio-schema.git#master",
-		"urn-lib": "git+ssh://git@github.com/nbl7/uranio-lib.git#master"
+		"uranio-schema": "ssh://git@github.com/x71c9/uranio-schema.git#master",
+		"urn-lib": "git+ssh://git@github.com/x71c9/uranio-lib.git#master"
 	}
 }
