@@ -6,6 +6,7 @@ encryption_rounds = 12
 max_password_length = 58
 storage = 'aws'
 connect_on_init = false
+superuser_create_on_init = true
 [log]
 	debug_info = true
 	color = true

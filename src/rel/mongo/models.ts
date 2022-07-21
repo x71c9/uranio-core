@@ -6,11 +6,12 @@
 
 import mongoose from 'mongoose';
 
-import {urn_util, urn_exception} from 'urn-lib';
+// import {urn_util, urn_exception} from 'urn-lib';
+import {urn_util} from 'urn-lib';
 
 import {schema} from '../../sch/server';
 
-const urn_exc = urn_exception.init('MONGO_APP', 'Mongoose Models App');
+// const urn_exc = urn_exception.init('MONGO_APP', 'Mongoose Models App');
 
 import {ConnectionName} from '../../typ/book_cln';
 
@@ -47,56 +48,96 @@ export function get_model(conn_name:ConnectionName, atom_name:schema.AtomName)
 	if(!mongo_app.models[conn_name]){
 		switch(conn_name){
 			case 'main':{
-				const undefined_connection_models = _create_models(mongo_app.connections!.main);
-				const main_connection_models = _create_models(mongo_app.connections!.main, 'main');
-				mongo_app.models.main = new Map<schema.AtomName, mongoose.Model<mongoose.Document<any>>>(
-					[...undefined_connection_models, ...main_connection_models]
-				);
+				mongo_app.models.main = new Map<schema.AtomName, mongoose.Model<mongoose.Document<any>>>();
 				break;
 			}
 			case 'log':{
-				mongo_app.models.log = _create_models(mongo_app.connections!.log, 'log');
+				mongo_app.models.log = new Map<schema.AtomName, mongoose.Model<mongoose.Document<any>>>();
 				break;
 			}
 			case 'trash':{
-				const model_by_atom_name = new Map<schema.AtomName, mongoose.Model<mongoose.Document<any>>>();
-				let atom_name:schema.AtomName;
-				for(atom_name of book.get_names()){
-					const atom_def = book.get_definition(atom_name);
-					if(atom_def.connection && atom_def.connection !== 'main'){
-						continue;
-					}
-					const atom_schema_def = _convert_for_trash(generate_mongo_schema_def(atom_name));
-					let atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
-					
-					atom_mongo_schema = _add_text_indexes(atom_mongo_schema, atom_name);
-					
-					const atom_model = mongo_app.connections!.trash.create_model(atom_name, atom_mongo_schema);
-					model_by_atom_name.set(atom_name, atom_model);
-				}
-				mongo_app.models.trash = model_by_atom_name;
+				mongo_app.models.trash = new Map<schema.AtomName, mongoose.Model<mongoose.Document<any>>>();
 				break;
 			}
 		}
 	}
-	const model = mongo_app.models[conn_name].get(atom_name);
+	// if(!mongo_app.models[conn_name]){
+	// 	switch(conn_name){
+	// 		case 'main':{
+	// 			const undefined_connection_models = _create_models(mongo_app.connections!.main);
+	// 			const main_connection_models = _create_models(mongo_app.connections!.main, 'main');
+	// 			mongo_app.models.main = new Map<schema.AtomName, mongoose.Model<mongoose.Document<any>>>(
+	// 				[...undefined_connection_models, ...main_connection_models]
+	// 			);
+	// 			break;
+	// 		}
+	// 		case 'log':{
+	// 			mongo_app.models.log = _create_models(mongo_app.connections!.log, 'log');
+	// 			break;
+	// 		}
+	// 		case 'trash':{
+	// 			const model_by_atom_name = new Map<schema.AtomName, mongoose.Model<mongoose.Document<any>>>();
+	// 			let atom_name:schema.AtomName;
+	// 			for(atom_name of book.get_names()){
+	// 				const atom_def = book.get_definition(atom_name);
+	// 				if(atom_def.connection && atom_def.connection !== 'main'){
+	// 					continue;
+	// 				}
+	// 				const atom_schema_def = _convert_for_trash(generate_mongo_schema_def(atom_name));
+	// 				let atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
+					
+	// 				atom_mongo_schema = _add_text_indexes(atom_mongo_schema, atom_name);
+					
+	// 				const atom_model = mongo_app.connections!.trash.create_model(atom_name, atom_mongo_schema);
+	// 				model_by_atom_name.set(atom_name, atom_model);
+	// 			}
+	// 			mongo_app.models.trash = model_by_atom_name;
+	// 			break;
+	// 		}
+	// 	}
+	// }
+	let model = mongo_app.models[conn_name].get(atom_name);
 	if(!model){
-		throw urn_exc.create(
-			`NO_MODEL_FOUND`,
-			`Cannot find model for atom \`${atom_name}\` in connection \`${conn_name}\``
-		);
+		switch(conn_name){
+			case 'main':{
+				model = _create_model(atom_name, mongo_app.connections!.main, 'main');
+				break;
+			}
+			case 'log':{
+				model = _create_model(atom_name, mongo_app.connections!.log, 'log');
+				break;
+			}
+			case 'trash':{
+				model = _create_model(atom_name, mongo_app.connections!.trash, 'trash');
+				break;
+			}
+		}
+		// throw urn_exc.create(
+		// 	`NO_MODEL_FOUND`,
+		// 	`Cannot find model for atom \`${atom_name}\` in connection \`${conn_name}\``
+		// );
 	}
 	return model;
 }
 
-function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstance, connection?:ConnectionName){
-	const model_by_atom_name = new Map<schema.AtomName, mongoose.Model<mongoose.Document<any>>>();
-	let atom_name:schema.AtomName;
-	for(atom_name of book.get_names()){
-		const atom_def = book.get_definition(atom_name);
-		if(atom_def.connection !== connection){
-			continue;
-		}
+function _create_model(
+	atom_name:schema.AtomName,
+	mongoose_db_connection:mongo_connection.ConnectionInstance,
+	connection:ConnectionName,
+):mongoose.Model<mongoose.Document<any>>{
+	
+	if(connection === 'trash'){
+		
+		const atom_schema_def = _convert_for_trash(generate_mongo_schema_def(atom_name));
+		let atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
+		
+		atom_mongo_schema = _add_text_indexes(atom_mongo_schema, atom_name);
+		
+		const atom_model = mongo_app.connections!.trash.create_model(atom_name, atom_mongo_schema);
+		return atom_model;
+		
+	}else{
+		
 		const atom_schema_def = generate_mongo_schema_def(atom_name);
 		let atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
 		
@@ -106,10 +147,33 @@ function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstan
 		atom_mongo_schema = _add_schema_middleware(atom_name, conn_name, atom_mongo_schema);
 		
 		const atom_model = mongoose_db_connection.create_model(atom_name, atom_mongo_schema);
-		model_by_atom_name.set(atom_name, atom_model);
+		return atom_model;
+		
 	}
-	return model_by_atom_name;
+	
 }
+
+// function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstance, connection?:ConnectionName){
+// 	const model_by_atom_name = new Map<schema.AtomName, mongoose.Model<mongoose.Document<any>>>();
+// 	let atom_name:schema.AtomName;
+// 	for(atom_name of book.get_names()){
+// 		const atom_def = book.get_definition(atom_name);
+// 		if(atom_def.connection !== connection){
+// 			continue;
+// 		}
+// 		const atom_schema_def = generate_mongo_schema_def(atom_name);
+// 		let atom_mongo_schema = new mongoose.Schema(atom_schema_def, { versionKey: false, strict: false });
+		
+// 		atom_mongo_schema = _add_text_indexes(atom_mongo_schema, atom_name);
+		
+// 		const conn_name = (!connection) ? 'main' : connection;
+// 		atom_mongo_schema = _add_schema_middleware(atom_name, conn_name, atom_mongo_schema);
+		
+// 		const atom_model = mongoose_db_connection.create_model(atom_name, atom_mongo_schema);
+// 		model_by_atom_name.set(atom_name, atom_model);
+// 	}
+// 	return model_by_atom_name;
+// }
 
 function _add_text_indexes(atom_mongo_schema:mongoose.Schema, atom_name:schema.AtomName){
 	const searchable_indexed = atm.keys.get_search_indexes(atom_name);
