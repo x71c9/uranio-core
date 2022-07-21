@@ -118,10 +118,7 @@ function get_model(conn_name, atom_name) {
                 break;
             }
         }
-        // throw urn_exc.create(
-        // 	`NO_MODEL_FOUND`,
-        // 	`Cannot find model for atom \`${atom_name}\` in connection \`${conn_name}\``
-        // );
+        exports.mongo_app.models[conn_name].set(atom_name, model);
     }
     return model;
 }
