@@ -37,7 +37,10 @@
 		]
 	},
 	"include": [
-		"src/**/*"
+		"src/dev.ts",
+		"src/client.ts",
+		"src/server.ts",
+		"src/server/generate.ts"
 	],
 	"exclude": [
 		"node_modules"
