@@ -31,6 +31,10 @@ export class BasicBLL<A extends schema.AtomName> {
 		}
 	}
 	
+	public is_valid_id(_id:string):boolean{
+		return this._al.is_valid_id(_id);
+	}
+	
 	public async find<D extends schema.Depth>(query:schema.Query<A>, options?:schema.Query.Options<A,D>)
 			:Promise<schema.Molecule<A,D>[]>{
 		return await this._al.select(query, options);

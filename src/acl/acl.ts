@@ -82,6 +82,10 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		this._read_query = {$or: [{_r: {$exists: 0}}, {_r: {$in: user_groups}}]} as schema.Query<A>;
 	}
 	
+	public is_valid_id(_id:string):boolean{
+		return this._dal.is_valid_id(_id);
+	}
+	
 	protected _can_uniform_read()
 			:void{
 		if(this._security_type === SecurityType.UNIFORM){

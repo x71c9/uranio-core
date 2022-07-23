@@ -28,6 +28,10 @@ export class BasicDAL<A extends schema.AtomName> implements AccessLayer<A>{
 	
 	constructor(public atom_name:A, protected _db_relation:urn_rel.Relation<A>) {}
 	
+	public is_valid_id(_id:string):boolean{
+		return this._db_relation.is_valid_id(_id);
+	}
+	
 	public async select<D extends schema.Depth = 0>(query:schema.Query<A>, options?:schema.Query.Options<A,D>)
 			:Promise<schema.Molecule<A,D>[]>{
 		urn_validators.query.validate_filter_options_params(this.atom_name, query, options);

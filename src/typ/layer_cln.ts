@@ -38,5 +38,7 @@ export interface AccessLayer<A extends schema.AtomName> {
 	
 	search_count(string:string):Promise<number>
 	
+	is_valid_id(_id:string):boolean
+	
 }
 
