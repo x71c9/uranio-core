@@ -13,6 +13,7 @@ export declare class BasicBLL<A extends schema.AtomName> {
     atom_name: A;
     protected _al: AccessLayer<A>;
     constructor(atom_name: A, init_access_layer?: () => AccessLayer<A>);
+    is_valid_id(_id: string): boolean;
     find<D extends schema.Depth>(query: schema.Query<A>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>[]>;
     find_by_id<D extends schema.Depth>(id: string, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;
     find_one<D extends schema.Depth>(query: schema.Query<A>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;

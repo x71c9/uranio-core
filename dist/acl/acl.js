@@ -89,6 +89,9 @@ let ACL = class ACL {
         }
         this._read_query = { $or: [{ _r: { $exists: 0 } }, { _r: { $in: user_groups } }] };
     }
+    is_valid_id(_id) {
+        return this._dal.is_valid_id(_id);
+    }
     _can_uniform_read() {
         if (this._security_type === book_1.SecurityType.UNIFORM) {
             if (this._read === book_1.PermissionType.NOBODY || (this._read && !this.user_groups.includes(this._read))) {

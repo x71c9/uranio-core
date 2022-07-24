@@ -19,4 +19,5 @@ export interface AccessLayer<A extends schema.AtomName> {
     delete_multiple(ids: string[]): Promise<schema.Atom<A>[]>;
     search<D extends schema.Depth>(string: string, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>[]>;
     search_count(string: string): Promise<number>;
+    is_valid_id(_id: string): boolean;
 }

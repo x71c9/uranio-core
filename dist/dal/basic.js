@@ -46,6 +46,9 @@ let BasicDAL = class BasicDAL {
         this.atom_name = atom_name;
         this._db_relation = _db_relation;
     }
+    is_valid_id(_id) {
+        return this._db_relation.is_valid_id(_id);
+    }
     async select(query, options) {
         urn_validators.query.validate_filter_options_params(this.atom_name, query, options);
         const res_rel = await this._db_relation.select(query, options);

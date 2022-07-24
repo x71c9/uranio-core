@@ -39,6 +39,7 @@ export declare class ACL<A extends schema.AtomName> implements AccessLayer<A> {
     protected _write?: string;
     protected _read_query: schema.Query<A>;
     constructor(atom_name: A, user_groups: string[]);
+    is_valid_id(_id: string): boolean;
     protected _can_uniform_read(): void;
     protected _can_uniform_write(): void;
     protected _can_atom_write(id: string): Promise<boolean>;

@@ -1,5 +1,0 @@
-/**
- * BLL Book
- *
- * @packageDocumentation
- */

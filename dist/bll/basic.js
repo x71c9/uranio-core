@@ -50,6 +50,9 @@ let BasicBLL = class BasicBLL {
             this._al = init_access_layer();
         }
     }
+    is_valid_id(_id) {
+        return this._al.is_valid_id(_id);
+    }
     async find(query, options) {
         return await this._al.select(query, options);
     }

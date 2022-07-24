@@ -13,6 +13,7 @@ export declare class BasicDAL<A extends schema.AtomName> implements AccessLayer<
     atom_name: A;
     protected _db_relation: urn_rel.Relation<A>;
     constructor(atom_name: A, _db_relation: urn_rel.Relation<A>);
+    is_valid_id(_id: string): boolean;
     select<D extends schema.Depth = 0>(query: schema.Query<A>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>[]>;
     select_by_id<D extends schema.Depth = 0>(id: string, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;
     select_one<D extends schema.Depth = 0>(query: schema.Query<A>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;
