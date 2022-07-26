@@ -43,6 +43,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_security = exports.SecurityBLL = void 0;
 const urn_lib_1 = require("urn-lib");
+const conf = __importStar(require("../conf/server"));
 const urn_acl = __importStar(require("../acl/server"));
 const urn_dal = __importStar(require("../dal/server"));
 const basic_1 = require("./basic");
@@ -59,7 +60,12 @@ SecurityBLL = __decorate([
 exports.SecurityBLL = SecurityBLL;
 function _return_acl(atom_name, passport) {
     return () => {
+        if (conf.get('default_atoms_superuser') === false) {
+            return urn_dal.create(atom_name);
+        }
         let groups = [];
+        // If a Passport is passed and it is a superuser
+        // then bypass ACL and return a DAL.
         if (passport) {
             (0, authenticate_1.is_valid_passport)(passport);
             if ((0, authenticate_1.is_superuser)(passport)) {

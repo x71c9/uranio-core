@@ -9,6 +9,14 @@ type RequiredClientConfigParams = {
 
 type OptionalClientConfigParam = {
 	
+	default_atoms_superuser: boolean
+	
+	default_atoms_group: boolean
+	
+	default_atoms_user: boolean
+	
+	default_atoms_media: boolean
+	
 	log_debug_info: boolean
 	
 	log_color: boolean

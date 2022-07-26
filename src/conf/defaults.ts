@@ -27,6 +27,14 @@ export const core_config:Required<Configuration> = {
 	
 	superuser_create_on_init: false,
 	
+	default_atoms_superuser: true,
+	
+	default_atoms_group: true,
+	
+	default_atoms_user: false,
+	
+	default_atoms_media: false,
+	
 	log_debug_info: true,
 	
 	log_color: true,

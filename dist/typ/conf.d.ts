@@ -15,6 +15,10 @@ export declare type Configuration = {
     storage?: Storage;
     connect_on_init?: boolean;
     superuser_create_on_init?: boolean;
+    default_atoms_superuser: boolean;
+    default_atoms_group: boolean;
+    default_atoms_user: boolean;
+    default_atoms_media: boolean;
     log_debug_info: boolean;
     log_color: boolean;
     log_time_format: string;

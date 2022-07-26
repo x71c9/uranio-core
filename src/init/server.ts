@@ -72,6 +72,10 @@ function _register_required_atoms(){
 
 async function _create_superuser(){
 	
+	if(conf.get('default_atoms_superuser') === false){
+		return;
+	}
+	
 	if(!conf.get(`superuser_create_on_init`) === true){
 		return;
 	}
@@ -320,6 +324,7 @@ function _validate_core_variables(){
 	_check_if_superuser_was_set();
 	_check_if_storage_params_were_set();
 	_check_number_values();
+	_check_if_atom_group_is_needed();
 }
 
 function _check_number_values(){
@@ -428,6 +433,9 @@ function _check_if_jwt_key_has_changed(){
 }
 
 function _check_if_superuser_was_set(){
+	if(conf.get('default_atoms_superuser') === false){
+		return;
+	}
 	if(core_env.superuser_email === ''){
 		urn_log.warn(`Invalid superuser email.`);
 	}
@@ -436,3 +444,15 @@ function _check_if_superuser_was_set(){
 	}
 }
 
+function _check_if_atom_group_is_needed(){
+	if(core_config.default_atoms_superuser === true || core_config.default_atoms_user === true){
+		if(core_config.default_atoms_group === false){
+			throw urn_exc.create_not_initialized(
+				`ATOM_GROUP_IS_NEEDED`,
+				`If default Atoms \`superuser\` or \`user\` are defined,` +
+				`Atom \`group\` also must be defined.` + 
+				`Set \`default_atoms_group = true\` in \`uranio.toml\``
+			);
+		}
+	}
+}

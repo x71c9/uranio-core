@@ -29,8 +29,6 @@ export function init(
 	
 	env.set_client_env();
 	
-	log.init(urn_log);
-	
 	if(config){
 		conf.set(config);
 	}
@@ -41,6 +39,8 @@ export function init(
 	
 	_validate_core_variables();
 	_validate_core_book();
+	
+	log.init(urn_log);
 	
 	urn_log.debug(`Uranio core client initialization completed.`);
 	

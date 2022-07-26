@@ -32,6 +32,8 @@ const urn_exc = urn_exception.init('ACL', 'Access Control Module');
 
 import {schema} from '../sch/server';
 
+import * as conf from '../conf/server';
+
 import * as urn_dal from '../dal/server';
 
 import * as atm_keys from '../atm/keys';
@@ -63,6 +65,13 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 	protected _read_query:schema.Query<A>;
 	
 	constructor(public atom_name:A, protected user_groups:string[]) {
+		if(conf.get('default_atoms_superuser') === false){
+			throw urn_exc.create_not_initialized(
+				'SUPERUSER_MUST_BE_DEFINED',
+				'Atom superuser must be defined in order to initialize an ACL.' +
+				'Set `default_atoms_superuser = true` in `uranio.toml`'
+			);
+		}
 		this._dal = urn_dal.create(atom_name);
 		const atom_def = book.get_definition(atom_name);
 		const security = atom_def['security'];

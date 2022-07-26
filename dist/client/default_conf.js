@@ -7,6 +7,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.core_client_config = void 0;
 exports.core_client_config = {
+    default_atoms_superuser: true,
+    default_atoms_group: true,
+    default_atoms_user: false,
+    default_atoms_media: false,
     log_debug_info: true,
     log_color: true,
     log_time_format: 'yyyy-mm-dd\'T\'HH:MM:ss:l',

@@ -15,6 +15,8 @@ import {urn_log} from 'urn-lib';
 
 import {schema} from '../sch/server';
 
+import * as conf from '../conf/server';
+
 import * as urn_acl from '../acl/server';
 
 import * as urn_dal from '../dal/server';
@@ -40,8 +42,14 @@ export class SecurityBLL<A extends schema.AtomName> extends BasicBLL<A> {
 function _return_acl<A extends schema.AtomName>(atom_name:A, passport?:Passport) {
 	return ():AccessLayer<A> => {
 		
-		let groups:string[] = [];
+		if(conf.get('default_atoms_superuser') === false){
+			return urn_dal.create(atom_name);
+		}
 		
+		let groups:string[] = [];
+	
+		// If a Passport is passed and it is a superuser
+		// then bypass ACL and return a DAL.
 		if(passport){
 			
 			is_valid_passport(passport);

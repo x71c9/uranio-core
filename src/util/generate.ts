@@ -151,10 +151,10 @@ function _generate_client_config_text(client_default:Required<ClientConfiguratio
 	let text = '';
 	text += `/**\n`;
 	text += ` * Module for default client configuration object\n`;
-	text += `* Uranio generate script will replace this file with the client part\n`;
-	text += `* of the uranio.toml configration file.\n`;
-	text += `*\n`;
-	text += `* All properties starting with \`client_\` will populate this object.\n`;
+	text += ` * Uranio \`generate\` script will replace this file with the client part\n`;
+	text += ` * of the uranio.toml configration file.\n`;
+	text += ` *\n`;
+	text += ` * All properties starting with \`client_\` will populate this object.\n`;
 	text += ` *\n`;
 	text += ` * @packageDocumentation\n`;
 	text += ` */\n`;
