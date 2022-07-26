@@ -1,5 +1,5 @@
 /**
- * Env module
+ * Core Env module
  *
  * @packageDocumentation
  */

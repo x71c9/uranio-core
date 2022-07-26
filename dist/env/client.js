@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Env module
+ * Core Env module
  *
  * @packageDocumentation
  */
@@ -49,14 +49,14 @@ function set_client_env() {
     }
     if (typeof process_log_level_dev === 'string' && process_log_level_dev !== '') {
         if (typeof urn_lib_1.urn_log.LogLevel[process_log_level_dev] === 'number') {
-            env['log_dev_level'] = urn_lib_1.urn_log.LogLevel[process_log_level_dev];
+            env['dev_log_level'] = urn_lib_1.urn_log.LogLevel[process_log_level_dev];
         }
         else {
-            env['log_dev_level'] = default_env_1.core_client_env.log_level;
+            env['dev_log_level'] = default_env_1.core_client_env.log_level;
         }
     }
     else if (typeof process_log_level_dev === 'number' && process_log_level_dev > -1) {
-        env['log_dev_level'] = process_log_level_dev;
+        env['dev_log_level'] = process_log_level_dev;
     }
     set(env);
     return env;

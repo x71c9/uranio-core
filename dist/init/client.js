@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Init module
+ * Core init module
  *
  * @packageDocumentation
  */
