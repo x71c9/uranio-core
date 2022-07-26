@@ -106,19 +106,21 @@ function get_model(conn_name, atom_name) {
     if (!model) {
         switch (conn_name) {
             case 'main': {
+                _create_submodel(atom_name, exports.mongo_app.connections.main, 'main');
                 model = _create_model(atom_name, exports.mongo_app.connections.main, 'main');
                 break;
             }
             case 'log': {
+                _create_submodel(atom_name, exports.mongo_app.connections.log, 'log');
                 model = _create_model(atom_name, exports.mongo_app.connections.log, 'log');
                 break;
             }
             case 'trash': {
+                _create_submodel(atom_name, exports.mongo_app.connections.trash, 'trash');
                 model = _create_model(atom_name, exports.mongo_app.connections.trash, 'trash');
                 break;
             }
         }
-        exports.mongo_app.models[conn_name].set(atom_name, model);
     }
     return model;
 }
@@ -138,7 +140,21 @@ function _create_model(atom_name, mongoose_db_connection, connection) {
         const conn_name = (!connection) ? 'main' : connection;
         atom_mongo_schema = _add_schema_middleware(atom_name, conn_name, atom_mongo_schema);
         const atom_model = mongoose_db_connection.create_model(atom_name, atom_mongo_schema);
+        if (exports.mongo_app.models) {
+            exports.mongo_app.models[conn_name].set(atom_name, atom_model);
+        }
         return atom_model;
+    }
+}
+function _create_submodel(atom_name, db_conn, conn_name) {
+    const atom_props_def = book.get_properties_definition(atom_name);
+    for (const [_prop_key, prop_def] of Object.entries(atom_props_def)) {
+        if (prop_def.type === book_1.PropertyType.ATOM || prop_def.type === book_1.PropertyType.ATOM_ARRAY) {
+            const subatom_name = prop_def.atom;
+            if (exports.mongo_app.models && exports.mongo_app.models[conn_name] && !exports.mongo_app.models[conn_name].get(subatom_name)) {
+                _create_model(subatom_name, db_conn, conn_name);
+            }
+        }
     }
 }
 // function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstance, connection?:ConnectionName){

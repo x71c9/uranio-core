@@ -96,24 +96,27 @@ export function get_model(conn_name:ConnectionName, atom_name:schema.AtomName)
 	// 		}
 	// 	}
 	// }
+	
 	let model = mongo_app.models[conn_name].get(atom_name);
 	if(!model){
+		
 		switch(conn_name){
 			case 'main':{
+				_create_submodel(atom_name, mongo_app.connections!.main, 'main');
 				model = _create_model(atom_name, mongo_app.connections!.main, 'main');
 				break;
 			}
 			case 'log':{
+				_create_submodel(atom_name, mongo_app.connections!.log, 'log');
 				model = _create_model(atom_name, mongo_app.connections!.log, 'log');
 				break;
 			}
 			case 'trash':{
+				_create_submodel(atom_name, mongo_app.connections!.trash, 'trash');
 				model = _create_model(atom_name, mongo_app.connections!.trash, 'trash');
 				break;
 			}
 		}
-		
-		mongo_app.models[conn_name].set(atom_name, model);
 		
 	}
 	return model;
@@ -146,10 +149,31 @@ function _create_model(
 		atom_mongo_schema = _add_schema_middleware(atom_name, conn_name, atom_mongo_schema);
 		
 		const atom_model = mongoose_db_connection.create_model(atom_name, atom_mongo_schema);
+		
+		if(mongo_app.models){
+			mongo_app.models[conn_name].set(atom_name, atom_model);
+		}
+		
 		return atom_model;
 		
 	}
 	
+}
+
+function _create_submodel(
+	atom_name: schema.AtomName,
+	db_conn: mongo_connection.ConnectionInstance,
+	conn_name: ConnectionName
+):void{
+	const atom_props_def = book.get_properties_definition(atom_name);
+	for(const [_prop_key, prop_def] of Object.entries(atom_props_def)){
+		if(prop_def.type === PropertyType.ATOM || prop_def.type === PropertyType.ATOM_ARRAY){
+			const subatom_name = prop_def.atom;
+			if(mongo_app.models && mongo_app.models[conn_name] && !mongo_app.models[conn_name].get(subatom_name)){
+				_create_model(subatom_name, db_conn, conn_name);
+			}
+		}
+	}
 }
 
 // function _create_models(mongoose_db_connection:mongo_connection.ConnectionInstance, connection?:ConnectionName){
