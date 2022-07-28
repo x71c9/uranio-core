@@ -10,7 +10,7 @@ const urn_lib_1 = require("urn-lib");
 exports.core_env = {
     // production: process.env.NODE_ENV === 'production',
     log_level: urn_lib_1.urn_log.LogLevel.ERROR,
-    dev_log_level: urn_lib_1.urn_log.LogLevel.DEBUG,
+    // dev_log_level: urn_log.LogLevel.DEBUG,
     mongo_main_connection: '',
     mongo_trash_connection: '',
     mongo_log_connection: '',

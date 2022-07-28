@@ -12,7 +12,7 @@ type OptionalClientEnvParam = {
 	
 	log_level: urn_log.LogLevel
 	
-	dev_log_level: urn_log.LogLevel
+	// dev_log_level: urn_log.LogLevel
 	
 }
 

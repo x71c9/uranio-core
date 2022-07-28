@@ -19,6 +19,6 @@ export const core_client_env:Required<ClientEnvironment> = {
 	
 	log_level: urn_log.LogLevel.ERROR,
 	
-	dev_log_level: urn_log.LogLevel.DEBUG,
+	// dev_log_level: urn_log.LogLevel.DEBUG,
 	
 };

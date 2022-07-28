@@ -14,7 +14,7 @@ export const core_env:Required<Environment> = {
 	
 	log_level: urn_log.LogLevel.ERROR,
 	
-	dev_log_level: urn_log.LogLevel.DEBUG,
+	// dev_log_level: urn_log.LogLevel.DEBUG,
 	
 	mongo_main_connection: '',
 	

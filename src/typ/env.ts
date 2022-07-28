@@ -12,7 +12,7 @@ export type Environment = {
 	
 	log_level: urn_log.LogLevel
 	
-	dev_log_level: urn_log.LogLevel
+	// dev_log_level: urn_log.LogLevel
 	
 	mongo_main_connection: string
 	

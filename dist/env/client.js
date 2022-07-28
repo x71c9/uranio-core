@@ -35,7 +35,7 @@ function set_client_env() {
     // urn_ctx.set_env();
     const env = {};
     const process_log_level = process.env['URN_LOG_LEVEL'];
-    const process_log_level_dev = process.env['URN_DEV_LOG_LEVEL'];
+    // const process_log_level_dev = process.env['URN_DEV_LOG_LEVEL'];
     if (typeof process_log_level === 'string' && process_log_level !== '') {
         if (typeof urn_lib_1.urn_log.LogLevel[process_log_level] === 'number') {
             env['log_level'] = urn_lib_1.urn_log.LogLevel[process_log_level];
@@ -47,17 +47,16 @@ function set_client_env() {
     else if (typeof process_log_level === 'number' && process_log_level > -1) {
         env['log_level'] = process_log_level;
     }
-    if (typeof process_log_level_dev === 'string' && process_log_level_dev !== '') {
-        if (typeof urn_lib_1.urn_log.LogLevel[process_log_level_dev] === 'number') {
-            env['dev_log_level'] = urn_lib_1.urn_log.LogLevel[process_log_level_dev];
-        }
-        else {
-            env['dev_log_level'] = default_env_1.core_client_env.log_level;
-        }
-    }
-    else if (typeof process_log_level_dev === 'number' && process_log_level_dev > -1) {
-        env['dev_log_level'] = process_log_level_dev;
-    }
+    // if(typeof process_log_level_dev === 'string' && process_log_level_dev !== ''){
+    // 	if(typeof urn_log.LogLevel[process_log_level_dev as any] === 'number'){
+    // 		env['dev_log_level'] = urn_log.LogLevel[process_log_level_dev as any] as
+    // 			unknown as urn_log.LogLevel;
+    // 	}else{
+    // 		env['dev_log_level'] = core_client_env.log_level;
+    // 	}
+    // }else if(typeof process_log_level_dev === 'number' && process_log_level_dev > -1){
+    // 	env['dev_log_level'] = process_log_level_dev;
+    // }
     set(env);
     return env;
 }
