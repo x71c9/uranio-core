@@ -195,6 +195,13 @@ function _client_config(client_default) {
                 typeof toml_read[conf_key]) {
             toml_keys.push(conf_key);
             text += `\t${conf_key}: ${_real_value(conf_value)},\n`;
+            // set also "dev_" keys if not set
+            if (conf_key.indexOf('dev_') === -1 &&
+                typeof client_default[`dev_${conf_key}`] !== 'undefined' &&
+                typeof toml_read[`dev_${conf_key}`] === 'undefined') {
+                toml_keys.push(`dev_${conf_key}`);
+                text += `\tdev_${conf_key}: ${_real_value(conf_value)},\n`;
+            }
         }
     }
     // add rest of keys from default values
