@@ -16,6 +16,8 @@ const urn_exc = urn_exception.init('CORE_UTIL_TOML_MODULE', `Core util toml  mod
 
 import {Configuration} from '../server/types';
 
+import {core_config} from '../conf/defaults';
+
 export function read():Partial<Configuration>{
 	
 	let toml_config_path = './uranio.toml';
@@ -35,8 +37,8 @@ export function read():Partial<Configuration>{
 		
 		const toml_data = fs.readFileSync(toml_config_path);
 		const parsed_toml = toml.parse(toml_data.toString('utf8'));
-		const converted_toml = _convert_toml(parsed_toml);
-		
+		let converted_toml = _convert_toml(parsed_toml);
+		converted_toml = _set_dev_config(converted_toml);
 		return converted_toml;
 		
 	}catch(err){
@@ -46,6 +48,24 @@ export function read():Partial<Configuration>{
 			err as Error
 		);
 	}
+}
+
+// If "dev_" key is not defined use the non-"dev_" key value.
+// This doesn't change client values.
+// Client values are handlaed by util/generate/_generate_client_config_text
+function _set_dev_config(converted_toml:Partial<Configuration>)
+		:Partial<Configuration>{
+	const not_defined_devs:Partial<Configuration> = {};
+	for(const [toml_key, toml_value] of Object.entries(converted_toml)){
+		if(
+			toml_key.indexOf('dev_') === -1
+			&& typeof (converted_toml as any)[`dev_${toml_key}`] === 'undefined'
+			&& typeof (core_config as any)[`dev_${toml_key}`] !== 'undefined'
+		){
+			(not_defined_devs as any)[`dev_${toml_key}`] = toml_value;
+		}
+	}
+	return {...converted_toml, ...not_defined_devs};
 }
 
 function _convert_toml(parsed_toml:any):Partial<Configuration>{

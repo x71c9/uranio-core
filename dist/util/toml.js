@@ -14,6 +14,7 @@ const minimist_1 = __importDefault(require("minimist"));
 const toml_1 = __importDefault(require("toml"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init('CORE_UTIL_TOML_MODULE', `Core util toml  module`);
+const defaults_1 = require("../conf/defaults");
 function read() {
     let toml_config_path = './uranio.toml';
     const args = (0, minimist_1.default)(process.argv.slice(2));
@@ -30,7 +31,8 @@ function read() {
     try {
         const toml_data = fs_1.default.readFileSync(toml_config_path);
         const parsed_toml = toml_1.default.parse(toml_data.toString('utf8'));
-        const converted_toml = _convert_toml(parsed_toml);
+        let converted_toml = _convert_toml(parsed_toml);
+        converted_toml = _set_dev_config(converted_toml);
         return converted_toml;
     }
     catch (err) {
@@ -38,6 +40,20 @@ function read() {
     }
 }
 exports.read = read;
+// If "dev_" key is not defined use the non-"dev_" key value.
+// This doesn't change client values.
+// Client values are handlaed by util/generate/_generate_client_config_text
+function _set_dev_config(converted_toml) {
+    const not_defined_devs = {};
+    for (const [toml_key, toml_value] of Object.entries(converted_toml)) {
+        if (toml_key.indexOf('dev_') === -1
+            && typeof converted_toml[`dev_${toml_key}`] === 'undefined'
+            && typeof defaults_1.core_config[`dev_${toml_key}`] !== 'undefined') {
+            not_defined_devs[`dev_${toml_key}`] = toml_value;
+        }
+    }
+    return { ...converted_toml, ...not_defined_devs };
+}
 function _convert_toml(parsed_toml) {
     const converted_config = {};
     for (const [key, value] of Object.entries(parsed_toml)) {
