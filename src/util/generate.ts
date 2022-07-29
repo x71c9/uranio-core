@@ -171,13 +171,25 @@ function _client_config(client_default:Required<ClientConfiguration>){
 	let text = '';
 	const toml_keys:string[] = [];
 	const toml_read = toml.read();
+	// add keys with client in front
 	for(const [conf_key, conf_value] of Object.entries(toml_read)){
 		if(conf_key.indexOf('client_') === 0){
 			const real_key = conf_key.replace('client_', '');
 			toml_keys.push(real_key);
 			text += `\t${real_key}: ${_real_value(conf_value)},\n`;
+			// add "dev_" keys if they are not defined, same as not-"dev_" keys
+			if(
+				real_key.indexOf('dev_') === -1 &&
+				typeof (client_default as any)[`dev_${real_key}`] !== undefined &&
+				typeof (toml_read as any)[`dev_${real_key}`] === undefined
+			){
+				toml_keys.push(`dev_${real_key}`);
+				text += `\tdev_${real_key}: ${_real_value(conf_value)},\n`;
+			}
 		}
 	}
+	// add keys that have same name of the server but they are not defined
+	// i.e.: log -> if defined only once it can be used also for the client
 	for(const [conf_key, conf_value] of Object.entries(toml_read)){
 		if(
 			!toml_keys.includes(conf_key) &&
@@ -188,6 +200,7 @@ function _client_config(client_default:Required<ClientConfiguration>){
 			text += `\t${conf_key}: ${_real_value(conf_value)},\n`;
 		}
 	}
+	// add rest of keys from default values
 	for(const [conf_key, conf_value] of Object.entries(client_default)){
 		if(toml_keys.includes(conf_key)){
 			continue;
