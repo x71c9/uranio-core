@@ -16,9 +16,12 @@ const urn_exc = urn_exception.init('CORE_UTIL_TOML_MODULE', `Core util toml  mod
 
 import {Configuration} from '../server/types';
 
-import {core_config} from '../conf/defaults';
-
-export function read():Partial<Configuration>{
+/**
+ * Read `uranio.toml` file. It also populate "dev_" config keys.
+ *
+ * @param default_repo_config The default configuration object of the current repo
+ */
+export function read(default_repo_config:Partial<Configuration>):Partial<Configuration>{
 	
 	let toml_config_path = './uranio.toml';
 	const args = minimist(process.argv.slice(2));
@@ -38,7 +41,7 @@ export function read():Partial<Configuration>{
 		const toml_data = fs.readFileSync(toml_config_path);
 		const parsed_toml = toml.parse(toml_data.toString('utf8'));
 		let converted_toml = _convert_toml(parsed_toml);
-		converted_toml = _set_dev_config(converted_toml);
+		converted_toml = _set_dev_config(converted_toml, default_repo_config);
 		return converted_toml;
 		
 	}catch(err){
@@ -53,14 +56,16 @@ export function read():Partial<Configuration>{
 // If "dev_" key is not defined use the non-"dev_" key value.
 // This doesn't change client values.
 // Client values are handlaed by util/generate/_generate_client_config_text
-function _set_dev_config(converted_toml:Partial<Configuration>)
-		:Partial<Configuration>{
+function _set_dev_config(
+	converted_toml:Partial<Configuration>,
+	default_repo_config:Partial<Configuration>
+):Partial<Configuration>{
 	const not_defined_devs:Partial<Configuration> = {};
 	for(const [toml_key, toml_value] of Object.entries(converted_toml)){
 		if(
 			toml_key.indexOf('dev_') === -1
 			&& typeof (converted_toml as any)[`dev_${toml_key}`] === 'undefined'
-			&& typeof (core_config as any)[`dev_${toml_key}`] !== 'undefined'
+			&& typeof (default_repo_config as any)[`dev_${toml_key}`] !== 'undefined'
 		){
 			(not_defined_devs as any)[`dev_${toml_key}`] = toml_value;
 		}

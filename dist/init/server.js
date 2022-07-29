@@ -44,7 +44,7 @@ const bll = __importStar(require("../bll/server"));
 const log = __importStar(require("../log/server"));
 const util = __importStar(require("../util/server"));
 function init(config, register_required = true) {
-    conf.set(util.toml.read());
+    conf.set(util.toml.read(defaults_1.core_config));
     env.set_env();
     log.init(urn_lib_1.urn_log);
     if (config) {

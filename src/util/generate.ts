@@ -18,6 +18,8 @@ import {schema as schema_types} from '../sch/server';
 
 import {real_book_property_type} from '../stc/server';
 
+import {core_config} from '../conf/defaults';
+
 import * as book from '../book/server';
 
 import * as types from '../server/types';
@@ -170,7 +172,7 @@ function _generate_client_config_text(client_default:Required<ClientConfiguratio
 function _client_config(client_default:Required<ClientConfiguration>){
 	let text = '';
 	const toml_keys:string[] = [];
-	const toml_read = toml.read();
+	const toml_read = toml.read(core_config);
 	// add keys with client in front
 	for(const [conf_key, conf_value] of Object.entries(toml_read)){
 		if(conf_key.indexOf('client_') === 0){

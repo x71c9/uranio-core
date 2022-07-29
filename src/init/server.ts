@@ -39,7 +39,7 @@ export function init(
 	register_required=true
 ):void{
 	
-	conf.set(util.toml.read());
+	conf.set(util.toml.read(core_config));
 	
 	env.set_env();
 	

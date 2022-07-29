@@ -38,6 +38,7 @@ const esbuild = __importStar(require("esbuild"));
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 const server_1 = require("../stc/server");
+const defaults_1 = require("../conf/defaults");
 const book = __importStar(require("../book/server"));
 const types = __importStar(require("../server/types"));
 const toml = __importStar(require("./toml"));
@@ -170,7 +171,7 @@ function _generate_client_config_text(client_default) {
 function _client_config(client_default) {
     let text = '';
     const toml_keys = [];
-    const toml_read = toml.read();
+    const toml_read = toml.read(defaults_1.core_config);
     // add keys with client in front
     for (const [conf_key, conf_value] of Object.entries(toml_read)) {
         if (conf_key.indexOf('client_') === 0) {

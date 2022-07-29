@@ -4,4 +4,9 @@
  * @packageDocumentation
  */
 import { Configuration } from '../server/types';
-export declare function read(): Partial<Configuration>;
+/**
+ * Read `uranio.toml` file. It also populate "dev_" config keys.
+ *
+ * @param default_repo_config The default configuration object of the current repo
+ */
+export declare function read(default_repo_config: Partial<Configuration>): Partial<Configuration>;
