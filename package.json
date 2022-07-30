@@ -37,8 +37,7 @@
 		"plain:generate": "node -r source-map-support/register -r dotenv/config ./dist/server/generate.js",
 		"generate": "yarn plain:generate urn_schema_repo_path=./node_modules/uranio-schema urn_repo_path=./.generate",
 		"generate:schema": "yarn generate urn_command=schema",
-		"generate:client-config": "yarn generate urn_command=client-config",
-		"dev:generate:client-config": "yarn tsc-watch --onSuccess \"yarn generate:client-config\""
+		"generate:client-config": "yarn generate urn_command=client-config"
 	},
 	"devDependencies": {
 		"@types/bcryptjs": "^2.4.2",
