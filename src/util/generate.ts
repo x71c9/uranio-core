@@ -1,10 +1,12 @@
 /**
- * Generate module
+ * Core Generate module
  *
  * @packageDocumentation
  */
 
 import fs from 'fs';
+
+import path from 'path';
 
 // import dateformat from 'dateformat';
 
@@ -42,12 +44,6 @@ export function schema():string{
 	return text;
 }
 
-export function schema_and_save():void{
-	const text = schema();
-	save_schema(text);
-	urn_log.debug(`Schema generated and saved.`);
-}
-
 export function save_schema(text:string):void{
 	// const now = dateformat(new Date(), `yyyymmddHHMMssl`);
 	// const backup_path = `${_get_atom_schema_path()}.${now}.bkp`;
@@ -55,6 +51,12 @@ export function save_schema(text:string):void{
 	// urn_log.debug(`Copied backup file for atom schema in [${backup_path}].`);
 	fs.writeFileSync(_get_atom_schema_path(), text);
 	urn_log.debug(`Update schema [${_get_atom_schema_path()}].`);
+}
+
+export function schema_and_save():void{
+	const text = schema();
+	save_schema(text);
+	urn_log.debug(`Schema generated and saved.`);
 }
 
 export function client_config(client_default:Required<ClientConfiguration>):string{
@@ -65,17 +67,18 @@ export function client_config(client_default:Required<ClientConfiguration>):stri
 	return text;
 }
 
+export function save_client_config(text:string):void{
+	fs.mkdirSync(path.dirname(_get_core_client_config_path_src()), {recursive: true});
+	fs.writeFileSync(_get_core_client_config_path_src(), text, {flag: 'w+'});
+	urn_log.debug(`Update core client config [${_get_core_client_config_path_src()}].`);
+	_compile_client_config();
+	urn_log.debug(`Core Client config core generated and saved.`);
+}
+
 export function client_config_and_save(client_default:Required<ClientConfiguration>):void{
 	const text = client_config(client_default);
 	save_client_config(text);
 	urn_log.debug(`Client config generated and saved.`);
-}
-
-export function save_client_config(text:string):void{
-	fs.writeFileSync(_get_core_client_config_path_src(), text);
-	urn_log.debug(`Update core client config [${_get_core_client_config_path_src()}].`);
-	_compile_client_config();
-	urn_log.debug(`Core Client config core generated and saved.`);
 }
 
 export function init():void{
@@ -134,7 +137,7 @@ function _compile(src:string, dest:string){
 }
 
 function _get_core_client_config_path_src(){
-	return `${process_params.urn_repo_path}/src/client/toml.ts`;
+	return `${process_params.urn_repo_path}/.tmp/client/toml.ts`;
 }
 
 function _get_core_client_config_path_dist(){

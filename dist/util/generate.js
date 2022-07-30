@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Generate module
+ * Core Generate module
  *
  * @packageDocumentation
  */
@@ -31,8 +31,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.init = exports.save_client_config = exports.client_config_and_save = exports.client_config = exports.save_schema = exports.schema_and_save = exports.schema = exports.process_params = void 0;
+exports.init = exports.client_config_and_save = exports.save_client_config = exports.client_config = exports.schema_and_save = exports.save_schema = exports.schema = exports.process_params = void 0;
 const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 // import dateformat from 'dateformat';
 const esbuild = __importStar(require("esbuild"));
 const urn_lib_1 = require("urn-lib");
@@ -55,12 +56,6 @@ function schema() {
     return text;
 }
 exports.schema = schema;
-function schema_and_save() {
-    const text = schema();
-    save_schema(text);
-    urn_lib_1.urn_log.debug(`Schema generated and saved.`);
-}
-exports.schema_and_save = schema_and_save;
 function save_schema(text) {
     // const now = dateformat(new Date(), `yyyymmddHHMMssl`);
     // const backup_path = `${_get_atom_schema_path()}.${now}.bkp`;
@@ -70,6 +65,12 @@ function save_schema(text) {
     urn_lib_1.urn_log.debug(`Update schema [${_get_atom_schema_path()}].`);
 }
 exports.save_schema = save_schema;
+function schema_and_save() {
+    const text = schema();
+    save_schema(text);
+    urn_lib_1.urn_log.debug(`Schema generated and saved.`);
+}
+exports.schema_and_save = schema_and_save;
 function client_config(client_default) {
     urn_lib_1.urn_log.debug('Started generating uranio core client config...');
     init();
@@ -78,19 +79,20 @@ function client_config(client_default) {
     return text;
 }
 exports.client_config = client_config;
+function save_client_config(text) {
+    fs_1.default.mkdirSync(path_1.default.dirname(_get_core_client_config_path_src()), { recursive: true });
+    fs_1.default.writeFileSync(_get_core_client_config_path_src(), text, { flag: 'w+' });
+    urn_lib_1.urn_log.debug(`Update core client config [${_get_core_client_config_path_src()}].`);
+    _compile_client_config();
+    urn_lib_1.urn_log.debug(`Core Client config core generated and saved.`);
+}
+exports.save_client_config = save_client_config;
 function client_config_and_save(client_default) {
     const text = client_config(client_default);
     save_client_config(text);
     urn_lib_1.urn_log.debug(`Client config generated and saved.`);
 }
 exports.client_config_and_save = client_config_and_save;
-function save_client_config(text) {
-    fs_1.default.writeFileSync(_get_core_client_config_path_src(), text);
-    urn_lib_1.urn_log.debug(`Update core client config [${_get_core_client_config_path_src()}].`);
-    _compile_client_config();
-    urn_lib_1.urn_log.debug(`Core Client config core generated and saved.`);
-}
-exports.save_client_config = save_client_config;
 function init() {
     for (const argv of process.argv) {
         const splitted = argv.split('=');
@@ -138,7 +140,7 @@ function _compile(src, dest) {
     urn_lib_1.urn_log.debug(`Core Compiled [${src}] to [${dest}].`);
 }
 function _get_core_client_config_path_src() {
-    return `${exports.process_params.urn_repo_path}/src/client/toml.ts`;
+    return `${exports.process_params.urn_repo_path}/.tmp/client/toml.ts`;
 }
 function _get_core_client_config_path_dist() {
     return `${exports.process_params.urn_repo_path}/dist/client/toml.js`;
