@@ -3,6 +3,7 @@
 	"version": "0.0.3",
 	"description": "Uranio core",
 	"main": "dist/index.js",
+	"license": "UNLICENSED",
 	"bin": {
 		"uranio-generate-core": "dist/server/generate.js",
 		"uranio-webservice-core": "dist/service/ws.js"
@@ -32,9 +33,9 @@
 	"repository": "git@github.com:x71c9/uranio-core.git",
 	"author": "Andrea Reni <108585118+x71c9@users.noreply.github.com>",
 	"scripts": {
-		"dev:sync": "yarn tsc-watch --onSuccess \"node -r source-map-support/register -r dotenv/config ./dist/dev.js\"",
+		"run:dev": "node -r source-map-support/register -r dotenv/config ./dist/dev.js",
 		"build": "yarn tsc -b",
-		"dev": "yarn tsc-watch --onSuccess \"node -r source-map-support/register -r dotenv/config ./dist/dev.js\"",
+		"dev": "yarn tsc-watch --onSuccess \"yarn run:dev\"",
 		"plain:generate": "node -r source-map-support/register -r dotenv/config ./dist/server/generate.js",
 		"generate": "yarn plain:generate urn_schema_repo_path=./node_modules/uranio-schema urn_repo_path=./.generate",
 		"generate:schema": "yarn generate urn_command=schema",
