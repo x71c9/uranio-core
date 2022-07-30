@@ -1,31 +1,44 @@
+"use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __reExport = (target, module2, copyDefault, desc) => {
-  if (module2 && typeof module2 === "object" || typeof module2 === "function") {
-    for (let key of __getOwnPropNames(module2))
-      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== "default"))
-        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
-  return target;
+  return to;
 };
-var __toCommonJS = /* @__PURE__ */ ((cache) => {
-  return (module2, temp) => {
-    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
-  };
-})(typeof WeakMap !== "undefined" ? /* @__PURE__ */ new WeakMap() : 0);
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var toml_exports = {};
 __export(toml_exports, {
   client_toml: () => client_toml
 });
-const client_toml = {};
 module.exports = __toCommonJS(toml_exports);
+const client_toml = {
+  log_debug_info: false,
+  log_color: true,
+  log_time_format: "HH:MM:ss:l",
+  log_max_str_length: 174,
+  log_prefix: "",
+  log_prefix_type: false,
+  dev_log_debug_info: false,
+  dev_log_color: true,
+  dev_log_time_format: "yyyy-mm-dd'T'HH:MM:ss:l",
+  dev_log_max_str_length: 174,
+  dev_log_prefix: "",
+  dev_log_prefix_type: false,
+  default_atoms_superuser: true,
+  default_atoms_group: true,
+  default_atoms_user: false,
+  default_atoms_media: false
+};
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   client_toml
