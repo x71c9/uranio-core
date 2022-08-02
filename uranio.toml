@@ -20,7 +20,7 @@ superuser_create_on_init = true
 	prefix = ''
 	prefix_type = false
 [dev.log]
-	debug_info = false
+	debug_info = true
 	color = true
 	time_format = "yyyy-mm-dd'T'HH:MM:ss:l"
 	max_str_length = 174
