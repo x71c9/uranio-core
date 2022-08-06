@@ -25,7 +25,7 @@ LogDAL = __decorate([
 ], LogDAL);
 exports.LogDAL = LogDAL;
 function create_log(log_name) {
-    urn_lib_1.urn_log.fn_debug(`Create LogDAL [${log_name}]`);
+    urn_lib_1.urn_log.trace(`Create LogDAL [${log_name}]`);
     return new LogDAL(log_name);
 }
 exports.create_log = create_log;

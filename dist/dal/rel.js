@@ -74,7 +74,7 @@ RelationDAL = __decorate([
 ], RelationDAL);
 exports.RelationDAL = RelationDAL;
 function create_main(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create RelationDAL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create RelationDAL [${atom_name}]`);
     return new RelationDAL(atom_name);
 }
 exports.create_main = create_main;

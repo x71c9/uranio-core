@@ -119,7 +119,7 @@ export class BasicDAL<A extends schema.AtomName> implements AccessLayer<A>{
 
 export function create_basic<A extends schema.AtomName>(atom_name:A, db_relation:urn_rel.Relation<A>)
 		:BasicDAL<A>{
-	urn_log.fn_debug(`Create BasicDAL [${atom_name}]`);
+	urn_log.trace(`Create BasicDAL [${atom_name}]`);
 	return new BasicDAL<A>(atom_name, db_relation);
 }
 

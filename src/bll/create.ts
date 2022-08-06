@@ -22,7 +22,7 @@ export type BLLInstance = InstanceType<typeof BLL>;
 
 export function create<A extends schema.AtomName>(atom_name:A, passport?:Passport)
 		:CustomBLL<A>{
-	urn_log.fn_debug(`Create BLL [${atom_name}]`);
+	urn_log.trace(`Create BLL [${atom_name}]`);
 	
 	const atom_def = book.get_definition(atom_name);
 	const bll_def = atom_def.bll;

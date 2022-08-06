@@ -100,7 +100,7 @@ export type AuthenticationBLLInstance = InstanceType<typeof AuthenticationBLL>;
 
 export function create<A extends schema.AuthName>(atom_name:A)
 		:AuthenticationBLL<A>{
-	urn_log.fn_debug(`Create AuthenticationBLL [${atom_name}]`);
+	urn_log.trace(`Create AuthenticationBLL [${atom_name}]`);
 	return new AuthenticationBLL<A>(atom_name);
 }
 

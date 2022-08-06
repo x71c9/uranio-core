@@ -76,7 +76,7 @@ export class RecycleDAL<A extends schema.AtomName> extends EncryptDAL<A>{
 
 export function create_recycle<A extends schema.AtomName>(atom_name:A)
 		:RecycleDAL<A>{
-	urn_log.fn_debug(`Create RecycleDAL [${atom_name}]`);
+	urn_log.trace(`Create RecycleDAL [${atom_name}]`);
 	return new RecycleDAL<A>(atom_name);
 }
 

@@ -115,7 +115,7 @@ export class EncryptDAL<A extends schema.AtomName> extends ValidateDAL<A>{
 
 export function create_encrypt<A extends schema.AtomName>(atom_name:A)
 		:EncryptDAL<A>{
-	urn_log.fn_debug(`Create EncrtyptDAL [${atom_name}]`);
+	urn_log.trace(`Create EncrtyptDAL [${atom_name}]`);
 	return new EncryptDAL<A>(atom_name);
 }
 

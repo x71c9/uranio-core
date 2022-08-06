@@ -32,7 +32,7 @@ MongooseTrashRelation = __decorate([
 ], MongooseTrashRelation);
 exports.MongooseTrashRelation = MongooseTrashRelation;
 function trash_create(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create MongooseTrashRelation`);
+    urn_lib_1.urn_log.trace(`Create MongooseTrashRelation`);
     return new MongooseTrashRelation(atom_name);
 }
 exports.trash_create = trash_create;

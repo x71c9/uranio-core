@@ -406,7 +406,7 @@ function _clean_molecule(atom_name, molecule) {
     return molecule;
 }
 function create(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create MongooseRelation`);
+    urn_lib_1.urn_log.trace(`Create MongooseRelation`);
     return new MongooseRelation(atom_name);
 }
 exports.create = create;

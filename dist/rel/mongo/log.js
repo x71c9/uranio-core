@@ -31,7 +31,7 @@ MongooseLogRelation = __decorate([
 ], MongooseLogRelation);
 exports.MongooseLogRelation = MongooseLogRelation;
 function log_create(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create MongooseLogRelation`);
+    urn_lib_1.urn_log.trace(`Create MongooseLogRelation`);
     return new MongooseLogRelation(atom_name);
 }
 exports.log_create = log_create;

@@ -110,7 +110,7 @@ BasicDAL = __decorate([
 ], BasicDAL);
 exports.BasicDAL = BasicDAL;
 function create_basic(atom_name, db_relation) {
-    urn_lib_1.urn_log.fn_debug(`Create BasicDAL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create BasicDAL [${atom_name}]`);
     return new BasicDAL(atom_name, db_relation);
 }
 exports.create_basic = create_basic;

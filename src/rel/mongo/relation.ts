@@ -458,7 +458,7 @@ function _clean_molecule<A extends schema.AtomName, D extends schema.Depth>(atom
 export function create<A extends schema.AtomName>(atom_name: A)
 		:MongooseRelation<A>{
 	
-	urn_log.fn_debug(`Create MongooseRelation`);
+	urn_log.trace(`Create MongooseRelation`);
 	
 	return new MongooseRelation<A>(atom_name);
 }

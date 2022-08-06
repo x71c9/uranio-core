@@ -92,7 +92,7 @@ RecycleDAL = __decorate([
 ], RecycleDAL);
 exports.RecycleDAL = RecycleDAL;
 function create_recycle(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create RecycleDAL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create RecycleDAL [${atom_name}]`);
     return new RecycleDAL(atom_name);
 }
 exports.create_recycle = create_recycle;

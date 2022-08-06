@@ -52,7 +52,7 @@ export class RelationDAL<A extends schema.AtomName> extends BasicDAL<A>{
 
 export function create_main<A extends schema.AtomName>(atom_name:A)
 		:RelationDAL<A>{
-	urn_log.fn_debug(`Create RelationDAL [${atom_name}]`);
+	urn_log.trace(`Create RelationDAL [${atom_name}]`);
 	return new RelationDAL<A>(atom_name);
 }
 

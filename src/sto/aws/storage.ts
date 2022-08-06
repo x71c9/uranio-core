@@ -103,13 +103,13 @@ class AWSStorage implements Storage {
 		}catch(e){
 			return false;
 		}
-		return false;
+		// return false;
 	}
 	
 }
 
 export function create()
 		:AWSStorage{
-	urn_log.fn_debug(`Create AWSStorage`);
+	urn_log.trace(`Create AWSStorage`);
 	return new AWSStorage();
 }

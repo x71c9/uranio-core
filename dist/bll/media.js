@@ -203,7 +203,7 @@ function _next_filepath(filepath) {
     }
 }
 function create(passport) {
-    urn_lib_1.urn_log.fn_debug(`Create MediaBLL`);
+    urn_lib_1.urn_log.trace(`Create MediaBLL`);
     return new MediaBLL(passport);
 }
 exports.create = create;

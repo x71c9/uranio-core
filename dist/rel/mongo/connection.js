@@ -156,7 +156,7 @@ MongooseDBConnection = __decorate([
     urn_lib_1.urn_log.util.decorators.debug_methods
 ], MongooseDBConnection);
 function create(con_name, mongo_connection, db_name) {
-    urn_lib_1.urn_log.fn_debug(`Create MongooseDBConnection [${con_name}]`);
+    urn_lib_1.urn_log.trace(`Create MongooseDBConnection [${con_name}]`);
     return new MongooseDBConnection(con_name, mongo_connection, db_name);
 }
 exports.create = create;

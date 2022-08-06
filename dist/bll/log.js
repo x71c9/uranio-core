@@ -24,7 +24,7 @@ LogBLL = __decorate([
     urn_lib_1.urn_log.util.decorators.debug_methods
 ], LogBLL);
 function create(log_name) {
-    urn_lib_1.urn_log.fn_debug(`Create LogBLL [${log_name}]`);
+    urn_lib_1.urn_log.trace(`Create LogBLL [${log_name}]`);
     return new basic_1.BasicBLL(log_name);
 }
 exports.create = create;

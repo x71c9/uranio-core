@@ -105,7 +105,7 @@ let AWSStorage = class AWSStorage {
         catch (e) {
             return false;
         }
-        return false;
+        // return false;
     }
 };
 AWSStorage = __decorate([
@@ -113,7 +113,7 @@ AWSStorage = __decorate([
     urn_lib_1.urn_log.util.decorators.debug_methods
 ], AWSStorage);
 function create() {
-    urn_lib_1.urn_log.fn_debug(`Create AWSStorage`);
+    urn_lib_1.urn_log.trace(`Create AWSStorage`);
     return new AWSStorage();
 }
 exports.create = create;

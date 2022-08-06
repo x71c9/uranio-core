@@ -131,7 +131,7 @@ export class SelfishDAL<A extends schema.AtomName> extends RecycleDAL<A>{
 
 export function create_selfish<A extends schema.AtomName>(atom_name:A)
 		:SelfishDAL<A>{
-	urn_log.fn_debug(`Create SelfishDAL [${atom_name}]`);
+	urn_log.trace(`Create SelfishDAL [${atom_name}]`);
 	return new SelfishDAL<A>(atom_name);
 }
 

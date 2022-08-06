@@ -124,7 +124,7 @@ export class BasicBLL<A extends schema.AtomName> {
 
 export function create<A extends schema.AtomName>(atom_name:A)
 		:BasicBLL<A>{
-	urn_log.fn_debug(`Create BasicBLL [${atom_name}]`);
+	urn_log.trace(`Create BasicBLL [${atom_name}]`);
 	return new BasicBLL<A>(atom_name);
 }
 

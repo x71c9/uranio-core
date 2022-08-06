@@ -147,7 +147,7 @@ SelfishDAL = __decorate([
 ], SelfishDAL);
 exports.SelfishDAL = SelfishDAL;
 function create_selfish(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create SelfishDAL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create SelfishDAL [${atom_name}]`);
     return new SelfishDAL(atom_name);
 }
 exports.create_selfish = create_selfish;

@@ -72,7 +72,7 @@ function _return_acl<A extends schema.AtomName>(atom_name:A, passport?:Passport)
 
 export function create_security<A extends schema.AtomName>(atom_name:A, passport?:Passport)
 		:SecurityBLL<A>{
-	urn_log.fn_debug(`Create SecurityBLL [${atom_name}]`);
+	urn_log.trace(`Create SecurityBLL [${atom_name}]`);
 	return new SecurityBLL<A>(atom_name, passport);
 }
 

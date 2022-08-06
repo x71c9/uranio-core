@@ -20,7 +20,7 @@ export class LogDAL<A extends schema.LogName> extends DAL<A>{
 
 export function create_log<A extends schema.LogName>(log_name:A)
 		:LogDAL<A>{
-	urn_log.fn_debug(`Create LogDAL [${log_name}]`);
+	urn_log.trace(`Create LogDAL [${log_name}]`);
 	return new LogDAL(log_name);
 }
 

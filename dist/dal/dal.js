@@ -22,7 +22,7 @@ DAL = __decorate([
 ], DAL);
 exports.DAL = DAL;
 function create(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create DAL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create DAL [${atom_name}]`);
     return new DAL(atom_name);
 }
 exports.create = create;

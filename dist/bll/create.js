@@ -34,7 +34,7 @@ const media_1 = require("./media");
 const bll_1 = require("./bll");
 const book = __importStar(require("../book/server"));
 function create(atom_name, passport) {
-    urn_lib_1.urn_log.fn_debug(`Create BLL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create BLL [${atom_name}]`);
     const atom_def = book.get_definition(atom_name);
     const bll_def = atom_def.bll;
     if (bll_def && typeof bll_def.class === 'function') {

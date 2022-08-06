@@ -101,7 +101,7 @@ AuthenticationBLL = __decorate([
     urn_lib_1.urn_log.util.decorators.debug_methods
 ], AuthenticationBLL);
 function create(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create AuthenticationBLL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create AuthenticationBLL [${atom_name}]`);
     return new AuthenticationBLL(atom_name);
 }
 exports.create = create;

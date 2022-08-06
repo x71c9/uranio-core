@@ -36,6 +36,6 @@ export class MongooseTrashRelation<A extends schema.AtomName> extends MongooseRe
 
 export function trash_create<A extends schema.AtomName>(atom_name: A)
 		:MongooseRelation<A>{
-	urn_log.fn_debug(`Create MongooseTrashRelation`);
+	urn_log.trace(`Create MongooseTrashRelation`);
 	return new MongooseTrashRelation<A>(atom_name);
 }

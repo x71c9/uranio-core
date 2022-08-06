@@ -296,7 +296,7 @@ ACL = __decorate([
 ], ACL);
 exports.ACL = ACL;
 function create(atom_name, user_groups) {
-    urn_lib_1.urn_log.fn_debug(`Create ACL [${atom_name}]`, user_groups);
+    urn_lib_1.urn_log.trace(`Create ACL [${atom_name}]`, user_groups);
     return new ACL(atom_name, user_groups);
 }
 exports.create = create;

@@ -112,7 +112,7 @@ BasicBLL = __decorate([
 ], BasicBLL);
 exports.BasicBLL = BasicBLL;
 function create(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create BasicBLL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create BasicBLL [${atom_name}]`);
     return new BasicBLL(atom_name);
 }
 exports.create = create;

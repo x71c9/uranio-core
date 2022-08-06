@@ -34,6 +34,6 @@ export class MongooseLogRelation<A extends schema.AtomName> extends MongooseRela
 
 export function log_create<A extends schema.AtomName>(atom_name: A)
 		:MongooseRelation<A>{
-	urn_log.fn_debug(`Create MongooseLogRelation`);
+	urn_log.trace(`Create MongooseLogRelation`);
 	return new MongooseLogRelation<A>(atom_name);
 }

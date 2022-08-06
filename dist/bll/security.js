@@ -79,7 +79,7 @@ function _return_acl(atom_name, passport) {
     };
 }
 function create_security(atom_name, passport) {
-    urn_lib_1.urn_log.fn_debug(`Create SecurityBLL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create SecurityBLL [${atom_name}]`);
     return new SecurityBLL(atom_name, passport);
 }
 exports.create_security = create_security;

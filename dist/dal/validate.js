@@ -301,7 +301,7 @@ function _validate_id(id, is_valid_id, key) {
     return true;
 }
 function create_validate(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create ValidateDAL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create ValidateDAL [${atom_name}]`);
     return new ValidateDAL(atom_name);
 }
 exports.create_validate = create_validate;

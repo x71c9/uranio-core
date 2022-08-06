@@ -16,7 +16,7 @@ export class DAL<A extends schema.AtomName> extends SelfishDAL<A>{}
 
 export function create<A extends schema.AtomName>(atom_name:A)
 		:DAL<A>{
-	urn_log.fn_debug(`Create DAL [${atom_name}]`);
+	urn_log.trace(`Create DAL [${atom_name}]`);
 	return new DAL<A>(atom_name);
 }
 

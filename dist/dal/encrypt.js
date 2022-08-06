@@ -102,7 +102,7 @@ EncryptDAL = __decorate([
 ], EncryptDAL);
 exports.EncryptDAL = EncryptDAL;
 function create_encrypt(atom_name) {
-    urn_lib_1.urn_log.fn_debug(`Create EncrtyptDAL [${atom_name}]`);
+    urn_lib_1.urn_log.trace(`Create EncrtyptDAL [${atom_name}]`);
     return new EncryptDAL(atom_name);
 }
 exports.create_encrypt = create_encrypt;

@@ -330,7 +330,7 @@ function _validate_id(
 
 export function create_validate<A extends schema.AtomName>(atom_name:A)
 		:ValidateDAL<A>{
-	urn_log.fn_debug(`Create ValidateDAL [${atom_name}]`);
+	urn_log.trace(`Create ValidateDAL [${atom_name}]`);
 	return new ValidateDAL<A>(atom_name);
 }
 

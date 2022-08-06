@@ -20,7 +20,7 @@ class LogBLL<A extends schema.LogName> extends BasicBLL<A>{
 
 export function create<A extends schema.LogName>(log_name:A)
 		:LogBLL<A>{
-	urn_log.fn_debug(`Create LogBLL [${log_name}]`);
+	urn_log.trace(`Create LogBLL [${log_name}]`);
 	return new BasicBLL<A>(log_name);
 }
 
