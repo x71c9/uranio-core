@@ -114,7 +114,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 				Number(options.depth),
 				options.depth_query
 			);
-			mon_find_one_res = await this._raw.findOne(query).sort(options.sort)
+			mon_find_one_res = await this._raw.findOne(query).sort(options.sort as {[k:string]: mongoose.SortOrder})
 				.populate(populate_object).lean<schema.Molecule<A,D>>();
 		}else{
 			mon_find_one_res = await this._raw.findOne(query).lean<schema.Molecule<A,D>>();

@@ -22,10 +22,10 @@ const urn_exc = urn_lib_1.urn_exception.init('DBC_M', 'Mongoose DB Connection');
  * Define default mongoose option for connection
  */
 const mongoose_options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true
+// useNewUrlParser: true, // changed in mongoose 6. Needed in mongoose 5.
+// useUnifiedTopology: true, // changed in mongoose 6. Needed in mongoose 5.
+// useFindAndModify: false, // changed in mongoose 6. Needed in mongoose 5.
+// useCreateIndex: true // changed in mongoose 6. Needed in mongoose 5.
 };
 // const mongoose_options:mongoose.ConnectOptions = {
 // };
