@@ -48,7 +48,7 @@ function init(config, register_required = true) {
     _validate_core_variables();
     _validate_core_book();
     log.init(urn_lib_1.urn_log);
-    urn_lib_1.urn_log.debug(`Uranio core client initialization completed.`);
+    urn_lib_1.urn_log.trace(`Uranio core client initialization completed.`);
 }
 exports.init = init;
 function _register_required_atoms() {

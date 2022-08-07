@@ -57,7 +57,7 @@ function init(config, register_required = true) {
     _validate_core_book();
     _core_connect();
     _create_superuser();
-    urn_lib_1.urn_log.debug(`Uranio core initialization completed.`);
+    urn_lib_1.urn_log.trace(`Uranio core initialization completed.`);
 }
 exports.init = init;
 function _register_required_atoms() {

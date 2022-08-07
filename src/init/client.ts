@@ -42,7 +42,7 @@ export function init(
 	
 	log.init(urn_log);
 	
-	urn_log.debug(`Uranio core client initialization completed.`);
+	urn_log.trace(`Uranio core client initialization completed.`);
 	
 }
 

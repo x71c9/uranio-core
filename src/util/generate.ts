@@ -35,17 +35,17 @@ export const process_params = {
 };
 
 export function schema():string{
-	urn_log.debug('Started generating uranio core schema...');
+	urn_log.trace('Started generating uranio core schema...');
 	init();
 	const text = _generate_uranio_schema_text();
-	urn_log.debug(`Core schema generated.`);
+	urn_log.trace(`Core schema generated.`);
 	return text;
 }
 
 export function schema_and_save():void{
 	const text = schema();
 	save_schema(text);
-	urn_log.debug(`Schema generated and saved.`);
+	urn_log.trace(`Schema generated and saved.`);
 }
 
 export function save_schema(text:string):void{
@@ -54,28 +54,28 @@ export function save_schema(text:string):void{
 	// fs.copyFileSync(_get_atom_schema_path(), backup_path);
 	// urn_log.debug(`Copied backup file for atom schema in [${backup_path}].`);
 	fs.writeFileSync(_get_atom_schema_path(), text);
-	urn_log.debug(`Update schema [${_get_atom_schema_path()}].`);
+	urn_log.trace(`Updated schema [${_get_atom_schema_path()}].`);
 }
 
 export function client_config(client_default:Required<ClientConfiguration>):string{
-	urn_log.debug('Started generating uranio core client config...');
+	urn_log.trace('Started generating uranio core client config...');
 	init();
 	const text = _generate_client_config_text(client_default);
-	urn_log.debug(`Core client config generated.`);
+	urn_log.trace(`Core client config generated.`);
 	return text;
 }
 
 export function client_config_and_save(client_default:Required<ClientConfiguration>):void{
 	const text = client_config(client_default);
 	save_client_config(text);
-	urn_log.debug(`Client config generated and saved.`);
+	urn_log.trace(`Client config generated and saved.`);
 }
 
 export function save_client_config(text:string):void{
 	fs.writeFileSync(_get_core_client_config_path_src(), text);
-	urn_log.debug(`Update core client config [${_get_core_client_config_path_src()}].`);
+	urn_log.trace(`Update core client config [${_get_core_client_config_path_src()}].`);
 	_compile_client_config();
-	urn_log.debug(`Core Client config core generated and saved.`);
+	urn_log.trace(`Core Client config core generated and saved.`);
 }
 
 export function init():void{
@@ -130,7 +130,7 @@ function _compile(src:string, dest:string){
 		platform: 'node',
 		format: 'cjs'
 	});
-	urn_log.debug(`Core Compiled [${src}] to [${dest}].`);
+	urn_log.trace(`Core Compiled [${src}] to [${dest}].`);
 }
 
 function _get_core_client_config_path_src(){

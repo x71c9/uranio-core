@@ -59,7 +59,7 @@ export function init(
 	_core_connect();
 	_create_superuser();
 	
-	urn_log.debug(`Uranio core initialization completed.`);
+	urn_log.trace(`Uranio core initialization completed.`);
 	
 }
 
