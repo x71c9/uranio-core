@@ -95,7 +95,7 @@ let MongooseDBConnection = class MongooseDBConnection {
      * Function called when event onConnected is fired
      */
     _on_connected() {
-        urn_lib_1.urn_log.debug(`Connection connected [${this.name}][${this.uri}]`);
+        urn_lib_1.urn_log.info(`Connection connected [${this.name}][${this.uri}]`);
         if (this._connection)
             this.readyState = this._connection.readyState;
     }
@@ -103,7 +103,7 @@ let MongooseDBConnection = class MongooseDBConnection {
      * Function called when event onDisconnecting is fired
      */
     _on_disconnecting() {
-        urn_lib_1.urn_log.debug(`Connection disconnecting [${this.name}][${this.uri}]...`);
+        urn_lib_1.urn_log.warn(`Connection disconnecting [${this.name}][${this.uri}]...`);
         if (this._connection)
             this.readyState = this._connection.readyState;
     }
