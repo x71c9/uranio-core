@@ -35,7 +35,7 @@ export const core_config:Required<Configuration> = {
 	
 	default_atoms_media: false,
 	
-	log_debug_info: true,
+	log_debug_info: false,
 	
 	log_color: true,
 	
@@ -47,7 +47,7 @@ export const core_config:Required<Configuration> = {
 	
 	log_prefix_type: false,
 	
-	dev_log_debug_info: true,
+	dev_log_debug_info: false,
 	
 	dev_log_color: true,
 	
