@@ -151,7 +151,7 @@ class MongooseDBConnection {
 	 */
 	private _on_disconnected()
 			:void{
-		urn_log.debug(`Connection disconnected [${this.name}][${this.uri}]`);
+		urn_log.warn(`Connection disconnected [${this.name}][${this.uri}]`);
 		if(this._connection)
 			this.readyState = this._connection.readyState;
 	}

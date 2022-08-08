@@ -111,7 +111,7 @@ let MongooseDBConnection = class MongooseDBConnection {
      * Function called when event onDisconnected id fired
      */
     _on_disconnected() {
-        urn_lib_1.urn_log.debug(`Connection disconnected [${this.name}][${this.uri}]`);
+        urn_lib_1.urn_log.warn(`Connection disconnected [${this.name}][${this.uri}]`);
         if (this._connection)
             this.readyState = this._connection.readyState;
     }
