@@ -43,6 +43,7 @@ const db = __importStar(require("../db/server"));
 const bll = __importStar(require("../bll/server"));
 const log = __importStar(require("../log/server"));
 const util = __importStar(require("../util/server"));
+const state_1 = require("./state");
 function init(config, register_required = true) {
     conf.set(util.toml.read(defaults_1.core_config));
     env.set_env();
@@ -57,6 +58,7 @@ function init(config, register_required = true) {
     _validate_core_book();
     _core_connect();
     _create_superuser();
+    (0, state_1.check_and_set_init_state)();
     urn_lib_1.urn_log.trace(`Uranio core initialization completed.`);
 }
 exports.init = init;

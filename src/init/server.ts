@@ -34,6 +34,8 @@ import * as log from '../log/server';
 
 import * as util from '../util/server';
 
+import {check_and_set_init_state} from './state';
+
 export function init(
 	config?: Partial<types.Configuration>,
 	register_required=true
@@ -58,6 +60,8 @@ export function init(
 	
 	_core_connect();
 	_create_superuser();
+	
+	check_and_set_init_state();
 	
 	urn_log.trace(`Uranio core initialization completed.`);
 	

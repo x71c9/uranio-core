@@ -20,6 +20,8 @@ import * as log from '../log/client';
 
 import {client_toml} from '../client/toml';
 
+import {check_and_set_init_state} from './state';
+
 export function init(
 	config?: Partial<types.ClientConfiguration>,
 	register_required=true
@@ -41,6 +43,8 @@ export function init(
 	_validate_core_book();
 	
 	log.init(urn_log);
+	
+	check_and_set_init_state();
 	
 	urn_log.trace(`Uranio core client initialization completed.`);
 	

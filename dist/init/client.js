@@ -36,6 +36,7 @@ const conf = __importStar(require("../conf/client"));
 const env = __importStar(require("../env/client"));
 const log = __importStar(require("../log/client"));
 const toml_1 = require("../client/toml");
+const state_1 = require("./state");
 function init(config, register_required = true) {
     conf.set(toml_1.client_toml);
     env.set_client_env();
@@ -48,6 +49,7 @@ function init(config, register_required = true) {
     _validate_core_variables();
     _validate_core_book();
     log.init(urn_lib_1.urn_log);
+    (0, state_1.check_and_set_init_state)();
     urn_lib_1.urn_log.trace(`Uranio core client initialization completed.`);
 }
 exports.init = init;
