@@ -84,19 +84,19 @@ async function _create_superuser(){
 		return;
 	}
 	
-	const auth_bll = bll.auth.create('superuser');
+	const auth_bll = bll.auth.create('_superuser');
 	try{
 		
 		await auth_bll.authenticate(core_env.superuser_email, core_env.superuser_password);
-		urn_log.debug(`Main superuser [${core_env.superuser_email}] already in database.`);
+		urn_log.debug(`Main _superuser [${core_env.superuser_email}] already in database.`);
 		
 	}catch(err){ // cannot auth with config email and password
-		const bll_superuser = bll.basic.create('superuser');
+		const bll_superuser = bll.basic.create('_superuser');
 		try{
 			const one_su = await bll_superuser.find_one({email: core_env.superuser_email});
-			urn_log.warn(`Main superuser [${core_env.superuser_email}] already in database but with wrong password.`);
+			urn_log.warn(`Main _superuser [${core_env.superuser_email}] already in database but with wrong password.`);
 			await bll_superuser.remove_by_id(one_su._id);
-			urn_log.debug(`Main superuser [${core_env.superuser_email}] deleted.`);
+			urn_log.debug(`Main _superuser [${core_env.superuser_email}] deleted.`);
 			// eslint-disable-next-line
 		}catch(err){} // If there is no user it throws an error, but nothing should be done.
 		const superuser_shape = {
@@ -106,13 +106,13 @@ async function _create_superuser(){
 		};
 		const superuser = await bll_superuser.insert_new(superuser_shape);
 		
-		const bll_group = bll.basic.create('group');
+		const bll_group = bll.basic.create('_group');
 		const group = await bll_group.insert_new({name: superuser.email});
 		
 		superuser.groups = [group._id];
 		await bll_superuser.update_one(superuser);
 		
-		urn_log.debug(`Main superuser [${core_env.superuser_email}] [${superuser._id}] created.`);
+		urn_log.debug(`Main _superuser [${core_env.superuser_email}] [${superuser._id}] created.`);
 	}
 }
 
@@ -229,10 +229,10 @@ function _validate_auth_atoms(){
 						`INVALID_AUTH_ATOM_TYPE_GROUP`,
 						`Auth Atom \`${atom_name}.group\` must be of type PropertyType.ATOM_ARRAY.`
 					);
-				}else if(properties.groups.atom !== 'group'){
+				}else if(properties.groups.atom !== '_group'){
 					throw urn_exc.create_invalid_book(
 						`INVALID_AUTH_ATOM_GROUP_ATOM`,
-						`Auth Atom \`${atom_name}.group\` must be of referencing atom \`group\`.` +
+						`Auth Atom \`${atom_name}.group\` must be of referencing atom \`_group\`.` +
 						` Now it is referencing atom \`${properties.groups.atom}\``
 					);
 				}
@@ -441,10 +441,10 @@ function _check_if_superuser_was_set(){
 		return;
 	}
 	if(core_env.superuser_email === ''){
-		urn_log.warn(`Invalid superuser email.`);
+		urn_log.warn(`Invalid _superuser email.`);
 	}
 	if(core_env.superuser_password === ''){
-		urn_log.warn(`Invalid superuser password.`);
+		urn_log.warn(`Invalid _superuser password.`);
 	}
 }
 
@@ -453,8 +453,8 @@ function _check_if_atom_group_is_needed(){
 		if(core_config.default_atoms_group === false){
 			throw urn_exc.create_not_initialized(
 				`ATOM_GROUP_IS_NEEDED`,
-				`If default Atoms \`superuser\` or \`user\` are defined,` +
-				`Atom \`group\` also must be defined.` + 
+				`If default Atoms \`_superuser\` or \`user\` are defined,` +
+				`Atom \`_group\` also must be defined.` + 
 				`Set \`default_atoms_group = true\` in \`uranio.toml\``
 			);
 		}

@@ -46,7 +46,7 @@ const sto = __importStar(require("../sto/server"));
 const bll_1 = require("./bll");
 let MediaBLL = class MediaBLL extends bll_1.BLL {
     constructor(passport) {
-        super('media', passport);
+        super('_media', passport);
         switch (conf.get(`storage`)) {
             case 'aws': {
                 this.storage = sto.aws.create();
@@ -134,7 +134,7 @@ let MediaBLL = class MediaBLL extends bll_1.BLL {
         return this._with_full_src(resp);
     }
     // public async find_multiple<D extends schema.Depth>(ids:string[])
-    //     :Promise<schema.Molecule<'media',D>[]>{
+    //     :Promise<schema.Molecule<'_media',D>[]>{
     //   const resp = await this._al.select_multiple<D>(ids);
     //   return this._with_full_src(resp);
     // }

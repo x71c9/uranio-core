@@ -21,12 +21,12 @@ import {InsertFileParams} from './types';
 
 @urn_log.util.decorators.debug_constructor
 @urn_log.util.decorators.debug_methods
-export class MediaBLL extends BLL<'media'>{
+export class MediaBLL extends BLL<'_media'>{
 	
 	protected storage:sto.Storage;
 	
 	constructor(passport?:Passport){
-		super('media', passport);
+		super('_media', passport);
 		switch(conf.get(`storage`)){
 			case 'aws':{
 				this.storage = sto.aws.create();
@@ -39,7 +39,7 @@ export class MediaBLL extends BLL<'media'>{
 		filepath: string,
 		buffer:Buffer | ArrayBuffer | Blob,
 		params?:Partial<InsertFileParams>
-	):Promise<schema.Atom<'media'>>{
+	):Promise<schema.Atom<'_media'>>{
 		
 		await super.authorize(AuthAction.WRITE);
 		
@@ -59,7 +59,7 @@ export class MediaBLL extends BLL<'media'>{
 			}
 		}
 		const returned_filepath = await this.storage.upload(new_filepath, buffer, upload_params);
-		const atom_shape:schema.AtomShape<'media'> = {
+		const atom_shape:schema.AtomShape<'_media'> = {
 			src: returned_filepath,
 			filename: path.basename(returned_filepath),
 			type: params?.content_type || 'unknown',
@@ -95,60 +95,60 @@ export class MediaBLL extends BLL<'media'>{
 		return presigned_url;
 	}
 	
-	public async find<D extends schema.Depth>(query:schema.Query<'media'>, options?:schema.Query.Options<'media',D>)
-			:Promise<schema.Molecule<'media',D>[]>{
+	public async find<D extends schema.Depth>(query:schema.Query<'_media'>, options?:schema.Query.Options<'_media',D>)
+			:Promise<schema.Molecule<'_media',D>[]>{
 		const resp = await this._al.select(query, options);
 		return this._array_with_full_src(resp);
 	}
 	
-	public async find_by_id<D extends schema.Depth>(id:string, options?:schema.Query.Options<'media',D>)
-			:Promise<schema.Molecule<'media',D>>{
+	public async find_by_id<D extends schema.Depth>(id:string, options?:schema.Query.Options<'_media',D>)
+			:Promise<schema.Molecule<'_media',D>>{
 		const resp = await this._al.select_by_id(id, options);
 		return this._with_full_src(resp);
 	}
 	
-	public async find_one<D extends schema.Depth>(query:schema.Query<'media'>, options?:schema.Query.Options<'media',D>)
-			:Promise<schema.Molecule<'media',D>>{
+	public async find_one<D extends schema.Depth>(query:schema.Query<'_media'>, options?:schema.Query.Options<'_media',D>)
+			:Promise<schema.Molecule<'_media',D>>{
 		const resp = await this._al.select_one(query, options);
 		return this._with_full_src(resp);
 	}
 	
-	public async insert_new(atom_shape:schema.AtomShape<'media'>)
-			:Promise<schema.Atom<'media'>>{
+	public async insert_new(atom_shape:schema.AtomShape<'_media'>)
+			:Promise<schema.Atom<'_media'>>{
 		const media_shape = this._remove_full_src(atom_shape);
 		const resp = await this._al.insert_one(media_shape);
 		return this._with_full_src(resp);
 	}
 	
-	public async update_by_id<D extends schema.Depth>(id:string, partial_atom:Partial<schema.AtomShape<'media'>>, options?:schema.Query.Options<'media',D>)
-			:Promise<schema.Molecule<'media',D>>{
+	public async update_by_id<D extends schema.Depth>(id:string, partial_atom:Partial<schema.AtomShape<'_media'>>, options?:schema.Query.Options<'_media',D>)
+			:Promise<schema.Molecule<'_media',D>>{
 		const partial_media = this._remove_full_src(partial_atom);
 		const resp = await this._al.alter_by_id(id, partial_media, options);
 		return this._with_full_src(resp);
 	}
 	
-	public async update_one<D extends schema.Depth>(atom:schema.Atom<'media'>, options?:schema.Query.Options<'media',D>)
-			:Promise<schema.Molecule<'media',D>>{
+	public async update_one<D extends schema.Depth>(atom:schema.Atom<'_media'>, options?:schema.Query.Options<'_media',D>)
+			:Promise<schema.Molecule<'_media',D>>{
 		const media = this._remove_full_src(atom);
-		const resp = await this.update_by_id(media._id, media as Partial<schema.AtomShape<'media'>>, options);
+		const resp = await this.update_by_id(media._id, media as Partial<schema.AtomShape<'_media'>>, options);
 		return this._with_full_src(resp);
 	}
 	
-	public async update_multiple(ids:string[], partial_atom:Partial<schema.AtomShape<'media'>>)
-			:Promise<schema.Atom<'media'>[]>{
+	public async update_multiple(ids:string[], partial_atom:Partial<schema.AtomShape<'_media'>>)
+			:Promise<schema.Atom<'_media'>[]>{
 		const partial_media = this._remove_full_src(partial_atom);
-		const resp = await this._al.alter_multiple(ids, partial_media as Partial<schema.AtomShape<'media'>>);
+		const resp = await this._al.alter_multiple(ids, partial_media as Partial<schema.AtomShape<'_media'>>);
 		return this._with_full_src(resp);
 	}
 	
 	// public async find_multiple<D extends schema.Depth>(ids:string[])
-	//     :Promise<schema.Molecule<'media',D>[]>{
+	//     :Promise<schema.Molecule<'_media',D>[]>{
 	//   const resp = await this._al.select_multiple<D>(ids);
 	//   return this._with_full_src(resp);
 	// }
 	
-	public async insert_multiple(atom_shapes:schema.AtomShape<'media'>[])
-			:Promise<schema.Atom<'media'>[]>{
+	public async insert_multiple(atom_shapes:schema.AtomShape<'_media'>[])
+			:Promise<schema.Atom<'_media'>[]>{
 		for(let shape of atom_shapes){
 			shape = this._remove_full_src(shape);
 		}
@@ -157,25 +157,25 @@ export class MediaBLL extends BLL<'media'>{
 	}
 	
 	public async remove_multiple(ids:string[])
-			:Promise<schema.Atom<'media'>[]>{
+			:Promise<schema.Atom<'_media'>[]>{
 		const resp = await this._al.delete_multiple(ids);
 		return this._with_full_src(resp);
 	}
 	
-	private _remove_full_src(media:schema.Atom<'media'>):schema.Atom<'media'>;
-	private _remove_full_src(media:schema.AtomShape<'media'>):schema.AtomShape<'media'>;
-	private _remove_full_src(media:Partial<schema.AtomShape<'media'>>):Partial<schema.AtomShape<'media'>>;
-	private _remove_full_src(media:Partial<schema.AtomShape<'media'>>):Partial<schema.AtomShape<'media'>>{
+	private _remove_full_src(media:schema.Atom<'_media'>):schema.Atom<'_media'>;
+	private _remove_full_src(media:schema.AtomShape<'_media'>):schema.AtomShape<'_media'>;
+	private _remove_full_src(media:Partial<schema.AtomShape<'_media'>>):Partial<schema.AtomShape<'_media'>>;
+	private _remove_full_src(media:Partial<schema.AtomShape<'_media'>>):Partial<schema.AtomShape<'_media'>>{
 		if(typeof media.src === 'string' && media.src.indexOf(this.storage.base_url) === 0){
 			media.src = media.src.replace(this.storage.base_url, '');
 		}
 		return media;
 	}
 	
-	private _with_full_src<D extends schema.Depth>(media:schema.Molecule<'media',D>[]):schema.Molecule<'media',D>[]
-	private _with_full_src<D extends schema.Depth>(media:schema.Molecule<'media',D>):schema.Molecule<'media',D>
-	private _with_full_src<D extends schema.Depth>(media:schema.Molecule<'media',D> | schema.Molecule<'media',D>[])
-			:schema.Molecule<'media',D> | schema.Molecule<'media',D>[]{
+	private _with_full_src<D extends schema.Depth>(media:schema.Molecule<'_media',D>[]):schema.Molecule<'_media',D>[]
+	private _with_full_src<D extends schema.Depth>(media:schema.Molecule<'_media',D>):schema.Molecule<'_media',D>
+	private _with_full_src<D extends schema.Depth>(media:schema.Molecule<'_media',D> | schema.Molecule<'_media',D>[])
+			:schema.Molecule<'_media',D> | schema.Molecule<'_media',D>[]{
 		if(Array.isArray(media)){
 			for(const m of media){
 				m.src = `${this.storage.base_url}/${m.src}`;
@@ -186,8 +186,8 @@ export class MediaBLL extends BLL<'media'>{
 		return media;
 	}
 	
-	private _array_with_full_src<D extends schema.Depth>(medias:schema.Molecule<'media',D>[])
-			:schema.Molecule<'media',D>[]{
+	private _array_with_full_src<D extends schema.Depth>(medias:schema.Molecule<'_media',D>[])
+			:schema.Molecule<'_media',D>[]{
 		for(const media of medias){
 			media.src = `${this.storage.base_url}/${media.src}`;
 		}

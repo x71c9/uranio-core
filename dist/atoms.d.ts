@@ -5,9 +5,9 @@
  */
 import { PropertyType, SecurityType, PermissionType } from './typ/book_cln';
 export declare const atom_book: {
-    readonly superuser: {
+    readonly _superuser: {
         readonly authenticate: true;
-        readonly plural: "superusers";
+        readonly plural: "_superusers";
         readonly security: {
             readonly type: SecurityType.UNIFORM;
             readonly _r: PermissionType.NOBODY;
@@ -28,19 +28,34 @@ export declare const atom_book: {
             };
             readonly groups: {
                 readonly type: PropertyType.ATOM_ARRAY;
-                readonly atom: "group";
+                readonly atom: "_group";
                 readonly label: "Groups";
                 readonly optional: true;
             };
         };
         readonly dock: {
-            readonly url: "/superusers";
-            readonly auth_url: "/superauth";
+            readonly url: "/_superusers";
+            readonly auth_url: "/_superauth";
         };
     };
-    readonly user: {
+    readonly _group: {
+        readonly plural: "_groups";
+        readonly properties: {
+            readonly name: {
+                readonly type: PropertyType.TEXT;
+                readonly unique: true;
+                readonly primary: true;
+                readonly search: true;
+                readonly label: "Name";
+            };
+        };
+        readonly dock: {
+            readonly url: "/_groups";
+        };
+    };
+    readonly _user: {
         readonly authenticate: true;
-        readonly plural: "users";
+        readonly plural: "_users";
         readonly security: {
             readonly type: SecurityType.GRANULAR;
         };
@@ -59,33 +74,18 @@ export declare const atom_book: {
             };
             readonly groups: {
                 readonly type: PropertyType.ATOM_ARRAY;
-                readonly atom: "group";
+                readonly atom: "_group";
                 readonly label: "Groups";
                 readonly optional: true;
             };
         };
         readonly dock: {
-            readonly url: "/users";
+            readonly url: "/_users";
             readonly auth_url: "/auth";
         };
     };
-    readonly group: {
-        readonly plural: "groups";
-        readonly properties: {
-            readonly name: {
-                readonly type: PropertyType.TEXT;
-                readonly unique: true;
-                readonly primary: true;
-                readonly search: true;
-                readonly label: "Name";
-            };
-        };
-        readonly dock: {
-            readonly url: "/groups";
-        };
-    };
-    readonly media: {
-        readonly plural: "media";
+    readonly _media: {
+        readonly plural: "_media";
         readonly properties: {
             readonly src: {
                 readonly type: PropertyType.TEXT;
@@ -130,7 +130,7 @@ export declare const atom_book: {
             };
         };
         readonly dock: {
-            readonly url: "/media";
+            readonly url: "/_media";
         };
     };
 };

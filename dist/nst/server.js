@@ -33,7 +33,7 @@ const bll = __importStar(require("../bll/server"));
 let core_bll_group;
 function get_bll_group() {
     if (!core_bll_group) {
-        core_bll_group = bll.basic.create('group');
+        core_bll_group = bll.basic.create('_group');
     }
     return core_bll_group;
 }

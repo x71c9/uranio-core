@@ -7,7 +7,7 @@
  *
  * It uses an Access Control Layer (ACL) instead of a Data Access Layer (DAL).
  *
- * If the passport is a superuser it uses a DAL.
+ * If the passport is a _superuser it uses a DAL.
  *
  * @packageDocumentation
  */
@@ -64,7 +64,7 @@ function _return_acl(atom_name, passport) {
             return urn_dal.create(atom_name);
         }
         let groups = [];
-        // If a Passport is passed and it is a superuser
+        // If a Passport is passed and it is a _superuser
         // then bypass ACL and return a DAL.
         if (passport) {
             (0, authenticate_1.is_valid_passport)(passport);

@@ -68,7 +68,7 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		if(conf.get('default_atoms_superuser') === false){
 			throw urn_exc.create_not_initialized(
 				'SUPERUSER_MUST_BE_DEFINED',
-				'Atom superuser must be defined in order to initialize an ACL.' +
+				'Atom _superuser must be defined in order to initialize an ACL.' +
 				'Set `default_atoms_superuser = true` in `uranio.toml`'
 			);
 		}

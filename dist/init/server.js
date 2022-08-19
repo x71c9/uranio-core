@@ -75,18 +75,18 @@ async function _create_superuser() {
     if (!conf.get(`superuser_create_on_init`) === true) {
         return;
     }
-    const auth_bll = bll.auth.create('superuser');
+    const auth_bll = bll.auth.create('_superuser');
     try {
         await auth_bll.authenticate(defaults_2.core_env.superuser_email, defaults_2.core_env.superuser_password);
-        urn_lib_1.urn_log.debug(`Main superuser [${defaults_2.core_env.superuser_email}] already in database.`);
+        urn_lib_1.urn_log.debug(`Main _superuser [${defaults_2.core_env.superuser_email}] already in database.`);
     }
     catch (err) { // cannot auth with config email and password
-        const bll_superuser = bll.basic.create('superuser');
+        const bll_superuser = bll.basic.create('_superuser');
         try {
             const one_su = await bll_superuser.find_one({ email: defaults_2.core_env.superuser_email });
-            urn_lib_1.urn_log.warn(`Main superuser [${defaults_2.core_env.superuser_email}] already in database but with wrong password.`);
+            urn_lib_1.urn_log.warn(`Main _superuser [${defaults_2.core_env.superuser_email}] already in database but with wrong password.`);
             await bll_superuser.remove_by_id(one_su._id);
-            urn_lib_1.urn_log.debug(`Main superuser [${defaults_2.core_env.superuser_email}] deleted.`);
+            urn_lib_1.urn_log.debug(`Main _superuser [${defaults_2.core_env.superuser_email}] deleted.`);
             // eslint-disable-next-line
         }
         catch (err) { } // If there is no user it throws an error, but nothing should be done.
@@ -96,11 +96,11 @@ async function _create_superuser() {
             groups: []
         };
         const superuser = await bll_superuser.insert_new(superuser_shape);
-        const bll_group = bll.basic.create('group');
+        const bll_group = bll.basic.create('_group');
         const group = await bll_group.insert_new({ name: superuser.email });
         superuser.groups = [group._id];
         await bll_superuser.update_one(superuser);
-        urn_lib_1.urn_log.debug(`Main superuser [${defaults_2.core_env.superuser_email}] [${superuser._id}] created.`);
+        urn_lib_1.urn_log.debug(`Main _superuser [${defaults_2.core_env.superuser_email}] [${superuser._id}] created.`);
     }
 }
 function _core_connect() {
@@ -189,8 +189,8 @@ function _validate_auth_atoms() {
                 if (properties.groups.type !== types.PropertyType.ATOM_ARRAY) {
                     throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_TYPE_GROUP`, `Auth Atom \`${atom_name}.group\` must be of type PropertyType.ATOM_ARRAY.`);
                 }
-                else if (properties.groups.atom !== 'group') {
-                    throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_GROUP_ATOM`, `Auth Atom \`${atom_name}.group\` must be of referencing atom \`group\`.` +
+                else if (properties.groups.atom !== '_group') {
+                    throw urn_exc.create_invalid_book(`INVALID_AUTH_ATOM_GROUP_ATOM`, `Auth Atom \`${atom_name}.group\` must be of referencing atom \`_group\`.` +
                         ` Now it is referencing atom \`${properties.groups.atom}\``);
                 }
             }
@@ -336,17 +336,17 @@ function _check_if_superuser_was_set() {
         return;
     }
     if (defaults_2.core_env.superuser_email === '') {
-        urn_lib_1.urn_log.warn(`Invalid superuser email.`);
+        urn_lib_1.urn_log.warn(`Invalid _superuser email.`);
     }
     if (defaults_2.core_env.superuser_password === '') {
-        urn_lib_1.urn_log.warn(`Invalid superuser password.`);
+        urn_lib_1.urn_log.warn(`Invalid _superuser password.`);
     }
 }
 function _check_if_atom_group_is_needed() {
     if (defaults_1.core_config.default_atoms_superuser === true || defaults_1.core_config.default_atoms_user === true) {
         if (defaults_1.core_config.default_atoms_group === false) {
-            throw urn_exc.create_not_initialized(`ATOM_GROUP_IS_NEEDED`, `If default Atoms \`superuser\` or \`user\` are defined,` +
-                `Atom \`group\` also must be defined.` +
+            throw urn_exc.create_not_initialized(`ATOM_GROUP_IS_NEEDED`, `If default Atoms \`_superuser\` or \`user\` are defined,` +
+                `Atom \`_group\` also must be defined.` +
                 `Set \`default_atoms_group = true\` in \`uranio.toml\``);
         }
     }

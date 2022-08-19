@@ -7,9 +7,9 @@
 import {PropertyType, SecurityType, PermissionType} from './typ/book_cln';
 
 export const atom_book = {
-	superuser: {
+	_superuser: {
 		authenticate: true,
-		plural: 'superusers',
+		plural: '_superusers',
 		security: {
 			type: SecurityType.UNIFORM,
 			_r: PermissionType.NOBODY
@@ -32,19 +32,34 @@ export const atom_book = {
 			},
 			groups: {
 				type: PropertyType.ATOM_ARRAY,
-				atom: 'group',
+				atom: '_group',
 				label: 'Groups',
 				optional: true
 			}
 		},
 		dock:{
-			url: '/superusers',
-			auth_url: '/superauth'
+			url: '/_superusers',
+			auth_url: '/_superauth'
 		}
 	},
-	user: {
+	_group: {
+		plural: '_groups',
+		properties: {
+			name: {
+				type: PropertyType.TEXT,
+				unique: true,
+				primary: true,
+				search: true,
+				label: 'Name'
+			}
+		},
+		dock:{
+			url: '/_groups'
+		}
+	},
+	_user: {
 		authenticate: true,
-		plural: 'users',
+		plural: '_users',
 		security: {
 			type: SecurityType.GRANULAR
 		},
@@ -63,33 +78,18 @@ export const atom_book = {
 			},
 			groups: {
 				type: PropertyType.ATOM_ARRAY,
-				atom: 'group',
+				atom: '_group',
 				label: 'Groups',
 				optional: true
 			}
 		},
 		dock:{
-			url: '/users',
+			url: '/_users',
 			auth_url: '/auth'
 		}
 	},
-	group: {
-		plural: 'groups',
-		properties: {
-			name: {
-				type: PropertyType.TEXT,
-				unique: true,
-				primary: true,
-				search: true,
-				label: 'Name'
-			}
-		},
-		dock:{
-			url: '/groups'
-		}
-	},
-	media: {
-		plural: 'media',
+	_media: {
+		plural: '_media',
 		properties: {
 			src: {
 				type: PropertyType.TEXT,
@@ -134,7 +134,7 @@ export const atom_book = {
 			}
 		},
 		dock:{
-			url: '/media'
+			url: '/_media'
 		}
 	}
 } as const;

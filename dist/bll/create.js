@@ -40,7 +40,7 @@ function create(atom_name, passport) {
     if (bll_def && typeof bll_def.class === 'function') {
         return bll_def.class(passport);
     }
-    else if (atom_name === 'media') {
+    else if (atom_name === '_media') {
         return (0, media_1.create)(passport);
     }
     else {

@@ -33,16 +33,16 @@ const atoms_1 = require("../atoms");
 const conf = __importStar(require("../conf/server"));
 function get() {
     if (conf.get('default_atoms_superuser') === false) {
-        delete atoms_1.atom_book.superuser;
+        delete atoms_1.atom_book._superuser;
     }
     if (conf.get('default_atoms_group') === false) {
-        delete atoms_1.atom_book.group;
+        delete atoms_1.atom_book._group;
     }
     if (conf.get('default_atoms_user') === false) {
-        delete atoms_1.atom_book.user;
+        delete atoms_1.atom_book._user;
     }
     if (conf.get('default_atoms_media') === false) {
-        delete atoms_1.atom_book.media;
+        delete atoms_1.atom_book._media;
     }
     return {
         ...atoms_1.atom_book

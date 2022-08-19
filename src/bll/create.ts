@@ -28,7 +28,7 @@ export function create<A extends schema.AtomName>(atom_name:A, passport?:Passpor
 	const bll_def = atom_def.bll;
 	if(bll_def && typeof bll_def.class === 'function'){
 		return bll_def.class(passport) as CustomBLL<A>;
-	}else if(atom_name === 'media'){
+	}else if(atom_name === '_media'){
 		return create_media(passport) as unknown as CustomBLL<A>;
 	}else{
 		return new BLL<A>(atom_name, passport) as CustomBLL<A>;

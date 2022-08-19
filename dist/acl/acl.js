@@ -72,7 +72,7 @@ let ACL = class ACL {
         this.atom_name = atom_name;
         this.user_groups = user_groups;
         if (conf.get('default_atoms_superuser') === false) {
-            throw urn_exc.create_not_initialized('SUPERUSER_MUST_BE_DEFINED', 'Atom superuser must be defined in order to initialize an ACL.' +
+            throw urn_exc.create_not_initialized('SUPERUSER_MUST_BE_DEFINED', 'Atom _superuser must be defined in order to initialize an ACL.' +
                 'Set `default_atoms_superuser = true` in `uranio.toml`');
         }
         this._dal = urn_dal.create(atom_name);

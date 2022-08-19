@@ -6,7 +6,7 @@
  *
  * It uses an Access Control Layer (ACL) instead of a Data Access Layer (DAL).
  *
- * If the passport is a superuser it uses a DAL.
+ * If the passport is a _superuser it uses a DAL.
  *
  * @packageDocumentation
  */

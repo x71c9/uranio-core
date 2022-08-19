@@ -15,7 +15,7 @@ import * as insta from '../nst/server';
 import {SecurityBLL} from './security';
 
 type GroupsByEmail = {
-	[k:string]: schema.Atom<'group'>
+	[k:string]: schema.Atom<'_group'>
 }
 
 @urn_log.util.decorators.debug_constructor
@@ -49,7 +49,7 @@ export class AuthBLL<A extends schema.AtomName> extends SecurityBLL<A>{
 		const group_bll = insta.get_bll_group();
 		const group_shapes = [];
 		for(const atom of atoms){
-			group_shapes.push({name: (atom as unknown as schema.AuthAtom<'user'>).email});
+			group_shapes.push({name: (atom as unknown as schema.AuthAtom<'_user'>).email});
 		}
 		const groups = await group_bll.insert_multiple(group_shapes);
 		const groups_by_email:GroupsByEmail = {};
@@ -58,7 +58,7 @@ export class AuthBLL<A extends schema.AtomName> extends SecurityBLL<A>{
 		}
 		const atoms_with_group:schema.Atom<A>[] = [];
 		for(const atom of atoms){
-			const auth_atom = atom as unknown as schema.AuthAtom<'user'>;
+			const auth_atom = atom as unknown as schema.AuthAtom<'_user'>;
 			auth_atom.groups = [groups_by_email[auth_atom.email]._id];
 			const atom_with_group = await super.update_one<0>(auth_atom as unknown as schema.Atom<A>);
 			atoms_with_group.push(atom_with_group);

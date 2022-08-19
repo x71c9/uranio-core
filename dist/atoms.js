@@ -8,9 +8,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.atom_book = void 0;
 const book_cln_1 = require("./typ/book_cln");
 exports.atom_book = {
-    superuser: {
+    _superuser: {
         authenticate: true,
-        plural: 'superusers',
+        plural: '_superusers',
         security: {
             type: book_cln_1.SecurityType.UNIFORM,
             _r: book_cln_1.PermissionType.NOBODY
@@ -33,19 +33,34 @@ exports.atom_book = {
             },
             groups: {
                 type: book_cln_1.PropertyType.ATOM_ARRAY,
-                atom: 'group',
+                atom: '_group',
                 label: 'Groups',
                 optional: true
             }
         },
         dock: {
-            url: '/superusers',
-            auth_url: '/superauth'
+            url: '/_superusers',
+            auth_url: '/_superauth'
         }
     },
-    user: {
+    _group: {
+        plural: '_groups',
+        properties: {
+            name: {
+                type: book_cln_1.PropertyType.TEXT,
+                unique: true,
+                primary: true,
+                search: true,
+                label: 'Name'
+            }
+        },
+        dock: {
+            url: '/_groups'
+        }
+    },
+    _user: {
         authenticate: true,
-        plural: 'users',
+        plural: '_users',
         security: {
             type: book_cln_1.SecurityType.GRANULAR
         },
@@ -64,33 +79,18 @@ exports.atom_book = {
             },
             groups: {
                 type: book_cln_1.PropertyType.ATOM_ARRAY,
-                atom: 'group',
+                atom: '_group',
                 label: 'Groups',
                 optional: true
             }
         },
         dock: {
-            url: '/users',
+            url: '/_users',
             auth_url: '/auth'
         }
     },
-    group: {
-        plural: 'groups',
-        properties: {
-            name: {
-                type: book_cln_1.PropertyType.TEXT,
-                unique: true,
-                primary: true,
-                search: true,
-                label: 'Name'
-            }
-        },
-        dock: {
-            url: '/groups'
-        }
-    },
-    media: {
-        plural: 'media',
+    _media: {
+        plural: '_media',
         properties: {
             src: {
                 type: book_cln_1.PropertyType.TEXT,
@@ -135,7 +135,7 @@ exports.atom_book = {
             }
         },
         dock: {
-            url: '/media'
+            url: '/_media'
         }
     }
 };
