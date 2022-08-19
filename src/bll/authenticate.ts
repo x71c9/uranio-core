@@ -250,7 +250,7 @@ export function is_superuser(passport?:Passport)
 	if(
 		passport &&
 		typeof passport === 'object' &&
-		passport.auth_atom_name === 'superuser'
+		passport.auth_atom_name === '_superuser'
 	){
 		return true;
 	}

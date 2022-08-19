@@ -221,7 +221,7 @@ function _check_passport_key_type(passport, key) {
 function is_superuser(passport) {
     if (passport &&
         typeof passport === 'object' &&
-        passport.auth_atom_name === 'superuser') {
+        passport.auth_atom_name === '_superuser') {
         return true;
     }
     return false;

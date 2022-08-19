@@ -10,8 +10,8 @@ superuser_create_on_init = true
 [default_atoms]
 	superuser = true
 	group = true
-	user = false
-	media = false
+	user = true
+	media = true
 [log]
 	debug_info = true
 	color = true

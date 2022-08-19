@@ -25,6 +25,6 @@ export const client_toml:Partial<ClientConfiguration> = {
 	dev_log_prefix_type: false,
 	default_atoms_superuser: true,
 	default_atoms_group: true,
-	default_atoms_user: false,
-	default_atoms_media: false,
+	default_atoms_user: true,
+	default_atoms_media: true,
 };
