@@ -93,7 +93,7 @@ class MongooseDBConnection {
 	 */
 	public create_model<A extends schema.AtomName>(relation_name:A, schema:mongoose.Schema)
 			:mongoose.Model<mongoose.Document>{
-		return this._connection.model(relation_name, schema);
+		return this._connection.model(relation_name, schema) as any;
 	}
 	
 	/**
