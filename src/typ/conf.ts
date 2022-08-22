@@ -28,7 +28,7 @@ export type Configuration = {
 	
 	connect_on_init?: boolean
 	
-	superuser_create_on_init?: boolean
+	// superuser_create_on_init?: boolean
 	
 	default_atoms_superuser: boolean
 	

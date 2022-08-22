@@ -16,7 +16,7 @@ exports.core_config = {
     max_query_depth_allowed: 3,
     storage: 'aws',
     connect_on_init: false,
-    superuser_create_on_init: false,
+    // superuser_create_on_init: false,
     default_atoms_superuser: true,
     default_atoms_group: true,
     default_atoms_user: false,

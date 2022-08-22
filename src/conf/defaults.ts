@@ -25,7 +25,7 @@ export const core_config:Required<Configuration> = {
 	
 	connect_on_init: false,
 	
-	superuser_create_on_init: false,
+	// superuser_create_on_init: false,
 	
 	default_atoms_superuser: true,
 	

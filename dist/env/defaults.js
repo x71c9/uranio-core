@@ -22,7 +22,7 @@ exports.core_env = {
     db_log_name: 'uranio_log_dev',
     superuser_email: '',
     superuser_password: '',
-    // superuser_create_on_init: true,
+    superuser_create_on_init: false,
     // This must be the same in _check_if_jwt_was_changed method in conf module
     jwt_private_key: 'A_KEY_THAT_NEED_TO_BE_CHANGED',
     aws_bucket_name: '',

@@ -13,12 +13,14 @@ if(result.error){
 	throw result.error;
 }
 
+process.env.URN_SUPERUSER_CREATE_ON_INIT = 'false';
+
 export * from './register';
 
 import * as uranio from './main';
 uranio.init({
 	connect_on_init: false,
-	superuser_create_on_init: false,
+	// superuser_create_on_init: false,
 	log_debug_info: false,
 	dev_log_debug_info: false
 });

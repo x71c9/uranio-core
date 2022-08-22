@@ -72,7 +72,7 @@ async function _create_superuser() {
     if (conf.get('default_atoms_superuser') === false) {
         return;
     }
-    if (!conf.get(`superuser_create_on_init`) === true) {
+    if (!env.get(`superuser_create_on_init`) === true) {
         return;
     }
     const auth_bll = bll.auth.create('_superuser');

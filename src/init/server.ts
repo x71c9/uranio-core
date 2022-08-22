@@ -80,7 +80,7 @@ async function _create_superuser(){
 		return;
 	}
 	
-	if(!conf.get(`superuser_create_on_init`) === true){
+	if(!env.get(`superuser_create_on_init`) === true){
 		return;
 	}
 	

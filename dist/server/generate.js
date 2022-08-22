@@ -40,11 +40,12 @@ const result = dotenv_1.default.config();
 if (result.error) {
     throw result.error;
 }
+process.env.URN_SUPERUSER_CREATE_ON_INIT = 'false';
 __exportStar(require("./register"), exports);
 const uranio = __importStar(require("./main"));
 uranio.init({
     connect_on_init: false,
-    superuser_create_on_init: false,
+    // superuser_create_on_init: false,
     log_debug_info: false,
     dev_log_debug_info: false
 });

@@ -14,7 +14,6 @@ export declare type Configuration = {
     max_query_depth_allowed?: 0 | 1 | 2 | 3;
     storage?: Storage;
     connect_on_init?: boolean;
-    superuser_create_on_init?: boolean;
     default_atoms_superuser: boolean;
     default_atoms_group: boolean;
     default_atoms_user: boolean;

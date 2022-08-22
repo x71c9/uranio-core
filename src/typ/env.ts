@@ -26,7 +26,7 @@ export type Environment = {
 	
 	superuser_password: string
 	
-	// superuser_create_on_init: boolean
+	superuser_create_on_init: boolean
 	
 	jwt_private_key: string
 	
