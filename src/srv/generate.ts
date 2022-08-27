@@ -25,7 +25,7 @@ uranio.init({
 	dev_log_debug_info: false
 });
 
-import {core_client_config} from '../client/default_conf';
+import {core_client_config} from '../cln/default_conf';
 
 import * as util from '../util/server';
 

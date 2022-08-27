@@ -134,11 +134,11 @@ function _compile(src:string, dest:string){
 }
 
 function _get_core_client_config_path_src(){
-	return `${process_params.urn_repo_path}/src/client/toml.ts`;
+	return `${process_params.urn_repo_path}/src/cln/toml.ts`;
 }
 
 function _get_core_client_config_path_dist(){
-	return `${process_params.urn_repo_path}/dist/client/toml.js`;
+	return `${process_params.urn_repo_path}/dist/cln/toml.js`;
 }
 
 function _get_atom_schema_path(){

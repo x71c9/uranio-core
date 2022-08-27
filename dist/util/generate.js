@@ -138,10 +138,10 @@ function _compile(src, dest) {
     urn_lib_1.urn_log.trace(`Core Compiled [${src}] to [${dest}].`);
 }
 function _get_core_client_config_path_src() {
-    return `${exports.process_params.urn_repo_path}/src/client/toml.ts`;
+    return `${exports.process_params.urn_repo_path}/src/cln/toml.ts`;
 }
 function _get_core_client_config_path_dist() {
-    return `${exports.process_params.urn_repo_path}/dist/client/toml.js`;
+    return `${exports.process_params.urn_repo_path}/dist/cln/toml.js`;
 }
 function _get_atom_schema_path() {
     return `${exports.process_params.urn_schema_repo_path}/dist/typ/atom.d.ts`;
