@@ -40,7 +40,7 @@
 		"src/dev.ts",
 		"src/client.ts",
 		"src/server.ts",
-		"src/server/generate.ts"
+		"src/srv/generate.ts"
 	],
 	"exclude": [
 		"node_modules"
