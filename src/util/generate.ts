@@ -22,7 +22,7 @@ import {core_config} from '../conf/defaults';
 
 import * as book from '../book/server';
 
-import * as types from '../server/types';
+import * as types from '../srv/types';
 
 import * as toml from './toml';
 

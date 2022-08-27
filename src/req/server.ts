@@ -4,11 +4,11 @@
  * @packageDocumentation
  */
 
-import {atom_book} from '../atoms';
+import {atom_book} from '../atom_book';
 
 import * as conf from '../conf/server';
 
-import * as types from '../client/types';
+import * as types from '../cln/types';
 
 export function get():types.Book{
 	if(conf.get('default_atoms_superuser') === false){

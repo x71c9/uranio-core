@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 import { schema } from '../sch/client';
-import { Book } from '../client/types';
+import { Book } from '../cln/types';
 export declare function molecule<A extends schema.AtomName, D extends schema.Depth>(atom_name: A, molecule: schema.Molecule<A, D>, depth?: D): schema.Molecule<A, D>;
 export declare function any<A extends schema.AtomName>(atom_name: A, molecule: schema.Atom<A>): schema.Atom<A>;
 export declare function any<A extends schema.AtomName, D extends schema.Depth>(atom_name: A, molecule: schema.Molecule<A, D>, depth?: D): schema.Molecule<A, D>;

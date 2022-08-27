@@ -10,7 +10,7 @@ import {Book} from '../typ/book';
 
 import {schema} from '../sch/server';
 
-import {atom_book} from '../atoms';
+import {atom_book} from '../atom_book';
 
 import * as client_book from './client';
 

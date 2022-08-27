@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { Configuration } from '../server/types';
+import { Configuration } from '../srv/types';
 /**
  * Read `uranio.toml` file. It also populate "dev_" config keys.
  *

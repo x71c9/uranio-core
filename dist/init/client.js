@@ -35,7 +35,7 @@ const register = __importStar(require("../reg/server"));
 const conf = __importStar(require("../conf/client"));
 const env = __importStar(require("../env/client"));
 const log = __importStar(require("../log/client"));
-const toml_1 = require("../client/toml");
+const toml_1 = require("../cln/toml");
 const state_1 = require("./state");
 function init(config, register_required = true) {
     conf.set(toml_1.client_toml);

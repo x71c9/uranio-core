@@ -29,7 +29,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.has_property = exports.get_properties_definition = exports.get_custom_properties_definition = exports.get_property_definition = exports.get_definition = exports.get_all_definitions = exports.validate_auth_name = exports.validate_name = exports.get_names = exports.get_plural = exports.add_bll_definition = exports.add_definition = void 0;
-const atoms_1 = require("../atoms");
+const atom_book_1 = require("../atom_book");
 const client_book = __importStar(require("./client"));
 function add_definition(atom_name, atom_definition) {
     return client_book.add_definition(atom_name, atom_definition);
@@ -59,7 +59,7 @@ function validate_auth_name(atom_name) {
 }
 exports.validate_auth_name = validate_auth_name;
 function get_all_definitions() {
-    return atoms_1.atom_book;
+    return atom_book_1.atom_book;
 }
 exports.get_all_definitions = get_all_definitions;
 function get_definition(atom_name) {

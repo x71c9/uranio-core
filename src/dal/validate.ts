@@ -19,7 +19,7 @@ import * as atm_keys from '../atm/keys';
 
 import * as book from '../book/server';
 
-import * as types from '../server/types';
+import * as types from '../srv/types';
 
 import {atom_hard_properties, atom_common_properties} from '../stc/server';
 

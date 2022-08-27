@@ -31,7 +31,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.encrypt_property = exports.property = exports.atom_partial = exports.atom_shape = exports.atom = exports.molecule_primitive_properties = exports.any = exports.molecule = void 0;
 const urn_lib_1 = require("urn-lib");
 const urn_exc = urn_lib_1.urn_exception.init(`VALIDATION`, `Validate module`);
-const types_1 = require("../client/types");
+const types_1 = require("../cln/types");
 const client_1 = require("../stc/client");
 // This will import server on client
 // import * as conf from '../conf/index';

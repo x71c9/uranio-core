@@ -6,7 +6,7 @@
 
 import {urn_context, urn_log} from 'urn-lib';
 
-import {core_client_env} from '../client/default_env';
+import {core_client_env} from '../cln/default_env';
 
 import {ClientEnvironment} from '../typ/env_cln';
 

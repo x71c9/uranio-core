@@ -22,7 +22,7 @@ import * as validate from './validate';
 //   PropertyType
 // } from '../client/types';
 
-import {Book, PropertyType} from '../client/types';
+import {Book, PropertyType} from '../cln/types';
 
 import {schema} from '../sch/client';
 

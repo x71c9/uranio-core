@@ -14,7 +14,7 @@ import {urn_log, urn_exception} from 'urn-lib';
 
 const urn_exc = urn_exception.init('CORE_UTIL_TOML_MODULE', `Core util toml  module`);
 
-import {Configuration} from '../server/types';
+import {Configuration} from '../srv/types';
 
 /**
  * Read `uranio.toml` file. It also populate "dev_" config keys.

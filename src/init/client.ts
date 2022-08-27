@@ -10,7 +10,7 @@ import * as required from '../req/server';
 
 import * as register from '../reg/server';
 
-import * as types from '../client/types';
+import * as types from '../cln/types';
 
 import * as conf from '../conf/client';
 
@@ -18,7 +18,7 @@ import * as env from '../env/client';
 
 import * as log from '../log/client';
 
-import {client_toml} from '../client/toml';
+import {client_toml} from '../cln/toml';
 
 import {check_and_set_init_state} from './state';
 

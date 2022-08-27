@@ -44,7 +44,7 @@ const validate = __importStar(require("./validate"));
 //   Book,
 //   PropertyType
 // } from '../client/types';
-const types_1 = require("../client/types");
+const types_1 = require("../cln/types");
 async function property(atom_name, prop_key, prop_value) {
     const prop_def = book.get_property_definition(atom_name, prop_key);
     validate.encrypt_property(prop_key, prop_def, prop_value);

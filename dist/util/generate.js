@@ -40,7 +40,7 @@ const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module
 const server_1 = require("../stc/server");
 const defaults_1 = require("../conf/defaults");
 const book = __importStar(require("../book/server"));
-const types = __importStar(require("../server/types"));
+const types = __importStar(require("../srv/types"));
 const toml = __importStar(require("./toml"));
 exports.process_params = {
     urn_command: `schema`,

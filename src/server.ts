@@ -4,8 +4,8 @@
  * @packageDocumentation
  */
 
-import * as urn_core from './server/main';
+import * as urn_core from './srv/main';
 
-export * from './server/main';
+export * from './srv/main';
 
 export default urn_core;

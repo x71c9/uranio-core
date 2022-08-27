@@ -10,7 +10,7 @@ const urn_exc = urn_exception.init('BOOK_METHODS_MODULE', `Book methods module`)
 
 import {schema} from '../sch/client';
 
-import {atom_book} from '../atoms';
+import {atom_book} from '../atom_book';
 
 import {Book} from '../typ/book_cln';
 

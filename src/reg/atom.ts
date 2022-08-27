@@ -17,7 +17,7 @@ import * as book from '../book/server';
  * We cannot import Server property like BLL
  * Therefore we use client types Book.Definition
  */
-import * as types from '../client/types';
+import * as types from '../cln/types';
 
 export function atom(
 	atom_definition: types.Book.Definition,

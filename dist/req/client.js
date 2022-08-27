@@ -29,23 +29,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.get = void 0;
-const atoms_1 = require("../atoms");
+const atom_book_1 = require("../atom_book");
 const conf = __importStar(require("../conf/client"));
 function get() {
     if (conf.get('default_atoms_superuser') === false) {
-        delete atoms_1.atom_book._superuser;
+        delete atom_book_1.atom_book._superuser;
     }
     if (conf.get('default_atoms_group') === false) {
-        delete atoms_1.atom_book._group;
+        delete atom_book_1.atom_book._group;
     }
     if (conf.get('default_atoms_user') === false) {
-        delete atoms_1.atom_book._user;
+        delete atom_book_1.atom_book._user;
     }
     if (conf.get('default_atoms_media') === false) {
-        delete atoms_1.atom_book._media;
+        delete atom_book_1.atom_book._media;
     }
     return {
-        ...atoms_1.atom_book
+        ...atom_book_1.atom_book
     };
 }
 exports.get = get;
