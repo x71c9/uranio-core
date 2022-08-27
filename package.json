@@ -12,7 +12,7 @@
 		".": "./dist/server.js",
 		"./types": "./dist/srv/types.js",
 		"./client": "./dist/client.js",
-		"./client/types": "./dist/cln/types.js"
+		"./cln/types": "./dist/cln/types.js"
 	},
 	"typesVersions": {
 		"*": {
@@ -25,7 +25,7 @@
 			"client": [
 				"dist/client.d.ts"
 			],
-			"client/types": [
+			"cln/types": [
 				"dist/cln/types.d.ts"
 			]
 		}
