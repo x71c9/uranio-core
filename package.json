@@ -36,7 +36,7 @@
 		"run:dev": "node -r source-map-support/register -r dotenv/config ./dist/dev.js",
 		"build": "yarn tsc -b",
 		"dev": "yarn tsc-watch --onSuccess \"yarn run:dev\"",
-		"plain:generate": "node -r source-map-support/register -r dotenv/config ./dist/server/generate.js",
+		"plain:generate": "node -r source-map-support/register -r dotenv/config ./dist/srv/generate.js",
 		"generate": "yarn plain:generate urn_schema_repo_path=./node_modules/uranio-schema urn_repo_path=./.generate",
 		"generate:schema": "yarn generate urn_command=schema",
 		"generate:client-config": "yarn generate urn_command=client-config"
