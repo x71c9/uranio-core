@@ -38,7 +38,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = exports.BasicBLL = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const urn_dal = __importStar(require("../dal/server"));
 let BasicBLL = class BasicBLL {
     constructor(atom_name, init_access_layer) {
@@ -107,12 +107,12 @@ let BasicBLL = class BasicBLL {
     }
 };
 BasicBLL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], BasicBLL);
 exports.BasicBLL = BasicBLL;
 function create(atom_name) {
-    urn_lib_1.urn_log.trace(`Create BasicBLL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create BasicBLL [${atom_name}]`);
     return new BasicBLL(atom_name);
 }
 exports.create = create;

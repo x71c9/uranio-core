@@ -12,8 +12,8 @@ exports.read = void 0;
 const fs_1 = __importDefault(require("fs"));
 const minimist_1 = __importDefault(require("minimist"));
 const toml_1 = __importDefault(require("toml"));
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('CORE_UTIL_TOML_MODULE', `Core util toml  module`);
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('CORE_UTIL_TOML_MODULE', `Core util toml  module`);
 /**
  * Read `uranio.toml` file. It also populate "dev_" config keys.
  *
@@ -29,7 +29,7 @@ function read(default_repo_config) {
         toml_config_path = args.c;
     }
     if (!fs_1.default.existsSync(toml_config_path)) {
-        urn_lib_1.urn_log.warn(`Missing TOML configuration file.`);
+        uranio_utils_1.urn_log.warn(`Missing TOML configuration file.`);
         return {};
     }
     try {

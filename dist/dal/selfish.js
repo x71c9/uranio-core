@@ -39,7 +39,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_selfish = exports.SelfishDAL = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const atm_validate = __importStar(require("../atm/validate"));
 const atm_util = __importStar(require("../atm/util"));
 const atm_keys = __importStar(require("../atm/keys"));
@@ -89,17 +89,17 @@ let SelfishDAL = class SelfishDAL extends recycle_1.RecycleDAL {
         }
         catch (e) {
             const exc = e;
-            if (exc.type !== urn_lib_1.urn_exception.ExceptionType.INVALID_ATOM) {
+            if (exc.type !== uranio_utils_1.urn_exception.ExceptionType.INVALID_ATOM) {
                 throw exc;
             }
             if (this.trash_dal) {
-                const clone_molecule = urn_lib_1.urn_util.object.deep_clone(molecule);
+                const clone_molecule = uranio_utils_1.urn_util.object.deep_clone(molecule);
                 clone_molecule._from = molecule._id;
                 await this.trash_dal.insert_one(clone_molecule);
             }
             let k;
             for (k of exc.keys) {
-                if (urn_lib_1.urn_util.object.has_key(molecule, k) && !atm_util.has_property(this.atom_name, k)) {
+                if (uranio_utils_1.urn_util.object.has_key(molecule, k) && !atm_util.has_property(this.atom_name, k)) {
                     delete molecule[k];
                 }
                 else {
@@ -116,17 +116,17 @@ let SelfishDAL = class SelfishDAL extends recycle_1.RecycleDAL {
         }
         catch (e) {
             const exc = e;
-            if (exc.type !== urn_lib_1.urn_exception.ExceptionType.INVALID_ATOM) {
+            if (exc.type !== uranio_utils_1.urn_exception.ExceptionType.INVALID_ATOM) {
                 throw exc;
             }
             if (this.trash_dal) {
-                const clone_atom = urn_lib_1.urn_util.object.deep_clone(atom);
+                const clone_atom = uranio_utils_1.urn_util.object.deep_clone(atom);
                 clone_atom._from = clone_atom._id;
                 await this.trash_dal.insert_one(clone_atom);
             }
             let k;
             for (k of exc.keys) {
-                if (urn_lib_1.urn_util.object.has_key(atom, k) && !atm_util.has_property(this.atom_name, k)) {
+                if (uranio_utils_1.urn_util.object.has_key(atom, k) && !atm_util.has_property(this.atom_name, k)) {
                     delete atom[k];
                 }
                 else {
@@ -142,12 +142,12 @@ let SelfishDAL = class SelfishDAL extends recycle_1.RecycleDAL {
     }
 };
 SelfishDAL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], SelfishDAL);
 exports.SelfishDAL = SelfishDAL;
 function create_selfish(atom_name) {
-    urn_lib_1.urn_log.trace(`Create SelfishDAL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create SelfishDAL [${atom_name}]`);
     return new SelfishDAL(atom_name);
 }
 exports.create_selfish = create_selfish;

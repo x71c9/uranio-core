@@ -30,7 +30,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validate_filter_options_params = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const conf = __importStar(require("../conf/server"));
 const atm_util = __importStar(require("../atm/util"));
 const book = __importStar(require("../book/client"));
@@ -40,7 +40,7 @@ const _query_op_keys = {
     compa_op: ['$eq', '$gt', '$gte', '$in', '$lt', '$lte', '$ne', '$nin', '$regex', '$options']
 };
 const _options_keys = ['depth', 'sort', 'limit', 'skip', 'depth_query'];
-const urn_exc = urn_lib_1.urn_exception.init('QUERY_VALIDATE', 'schema.Query Validator');
+const urn_exc = uranio_utils_1.urn_exception.init('QUERY_VALIDATE', 'schema.Query Validator');
 /**
  * Validate `query` and `options` paramaters
  *
@@ -67,7 +67,7 @@ function _validate_expression(field, atom_name) {
         const err_msg = `Cannot _validate_expression. Invalid expression type.`;
         throw urn_exc.create_invalid_request('INVALID_EXPRESSION_TYPE', err_msg);
     }
-    if (urn_lib_1.urn_util.object.has_key(field, '$text') && urn_lib_1.urn_util.object.has_key(field['$text'], '$search')) {
+    if (uranio_utils_1.urn_util.object.has_key(field, '$text') && uranio_utils_1.urn_util.object.has_key(field['$text'], '$search')) {
         if (typeof field['$text']['$search'] !== 'string') {
             const err_msg = `Invalid search text query format.`;
             throw urn_exc.create_invalid_request('FILTER_INVALID_EXPRESSION_SEARCH_TEXT_TYPE', err_msg);
@@ -125,7 +125,7 @@ function _validate_expression(field, atom_name) {
     return true;
 }
 function _is_base_query_type(val) {
-    return (typeof val === 'string' || val === 'number' || urn_lib_1.urn_util.is.date(val));
+    return (typeof val === 'string' || val === 'number' || uranio_utils_1.urn_util.is.date(val));
 }
 /**
  * Validate query object for querying Relation. used in find, find_one, ...
@@ -142,7 +142,7 @@ function validate_filter(query, atom_name) {
         const err_msg = `Invalid query format.`;
         throw urn_exc.create_invalid_request('FILTER_INVALID_TYPE', err_msg);
     }
-    if (urn_lib_1.urn_util.object.has_key(query, '$text') && urn_lib_1.urn_util.object.has_key(query['$text'], '$search')) {
+    if (uranio_utils_1.urn_util.object.has_key(query, '$text') && uranio_utils_1.urn_util.object.has_key(query['$text'], '$search')) {
         if (typeof query['$text']['$search'] !== 'string') {
             const err_msg = `Invalid search text query format.`;
             throw urn_exc.create_invalid_request('FILTER_INVALID_SEARCH_TEXT_TYPE', err_msg);
@@ -191,7 +191,7 @@ function validate_options(options, atom_name) {
                     sort_value = sort_value.substring(1, options.sort.length);
                 }
                 const prop_defs = book.get_custom_properties_definition(atom_name);
-                if (!urn_lib_1.urn_util.object.has_key(prop_defs, sort_value)) {
+                if (!uranio_utils_1.urn_util.object.has_key(prop_defs, sort_value)) {
                     const err_msg = `Sort value not valid \`${options.sort}\`.`;
                     throw urn_exc.create_invalid_request('OPTIONS_INVALID_SORT_VAL', err_msg);
                 }

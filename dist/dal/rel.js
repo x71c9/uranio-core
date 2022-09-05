@@ -39,8 +39,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_main = exports.RelationDAL = void 0;
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('CONN_DAL', 'RelationDAL');
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('CONN_DAL', 'RelationDAL');
 const urn_rel = __importStar(require("../rel/server"));
 const book = __importStar(require("../book/server"));
 const conf = __importStar(require("../conf/server"));
@@ -69,12 +69,12 @@ let RelationDAL = class RelationDAL extends basic_1.BasicDAL {
     }
 };
 RelationDAL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], RelationDAL);
 exports.RelationDAL = RelationDAL;
 function create_main(atom_name) {
-    urn_lib_1.urn_log.trace(`Create RelationDAL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create RelationDAL [${atom_name}]`);
     return new RelationDAL(atom_name);
 }
 exports.create_main = create_main;

@@ -33,8 +33,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.get_model = exports.create_all_connection = exports.mongo_app = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-// import {urn_util, urn_exception} from 'urn-lib';
-const urn_lib_1 = require("urn-lib");
+// import {urn_util, urn_exception} from 'uranio-utils';
+const uranio_utils_1 = require("uranio-utils");
 const atm = __importStar(require("../../atm/server"));
 const env = __importStar(require("../../env/server"));
 const schema_1 = require("./schema");
@@ -185,7 +185,7 @@ function _add_text_indexes(atom_mongo_schema, atom_name) {
     return atom_mongo_schema;
 }
 function _convert_for_trash(schema_definition) {
-    const schema_without_unique = urn_lib_1.urn_util.object.deep_clone(schema_definition);
+    const schema_without_unique = uranio_utils_1.urn_util.object.deep_clone(schema_definition);
     for (const [k] of Object.entries(schema_without_unique)) {
         schema_without_unique[k] = { type: 'Mixed' };
     }

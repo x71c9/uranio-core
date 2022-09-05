@@ -39,7 +39,7 @@ exports.create = exports.MediaBLL = void 0;
  * @packageDocumentation
  */
 const path_1 = __importDefault(require("path"));
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const conf = __importStar(require("../conf/server"));
 const auth_1 = require("../typ/auth");
 const sto = __importStar(require("../sto/server"));
@@ -176,8 +176,8 @@ let MediaBLL = class MediaBLL extends bll_1.BLL {
     }
 };
 MediaBLL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], MediaBLL);
 exports.MediaBLL = MediaBLL;
 function _next_filepath(filepath) {
@@ -203,7 +203,7 @@ function _next_filepath(filepath) {
     }
 }
 function create(passport) {
-    urn_lib_1.urn_log.trace(`Create MediaBLL`);
+    uranio_utils_1.urn_log.trace(`Create MediaBLL`);
     return new MediaBLL(passport);
 }
 exports.create = create;

@@ -29,7 +29,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const required = __importStar(require("../req/server"));
 const register = __importStar(require("../reg/server"));
 const conf = __importStar(require("../conf/client"));
@@ -48,9 +48,9 @@ function init(config, register_required = true) {
     }
     _validate_core_variables();
     _validate_core_book();
-    log.init(urn_lib_1.urn_log);
+    log.init(uranio_utils_1.urn_log);
     (0, state_1.check_and_set_init_state)();
-    urn_lib_1.urn_log.trace(`Uranio core client initialization completed.`);
+    uranio_utils_1.urn_log.trace(`Uranio core client initialization completed.`);
 }
 exports.init = init;
 function _register_required_atoms() {

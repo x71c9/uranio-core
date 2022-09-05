@@ -34,12 +34,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.atom = void 0;
 const path_1 = __importDefault(require("path"));
 const caller_1 = __importDefault(require("caller"));
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const book = __importStar(require("../book/server"));
 function atom(atom_definition, atom_name) {
     const final_atom_name = _get_atom_name(atom_name);
     book.add_definition(final_atom_name, atom_definition);
-    urn_lib_1.urn_log.debug(`Server atom [${final_atom_name}] registered.`);
+    uranio_utils_1.urn_log.debug(`Server atom [${final_atom_name}] registered.`);
     return final_atom_name;
 }
 exports.atom = atom;

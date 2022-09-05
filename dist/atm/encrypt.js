@@ -33,7 +33,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.properties = exports.property = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const conf = __importStar(require("../conf/server"));
 const book = __importStar(require("../book/server"));
 const validate = __importStar(require("./validate"));
@@ -60,7 +60,7 @@ async function properties(atom_name, atom) {
     const prop_defs = book.get_custom_properties_definition(atom_name);
     let k;
     for (k in atom) {
-        if (urn_lib_1.urn_util.object.has_key(prop_defs, k)) {
+        if (uranio_utils_1.urn_util.object.has_key(prop_defs, k)) {
             const prop = prop_defs[k];
             if (prop && prop.type === types_1.PropertyType.ENCRYPTED) {
                 atom[k] = await property(atom_name, k, String(atom[k]));

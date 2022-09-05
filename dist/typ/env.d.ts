@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { urn_log } from 'urn-lib';
+import { urn_log } from 'uranio-utils';
 export declare type Environment = {
     log_level: urn_log.LogLevel;
     mongo_main_connection: string;

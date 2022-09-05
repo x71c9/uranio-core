@@ -10,7 +10,7 @@ import minimist from 'minimist';
 
 import toml from 'toml';
 
-import {urn_log, urn_exception} from 'urn-lib';
+import {urn_log, urn_exception} from 'uranio-utils';
 
 const urn_exc = urn_exception.init('CORE_UTIL_TOML_MODULE', `Core util toml  module`);
 

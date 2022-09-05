@@ -10,7 +10,7 @@ import fs from 'fs';
 
 import * as esbuild from 'esbuild';
 
-import {urn_util, urn_exception, urn_log} from 'urn-lib';
+import {urn_util, urn_exception, urn_log} from 'uranio-utils';
 
 const urn_exc = urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 

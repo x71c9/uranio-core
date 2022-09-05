@@ -35,7 +35,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthBLL = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const atm = __importStar(require("../atm/server"));
 const insta = __importStar(require("../nst/server"));
 const security_1 = require("./security");
@@ -78,8 +78,8 @@ let AuthBLL = class AuthBLL extends security_1.SecurityBLL {
     }
 };
 AuthBLL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], AuthBLL);
 exports.AuthBLL = AuthBLL;
 //# sourceMappingURL=auth.js.map

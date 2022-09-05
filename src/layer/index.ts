@@ -14,7 +14,7 @@ import {schema} from '../sch/server';
 
 import * as atm from '../atm/server';
 
-// import {urn_util} from 'urn-lib';
+// import {urn_util} from 'uranio-utils';
 
 type RegexQuery<A extends schema.AtomName> = {
 	[k in keyof schema.Atom<A>]: {$regex: string, $options: string}

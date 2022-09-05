@@ -62,6 +62,6 @@
 		"mongoose": "^6.4.6",
 		"toml": "^3.0.0",
 		"uranio-schema": "git+ssh://git@github.com/x71c9/uranio-schema.git#master",
-		"urn-lib": "git+ssh://git@github.com/x71c9/uranio-lib.git#master"
+		"uranio-utils": "git+ssh://git@github.com/x71c9/uranio-utils.git#master"
 	}
 }

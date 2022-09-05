@@ -38,8 +38,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_validate = exports.ValidateDAL = void 0;
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('VAL_DAL', 'ValidateDAL');
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('VAL_DAL', 'ValidateDAL');
 const atm_validate = __importStar(require("../atm/validate"));
 const atm_keys = __importStar(require("../atm/keys"));
 const book = __importStar(require("../book/server"));
@@ -65,7 +65,7 @@ let ValidateDAL = class ValidateDAL extends rel_1.RelationDAL {
         return db_record;
     }
     async select_one(query, options) {
-        if (urn_lib_1.urn_util.object.has_key(query, '_id') && query._id) {
+        if (uranio_utils_1.urn_util.object.has_key(query, '_id') && query._id) {
             return this.select_by_id(query._id, options);
         }
         let db_record = await super.select_one(query, options);
@@ -158,12 +158,12 @@ let ValidateDAL = class ValidateDAL extends rel_1.RelationDAL {
                 }
             }
             let err_msg = `schema.Atom unique fields are already in the database.`;
-            err_msg += ` Duplicate fields: ${urn_lib_1.urn_util.json.safe_stringify_oneline(equal_values)}.`;
+            err_msg += ` Duplicate fields: ${uranio_utils_1.urn_util.json.safe_stringify_oneline(equal_values)}.`;
             throw urn_exc.create_invalid_request('CHECK_UNIQUE_DUPLICATE', err_msg);
         }
         catch (e) {
             const err = e;
-            if (err.type && err.type === urn_lib_1.urn_exception.ExceptionType.NOT_FOUND) {
+            if (err.type && err.type === uranio_utils_1.urn_exception.ExceptionType.NOT_FOUND) {
                 return true;
             }
             throw err;
@@ -198,12 +198,12 @@ let ValidateDAL = class ValidateDAL extends rel_1.RelationDAL {
                 }
             }
             let err_msg = `schema.Atom unique fields are already in the database.`;
-            err_msg += ` Duplicate fields: ${urn_lib_1.urn_util.json.safe_stringify_oneline(equal_values)}.`;
+            err_msg += ` Duplicate fields: ${uranio_utils_1.urn_util.json.safe_stringify_oneline(equal_values)}.`;
             throw urn_exc.create_invalid_request('CHECK_UNIQUE_DUPLICATE', err_msg);
         }
         catch (e) {
             const err = e;
-            if (err.type && err.type === urn_lib_1.urn_exception.ExceptionType.NOT_FOUND) {
+            if (err.type && err.type === uranio_utils_1.urn_exception.ExceptionType.NOT_FOUND) {
                 return true;
             }
             throw err;
@@ -235,12 +235,12 @@ let ValidateDAL = class ValidateDAL extends rel_1.RelationDAL {
                 }
             }
             let err_msg = `schema.Atom unique fields are already in the database.`;
-            err_msg += ` Duplicate fields: ${urn_lib_1.urn_util.json.safe_stringify_oneline(equal_values)}.`;
+            err_msg += ` Duplicate fields: ${uranio_utils_1.urn_util.json.safe_stringify_oneline(equal_values)}.`;
             throw urn_exc.create_invalid_request('CHECK_UNIQUE_DUPLICATE', err_msg);
         }
         catch (e) {
             const err = e;
-            if (err.type && err.type === urn_lib_1.urn_exception.ExceptionType.NOT_FOUND) {
+            if (err.type && err.type === uranio_utils_1.urn_exception.ExceptionType.NOT_FOUND) {
                 return true;
             }
             throw err;
@@ -252,8 +252,8 @@ let ValidateDAL = class ValidateDAL extends rel_1.RelationDAL {
     }
 };
 ValidateDAL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], ValidateDAL);
 exports.ValidateDAL = ValidateDAL;
 function _check_ids(atom_name, partial_atom, is_valid_id) {
@@ -261,13 +261,13 @@ function _check_ids(atom_name, partial_atom, is_valid_id) {
     let k;
     for (k in partial_atom) {
         let prop_def = undefined;
-        if (urn_lib_1.urn_util.object.has_key(server_1.atom_hard_properties, k)) {
+        if (uranio_utils_1.urn_util.object.has_key(server_1.atom_hard_properties, k)) {
             prop_def = server_1.atom_hard_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(server_1.atom_common_properties, k)) {
+        else if (uranio_utils_1.urn_util.object.has_key(server_1.atom_common_properties, k)) {
             prop_def = server_1.atom_common_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(props, k)) {
+        else if (uranio_utils_1.urn_util.object.has_key(props, k)) {
             prop_def = props[k];
         }
         if (!prop_def) {
@@ -301,7 +301,7 @@ function _validate_id(id, is_valid_id, key) {
     return true;
 }
 function create_validate(atom_name) {
-    urn_lib_1.urn_log.trace(`Create ValidateDAL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create ValidateDAL [${atom_name}]`);
     return new ValidateDAL(atom_name);
 }
 exports.create_validate = create_validate;

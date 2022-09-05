@@ -29,10 +29,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.get_all = exports.set = exports.get = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const default_conf_1 = require("../cln/default_conf");
 const env = __importStar(require("../env/client"));
-const urn_ctx = urn_lib_1.urn_context.create(default_conf_1.core_client_config, env.is_production(), 'CORE:CONF:CLIENT');
+const urn_ctx = uranio_utils_1.urn_context.create(default_conf_1.core_client_config, env.is_production(), 'CORE:CONF:CLIENT');
 function get(param_name) {
     return urn_ctx.get(param_name);
 }

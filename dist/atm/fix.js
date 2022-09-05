@@ -29,8 +29,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.property = void 0;
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('ATOM_FIX', `schema.Atom Fix module`);
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('ATOM_FIX', `schema.Atom Fix module`);
 const validate = __importStar(require("./validate"));
 const book = __importStar(require("../book/client"));
 // export function property<A extends schema.AtomName>(

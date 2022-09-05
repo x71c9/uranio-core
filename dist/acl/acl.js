@@ -57,8 +57,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = exports.ACL = void 0;
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('ACL', 'Access Control Module');
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('ACL', 'Access Control Module');
 const conf = __importStar(require("../conf/server"));
 const urn_dal = __importStar(require("../dal/server"));
 const atm_keys = __importStar(require("../atm/keys"));
@@ -149,7 +149,7 @@ let ACL = class ACL {
             }
             catch (e) {
                 const err = e;
-                if (err.type === urn_lib_1.urn_exception.ExceptionType.UNAUTHORIZED) {
+                if (err.type === uranio_utils_1.urn_exception.ExceptionType.UNAUTHORIZED) {
                     // molecule[k] = (Array.isArray(molecule[k])) ? [] : '' as any;
                     delete molecule[k];
                 }
@@ -291,12 +291,12 @@ let ACL = class ACL {
     }
 };
 ACL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], ACL);
 exports.ACL = ACL;
 function create(atom_name, user_groups) {
-    urn_lib_1.urn_log.trace(`Create ACL [${atom_name}]`, user_groups);
+    uranio_utils_1.urn_log.trace(`Create ACL [${atom_name}]`, user_groups);
     return new ACL(atom_name, user_groups);
 }
 exports.create = create;

@@ -29,12 +29,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const media_1 = require("./media");
 const bll_1 = require("./bll");
 const book = __importStar(require("../book/server"));
 function create(atom_name, passport) {
-    urn_lib_1.urn_log.trace(`Create BLL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create BLL [${atom_name}]`);
     const atom_def = book.get_definition(atom_name);
     const bll_def = atom_def.bll;
     if (bll_def && typeof bll_def.class === 'function') {

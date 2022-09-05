@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {urn_context, urn_log} from 'urn-lib';
+import {urn_context, urn_log} from 'uranio-utils';
 
 import {core_client_env} from '../cln/default_env';
 

@@ -12,7 +12,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.trash_create = exports.MongooseTrashRelation = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 // import {ConnectionName} from './types';
 const relation_1 = require("./relation");
 /**
@@ -27,12 +27,12 @@ let MongooseTrashRelation = class MongooseTrashRelation extends relation_1.Mongo
     }
 };
 MongooseTrashRelation = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], MongooseTrashRelation);
 exports.MongooseTrashRelation = MongooseTrashRelation;
 function trash_create(atom_name) {
-    urn_lib_1.urn_log.trace(`Create MongooseTrashRelation`);
+    uranio_utils_1.urn_log.trace(`Create MongooseTrashRelation`);
     return new MongooseTrashRelation(atom_name);
 }
 exports.trash_create = trash_create;

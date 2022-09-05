@@ -42,7 +42,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_security = exports.SecurityBLL = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const conf = __importStar(require("../conf/server"));
 const urn_acl = __importStar(require("../acl/server"));
 const urn_dal = __importStar(require("../dal/server"));
@@ -54,8 +54,8 @@ let SecurityBLL = class SecurityBLL extends basic_1.BasicBLL {
     }
 };
 SecurityBLL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], SecurityBLL);
 exports.SecurityBLL = SecurityBLL;
 function _return_acl(atom_name, passport) {
@@ -79,7 +79,7 @@ function _return_acl(atom_name, passport) {
     };
 }
 function create_security(atom_name, passport) {
-    urn_lib_1.urn_log.trace(`Create SecurityBLL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create SecurityBLL [${atom_name}]`);
     return new SecurityBLL(atom_name, passport);
 }
 exports.create_security = create_security;

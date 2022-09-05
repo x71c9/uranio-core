@@ -7,16 +7,16 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.check_and_set_init_state = void 0;
-// import {urn_log, urn_exception} from 'urn-lib';
+// import {urn_log, urn_exception} from 'uranio-utils';
 // const urn_exc = urn_exception.init('INIT_STATE', `Initialization state module`);
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 let state = false;
 function check_and_set_init_state() {
     if (_is_already_initialized()) {
         let err_msg = '[FATAL ERROR]';
         err_msg += `Uranio has been already initialized. `;
         err_msg += `Uranio must be running only once per process.`;
-        urn_lib_1.urn_log.error(err_msg);
+        uranio_utils_1.urn_log.error(err_msg);
         process.exit(1);
     }
     _change_state();

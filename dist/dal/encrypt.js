@@ -40,8 +40,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_encrypt = exports.EncryptDAL = void 0;
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init(`DAL_ENCRYPT`, `Encryption DAL.`);
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init(`DAL_ENCRYPT`, `Encryption DAL.`);
 const atm_encrypt = __importStar(require("../atm/encrypt"));
 const book = __importStar(require("../book/server"));
 const types = __importStar(require("../srv/types"));
@@ -97,12 +97,12 @@ let EncryptDAL = class EncryptDAL extends validate_1.ValidateDAL {
     }
 };
 EncryptDAL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], EncryptDAL);
 exports.EncryptDAL = EncryptDAL;
 function create_encrypt(atom_name) {
-    urn_lib_1.urn_log.trace(`Create EncrtyptDAL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create EncrtyptDAL [${atom_name}]`);
     return new EncryptDAL(atom_name);
 }
 exports.create_encrypt = create_encrypt;

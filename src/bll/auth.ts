@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import {urn_log} from 'urn-lib';
+import {urn_log} from 'uranio-utils';
 
 import {schema} from '../sch/server';
 

@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = void 0;
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const env = __importStar(require("../../env/server"));
 // const urn_exc = urn_exception.init('UPLOADER_AWS', 'AWS Uploader');
 /**
@@ -109,11 +109,11 @@ let AWSStorage = class AWSStorage {
     }
 };
 AWSStorage = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], AWSStorage);
 function create() {
-    urn_lib_1.urn_log.trace(`Create AWSStorage`);
+    uranio_utils_1.urn_log.trace(`Create AWSStorage`);
     return new AWSStorage();
 }
 exports.create = create;

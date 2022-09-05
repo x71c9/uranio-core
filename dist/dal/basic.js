@@ -37,8 +37,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_basic = exports.BasicDAL = void 0;
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('BASIC_DAL', 'BasicDAL');
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('BASIC_DAL', 'BasicDAL');
 const urn_validators = __importStar(require("../val/server"));
 const index_1 = require("../layer/index");
 let BasicDAL = class BasicDAL {
@@ -105,12 +105,12 @@ let BasicDAL = class BasicDAL {
     }
 };
 BasicDAL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], BasicDAL);
 exports.BasicDAL = BasicDAL;
 function create_basic(atom_name, db_relation) {
-    urn_lib_1.urn_log.trace(`Create BasicDAL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create BasicDAL [${atom_name}]`);
     return new BasicDAL(atom_name, db_relation);
 }
 exports.create_basic = create_basic;

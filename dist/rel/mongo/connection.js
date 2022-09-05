@@ -16,8 +16,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('DBC_M', 'Mongoose DB Connection');
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('DBC_M', 'Mongoose DB Connection');
 /*
  * Define default mongoose option for connection
  */
@@ -87,7 +87,7 @@ let MongooseDBConnection = class MongooseDBConnection {
      * Function called when event onConnecting is fired
      */
     _on_connecting() {
-        urn_lib_1.urn_log.debug(`Connection connecting [${this.name}][${this.uri}]...`);
+        uranio_utils_1.urn_log.debug(`Connection connecting [${this.name}][${this.uri}]...`);
         if (this._connection)
             this.readyState = this._connection.readyState;
     }
@@ -95,7 +95,7 @@ let MongooseDBConnection = class MongooseDBConnection {
      * Function called when event onConnected is fired
      */
     _on_connected() {
-        urn_lib_1.urn_log.info(`Connection connected [${this.name}][${this.uri}]`);
+        uranio_utils_1.urn_log.info(`Connection connected [${this.name}][${this.uri}]`);
         if (this._connection)
             this.readyState = this._connection.readyState;
     }
@@ -103,7 +103,7 @@ let MongooseDBConnection = class MongooseDBConnection {
      * Function called when event onDisconnecting is fired
      */
     _on_disconnecting() {
-        urn_lib_1.urn_log.warn(`Connection disconnecting [${this.name}][${this.uri}]...`);
+        uranio_utils_1.urn_log.warn(`Connection disconnecting [${this.name}][${this.uri}]...`);
         if (this._connection)
             this.readyState = this._connection.readyState;
     }
@@ -111,7 +111,7 @@ let MongooseDBConnection = class MongooseDBConnection {
      * Function called when event onDisconnected id fired
      */
     _on_disconnected() {
-        urn_lib_1.urn_log.warn(`Connection disconnected [${this.name}][${this.uri}]`);
+        uranio_utils_1.urn_log.warn(`Connection disconnected [${this.name}][${this.uri}]`);
         if (this._connection)
             this.readyState = this._connection.readyState;
     }
@@ -119,7 +119,7 @@ let MongooseDBConnection = class MongooseDBConnection {
      * Function called when event onClose is fired
      */
     _on_close() {
-        urn_lib_1.urn_log.debug(`Connection closed [${this.name}][${this.uri}]`);
+        uranio_utils_1.urn_log.debug(`Connection closed [${this.name}][${this.uri}]`);
         if (this._connection)
             this.readyState = this._connection.readyState;
     }
@@ -127,7 +127,7 @@ let MongooseDBConnection = class MongooseDBConnection {
      * Function called when event onReconnected is fired
      */
     _on_reconnected() {
-        urn_lib_1.urn_log.debug(`Connection reconnected [${this.name}][${this.uri}]`);
+        uranio_utils_1.urn_log.debug(`Connection reconnected [${this.name}][${this.uri}]`);
         if (this._connection)
             this.readyState = this._connection.readyState;
     }
@@ -142,21 +142,21 @@ let MongooseDBConnection = class MongooseDBConnection {
      * Function called when event onReconnectFailed is fired
      */
     _on_reconnect_failed() {
-        urn_lib_1.urn_log.debug(`Connection reconnectFailed [${this.name}][${this.uri}]`);
+        uranio_utils_1.urn_log.debug(`Connection reconnectFailed [${this.name}][${this.uri}]`);
     }
     /**
      * Function called when event onReconnectTries is fired
      */
     _on_reconnect_tries() {
-        urn_lib_1.urn_log.debug(`Connection reconnectTries [${this.name}][${this.uri}]`);
+        uranio_utils_1.urn_log.debug(`Connection reconnectTries [${this.name}][${this.uri}]`);
     }
 };
 MongooseDBConnection = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], MongooseDBConnection);
 function create(con_name, mongo_connection, db_name) {
-    urn_lib_1.urn_log.trace(`Create MongooseDBConnection [${con_name}]`);
+    uranio_utils_1.urn_log.trace(`Create MongooseDBConnection [${con_name}]`);
     return new MongooseDBConnection(con_name, mongo_connection, db_name);
 }
 exports.create = create;

@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.has_property = exports.get_properties_definition = exports.get_custom_properties_definition = exports.get_property_definition = exports.get_definition = exports.get_all_definitions = exports.get_plural = exports.validate_auth_name = exports.validate_name = exports.get_names = exports.add_definition = void 0;
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('BOOK_METHODS_MODULE', `Book methods module`);
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('BOOK_METHODS_MODULE', `Book methods module`);
 const atom_book_1 = require("../atom_book");
 const client_1 = require("../stc/client");
 function add_definition(atom_name, atom_definition) {
@@ -21,7 +21,7 @@ function get_names() {
 }
 exports.get_names = get_names;
 function validate_name(atom_name) {
-    return urn_lib_1.urn_util.object.has_key(atom_book_1.atom_book, atom_name);
+    return uranio_utils_1.urn_util.object.has_key(atom_book_1.atom_book, atom_name);
 }
 exports.validate_name = validate_name;
 function validate_auth_name(auth_name) {
@@ -54,7 +54,7 @@ function get_definition(atom_name) {
 exports.get_definition = get_definition;
 function get_property_definition(atom_name, property_name) {
     const all_prop_def = get_properties_definition(atom_name);
-    if (!urn_lib_1.urn_util.object.has_key(all_prop_def, property_name)) {
+    if (!uranio_utils_1.urn_util.object.has_key(all_prop_def, property_name)) {
         throw urn_exc.create('INVALID_PROPERTY_NAME', `Definition for \`${property_name}\` for Atom \`${atom_name}\` not found.`);
     }
     return all_prop_def[property_name];
@@ -76,13 +76,13 @@ function get_properties_definition(atom_name) {
 }
 exports.get_properties_definition = get_properties_definition;
 function has_property(atom_name, key) {
-    if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, key)) {
+    if (uranio_utils_1.urn_util.object.has_key(client_1.atom_hard_properties, key)) {
         return true;
     }
-    if (urn_lib_1.urn_util.object.has_key(client_1.atom_common_properties, key)) {
+    if (uranio_utils_1.urn_util.object.has_key(client_1.atom_common_properties, key)) {
         return true;
     }
-    if (urn_lib_1.urn_util.object.has_key(atom_book_1.atom_book[atom_name]['properties'], key)) {
+    if (uranio_utils_1.urn_util.object.has_key(atom_book_1.atom_book[atom_name]['properties'], key)) {
         return true;
     }
     return false;

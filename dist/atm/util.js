@@ -29,8 +29,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.delete_undefined_optional = exports.has_property = exports.is_optional_property = exports.hide_hidden_properties = exports.is_auth_atom = exports.is_auth_atom_name = exports.is_molecule = exports.is_atom = exports.get_subatom_name = exports.molecule_to_atom = void 0;
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('ATOM_UTIL', `schema.Atom Util module`);
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('ATOM_UTIL', `schema.Atom Util module`);
 const keys = __importStar(require("./keys"));
 const book_cln_1 = require("../typ/book_cln");
 const book = __importStar(require("../book/client"));
@@ -120,9 +120,9 @@ function is_auth_atom_name(atom_name) {
 }
 exports.is_auth_atom_name = is_auth_atom_name;
 function is_auth_atom(atom) {
-    if (urn_lib_1.urn_util.object.has_key(atom, 'email') &&
-        urn_lib_1.urn_util.object.has_key(atom, 'password') &&
-        urn_lib_1.urn_util.object.has_key(atom, 'groups')) {
+    if (uranio_utils_1.urn_util.object.has_key(atom, 'email') &&
+        uranio_utils_1.urn_util.object.has_key(atom, 'password') &&
+        uranio_utils_1.urn_util.object.has_key(atom, 'groups')) {
         return true;
     }
     return false;
@@ -164,7 +164,7 @@ function _hide_hidden_properties_single_molecule(atom_name, molecule) {
 function is_optional_property(atom_name, key) {
     const prop_def = book.get_property_definition(atom_name, key);
     return (prop_def &&
-        urn_lib_1.urn_util.object.has_key(prop_def, 'optional') &&
+        uranio_utils_1.urn_util.object.has_key(prop_def, 'optional') &&
         prop_def.optional === true);
 }
 exports.is_optional_property = is_optional_property;

@@ -29,8 +29,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = void 0;
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('CORE_INIT_MODULE', `Core init module`);
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('CORE_INIT_MODULE', `Core init module`);
 const defaults_1 = require("../conf/defaults");
 const defaults_2 = require("../env/defaults");
 const required = __importStar(require("../req/server"));
@@ -47,7 +47,7 @@ const state_1 = require("./state");
 function init(config, register_required = true) {
     conf.set(util.toml.read(defaults_1.core_config));
     env.set_env();
-    log.init(urn_lib_1.urn_log);
+    log.init(uranio_utils_1.urn_log);
     if (config) {
         conf.set(config);
     }
@@ -59,7 +59,7 @@ function init(config, register_required = true) {
     _core_connect();
     _create_superuser();
     (0, state_1.check_and_set_init_state)();
-    urn_lib_1.urn_log.trace(`Uranio core initialization completed.`);
+    uranio_utils_1.urn_log.trace(`Uranio core initialization completed.`);
 }
 exports.init = init;
 function _register_required_atoms() {
@@ -78,15 +78,15 @@ async function _create_superuser() {
     const auth_bll = bll.auth.create('_superuser');
     try {
         await auth_bll.authenticate(defaults_2.core_env.superuser_email, defaults_2.core_env.superuser_password);
-        urn_lib_1.urn_log.info(`Main _superuser [${defaults_2.core_env.superuser_email}] already in database.`);
+        uranio_utils_1.urn_log.info(`Main _superuser [${defaults_2.core_env.superuser_email}] already in database.`);
     }
     catch (err) { // cannot auth with config email and password
         const bll_superuser = bll.basic.create('_superuser');
         try {
             const one_su = await bll_superuser.find_one({ email: defaults_2.core_env.superuser_email });
-            urn_lib_1.urn_log.warn(`Main _superuser [${defaults_2.core_env.superuser_email}] already in database but with wrong password.`);
+            uranio_utils_1.urn_log.warn(`Main _superuser [${defaults_2.core_env.superuser_email}] already in database but with wrong password.`);
             await bll_superuser.remove_by_id(one_su._id);
-            urn_lib_1.urn_log.warn(`Main _superuser [${defaults_2.core_env.superuser_email}] deleted.`);
+            uranio_utils_1.urn_log.warn(`Main _superuser [${defaults_2.core_env.superuser_email}] deleted.`);
             // eslint-disable-next-line
         }
         catch (err) { } // If there is no user it throws an error, but nothing should be done.
@@ -100,7 +100,7 @@ async function _create_superuser() {
         const group = await bll_group.insert_new({ name: superuser.email });
         superuser.groups = [group._id];
         await bll_superuser.update_one(superuser);
-        urn_lib_1.urn_log.info(`Main _superuser [${defaults_2.core_env.superuser_email}] [${superuser._id}] created.`);
+        uranio_utils_1.urn_log.info(`Main _superuser [${defaults_2.core_env.superuser_email}] [${superuser._id}] created.`);
     }
 }
 function _core_connect() {
@@ -306,10 +306,10 @@ function _check_if_db_connections_were_set() {
                 throw urn_exc.create_not_initialized(`MISSING_MONGO_MAIN_CONNECTION`, `Missing mongo_main_connection in core_env.`);
             }
             if (defaults_2.core_env.mongo_trash_connection === '') {
-                urn_lib_1.urn_log.warn(`You didn't set mongo_trash_connection.`);
+                uranio_utils_1.urn_log.warn(`You didn't set mongo_trash_connection.`);
             }
             if (defaults_2.core_env.mongo_log_connection === '') {
-                urn_lib_1.urn_log.warn(`You didn't set mongo_log_connection.`);
+                uranio_utils_1.urn_log.warn(`You didn't set mongo_log_connection.`);
             }
             break;
         }
@@ -317,13 +317,13 @@ function _check_if_db_connections_were_set() {
 }
 function _check_if_db_names_have_changed() {
     if (defaults_2.core_env.db_main_name === 'uranio_dev') {
-        urn_lib_1.urn_log.warn(`You are using default value for db_main_name [uranio_dev].`);
+        uranio_utils_1.urn_log.warn(`You are using default value for db_main_name [uranio_dev].`);
     }
     if (defaults_2.core_env.db_trash_name === 'uranio_trash_dev') {
-        urn_lib_1.urn_log.warn(`You are using default value for db_trash_name [uranio_trash_dev].`);
+        uranio_utils_1.urn_log.warn(`You are using default value for db_trash_name [uranio_trash_dev].`);
     }
     if (defaults_2.core_env.db_log_name === 'uranio_log_dev') {
-        urn_lib_1.urn_log.warn(`You are using default value for db_log_name [uranio_log_dev].`);
+        uranio_utils_1.urn_log.warn(`You are using default value for db_log_name [uranio_log_dev].`);
     }
 }
 function _check_if_jwt_key_has_changed() {
@@ -336,10 +336,10 @@ function _check_if_superuser_was_set() {
         return;
     }
     if (defaults_2.core_env.superuser_email === '') {
-        urn_lib_1.urn_log.warn(`Invalid _superuser email.`);
+        uranio_utils_1.urn_log.warn(`Invalid _superuser email.`);
     }
     if (defaults_2.core_env.superuser_password === '') {
-        urn_lib_1.urn_log.warn(`Invalid _superuser password.`);
+        uranio_utils_1.urn_log.warn(`Invalid _superuser password.`);
     }
 }
 function _check_if_atom_group_is_needed() {

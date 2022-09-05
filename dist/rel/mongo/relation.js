@@ -39,12 +39,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = exports.MongooseRelation = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const conf = __importStar(require("../../conf/server"));
 const atm_keys = __importStar(require("../../atm/keys"));
 const atm_util = __importStar(require("../../atm/util"));
 const models_1 = require("./models");
-const urn_exc = urn_lib_1.urn_exception.init('REL_MONGO', 'Mongoose Relation');
+const urn_exc = uranio_utils_1.urn_exception.init('REL_MONGO', 'Mongoose Relation');
 /**
  * Mongoose Relation class
  */
@@ -123,7 +123,7 @@ let MongooseRelation = class MongooseRelation {
         return mon_count_res;
     }
     async insert_one(atom_shape) {
-        if (urn_lib_1.urn_util.object.has_key(atom_shape, '_id')) {
+        if (uranio_utils_1.urn_util.object.has_key(atom_shape, '_id')) {
             delete atom_shape._id;
         }
         const mon_model = new this._raw(atom_shape);
@@ -224,7 +224,7 @@ let MongooseRelation = class MongooseRelation {
     async insert_multiple(atom_shapes) {
         const shapes_no_id = [];
         for (const atom_shape of atom_shapes) {
-            if (urn_lib_1.urn_util.object.has_key(atom_shape, '_id')) {
+            if (uranio_utils_1.urn_util.object.has_key(atom_shape, '_id')) {
                 delete atom_shape._id;
             }
             shapes_no_id.push(atom_shape);
@@ -275,8 +275,8 @@ let MongooseRelation = class MongooseRelation {
     }
 };
 MongooseRelation = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], MongooseRelation);
 exports.MongooseRelation = MongooseRelation;
 function _is_valid_id(id) {
@@ -341,7 +341,7 @@ function _clean_atom(atom_name, atom) {
     if (atom._id) {
         atom._id = atom._id.toString();
     }
-    if (urn_lib_1.urn_util.object.has_key(atom, '__v')) {
+    if (uranio_utils_1.urn_util.object.has_key(atom, '__v')) {
         delete atom.__v;
     }
     const subatom_keys = atm_keys.get_bond(atom_name);
@@ -375,7 +375,7 @@ function _clean_molecule(atom_name, molecule) {
     if (molecule._id) {
         molecule._id = molecule._id.toString();
     }
-    if (urn_lib_1.urn_util.object.has_key(molecule, '__v')) {
+    if (uranio_utils_1.urn_util.object.has_key(molecule, '__v')) {
         delete molecule.__v;
     }
     const subatom_keys = atm_keys.get_bond(atom_name);
@@ -406,7 +406,7 @@ function _clean_molecule(atom_name, molecule) {
     return molecule;
 }
 function create(atom_name) {
-    urn_lib_1.urn_log.trace(`Create MongooseRelation`);
+    uranio_utils_1.urn_log.trace(`Create MongooseRelation`);
     return new MongooseRelation(atom_name);
 }
 exports.create = create;

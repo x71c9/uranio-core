@@ -12,17 +12,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = exports.DAL = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const selfish_1 = require("./selfish");
 let DAL = class DAL extends selfish_1.SelfishDAL {
 };
 DAL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], DAL);
 exports.DAL = DAL;
 function create(atom_name) {
-    urn_lib_1.urn_log.trace(`Create DAL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create DAL [${atom_name}]`);
     return new DAL(atom_name);
 }
 exports.create = create;

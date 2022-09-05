@@ -35,8 +35,8 @@ exports.init = exports.save_client_config = exports.client_config_and_save = exp
 const fs_1 = __importDefault(require("fs"));
 // import dateformat from 'dateformat';
 const esbuild = __importStar(require("esbuild"));
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init(`REGISTER_MODULE`, `Register module.`);
 const server_1 = require("../stc/server");
 const defaults_1 = require("../conf/defaults");
 const book = __importStar(require("../book/server"));
@@ -48,17 +48,17 @@ exports.process_params = {
     urn_schema_repo_path: 'node_modules/uranio-schema'
 };
 function schema() {
-    urn_lib_1.urn_log.trace('Started generating uranio core schema...');
+    uranio_utils_1.urn_log.trace('Started generating uranio core schema...');
     init();
     const text = _generate_uranio_schema_text();
-    urn_lib_1.urn_log.trace(`Core schema generated.`);
+    uranio_utils_1.urn_log.trace(`Core schema generated.`);
     return text;
 }
 exports.schema = schema;
 function schema_and_save() {
     const text = schema();
     save_schema(text);
-    urn_lib_1.urn_log.trace(`Schema generated and saved.`);
+    uranio_utils_1.urn_log.trace(`Schema generated and saved.`);
 }
 exports.schema_and_save = schema_and_save;
 function save_schema(text) {
@@ -67,28 +67,28 @@ function save_schema(text) {
     // fs.copyFileSync(_get_atom_schema_path(), backup_path);
     // urn_log.debug(`Copied backup file for atom schema in [${backup_path}].`);
     fs_1.default.writeFileSync(_get_atom_schema_path(), text);
-    urn_lib_1.urn_log.trace(`Updated schema [${_get_atom_schema_path()}].`);
+    uranio_utils_1.urn_log.trace(`Updated schema [${_get_atom_schema_path()}].`);
 }
 exports.save_schema = save_schema;
 function client_config(client_default) {
-    urn_lib_1.urn_log.trace('Started generating uranio core client config...');
+    uranio_utils_1.urn_log.trace('Started generating uranio core client config...');
     init();
     const text = _generate_client_config_text(client_default);
-    urn_lib_1.urn_log.trace(`Core client config generated.`);
+    uranio_utils_1.urn_log.trace(`Core client config generated.`);
     return text;
 }
 exports.client_config = client_config;
 function client_config_and_save(client_default) {
     const text = client_config(client_default);
     save_client_config(text);
-    urn_lib_1.urn_log.trace(`Client config generated and saved.`);
+    uranio_utils_1.urn_log.trace(`Client config generated and saved.`);
 }
 exports.client_config_and_save = client_config_and_save;
 function save_client_config(text) {
     fs_1.default.writeFileSync(_get_core_client_config_path_src(), text);
-    urn_lib_1.urn_log.trace(`Update core client config [${_get_core_client_config_path_src()}].`);
+    uranio_utils_1.urn_log.trace(`Update core client config [${_get_core_client_config_path_src()}].`);
     _compile_client_config();
-    urn_lib_1.urn_log.trace(`Core Client config core generated and saved.`);
+    uranio_utils_1.urn_log.trace(`Core Client config core generated and saved.`);
 }
 exports.save_client_config = save_client_config;
 function init() {
@@ -135,7 +135,7 @@ function _compile(src, dest) {
         platform: 'node',
         format: 'cjs'
     });
-    urn_lib_1.urn_log.trace(`Core Compiled [${src}] to [${dest}].`);
+    uranio_utils_1.urn_log.trace(`Core Compiled [${src}] to [${dest}].`);
 }
 function _get_core_client_config_path_src() {
     return `${exports.process_params.urn_repo_path}/src/cln/toml.ts`;
@@ -214,7 +214,7 @@ function _client_config(client_default) {
     return text;
 }
 function _real_value(value) {
-    return urn_lib_1.urn_util.json.safe_stringify(value);
+    return uranio_utils_1.urn_util.json.safe_stringify(value);
 }
 function _generate_uranio_schema_text() {
     const txt = _generate_schema_text();
@@ -290,7 +290,7 @@ function _generate_atom_shape_type(atom_names) {
     return text;
 }
 function _atom_type_name(atom_name) {
-    return `${urn_lib_1.urn_util.string.ucfirst(atom_name)}`;
+    return `${uranio_utils_1.urn_util.string.ucfirst(atom_name)}`;
 }
 function _atom_shape_type_name(atom_name) {
     return `${_atom_type_name(atom_name)}Shape`;

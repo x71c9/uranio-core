@@ -29,8 +29,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.encrypt_property = exports.property = exports.atom_partial = exports.atom_shape = exports.atom = exports.molecule_primitive_properties = exports.any = exports.molecule = void 0;
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init(`VALIDATION`, `Validate module`);
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init(`VALIDATION`, `Validate module`);
 const types_1 = require("../cln/types");
 const client_1 = require("../stc/client");
 // This will import server on client
@@ -87,7 +87,7 @@ function property(prop_key, prop_def, prop_value, atom) {
     }
     catch (e) {
         const exc = e;
-        if (exc.type === urn_lib_1.urn_exception.ExceptionType.INVALID_ATOM) {
+        if (exc.type === uranio_utils_1.urn_exception.ExceptionType.INVALID_ATOM) {
             throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, atom, [prop_key]);
         }
         throw exc;
@@ -108,12 +108,12 @@ function _has_all_properties(atom_name, atom_shape) {
     const prop_defs = book.get_custom_properties_definition(atom_name);
     const missin_props = [];
     for (const [k] of Object.entries(prop_defs)) {
-        if (!atm_util.is_optional_property(atom_name, k) && !urn_lib_1.urn_util.object.has_key(atom_shape, k)) {
+        if (!atm_util.is_optional_property(atom_name, k) && !uranio_utils_1.urn_util.object.has_key(atom_shape, k)) {
             missin_props.push(k);
         }
     }
     for (const [k] of Object.entries(client_1.atom_common_properties)) {
-        if (!atm_util.is_optional_property(atom_name, k) && !urn_lib_1.urn_util.object.has_key(atom_shape, k)) {
+        if (!atm_util.is_optional_property(atom_name, k) && !uranio_utils_1.urn_util.object.has_key(atom_shape, k)) {
             missin_props.push(k);
         }
     }
@@ -128,13 +128,13 @@ function _has_no_other_properties(atom_name, partial_atom) {
     const prop_defs = book.get_custom_properties_definition(atom_name);
     const extra_props = [];
     for (const k in partial_atom) {
-        if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
+        if (uranio_utils_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
             continue;
         }
-        if (urn_lib_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
+        if (uranio_utils_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
             continue;
         }
-        if (!urn_lib_1.urn_util.object.has_key(prop_defs, k)) {
+        if (!uranio_utils_1.urn_util.object.has_key(prop_defs, k)) {
             extra_props.push(k);
         }
     }
@@ -154,7 +154,7 @@ function _validate_hard_properties(molecule) {
         }
         catch (e) {
             const exc = e;
-            if (exc.type === urn_lib_1.urn_exception.ExceptionType.INVALID_ATOM) {
+            if (exc.type === uranio_utils_1.urn_exception.ExceptionType.INVALID_ATOM) {
                 throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, atom, [k]);
             }
             throw exc;
@@ -171,13 +171,13 @@ function _validate_primitive_properties(atom_name, partial_atom) {
     let k;
     for (k in partial_atom) {
         let prop_def = undefined;
-        if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
+        if (uranio_utils_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
             prop_def = client_1.atom_hard_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
+        else if (uranio_utils_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
             prop_def = client_1.atom_common_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(props, k)) {
+        else if (uranio_utils_1.urn_util.object.has_key(props, k)) {
             prop_def = props[k];
         }
         if (!prop_def) {
@@ -193,7 +193,7 @@ function _validate_primitive_properties(atom_name, partial_atom) {
         }
         catch (e) {
             const exc = e;
-            if (exc.type === urn_lib_1.urn_exception.ExceptionType.INVALID_ATOM) {
+            if (exc.type === uranio_utils_1.urn_exception.ExceptionType.INVALID_ATOM) {
                 throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, partial_atom, [k]);
             }
             throw exc;
@@ -206,13 +206,13 @@ function _validate_partial_atom_bond_properties(atom_name, partial_atom) {
     let k;
     for (k in partial_atom) {
         let prop_def = undefined;
-        if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
+        if (uranio_utils_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
             prop_def = client_1.atom_hard_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
+        else if (uranio_utils_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
             prop_def = client_1.atom_common_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(props, k)) {
+        else if (uranio_utils_1.urn_util.object.has_key(props, k)) {
             prop_def = props[k];
         }
         if (!prop_def) {
@@ -227,7 +227,7 @@ function _validate_partial_atom_bond_properties(atom_name, partial_atom) {
         }
         catch (e) {
             const exc = e;
-            if (exc.type === urn_lib_1.urn_exception.ExceptionType.INVALID_ATOM) {
+            if (exc.type === uranio_utils_1.urn_exception.ExceptionType.INVALID_ATOM) {
                 throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, partial_atom, [k]);
             }
             throw exc;
@@ -240,13 +240,13 @@ function _validate_molecule_bond_properties(atom_name, molecule, depth) {
     const bond_keys = atm_keys.get_bond(atom_name);
     for (const k of bond_keys) {
         let prop_def = undefined;
-        if (urn_lib_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
+        if (uranio_utils_1.urn_util.object.has_key(client_1.atom_hard_properties, k)) {
             prop_def = client_1.atom_hard_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
+        else if (uranio_utils_1.urn_util.object.has_key(client_1.atom_common_properties, k)) {
             prop_def = client_1.atom_common_properties[k];
         }
-        else if (urn_lib_1.urn_util.object.has_key(props, k)) {
+        else if (uranio_utils_1.urn_util.object.has_key(props, k)) {
             prop_def = props[k];
         }
         if (!prop_def) {
@@ -277,7 +277,7 @@ function _validate_molecule_bond_properties(atom_name, molecule, depth) {
         }
         catch (e) {
             const exc = e;
-            if (exc.type === urn_lib_1.urn_exception.ExceptionType.INVALID_ATOM) {
+            if (exc.type === uranio_utils_1.urn_exception.ExceptionType.INVALID_ATOM) {
                 throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, molecule, [k]);
             }
             throw exc;
@@ -286,7 +286,7 @@ function _validate_molecule_bond_properties(atom_name, molecule, depth) {
     return true;
 }
 function _validate_primitive_type(prop_key, prop_def, prop_value) {
-    if (urn_lib_1.urn_util.object.has_key(prop_def, 'optional') &&
+    if (uranio_utils_1.urn_util.object.has_key(prop_def, 'optional') &&
         prop_def.optional === true &&
         typeof prop_value === 'undefined') {
         return true;
@@ -327,7 +327,7 @@ function _validate_primitive_type(prop_key, prop_def, prop_value) {
             if (typeof prop_value === 'string') {
                 prop_value = new Date(prop_value);
             }
-            if (!urn_lib_1.urn_util.is.date(prop_value)) {
+            if (!uranio_utils_1.urn_util.is.date(prop_value)) {
                 let err_msg = `Invalid property \`${String(prop_key)}\`. PropertyType should be a Date.`;
                 err_msg += ` Type ${typeof prop_value} given.`;
                 throw urn_exc.create_invalid_atom('INVALID_PROP', err_msg, undefined, [prop_key]);
@@ -430,14 +430,14 @@ function _validate_custom_type(prop_key, prop_def, prop_value, partial_atom) {
     }
     catch (e) {
         const exc = e;
-        if (exc.type === urn_lib_1.urn_exception.ExceptionType.INVALID_ATOM) {
+        if (exc.type === uranio_utils_1.urn_exception.ExceptionType.INVALID_ATOM) {
             throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, partial_atom, [prop_key]);
         }
         throw exc;
     }
 }
 function _validate_bond_type(prop_key, prop_def, prop_value) {
-    if (urn_lib_1.urn_util.object.has_key(prop_def, 'optional') &&
+    if (uranio_utils_1.urn_util.object.has_key(prop_def, 'optional') &&
         prop_def.optional === true &&
         typeof prop_value === 'undefined') {
         return true;
@@ -484,7 +484,7 @@ function _validate_custom_bond_type(prop_key, prop_def, prop_value, partial_atom
     }
     catch (e) {
         const exc = e;
-        if (exc.type === urn_lib_1.urn_exception.ExceptionType.INVALID_ATOM) {
+        if (exc.type === uranio_utils_1.urn_exception.ExceptionType.INVALID_ATOM) {
             throw urn_exc.create_invalid_atom(exc.error_code, exc.msg, partial_atom, [prop_key]);
         }
         throw exc;

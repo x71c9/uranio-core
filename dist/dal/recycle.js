@@ -38,7 +38,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_recycle = exports.RecycleDAL = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const urn_rel = __importStar(require("../rel/server"));
 const conf = __importStar(require("../conf/server"));
 const basic_1 = require("./basic");
@@ -87,12 +87,12 @@ let RecycleDAL = class RecycleDAL extends encrypt_1.EncryptDAL {
     }
 };
 RecycleDAL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], RecycleDAL);
 exports.RecycleDAL = RecycleDAL;
 function create_recycle(atom_name) {
-    urn_lib_1.urn_log.trace(`Create RecycleDAL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create RecycleDAL [${atom_name}]`);
     return new RecycleDAL(atom_name);
 }
 exports.create_recycle = create_recycle;

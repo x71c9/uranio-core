@@ -12,7 +12,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create_log = exports.LogDAL = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const dal_1 = require("./dal");
 let LogDAL = class LogDAL extends dal_1.DAL {
     constructor(log_name) {
@@ -20,12 +20,12 @@ let LogDAL = class LogDAL extends dal_1.DAL {
     }
 };
 LogDAL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], LogDAL);
 exports.LogDAL = LogDAL;
 function create_log(log_name) {
-    urn_lib_1.urn_log.trace(`Create LogDAL [${log_name}]`);
+    uranio_utils_1.urn_log.trace(`Create LogDAL [${log_name}]`);
     return new LogDAL(log_name);
 }
 exports.create_log = create_log;

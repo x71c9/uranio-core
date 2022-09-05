@@ -6,8 +6,8 @@
 
 import mongoose from 'mongoose';
 
-// import {urn_util, urn_exception} from 'urn-lib';
-import {urn_util} from 'urn-lib';
+// import {urn_util, urn_exception} from 'uranio-utils';
+import {urn_util} from 'uranio-utils';
 
 import {schema} from '../../sch/server';
 

@@ -12,7 +12,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.log_create = exports.MongooseLogRelation = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const relation_1 = require("./relation");
 /**
  * Mongoose Trash Relation class
@@ -26,12 +26,12 @@ let MongooseLogRelation = class MongooseLogRelation extends relation_1.MongooseR
     }
 };
 MongooseLogRelation = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], MongooseLogRelation);
 exports.MongooseLogRelation = MongooseLogRelation;
 function log_create(atom_name) {
-    urn_lib_1.urn_log.trace(`Create MongooseLogRelation`);
+    uranio_utils_1.urn_log.trace(`Create MongooseLogRelation`);
     return new MongooseLogRelation(atom_name);
 }
 exports.log_create = log_create;

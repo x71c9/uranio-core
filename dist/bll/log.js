@@ -12,7 +12,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = void 0;
-const urn_lib_1 = require("urn-lib");
+const uranio_utils_1 = require("uranio-utils");
 const basic_1 = require("./basic");
 let LogBLL = class LogBLL extends basic_1.BasicBLL {
     constructor(log_name) {
@@ -20,11 +20,11 @@ let LogBLL = class LogBLL extends basic_1.BasicBLL {
     }
 };
 LogBLL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], LogBLL);
 function create(log_name) {
-    urn_lib_1.urn_log.trace(`Create LogBLL [${log_name}]`);
+    uranio_utils_1.urn_log.trace(`Create LogBLL [${log_name}]`);
     return new basic_1.BasicBLL(log_name);
 }
 exports.create = create;

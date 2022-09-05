@@ -6,7 +6,7 @@
 
 import mongoose from 'mongoose';
 
-import {urn_log,  urn_exception} from 'urn-lib';
+import {urn_log,  urn_exception} from 'uranio-utils';
 
 import {schema} from '../../sch/server';
 

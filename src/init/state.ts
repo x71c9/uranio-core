@@ -5,11 +5,11 @@
  * initialized.
  */
 
-// import {urn_log, urn_exception} from 'urn-lib';
+// import {urn_log, urn_exception} from 'uranio-utils';
 
 // const urn_exc = urn_exception.init('INIT_STATE', `Initialization state module`);
 
-import {urn_log} from 'urn-lib';
+import {urn_log} from 'uranio-utils';
 
 let state = false;
 

@@ -6,7 +6,7 @@
 
 import AWS from 'aws-sdk';
 
-import {urn_log} from 'urn-lib';
+import {urn_log} from 'uranio-utils';
 
 import * as env from '../../env/server';
 

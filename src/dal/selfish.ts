@@ -8,7 +8,7 @@
  * @packageDocumentation
  */
 
-import {urn_log, urn_exception, urn_util} from 'urn-lib';
+import {urn_log, urn_exception, urn_util} from 'uranio-utils';
 
 import {schema} from '../sch/server';
 

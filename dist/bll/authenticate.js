@@ -40,8 +40,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.is_superuser = exports.is_valid_passport = exports.is_public_request = exports.is_valid_token = exports.decode_token = exports.create = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const urn_lib_1 = require("urn-lib");
-const urn_exc = urn_lib_1.urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
+const uranio_utils_1 = require("uranio-utils");
+const urn_exc = uranio_utils_1.urn_exception.init('AUTHENTICATION_BLL', 'Authentication BLL');
 const env = __importStar(require("../env/server"));
 const conf = __importStar(require("../conf/server"));
 const book_1 = require("../typ/book");
@@ -63,7 +63,7 @@ let AuthenticationBLL = class AuthenticationBLL {
         }
         catch (e) {
             const err = e;
-            if (err.type === urn_lib_1.urn_exception.ExceptionType.NOT_FOUND) {
+            if (err.type === uranio_utils_1.urn_exception.ExceptionType.NOT_FOUND) {
                 throw urn_exc.create_auth_not_found(err.error_code, err.msg, err);
             }
             throw err;
@@ -97,11 +97,11 @@ let AuthenticationBLL = class AuthenticationBLL {
     }
 };
 AuthenticationBLL = __decorate([
-    urn_lib_1.urn_log.util.decorators.debug_constructor,
-    urn_lib_1.urn_log.util.decorators.debug_methods
+    uranio_utils_1.urn_log.util.decorators.debug_constructor,
+    uranio_utils_1.urn_log.util.decorators.debug_methods
 ], AuthenticationBLL);
 function create(atom_name) {
-    urn_lib_1.urn_log.trace(`Create AuthenticationBLL [${atom_name}]`);
+    uranio_utils_1.urn_log.trace(`Create AuthenticationBLL [${atom_name}]`);
     return new AuthenticationBLL(atom_name);
 }
 exports.create = create;
@@ -162,7 +162,7 @@ function is_valid_passport(passport) {
 }
 exports.is_valid_passport = is_valid_passport;
 function _passport_has_iat_key(passport) {
-    return (urn_lib_1.urn_util.object.has_key(passport, 'iat'));
+    return (uranio_utils_1.urn_util.object.has_key(passport, 'iat'));
 }
 // function _token_is_object(passport:Passport)
 //   :true{
@@ -176,7 +176,7 @@ function _passport_has_iat_key(passport) {
 // }
 function passport_has_all_keys(passport) {
     for (const k in server_1.abstract_passport) {
-        if (!urn_lib_1.urn_util.object.has_key(passport, k)) {
+        if (!uranio_utils_1.urn_util.object.has_key(passport, k)) {
             throw urn_exc.create_invalid_request('PASSPORT_MISSING_KEY', `Passport is missing key \`${k}\`.`);
         }
     }
@@ -187,7 +187,7 @@ function passport_has_no_other_keys(passport) {
         if (k === 'iat') {
             continue;
         }
-        if (!urn_lib_1.urn_util.object.has_key(server_1.abstract_passport, k)) {
+        if (!uranio_utils_1.urn_util.object.has_key(server_1.abstract_passport, k)) {
             throw urn_exc.create_invalid_request('PASSPORT_INVALID_KEY', `Passport have invalid keys \`${k}\`.`);
         }
     }

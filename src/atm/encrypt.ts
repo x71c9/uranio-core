@@ -6,7 +6,7 @@
 
 import bcrypt from 'bcryptjs';
 
-import {urn_util} from 'urn-lib';
+import {urn_util} from 'uranio-utils';
 
 import * as conf from '../conf/server';
 
