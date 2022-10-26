@@ -121,6 +121,7 @@ function get_model(conn_name, atom_name) {
                 break;
             }
         }
+        exports.mongo_app.models[conn_name].set(atom_name, model);
     }
     return model;
 }

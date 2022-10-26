@@ -118,6 +118,8 @@ export function get_model(conn_name:ConnectionName, atom_name:schema.AtomName)
 			}
 		}
 		
+		mongo_app.models[conn_name].set(atom_name, model);
+		
 	}
 	return model;
 }
