@@ -7,7 +7,7 @@
 import uranio from './server';
 uranio.init();
 
-// const bll = uranio.bll.basic.create('superuser');
+// const bll = uranio.bll.basic.create('_superuser');
 // bll.find({})
 // 	.then((data) => {
 // 		console.log(data);
