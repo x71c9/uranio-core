@@ -51,12 +51,12 @@ export class EncryptDAL<A extends schema.AtomName> extends ValidateDAL<A>{
 		return super.alter_by_id(id, partial_atom, options);
 	}
 	
-	public async insert_multiple(atom_shapes:schema.AtomShape<A>[])
+	public async insert_multiple(atom_shapes:schema.AtomShape<A>[], skip_on_error=false)
 			:Promise<schema.Atom<A>[]>{
 		for(let atom_shape of atom_shapes){
 			atom_shape = await atm_encrypt.properties<A>(this.atom_name, atom_shape);
 		}
-		return await super.insert_multiple(atom_shapes);
+		return await super.insert_multiple(atom_shapes, skip_on_error);
 	}
 	
 	public async alter_multiple(ids:string[], partial_atom:Partial<schema.AtomShape<A>>)

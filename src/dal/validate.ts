@@ -115,14 +115,14 @@ export class ValidateDAL<A extends schema.AtomName> extends RelationDAL<A>{
 		return validated_db_records;
 	}
 	
-	public async insert_multiple(atom_shapes:schema.AtomShape<A>[])
+	public async insert_multiple(atom_shapes:schema.AtomShape<A>[], skip_on_error=false)
 			:Promise<schema.Atom<A>[]>{
 		for(const atom_shape of atom_shapes){
 			atm_validate.atom_shape(this.atom_name, atom_shape);
 			_check_ids(this.atom_name, atom_shape, this._db_relation.is_valid_id);
 		}
 		await this._check_unique_multiple(atom_shapes as Partial<schema.AtomShape<A>>[]);
-		const db_records = await super.insert_multiple(atom_shapes);
+		const db_records = await super.insert_multiple(atom_shapes, skip_on_error);
 		const validated_db_records:schema.Atom<A>[] = [];
 		for(const db_record of db_records){
 			const validated_db_record = await this.validate(db_record);

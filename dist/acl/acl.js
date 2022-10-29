@@ -260,9 +260,9 @@ let ACL = class ACL {
         }
         return await this._dal.alter_multiple(ids, partial_atom);
     }
-    async insert_multiple(atom_shapes) {
+    async insert_multiple(atom_shapes, skip_on_error = false) {
         this._can_uniform_write();
-        return await this._dal.insert_multiple(atom_shapes);
+        return await this._dal.insert_multiple(atom_shapes, skip_on_error);
     }
     async delete_multiple(ids) {
         this._can_uniform_write();

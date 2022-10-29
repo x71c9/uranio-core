@@ -55,7 +55,7 @@ export declare class ACL<A extends schema.AtomName> implements AccessLayer<A> {
     authorize(action: AuthAction, id?: string): Promise<true>;
     select_multiple<D extends schema.Depth>(ids: string[], options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>[]>;
     alter_multiple(ids: string[], partial_atom: Partial<schema.AtomShape<A>>): Promise<schema.Atom<A>[]>;
-    insert_multiple(atom_shapes: schema.AtomShape<A>[]): Promise<schema.Atom<A>[]>;
+    insert_multiple(atom_shapes: schema.AtomShape<A>[], skip_on_error?: boolean): Promise<schema.Atom<A>[]>;
     delete_multiple(ids: string[]): Promise<schema.Atom<A>[]>;
     search<D extends schema.Depth>(string: string, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>[]>;
     search_count(string: string): Promise<number>;

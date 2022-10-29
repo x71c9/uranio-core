@@ -94,9 +94,9 @@ export class BasicDAL<A extends schema.AtomName> implements AccessLayer<A>{
 		return await this._db_relation.alter_multiple(ids, partial_atom);
 	}
 	
-	public async insert_multiple(atom_shapes:schema.AtomShape<A>[])
+	public async insert_multiple(atom_shapes:schema.AtomShape<A>[], skip_on_error=false)
 			:Promise<schema.Atom<A>[]>{
-		return await this._db_relation.insert_multiple(atom_shapes);
+		return await this._db_relation.insert_multiple(atom_shapes, skip_on_error);
 	}
 	
 	public async delete_multiple(ids:string[]):Promise<schema.Atom<A>[]>{

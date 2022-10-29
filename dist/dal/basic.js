@@ -89,8 +89,8 @@ let BasicDAL = class BasicDAL {
     async alter_multiple(ids, partial_atom) {
         return await this._db_relation.alter_multiple(ids, partial_atom);
     }
-    async insert_multiple(atom_shapes) {
-        return await this._db_relation.insert_multiple(atom_shapes);
+    async insert_multiple(atom_shapes, skip_on_error = false) {
+        return await this._db_relation.insert_multiple(atom_shapes, skip_on_error);
     }
     async delete_multiple(ids) {
         return await this._db_relation.delete_multiple(ids);

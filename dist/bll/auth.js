@@ -51,8 +51,8 @@ let AuthBLL = class AuthBLL extends security_1.SecurityBLL {
         atom.groups = [...(atom.groups || []), group._id];
         return await super.update_one(atom);
     }
-    async insert_multiple(atom_shapes) {
-        const atoms = await super.insert_multiple(atom_shapes);
+    async insert_multiple(atom_shapes, skip_on_error = false) {
+        const atoms = await super.insert_multiple(atom_shapes, skip_on_error);
         if (!atm.util.is_auth_atom_name(this.atom_name) ||
             !atm.util.is_auth_atom(atoms[0])) {
             return atoms;

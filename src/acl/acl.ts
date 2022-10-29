@@ -308,12 +308,12 @@ export class ACL<A extends schema.AtomName> implements AccessLayer<A>{
 		return await this._dal.alter_multiple(ids, partial_atom);
 	}
 	
-	public async insert_multiple(atom_shapes:schema.AtomShape<A>[])
+	public async insert_multiple(atom_shapes:schema.AtomShape<A>[], skip_on_error=false)
 			:Promise<schema.Atom<A>[]>{
 		
 		this._can_uniform_write();
 		
-		return await this._dal.insert_multiple(atom_shapes);
+		return await this._dal.insert_multiple(atom_shapes, skip_on_error);
 	}
 	
 	public async delete_multiple(ids:string[])

@@ -15,7 +15,7 @@ export interface AccessLayer<A extends schema.AtomName> {
     delete_by_id(id: string): Promise<schema.Atom<A>>;
     authorize(action: AuthAction, id?: string): Promise<true>;
     alter_multiple(ids: string[], partial_atom: Partial<schema.AtomShape<A>>): Promise<schema.Atom<A>[]>;
-    insert_multiple(atom_shapes: schema.AtomShape<A>[]): Promise<schema.Atom<A>[]>;
+    insert_multiple(atom_shapes: schema.AtomShape<A>[], skip_on_error: boolean): Promise<schema.Atom<A>[]>;
     delete_multiple(ids: string[]): Promise<schema.Atom<A>[]>;
     search<D extends schema.Depth>(string: string, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>[]>;
     search_count(string: string): Promise<number>;

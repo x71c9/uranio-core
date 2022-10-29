@@ -8,13 +8,9 @@
  */
 
 import {urn_log} from 'uranio-utils';
-
 import {schema} from '../sch/server';
-
 import * as urn_dal from '../dal/server';
-
 import {AuthAction} from '../typ/auth';
-
 import {AccessLayer} from '../typ/layer';
 
 @urn_log.util.decorators.debug_constructor
@@ -35,18 +31,24 @@ export class BasicBLL<A extends schema.AtomName> {
 		return this._al.is_valid_id(_id);
 	}
 	
-	public async find<D extends schema.Depth>(query:schema.Query<A>, options?:schema.Query.Options<A,D>)
-			:Promise<schema.Molecule<A,D>[]>{
+	public async find<D extends schema.Depth>(
+		query:schema.Query<A>,
+		options?:schema.Query.Options<A,D>
+	):Promise<schema.Molecule<A,D>[]>{
 		return await this._al.select(query, options);
 	}
 	
-	public async find_by_id<D extends schema.Depth>(id:string, options?:schema.Query.Options<A,D>)
-			:Promise<schema.Molecule<A,D>>{
+	public async find_by_id<D extends schema.Depth>(
+		id:string,
+		options?:schema.Query.Options<A,D>
+	):Promise<schema.Molecule<A,D>>{
 		return await this._al.select_by_id(id, options);
 	}
 	
-	public async find_one<D extends schema.Depth>(query:schema.Query<A>, options?:schema.Query.Options<A,D>)
-			:Promise<schema.Molecule<A,D>>{
+	public async find_one<D extends schema.Depth>(
+		query:schema.Query<A>,
+		options?:schema.Query.Options<A,D>
+	):Promise<schema.Molecule<A,D>>{
 		return await this._al.select_one(query, options);
 	}
 	
@@ -60,13 +62,18 @@ export class BasicBLL<A extends schema.AtomName> {
 		return await this._al.insert_one(atom_shape);
 	}
 	
-	public async update_by_id<D extends schema.Depth>(id:string, partial_atom:Partial<schema.AtomShape<A>>, options?:schema.Query.Options<A,D>)
-			:Promise<schema.Molecule<A,D>>{
+	public async update_by_id<D extends schema.Depth>(
+		id:string,
+		partial_atom:Partial<schema.AtomShape<A>>,
+		options?:schema.Query.Options<A,D>
+	):Promise<schema.Molecule<A,D>>{
 		return await this._al.alter_by_id(id, partial_atom, options);
 	}
 	
-	public async update_one<D extends schema.Depth>(atom:schema.Atom<A>, options?:schema.Query.Options<A,D>)
-			:Promise<schema.Molecule<A,D>>{
+	public async update_one<D extends schema.Depth>(
+		atom:schema.Atom<A>,
+		options?:schema.Query.Options<A,D>
+	):Promise<schema.Molecule<A,D>>{
 		return await this.update_by_id(atom._id, atom as Partial<schema.AtomShape<A>>, options);
 	}
 	
@@ -85,8 +92,10 @@ export class BasicBLL<A extends schema.AtomName> {
 		return await this._al.authorize(action, id);
 	}
 	
-	public async find_multiple<D extends schema.Depth>(ids:string[], options?:schema.Query.Options<A,D>)
-			:Promise<schema.Molecule<A,D>[]>{
+	public async find_multiple<D extends schema.Depth>(
+		ids:string[],
+		options?:schema.Query.Options<A,D>
+	):Promise<schema.Molecule<A,D>[]>{
 		return await this._al.select({_id: {$in: ids}} as schema.Query<A>, options);
 	}
 	
@@ -95,14 +104,16 @@ export class BasicBLL<A extends schema.AtomName> {
 	//   return await this._al.select_multiple(ids, options);
 	// }
 	
-	public async update_multiple(ids:string[], partial_atom:Partial<schema.AtomShape<A>>)
-			:Promise<schema.Atom<A>[]>{
+	public async update_multiple(
+		ids:string[],
+		partial_atom:Partial<schema.AtomShape<A>>
+	):Promise<schema.Atom<A>[]>{
 		return await this._al.alter_multiple(ids, partial_atom);
 	}
 	
-	public async insert_multiple(atom_shapes:schema.AtomShape<A>[])
+	public async insert_multiple(atom_shapes:schema.AtomShape<A>[], skip_on_error=false)
 			:Promise<schema.Atom<A>[]>{
-		return await this._al.insert_multiple(atom_shapes);
+		return await this._al.insert_multiple(atom_shapes, skip_on_error);
 	}
 	
 	public async remove_multiple(ids:string[])
@@ -110,8 +121,10 @@ export class BasicBLL<A extends schema.AtomName> {
 		return await this._al.delete_multiple(ids);
 	}
 	
-	public async search<D extends schema.Depth>(string:string, options?:schema.Query.Options<A,D>)
-			:Promise<schema.Molecule<A,D>[]>{
+	public async search<D extends schema.Depth>(
+		string:string,
+		options?:schema.Query.Options<A,D>
+	):Promise<schema.Molecule<A,D>[]>{
 		return await this._al.search(string, options);
 	}
 	

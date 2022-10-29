@@ -251,7 +251,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 		return await this.select<0>(mongo_query_ids as schema.Query<A>);
 	}
 	
-	public async insert_multiple(atom_shapes:schema.AtomShape<A>[])
+	public async insert_multiple(atom_shapes:schema.AtomShape<A>[], skip_on_error=false)
 			:Promise<schema.Atom<A>[]>{
 		const shapes_no_id:schema.AtomShape<A>[] = [];
 		for(const atom_shape of atom_shapes){
@@ -260,7 +260,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 			}
 			shapes_no_id.push(atom_shape);
 		}
-		const mon_insert_many_res = await this._raw.insertMany(shapes_no_id, {lean: true}) as unknown;
+		const mon_insert_many_res = await this._raw.insertMany(shapes_no_id, {lean: true, ordered: (!skip_on_error)}) as unknown;
 		if(!Array.isArray(mon_insert_many_res)){
 			throw urn_exc.create('INSERT_MULTIPLE_FAILED', `Cannot insert_multiple.`);
 		}

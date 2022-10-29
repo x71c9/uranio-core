@@ -60,11 +60,11 @@ let EncryptDAL = class EncryptDAL extends validate_1.ValidateDAL {
         partial_atom = await this._encrypt_changed_properties(id, partial_atom);
         return super.alter_by_id(id, partial_atom, options);
     }
-    async insert_multiple(atom_shapes) {
+    async insert_multiple(atom_shapes, skip_on_error = false) {
         for (let atom_shape of atom_shapes) {
             atom_shape = await atm_encrypt.properties(this.atom_name, atom_shape);
         }
-        return await super.insert_multiple(atom_shapes);
+        return await super.insert_multiple(atom_shapes, skip_on_error);
     }
     async alter_multiple(ids, partial_atom) {
         partial_atom = await atm_encrypt.properties(this.atom_name, partial_atom);

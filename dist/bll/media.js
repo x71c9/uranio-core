@@ -138,11 +138,11 @@ let MediaBLL = class MediaBLL extends bll_1.BLL {
     //   const resp = await this._al.select_multiple<D>(ids);
     //   return this._with_full_src(resp);
     // }
-    async insert_multiple(atom_shapes) {
+    async insert_multiple(atom_shapes, skip_on_error = false) {
         for (let shape of atom_shapes) {
             shape = this._remove_full_src(shape);
         }
-        const resp = await this._al.insert_multiple(atom_shapes);
+        const resp = await this._al.insert_multiple(atom_shapes, skip_on_error);
         return this._with_full_src(resp);
     }
     async remove_multiple(ids) {

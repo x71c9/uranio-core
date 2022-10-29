@@ -25,7 +25,7 @@ export declare class MongooseRelation<A extends schema.AtomName> implements Rela
     replace_by_id(id: string, atom: schema.AtomShape<A>): Promise<schema.Atom<A>>;
     delete_by_id(id: string): Promise<schema.Atom<A>>;
     alter_multiple(ids: string[], partial_atom: Partial<schema.AtomShape<A>>): Promise<schema.Atom<A>[]>;
-    insert_multiple(atom_shapes: schema.AtomShape<A>[]): Promise<schema.Atom<A>[]>;
+    insert_multiple(atom_shapes: schema.AtomShape<A>[], skip_on_error?: boolean): Promise<schema.Atom<A>[]>;
     delete_multiple(ids: string[]): Promise<schema.Atom<A>[]>;
     is_valid_id(id: string): boolean;
 }

@@ -221,7 +221,7 @@ let MongooseRelation = class MongooseRelation {
         }
         return await this.select(mongo_query_ids);
     }
-    async insert_multiple(atom_shapes) {
+    async insert_multiple(atom_shapes, skip_on_error = false) {
         const shapes_no_id = [];
         for (const atom_shape of atom_shapes) {
             if (uranio_utils_1.urn_util.object.has_key(atom_shape, '_id')) {
@@ -229,7 +229,7 @@ let MongooseRelation = class MongooseRelation {
             }
             shapes_no_id.push(atom_shape);
         }
-        const mon_insert_many_res = await this._raw.insertMany(shapes_no_id, { lean: true });
+        const mon_insert_many_res = await this._raw.insertMany(shapes_no_id, { lean: true, ordered: (!skip_on_error) });
         if (!Array.isArray(mon_insert_many_res)) {
             throw urn_exc.create('INSERT_MULTIPLE_FAILED', `Cannot insert_multiple.`);
         }

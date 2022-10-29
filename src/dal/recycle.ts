@@ -67,7 +67,7 @@ export class RecycleDAL<A extends schema.AtomName> extends EncryptDAL<A>{
 		for(const del of db_res_delete){
 			del._from = del._id;
 		}
-		await this.trash_dal.insert_multiple(db_res_delete);
+		await this.trash_dal.insert_multiple(db_res_delete, true);
 		// db_res_delete._id = id;
 		return db_res_delete;
 	}

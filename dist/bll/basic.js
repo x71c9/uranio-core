@@ -93,8 +93,8 @@ let BasicBLL = class BasicBLL {
     async update_multiple(ids, partial_atom) {
         return await this._al.alter_multiple(ids, partial_atom);
     }
-    async insert_multiple(atom_shapes) {
-        return await this._al.insert_multiple(atom_shapes);
+    async insert_multiple(atom_shapes, skip_on_error = false) {
+        return await this._al.insert_multiple(atom_shapes, skip_on_error);
     }
     async remove_multiple(ids) {
         return await this._al.delete_multiple(ids);

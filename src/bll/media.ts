@@ -147,12 +147,12 @@ export class MediaBLL extends BLL<'_media'>{
 	//   return this._with_full_src(resp);
 	// }
 	
-	public async insert_multiple(atom_shapes:schema.AtomShape<'_media'>[])
+	public async insert_multiple(atom_shapes:schema.AtomShape<'_media'>[], skip_on_error=false)
 			:Promise<schema.Atom<'_media'>[]>{
 		for(let shape of atom_shapes){
 			shape = this._remove_full_src(shape);
 		}
-		const resp = await this._al.insert_multiple(atom_shapes);
+		const resp = await this._al.insert_multiple(atom_shapes, skip_on_error);
 		return this._with_full_src(resp);
 	}
 	

@@ -15,7 +15,7 @@ export declare class EncryptDAL<A extends schema.AtomName> extends ValidateDAL<A
     constructor(atom_name: A);
     insert_one(atom_shape: schema.AtomShape<A>): Promise<schema.Atom<A>>;
     alter_by_id<D extends schema.Depth>(id: string, partial_atom: Partial<schema.AtomShape<A>>, options?: schema.Query.Options<A, D>): Promise<schema.Molecule<A, D>>;
-    insert_multiple(atom_shapes: schema.AtomShape<A>[]): Promise<schema.Atom<A>[]>;
+    insert_multiple(atom_shapes: schema.AtomShape<A>[], skip_on_error?: boolean): Promise<schema.Atom<A>[]>;
     alter_multiple(ids: string[], partial_atom: Partial<schema.AtomShape<A>>): Promise<schema.Atom<A>[]>;
     protected _encrypt_changed_properties(id: string, atom: schema.Atom<A>): Promise<schema.Atom<A>>;
     protected _encrypt_changed_properties(id: string, atom: Partial<schema.AtomShape<A>>): Promise<Partial<schema.AtomShape<A>>>;

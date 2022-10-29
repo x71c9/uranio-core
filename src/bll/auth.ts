@@ -37,9 +37,9 @@ export class AuthBLL<A extends schema.AtomName> extends SecurityBLL<A>{
 		return await super.update_one<0>(atom);
 	}
 	
-	public async insert_multiple(atom_shapes:schema.AtomShape<A>[])
+	public async insert_multiple(atom_shapes:schema.AtomShape<A>[], skip_on_error=false)
 			:Promise<schema.Atom<A>[]>{
-		const atoms = await super.insert_multiple(atom_shapes);
+		const atoms = await super.insert_multiple(atom_shapes, skip_on_error);
 		if(
 			!atm.util.is_auth_atom_name(this.atom_name) ||
 			!atm.util.is_auth_atom(atoms[0])

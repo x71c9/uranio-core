@@ -16,7 +16,7 @@ export declare class MediaBLL extends BLL<'_media'> {
     update_by_id<D extends schema.Depth>(id: string, partial_atom: Partial<schema.AtomShape<'_media'>>, options?: schema.Query.Options<'_media', D>): Promise<schema.Molecule<'_media', D>>;
     update_one<D extends schema.Depth>(atom: schema.Atom<'_media'>, options?: schema.Query.Options<'_media', D>): Promise<schema.Molecule<'_media', D>>;
     update_multiple(ids: string[], partial_atom: Partial<schema.AtomShape<'_media'>>): Promise<schema.Atom<'_media'>[]>;
-    insert_multiple(atom_shapes: schema.AtomShape<'_media'>[]): Promise<schema.Atom<'_media'>[]>;
+    insert_multiple(atom_shapes: schema.AtomShape<'_media'>[], skip_on_error?: boolean): Promise<schema.Atom<'_media'>[]>;
     remove_multiple(ids: string[]): Promise<schema.Atom<'_media'>[]>;
     private _remove_full_src;
     private _with_full_src;
