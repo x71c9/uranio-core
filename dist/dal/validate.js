@@ -116,7 +116,9 @@ let ValidateDAL = class ValidateDAL extends rel_1.RelationDAL {
             atm_validate.atom_shape(this.atom_name, atom_shape);
             _check_ids(this.atom_name, atom_shape, this._db_relation.is_valid_id);
         }
-        await this._check_unique_multiple(atom_shapes);
+        if (skip_on_error === false) {
+            await this._check_unique_multiple(atom_shapes);
+        }
         const db_records = await super.insert_multiple(atom_shapes, skip_on_error);
         const validated_db_records = [];
         for (const db_record of db_records) {
@@ -210,10 +212,20 @@ let ValidateDAL = class ValidateDAL extends rel_1.RelationDAL {
         }
         // return true;
     }
+    /**
+     * Check if the uniqie parameters are already store in the database.
+     *
+     * @param partial_atom: The partial atom to update
+     * @param id?: (optional) _id of the object to not check. This make it
+     * possible to override the same paramter that must be also unique.
+     */
     async _check_unique(partial_atom, id) {
         const $or = [];
         const unique_keys = atm_keys.get_unique(this.atom_name);
         for (const k of unique_keys) {
+            if (!partial_atom[k]) {
+                continue;
+            }
             $or.push({ [k]: partial_atom[k] });
         }
         if ($or.length === 0) {

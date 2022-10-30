@@ -121,7 +121,9 @@ export class ValidateDAL<A extends schema.AtomName> extends RelationDAL<A>{
 			atm_validate.atom_shape(this.atom_name, atom_shape);
 			_check_ids(this.atom_name, atom_shape, this._db_relation.is_valid_id);
 		}
-		await this._check_unique_multiple(atom_shapes as Partial<schema.AtomShape<A>>[]);
+		if(skip_on_error === false){
+			await this._check_unique_multiple(atom_shapes as Partial<schema.AtomShape<A>>[]);
+		}
 		const db_records = await super.insert_multiple(atom_shapes, skip_on_error);
 		const validated_db_records:schema.Atom<A>[] = [];
 		for(const db_record of db_records){
@@ -226,11 +228,21 @@ export class ValidateDAL<A extends schema.AtomName> extends RelationDAL<A>{
 		// return true;
 	}
 	
+	/**
+	 * Check if the uniqie parameters are already store in the database.
+	 *
+	 * @param partial_atom: The partial atom to update
+	 * @param id?: (optional) _id of the object to not check. This make it
+	 * possible to override the same paramter that must be also unique.
+	 */
 	protected async _check_unique(partial_atom:Partial<schema.AtomShape<A>>, id?:string)
 			:Promise<true>{
 		const $or = [];
 		const unique_keys = atm_keys.get_unique(this.atom_name);
 		for(const k of unique_keys){
+			if(!partial_atom[k]){
+				continue;
+			}
 			$or.push({[k]: partial_atom[k]});
 		}
 		if($or.length === 0){

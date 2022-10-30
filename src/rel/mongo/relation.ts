@@ -260,10 +260,48 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 			}
 			shapes_no_id.push(atom_shape);
 		}
-		const mon_insert_many_res = await this._raw.insertMany(shapes_no_id, {lean: true, ordered: (!skip_on_error)}) as unknown;
-		if(!Array.isArray(mon_insert_many_res)){
-			throw urn_exc.create('INSERT_MULTIPLE_FAILED', `Cannot insert_multiple.`);
+		let mon_insert_many_res;
+		
+		try{
+			mon_insert_many_res = await this._raw.insertMany(
+				shapes_no_id, {
+					lean: true,
+					ordered: (!skip_on_error),
+					// rawResult: (skip_on_error)
+				}
+			) as unknown;
+			if(!Array.isArray(mon_insert_many_res)){
+				throw urn_exc.create('INSERT_MULTIPLE_FAILED', `Cannot insert_multiple.`);
+			}
+		}catch(err){
+			const anyerr = err as any;
+			if(!Array.isArray(anyerr.insertedDocs) || !Array.isArray(anyerr.result?.result?.writeErrors)){
+				throw anyerr;
+			}
+			// console.log(JSON.stringify(err, undefined, 2));
+			const debug_info = `Insert multiple [${this.atom_name}]`;
+			for(const e of anyerr.result.result.writeErrors){
+				let warn_msg = '';
+				warn_msg += `${debug_info} SKIPPING`;
+				warn_msg += ` [${e.code}] ${e.errmsg}`;
+				urn_log.warn(warn_msg);
+			}
+			
+			let debug_original = `${debug_info}`;
+			debug_original += ` # Original documents: ${atom_shapes.length}`;
+			urn_log.debug(debug_original);
+			
+			let debug_warn = `${debug_info}`;
+			debug_warn += ` # Documents skipped: ${anyerr.result?.result?.writeErrors?.length || 0}`;
+			urn_log.warn(debug_warn);
+			
+			let debug_insert = `${debug_info}`;
+			debug_insert += ` # Documents inserted: ${anyerr.result?.result?.nInserted || 0}`;
+			urn_log.debug(debug_insert);
+			
+			mon_insert_many_res = anyerr.insertedDocs;
 		}
+		
 		const string_id_atoms:schema.Atom<A>[] = [];
 		for(const db_atom of mon_insert_many_res){
 			const clean_atom = {

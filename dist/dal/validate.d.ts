@@ -20,6 +20,13 @@ export declare class ValidateDAL<A extends schema.AtomName> extends RelationDAL<
     delete_multiple(ids: string[]): Promise<schema.Atom<A>[]>;
     protected _check_unique_multiple(partial_atoms: Partial<schema.AtomShape<A>>[]): Promise<true>;
     protected _check_unique_multiple_ids(partial_atom: Partial<schema.AtomShape<A>>, ids: string[]): Promise<true>;
+    /**
+     * Check if the uniqie parameters are already store in the database.
+     *
+     * @param partial_atom: The partial atom to update
+     * @param id?: (optional) _id of the object to not check. This make it
+     * possible to override the same paramter that must be also unique.
+     */
     protected _check_unique(partial_atom: Partial<schema.AtomShape<A>>, id?: string): Promise<true>;
     protected validate(molecule: schema.Atom<A>): Promise<schema.Atom<A>>;
     protected validate(molecule: schema.Atom<A>, depth?: 0): Promise<schema.Atom<A>>;

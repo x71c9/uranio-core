@@ -222,6 +222,7 @@ let MongooseRelation = class MongooseRelation {
         return await this.select(mongo_query_ids);
     }
     async insert_multiple(atom_shapes, skip_on_error = false) {
+        var _a, _b, _c, _d, _e, _f, _g;
         const shapes_no_id = [];
         for (const atom_shape of atom_shapes) {
             if (uranio_utils_1.urn_util.object.has_key(atom_shape, '_id')) {
@@ -229,9 +230,40 @@ let MongooseRelation = class MongooseRelation {
             }
             shapes_no_id.push(atom_shape);
         }
-        const mon_insert_many_res = await this._raw.insertMany(shapes_no_id, { lean: true, ordered: (!skip_on_error) });
-        if (!Array.isArray(mon_insert_many_res)) {
-            throw urn_exc.create('INSERT_MULTIPLE_FAILED', `Cannot insert_multiple.`);
+        let mon_insert_many_res;
+        try {
+            mon_insert_many_res = await this._raw.insertMany(shapes_no_id, {
+                lean: true,
+                ordered: (!skip_on_error),
+                // rawResult: (skip_on_error)
+            });
+            if (!Array.isArray(mon_insert_many_res)) {
+                throw urn_exc.create('INSERT_MULTIPLE_FAILED', `Cannot insert_multiple.`);
+            }
+        }
+        catch (err) {
+            const anyerr = err;
+            if (!Array.isArray(anyerr.insertedDocs) || !Array.isArray((_b = (_a = anyerr.result) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.writeErrors)) {
+                throw anyerr;
+            }
+            // console.log(JSON.stringify(err, undefined, 2));
+            const debug_info = `Insert multiple [${this.atom_name}]`;
+            for (const e of anyerr.result.result.writeErrors) {
+                let warn_msg = '';
+                warn_msg += `${debug_info} SKIPPING`;
+                warn_msg += ` [${e.code}] ${e.errmsg}`;
+                uranio_utils_1.urn_log.warn(warn_msg);
+            }
+            let debug_original = `${debug_info}`;
+            debug_original += ` # Original documents: ${atom_shapes.length}`;
+            uranio_utils_1.urn_log.debug(debug_original);
+            let debug_warn = `${debug_info}`;
+            debug_warn += ` # Documents skipped: ${((_e = (_d = (_c = anyerr.result) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.writeErrors) === null || _e === void 0 ? void 0 : _e.length) || 0}`;
+            uranio_utils_1.urn_log.warn(debug_warn);
+            let debug_insert = `${debug_info}`;
+            debug_insert += ` # Documents inserted: ${((_g = (_f = anyerr.result) === null || _f === void 0 ? void 0 : _f.result) === null || _g === void 0 ? void 0 : _g.nInserted) || 0}`;
+            uranio_utils_1.urn_log.debug(debug_insert);
+            mon_insert_many_res = anyerr.insertedDocs;
         }
         const string_id_atoms = [];
         for (const db_atom of mon_insert_many_res) {
