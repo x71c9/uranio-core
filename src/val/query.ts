@@ -32,7 +32,7 @@ const urn_exc = urn_exception.init('QUERY_VALIDATE','schema.Query Validator');
  *
  * @param atom_name - The schema.Atom module that is needed to check the keys
  * @param query - the query object
- * @param options- the options object
+ * @param options - the options object
  */
 export function validate_filter_options_params<A extends schema.AtomName, D extends schema.Depth>
 (atom_name:A, query:schema.Query<A>, options?:schema.Query.Options<A,D>)
@@ -81,6 +81,7 @@ function _validate_expression<A extends schema.AtomName>(field:schema.Query.Expr
 				case 'boolean':
 				case 'string':
 				case 'number':
+				case 'undefined':
 					return true;
 				case 'object':{
 					for(const [l,u] of Object.entries(v)){
