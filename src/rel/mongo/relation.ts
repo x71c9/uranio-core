@@ -64,7 +64,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 	
 	public async select<D extends schema.Depth>(query:schema.Query<A>, options?:schema.Query.Options<A,D>)
 			:Promise<schema.Molecule<A,D>[]>{
-		urn_log.trace(`Mongoose select query`, query);
+		// urn_log.trace(`Mongoose select - query, options`, query, options);
 		let mon_find_res:schema.Molecule<A,D>[] = [];
 		if(options){
 			if(options.depth && Number(options.depth) > 0){
@@ -88,7 +88,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 	
 	public async select_by_id<D extends schema.Depth>(id:string, options?:schema.Query.Options<A,D>)
 			:Promise<schema.Molecule<A,D>>{
-		urn_log.trace(`Mongoose select_by_id id`, id);
+		// urn_log.trace(`Mongoose select_by_id - id, options`, id, options);
 		let mon_find_by_id_res:schema.Molecule<A,D>;
 		if(options && options.depth && Number(options.depth) > 0){
 			const populate_object = _generate_populate_obj(
@@ -109,7 +109,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 	
 	public async select_one<D extends schema.Depth>(query:schema.Query<A>, options?:schema.Query.Options<A,D>)
 			:Promise<schema.Molecule<A,D>>{
-		urn_log.trace(`Mongoose select_by_id query`, query);
+		// urn_log.trace(`Mongoose select_by_id - query, options`, query, options);
 		let mon_find_one_res:schema.Molecule<A,D>;
 		if(options && options.depth && Number(options.depth) > 0){
 			const populate_object = _generate_populate_obj(
@@ -139,7 +139,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 		if(urn_util.object.has_key(atom_shape, '_id')){
 			delete (atom_shape as any)._id;
 		}
-		urn_log.trace(`Mongoose insert_one atom_shape`, atom_shape);
+		// urn_log.trace(`Mongoose insert_one - atom_shape`, atom_shape);
 		const mon_model = new this._raw(atom_shape);
 		const mon_res_doc = await mon_model.save();
 		const str_id = mon_res_doc._id.toString();
@@ -153,6 +153,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 		partial_atom:Partial<schema.AtomShape<A>>,
 		options?:schema.Query.Options<A,D>
 	):Promise<schema.Molecule<A,D>>{
+		// urn_log.trace(`Mongoose alter_by_id - id, partial_atom, options`, id, partial_atom, options);
 		if(typeof id !== 'string' || id === '' || !this.is_valid_id(id)){
 			const err_msg = `Cannot alter_by_id. Invalid id param.`;
 			throw urn_exc.create_invalid_request('ALTER_BY_ID_INVALID_ID', err_msg);
@@ -163,8 +164,6 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 			$set: partial_atom,
 			$unset: $unset
 		};
-		urn_log.trace(`Mongoose alter_by_id id`, id);
-		urn_log.trace(`Mongoose alter_by_id partial_atom`, partial_atom);
 		const default_options:mongoose.QueryOptions = {new: true, lean: true};
 		let current_options = default_options;
 		let mon_update_res:schema.Molecule<A,D>;
@@ -202,8 +201,8 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 			const err_msg = `Cannot replace_by_id. Invalid id param.`;
 			throw urn_exc.create('REPLACE_BY_ID_INVALID_ID', err_msg);
 		}
-		urn_log.trace(`Mongoose replace_by_id id`, id);
-		urn_log.trace(`Mongoose replace_by_id atom`, atom);
+		// urn_log.trace(`Mongoose replace_by_id id`, id);
+		// urn_log.trace(`Mongoose replace_by_id atom`, atom);
 		const mon_update_res =
 			await this._raw.findByIdAndUpdate({_id:id}, atom, {new: true, lean: true, overwrite: true}) as unknown;
 		if(mon_update_res === null){
@@ -219,7 +218,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 			const err_msg = `Cannot delete_by_id. Invalid id param.`;
 			throw urn_exc.create_invalid_request('DEL_BY_ID_INVALID_ID', err_msg);
 		}
-		urn_log.trace(`Mongoose delete_by_id id`, id);
+		// urn_log.trace(`Mongoose delete_by_id id`, id);
 		const mon_delete_res =
 			await this._raw.findOneAndDelete({_id:id});
 		if(typeof mon_delete_res !== 'object' ||  mon_delete_res === null){
@@ -248,8 +247,8 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 			$set: partial_atom,
 			$unset: $unset
 		};
-		urn_log.trace(`Mongoose update_many ids`, ids);
-		urn_log.trace(`Mongoose update_many partial_atom`, partial_atom);
+		// urn_log.trace(`Mongoose update_many ids`, ids);
+		// urn_log.trace(`Mongoose update_many partial_atom`, partial_atom);
 		const mongo_query_ids = (delete_all === true) ? {} : {_id: {$in: ids}};
 		const mon_update_res = await this._raw.updateMany(
 			mongo_query_ids,
@@ -273,7 +272,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 		}
 		let mon_insert_many_res;
 		
-		urn_log.trace(`Mongoose insert_many atom_shapes`, atom_shapes);
+		// urn_log.trace(`Mongoose insert_many atom_shapes`, atom_shapes);
 		try{
 			mon_insert_many_res = await this._raw.insertMany(
 				shapes_no_id, {
@@ -338,7 +337,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 				}
 			}
 		}
-		urn_log.trace(`Mongoose delete_multiple ids`, ids);
+		// urn_log.trace(`Mongoose delete_multiple ids`, ids);
 		const mongo_query = (delete_all === true) ? {} : {_id: {$in: ids}};
 		const almost_deleted_docs = await this.select<0>(mongo_query as schema.Query<A>);
 		// Return a schema.Query with how many records were deleted.
