@@ -46,7 +46,7 @@ const urn_exc = uranio_utils_1.urn_exception.init('QUERY_VALIDATE', 'schema.Quer
  *
  * @param atom_name - The schema.Atom module that is needed to check the keys
  * @param query - the query object
- * @param options- the options object
+ * @param options - the options object
  */
 function validate_filter_options_params(atom_name, query, options) {
     validate_filter(query, atom_name);
@@ -91,6 +91,7 @@ function _validate_expression(field, atom_name) {
                 case 'boolean':
                 case 'string':
                 case 'number':
+                case 'undefined':
                     return true;
                 case 'object': {
                     for (const [l, u] of Object.entries(v)) {

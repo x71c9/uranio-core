@@ -70,6 +70,7 @@ let MongooseRelation = class MongooseRelation {
         return 'main';
     }
     async select(query, options) {
+        uranio_utils_1.urn_log.trace(`Mongoose select query`, query);
         let mon_find_res = [];
         if (options) {
             if (options.depth && Number(options.depth) > 0) {
@@ -89,6 +90,7 @@ let MongooseRelation = class MongooseRelation {
         });
     }
     async select_by_id(id, options) {
+        uranio_utils_1.urn_log.trace(`Mongoose select_by_id id`, id);
         let mon_find_by_id_res;
         if (options && options.depth && Number(options.depth) > 0) {
             const populate_object = _generate_populate_obj(this.atom_name, Number(options.depth), options.depth_query);
@@ -104,6 +106,7 @@ let MongooseRelation = class MongooseRelation {
         return _clean_molecule(this.atom_name, mon_find_by_id_res);
     }
     async select_one(query, options) {
+        uranio_utils_1.urn_log.trace(`Mongoose select_by_id query`, query);
         let mon_find_one_res;
         if (options && options.depth && Number(options.depth) > 0) {
             const populate_object = _generate_populate_obj(this.atom_name, Number(options.depth), options.depth_query);
@@ -126,6 +129,7 @@ let MongooseRelation = class MongooseRelation {
         if (uranio_utils_1.urn_util.object.has_key(atom_shape, '_id')) {
             delete atom_shape._id;
         }
+        uranio_utils_1.urn_log.trace(`Mongoose insert_one atom_shape`, atom_shape);
         const mon_model = new this._raw(atom_shape);
         const mon_res_doc = await mon_model.save();
         const str_id = mon_res_doc._id.toString();
@@ -144,6 +148,8 @@ let MongooseRelation = class MongooseRelation {
             $set: partial_atom,
             $unset: $unset
         };
+        uranio_utils_1.urn_log.trace(`Mongoose alter_by_id id`, id);
+        uranio_utils_1.urn_log.trace(`Mongoose alter_by_id partial_atom`, partial_atom);
         const default_options = { new: true, lean: true };
         let current_options = default_options;
         let mon_update_res;
@@ -177,6 +183,8 @@ let MongooseRelation = class MongooseRelation {
             const err_msg = `Cannot replace_by_id. Invalid id param.`;
             throw urn_exc.create('REPLACE_BY_ID_INVALID_ID', err_msg);
         }
+        uranio_utils_1.urn_log.trace(`Mongoose replace_by_id id`, id);
+        uranio_utils_1.urn_log.trace(`Mongoose replace_by_id atom`, atom);
         const mon_update_res = await this._raw.findByIdAndUpdate({ _id: id }, atom, { new: true, lean: true, overwrite: true });
         if (mon_update_res === null) {
             throw urn_exc.create_not_found('REPLACE_BY_ID_NOT_FOUND', `Cannot replace_by_id. Record not found.`);
@@ -189,6 +197,7 @@ let MongooseRelation = class MongooseRelation {
             const err_msg = `Cannot delete_by_id. Invalid id param.`;
             throw urn_exc.create_invalid_request('DEL_BY_ID_INVALID_ID', err_msg);
         }
+        uranio_utils_1.urn_log.trace(`Mongoose delete_by_id id`, id);
         const mon_delete_res = await this._raw.findOneAndDelete({ _id: id });
         if (typeof mon_delete_res !== 'object' || mon_delete_res === null) {
             throw urn_exc.create_not_found('DEL_BY_ID_NOT_FOUND', `Cannot delete_by_id. Record not found.`);
@@ -214,6 +223,8 @@ let MongooseRelation = class MongooseRelation {
             $set: partial_atom,
             $unset: $unset
         };
+        uranio_utils_1.urn_log.trace(`Mongoose update_many ids`, ids);
+        uranio_utils_1.urn_log.trace(`Mongoose update_many partial_atom`, partial_atom);
         const mongo_query_ids = (delete_all === true) ? {} : { _id: { $in: ids } };
         const mon_update_res = await this._raw.updateMany(mongo_query_ids, update, { new: true, lean: true }); // Return a schema.Query with how many records were updated.
         if (mon_update_res === null) {
@@ -231,6 +242,7 @@ let MongooseRelation = class MongooseRelation {
             shapes_no_id.push(atom_shape);
         }
         let mon_insert_many_res;
+        uranio_utils_1.urn_log.trace(`Mongoose insert_many atom_shapes`, atom_shapes);
         try {
             mon_insert_many_res = await this._raw.insertMany(shapes_no_id, {
                 lean: true,
@@ -288,6 +300,7 @@ let MongooseRelation = class MongooseRelation {
                 }
             }
         }
+        uranio_utils_1.urn_log.trace(`Mongoose delete_multiple ids`, ids);
         const mongo_query = (delete_all === true) ? {} : { _id: { $in: ids } };
         const almost_deleted_docs = await this.select(mongo_query);
         // Return a schema.Query with how many records were deleted.
