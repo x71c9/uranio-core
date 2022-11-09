@@ -66,6 +66,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 			:Promise<schema.Molecule<A,D>[]>{
 		// urn_log.trace(`Mongoose select - query, options`, query, options);
 		let mon_find_res:schema.Molecule<A,D>[] = [];
+		const sort = ((options?.sort) ? options.sort : {}) as {[k:string]: mongoose.SortOrder};
 		if(options){
 			if(options.depth && Number(options.depth) > 0){
 				const populate_object = _generate_populate_obj(
@@ -73,10 +74,11 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 					Number(options.depth),
 					options.depth_query
 				);
-				mon_find_res = await this._raw.find(query, null, options)
+				mon_find_res = await this._raw.find(query, null, options).sort(sort)
 					.populate(populate_object).lean<schema.Molecule<A,D>[]>();
 			}else{
-				mon_find_res = await this._raw.find(query, null, options).lean<schema.Molecule<A,D>[]>();
+				mon_find_res = await this._raw.find(query, null, options).sort(sort)
+					.lean<schema.Molecule<A,D>[]>();
 			}
 		}else{
 			mon_find_res = await this._raw.find(query).lean<schema.Molecule<A,D>[]>();
@@ -109,18 +111,19 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 	
 	public async select_one<D extends schema.Depth>(query:schema.Query<A>, options?:schema.Query.Options<A,D>)
 			:Promise<schema.Molecule<A,D>>{
-		// urn_log.trace(`Mongoose select_by_id - query, options`, query, options);
+		// urn_log.trace(`Mongoose select_one - query, options`, query, options);
 		let mon_find_one_res:schema.Molecule<A,D>;
+		const sort = ((options?.sort) ? options.sort : {}) as {[k:string]: mongoose.SortOrder};
 		if(options && options.depth && Number(options.depth) > 0){
 			const populate_object = _generate_populate_obj(
 				this.atom_name,
 				Number(options.depth),
 				options.depth_query
 			);
-			mon_find_one_res = await this._raw.findOne(query).sort(options.sort as {[k:string]: mongoose.SortOrder})
+			mon_find_one_res = await this._raw.findOne(query).sort(sort)
 				.populate(populate_object).lean<schema.Molecule<A,D>>();
 		}else{
-			mon_find_one_res = await this._raw.findOne(query).lean<schema.Molecule<A,D>>();
+			mon_find_one_res = await this._raw.findOne(query).sort(sort).lean<schema.Molecule<A,D>>();
 		}
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);

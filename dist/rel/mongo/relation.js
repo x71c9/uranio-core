@@ -72,14 +72,16 @@ let MongooseRelation = class MongooseRelation {
     async select(query, options) {
         // urn_log.trace(`Mongoose select - query, options`, query, options);
         let mon_find_res = [];
+        const sort = ((options === null || options === void 0 ? void 0 : options.sort) ? options.sort : {});
         if (options) {
             if (options.depth && Number(options.depth) > 0) {
                 const populate_object = _generate_populate_obj(this.atom_name, Number(options.depth), options.depth_query);
-                mon_find_res = await this._raw.find(query, null, options)
+                mon_find_res = await this._raw.find(query, null, options).sort(sort)
                     .populate(populate_object).lean();
             }
             else {
-                mon_find_res = await this._raw.find(query, null, options).lean();
+                mon_find_res = await this._raw.find(query, null, options).sort(sort)
+                    .lean();
             }
         }
         else {
@@ -106,15 +108,16 @@ let MongooseRelation = class MongooseRelation {
         return _clean_molecule(this.atom_name, mon_find_by_id_res);
     }
     async select_one(query, options) {
-        // urn_log.trace(`Mongoose select_by_id - query, options`, query, options);
+        // urn_log.trace(`Mongoose select_one - query, options`, query, options);
         let mon_find_one_res;
+        const sort = ((options === null || options === void 0 ? void 0 : options.sort) ? options.sort : {});
         if (options && options.depth && Number(options.depth) > 0) {
             const populate_object = _generate_populate_obj(this.atom_name, Number(options.depth), options.depth_query);
-            mon_find_one_res = await this._raw.findOne(query).sort(options.sort)
+            mon_find_one_res = await this._raw.findOne(query).sort(sort)
                 .populate(populate_object).lean();
         }
         else {
-            mon_find_one_res = await this._raw.findOne(query).lean();
+            mon_find_one_res = await this._raw.findOne(query).sort(sort).lean();
         }
         if (mon_find_one_res === null) {
             throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
