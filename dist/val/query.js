@@ -37,7 +37,7 @@ const book = __importStar(require("../book/client"));
 const _query_op_keys = {
     array_op: ['$and', '$nor', '$or'],
     equal_op: ['$not'],
-    compa_op: ['$eq', '$gt', '$gte', '$in', '$lt', '$lte', '$ne', '$nin', '$regex', '$options']
+    compa_op: ['$eq', '$gt', '$gte', '$in', '$lt', '$lte', '$ne', '$nin', '$regex', '$options', '$all']
 };
 const _options_keys = ['depth', 'sort', 'limit', 'skip', 'depth_query'];
 const urn_exc = uranio_utils_1.urn_exception.init('QUERY_VALIDATE', 'schema.Query Validator');
