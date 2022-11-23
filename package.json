@@ -61,7 +61,7 @@
 		"minimist": "^1.2.5",
 		"mongoose": "^6.4.6",
 		"toml": "^3.0.0",
-		"uranio-schema": "git+ssh://git@github.com/x71c9/uranio-schema.git#master",
-		"uranio-utils": "git+ssh://git@github.com/x71c9/uranio-utils.git#master"
+		"uranio-schema": "https://github.com/x71c9/uranio-schema.git#master",
+		"uranio-utils": "https://@github.com/x71c9/uranio-utils.git#master"
 	}
 }
