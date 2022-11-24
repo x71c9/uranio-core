@@ -47,7 +47,7 @@
 		"@types/express-fileupload": "^1.2.2",
 		"@types/jsonwebtoken": "^8.5.8",
 		"@types/minimist": "^1.2.2",
-		"uranio-dev": "git+ssh://git@github.com/x71c9/uranio-dev.git#master"
+		"uranio-dev": "https://github.com/x71c9/uranio-dev.git#master"
 	},
 	"dependencies": {
 		"aws-sdk": "^2.1066.0",
