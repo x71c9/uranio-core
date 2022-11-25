@@ -91,7 +91,7 @@ function _validate_expression<A extends schema.AtomName>(field:schema.Query.Expr
 						}
 						if(!Array.isArray(u) && !_is_base_query_type(u)){
 							let err_msg = `Filter comparsion value type must be`;
-							err_msg += ` a string, a number, a date or an Array \`${l}\``;
+							err_msg += ` a string, a number, a date, an Array or \`undefined\` \`${l}\``;
 							throw urn_exc.create_invalid_request('FIELD_INVALID_COMP_TYPE', err_msg);
 						}
 						if(Array.isArray(u)){
@@ -118,7 +118,7 @@ function _validate_expression<A extends schema.AtomName>(field:schema.Query.Expr
 
 function _is_base_query_type(val:any)
 		:boolean{
-	return (typeof val === 'string' || val === 'number' ||  urn_util.is.date(val));
+	return (typeof val === 'string' || val === 'number' ||  urn_util.is.date(val) || typeof val === 'undefined');
 }
 
 /**

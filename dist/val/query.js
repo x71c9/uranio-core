@@ -101,7 +101,7 @@ function _validate_expression(field, atom_name) {
                         }
                         if (!Array.isArray(u) && !_is_base_query_type(u)) {
                             let err_msg = `Filter comparsion value type must be`;
-                            err_msg += ` a string, a number, a date or an Array \`${l}\``;
+                            err_msg += ` a string, a number, a date, an Array or \`undefined\` \`${l}\``;
                             throw urn_exc.create_invalid_request('FIELD_INVALID_COMP_TYPE', err_msg);
                         }
                         if (Array.isArray(u)) {
@@ -126,7 +126,7 @@ function _validate_expression(field, atom_name) {
     return true;
 }
 function _is_base_query_type(val) {
-    return (typeof val === 'string' || val === 'number' || uranio_utils_1.urn_util.is.date(val));
+    return (typeof val === 'string' || val === 'number' || uranio_utils_1.urn_util.is.date(val) || typeof val === 'undefined');
 }
 /**
  * Validate query object for querying Relation. used in find, find_one, ...
