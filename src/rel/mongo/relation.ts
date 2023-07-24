@@ -67,6 +67,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 		// urn_log.trace(`Mongoose select - query, options`, query, options);
 		let mon_find_res:schema.Molecule<A,D>[] = [];
 		const sort = ((options?.sort) ? options.sort : {}) as {[k:string]: mongoose.SortOrder};
+		const skip = (options?.skip) ? options.skip : 0;
 		if(options){
 			if(options.depth && Number(options.depth) > 0){
 				const populate_object = _generate_populate_obj(
@@ -75,9 +76,11 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 					options.depth_query
 				);
 				mon_find_res = await this._raw.find(query, null, options).sort(sort)
+					.skip(skip)
 					.populate(populate_object).lean<schema.Molecule<A,D>[]>();
 			}else{
 				mon_find_res = await this._raw.find(query, null, options).sort(sort)
+					.skip(skip)
 					.lean<schema.Molecule<A,D>[]>();
 			}
 		}else{
@@ -114,6 +117,7 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 		// urn_log.trace(`Mongoose select_one - query, options`, query, options);
 		let mon_find_one_res:schema.Molecule<A,D>;
 		const sort = ((options?.sort) ? options.sort : {}) as {[k:string]: mongoose.SortOrder};
+		const skip = (options?.skip) ? options.skip : 0;
 		if(options && options.depth && Number(options.depth) > 0){
 			const populate_object = _generate_populate_obj(
 				this.atom_name,
@@ -121,9 +125,12 @@ export class MongooseRelation<A extends schema.AtomName> implements Relation<A> 
 				options.depth_query
 			);
 			mon_find_one_res = await this._raw.findOne(query).sort(sort)
+				.skip(skip)
 				.populate(populate_object).lean<schema.Molecule<A,D>>();
 		}else{
-			mon_find_one_res = await this._raw.findOne(query).sort(sort).lean<schema.Molecule<A,D>>();
+			mon_find_one_res = await this._raw.findOne(query).sort(sort)
+				.skip(skip)
+				.lean<schema.Molecule<A,D>>();
 		}
 		if(mon_find_one_res === null){
 			throw urn_exc.create_not_found('FIND_ONE_NOT_FOUND', `Record not found.`);
