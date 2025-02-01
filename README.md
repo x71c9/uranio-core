@@ -1,3 +1,10 @@
+# Deprecated
+
+**This repository is deprecated and no longer maintained.**
+
+Please use the new repository for the latest code and updates:  
+[https://github.com/x71c9/uranio](https://github.com/x71c9/uranio)
+
 ## URANIO CORE
 
 Uranio CORE is a Typescript repo that provides the Business Logic Layer (BLL)
